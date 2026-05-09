@@ -65,6 +65,21 @@ export function KeywordManager({
 
   return (
     <div>
+      {plan === 'FREE' && keywords.length >= 2 && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
+          <p className="text-sm text-orange-800">
+            <span className="font-semibold">You&apos;re using {keywords.length} of 3 free keywords.</span>{' '}
+            Upgrade to Pro for 30 keywords and batch digest emails.
+          </p>
+          <a
+            href="/pricing"
+            className="flex-shrink-0 rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-orange-600 transition-colors"
+          >
+            Upgrade to Pro
+          </a>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-lg font-semibold text-gray-900">Keywords</h1>
