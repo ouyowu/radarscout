@@ -50,7 +50,7 @@ export default async function MatchesPage() {
         <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100">
           {matches.map(match => (
             <div key={match.id} className="px-4 py-4">
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                     <span
@@ -63,6 +63,13 @@ export default async function MatchesPage() {
                     <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded font-mono">
                       {match.keyword.text}
                     </span>
+                    {/* Timestamp shown inline on mobile */}
+                    <time
+                      dateTime={match.matchedAt.toISOString()}
+                      className="sm:hidden ml-auto text-xs text-gray-400 whitespace-nowrap"
+                    >
+                      {timeAgo(new Date(match.matchedAt))}
+                    </time>
                   </div>
                   <a
                     href={match.url}
@@ -76,9 +83,10 @@ export default async function MatchesPage() {
                     <p className="mt-1 text-xs text-gray-500 line-clamp-2">{match.snippet}</p>
                   )}
                 </div>
+                {/* Timestamp shown right-aligned on sm+ */}
                 <time
                   dateTime={match.matchedAt.toISOString()}
-                  className="flex-shrink-0 text-xs text-gray-400 mt-0.5 whitespace-nowrap"
+                  className="hidden sm:block flex-shrink-0 text-xs text-gray-400 mt-0.5 whitespace-nowrap"
                 >
                   {timeAgo(new Date(match.matchedAt))}
                 </time>

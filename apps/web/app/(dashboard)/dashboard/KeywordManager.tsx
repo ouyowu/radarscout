@@ -95,19 +95,19 @@ export function KeywordManager({
         </span>
       </div>
 
-      <form onSubmit={handleAdd} className="flex gap-2 mb-6">
+      <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-2 mb-6">
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
           disabled={atLimit || loading}
           maxLength={100}
           placeholder={atLimit ? 'Upgrade to add more keywords' : 'e.g. rust programming'}
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 border border-gray-300 rounded-lg px-3 py-3 sm:py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
         />
         <button
           type="submit"
           disabled={atLimit || loading || !input.trim()}
-          className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
+          className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm px-4 py-3 sm:py-2 rounded-lg font-medium transition-colors cursor-pointer min-h-[44px]"
         >
           {loading ? 'Adding…' : 'Add'}
         </button>
