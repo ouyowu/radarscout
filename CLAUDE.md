@@ -65,3 +65,17 @@ packages/mailer/  # Email templates + Resend client
 - Don't add AI/semantic features unless explicitly asked.
 - Don't add logging frameworks — use console.log for now.
 - Don't add analytics — not needed for MVP.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default mattpocock/skills label names (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

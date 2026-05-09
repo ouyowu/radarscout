@@ -1,53 +1,23 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { type NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
+import { NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request })
+export default auth((req) => {
+  const { pathname } = req.nextUrl
+  const isAuthed = !!req.auth
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          )
-        },
-      },
-    },
-  )
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { pathname } = request.nextUrl
-  const isAuthRoute =
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/signup') ||
-    pathname.startsWith('/auth')
-  // Routes that don't require a logged-in user
+  const isAuthRoute = pathname.startsWith('/auth')
   const isPublicApi =
-    pathname.startsWith('/api/internal') ||
-    pathname === '/api/stripe/webhook'
+    pathname.startsWith('/api/internal') || pathname === '/api/stripe/webhook'
 
-  if (!user && !isAuthRoute && !isPublicApi) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (!isAuthed && !isAuthRoute && !isPublicApi) {
+    return NextResponse.redirect(new URL('/auth/login', req.url))
   }
 
-  if (user && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/monitors', request.url))
+  if (isAuthed && (pathname === '/auth/login' || pathname === '/auth/register')) {
+    return NextResponse.redirect(new URL('/monitors', req.url))
   }
-
-  return response
-}
+})
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/auth).*)'],
 }

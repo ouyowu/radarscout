@@ -1,22 +1,10 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { db } from '@reddit-monitor/db'
-import { signOut } from './actions'
+import { auth } from '@/lib/auth'
+import { handleSignOut } from './actions'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user?.email) redirect('/login')
-
-  // Lazy-create DB user on first dashboard visit
-  await db.user.upsert({
-    where: { email: user.email },
-    update: {},
-    create: { email: user.email, passwordHash: 'supabase' },
-  })
+  const session = await auth()
+  if (!session?.user) redirect('/auth/login')
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,8 +19,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">{user.email}</span>
-          <form action={signOut}>
+          <span className="text-sm text-gray-500">{session.user.email}</span>
+          <form action={handleSignOut}>
             <button type="submit" className="text-sm text-gray-500 hover:text-gray-900">
               Sign out
             </button>

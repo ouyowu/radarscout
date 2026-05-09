@@ -9,7 +9,10 @@
     "db:generate": "pnpm --filter @reddit-monitor/db generate",
     "db:migrate:dev": "pnpm --filter @reddit-monitor/db migrate:dev",
     "db:studio": "pnpm --filter @reddit-monitor/db studio",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r --if-present test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
   },
   "engines": {
     "node": ">=20",
