@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
-import { sendMatchAlert } from '@reddit-monitor/mailer'
+import { sendMatchDigest } from '@reddit-monitor/mailer'
+
+const BATCH_WINDOW_MS = 60_000
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INTERNAL_API_SECRET
@@ -34,44 +36,57 @@ export async function POST(request: NextRequest) {
     data: { keywordId, platform, postId, title, url, snippet: snippet ?? '' },
   })
 
-  // Fire-and-forget: send email alert + record notification
-  sendEmailAndNotify({ keywordId, title, url, snippet: snippet ?? '' }).catch(err =>
-    console.error('[matches] post-create error:', err),
+  // Fire-and-forget: batch notifications per user over a 60-second window
+  sendEmailIfDue(keywordId).catch(err =>
+    console.error('[matches] notification error:', err),
   )
 
   return NextResponse.json({ id: match.id }, { status: 201 })
 }
 
-async function sendEmailAndNotify({
-  keywordId,
-  title,
-  url,
-  snippet,
-}: {
-  keywordId: string
-  title: string
-  url: string
-  snippet: string
-}) {
+async function sendEmailIfDue(keywordId: string): Promise<void> {
   const keyword = await db.keyword.findUnique({
     where: { id: keywordId },
     include: { user: true },
   })
-
   if (!keyword?.user?.email) return
 
-  const subreddit = (keyword.flags as { subreddit?: string }).subreddit ?? ''
+  const userId = keyword.user.id
+  const windowStart = new Date(Date.now() - BATCH_WINDOW_MS)
 
-  await sendMatchAlert({
+  // If a notification was already sent within the batch window, skip —
+  // the new match is saved in DB and will appear in the next digest.
+  const recent = await db.notification.findFirst({
+    where: { userId, deliveredAt: { gte: windowStart } },
+  })
+  if (recent) return
+
+  // Collect all matches since the previous notification (or beginning of time)
+  const prev = await db.notification.findFirst({
+    where: { userId },
+    orderBy: { deliveredAt: 'desc' },
+  })
+  const since = prev?.deliveredAt ?? new Date(0)
+
+  const pending = await db.match.findMany({
+    where: { matchedAt: { gt: since }, keyword: { userId } },
+    include: { keyword: true },
+    orderBy: { matchedAt: 'asc' },
+  })
+  if (pending.length === 0) return
+
+  await sendMatchDigest({
     to: keyword.user.email,
-    keyword: keyword.text,
-    subreddit,
-    postTitle: title,
-    postUrl: url,
-    snippet,
+    matches: pending.map(m => ({
+      keyword: m.keyword.text,
+      subreddit: (m.keyword.flags as { subreddit?: string }).subreddit ?? '',
+      postTitle: m.title,
+      postUrl: m.url,
+      snippet: m.snippet,
+    })),
   })
 
   await db.notification.create({
-    data: { userId: keyword.user.id, matchCount: 1 },
+    data: { userId, matchCount: pending.length },
   })
 }

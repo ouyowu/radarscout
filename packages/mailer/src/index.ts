@@ -31,6 +31,94 @@ export async function sendMatchAlert(params: MatchAlertParams): Promise<void> {
   }
 }
 
+export interface MatchDigestParams {
+  to: string
+  matches: Array<{
+    keyword: string
+    subreddit: string
+    postTitle: string
+    postUrl: string
+    snippet: string
+  }>
+}
+
+export async function sendMatchDigest(params: MatchDigestParams): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.log('[mailer] RESEND_API_KEY not set — skipping digest to', params.to)
+    return
+  }
+
+  const resend = new Resend(apiKey)
+  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@reddit-monitor.dev'
+  const count = params.matches.length
+  const subject =
+    count === 1
+      ? `[Reddit Monitor] "${params.matches[0].keyword}" mentioned`
+      : `[Reddit Monitor] ${count} new keyword matches`
+
+  const { error } = await resend.emails.send({
+    from,
+    to: params.to,
+    subject,
+    html: buildDigestHtml(params),
+  })
+
+  if (error) {
+    console.error('[mailer] digest send failed:', error)
+  }
+}
+
+function buildDigestHtml({ matches }: MatchDigestParams): string {
+  const rows = matches
+    .map(
+      m => `
+    <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:16px;">
+      <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;">
+        ${esc(m.keyword)}${m.subreddit ? ` &middot; r/${esc(m.subreddit)}` : ''}
+      </p>
+      <p style="margin:0 0 10px;font-size:15px;font-weight:600;color:#111827;line-height:1.4;">
+        ${esc(m.postTitle)}
+      </p>
+      ${m.snippet ? `<p style="margin:0 0 12px;font-size:13px;color:#6b7280;font-style:italic;line-height:1.6;">&ldquo;&hellip;${esc(m.snippet)}&hellip;&rdquo;</p>` : ''}
+      <a href="${esc(m.postUrl)}"
+         style="display:inline-block;background:#ea580c;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:6px;text-decoration:none;">
+        View on Reddit &rarr;
+      </a>
+    </div>`,
+    )
+    .join('')
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+        <tr>
+          <td style="background:#ea580c;padding:20px 32px;">
+            <span style="color:#fff;font-size:18px;font-weight:600;">Reddit Monitor</span>
+            <span style="color:#fed7aa;font-size:13px;margin-left:8px;">
+              ${matches.length} new match${matches.length !== 1 ? 'es' : ''}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px;">
+            ${rows}
+            <p style="margin:0;font-size:12px;color:#9ca3af;">
+              You&rsquo;re receiving this because you have active keyword monitors.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
 function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet }: MatchAlertParams): string {
   return `<!DOCTYPE html>
 <html lang="en">
