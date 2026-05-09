@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+}
+
+enum Platform {
+  REDDIT
+  HN
+}
+
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  passwordHash     String
+  plan             Plan           @default(FREE)
+  stripeCustomerId String?
+  createdAt        DateTime       @default(now())
+  keywords         Keyword[]
+  notifications    Notification[]
+}
+
+model Keyword {
+  id        String   @id @default(uuid())
+  userId    String
+  text      String
+  flags     Json     @default("{}")
+  enabled   Boolean  @default(true)
+  dailyHits Int      @default(0)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  matches   Match[]
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  keywordId String
+  platform  Platform
+  postId    String
+  title     String
+  url       String
+  snippet   String
+  matchedAt DateTime @default(now())
+  keyword   Keyword  @relation(fields: [keywordId], references: [id])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  deliveredAt DateTime @default(now())
+  matchCount  Int
+  user        User     @relation(fields: [userId], references: [id])
+}

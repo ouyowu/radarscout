@@ -1,0 +1,67 @@
+# CLAUDE.md
+
+## 1. Think Before Coding
+- State assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them.
+- If simpler approach exists, say so.
+- If unclear, stop and ask.
+
+## 2. Simplicity First
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No speculative flexibility.
+- If 200 lines could be 50, rewrite it.
+
+## 3. Surgical Changes
+- Don't improve adjacent code.
+- Don't refactor things not broken.
+- Match existing style.
+- Remove only imports/variables YOUR changes made unused.
+
+## 4. Goal-Driven Execution
+- "Fix bug" → write failing test first, then fix, then confirm pass.
+- "Refactor" → tests pass before AND after.
+- Multi-step: state plan with verify steps before starting.
+
+## 5. Project: Reddit Monitor
+
+### Tech stack
+- Frontend: Next.js 14 App Router, TypeScript, Tailwind CSS
+- Database: Supabase (PostgreSQL) + Prisma ORM
+- Queue: BullMQ + Redis
+- Email: Resend
+- Payments: Stripe
+- Crawler: Node.js worker (Reddit OAuth API)
+- Package manager: pnpm (monorepo)
+
+### Structure
+apps/web/         # Next.js frontend
+apps/crawler/     # Reddit polling worker (separate process)
+packages/matcher/ # Aho-Corasick keyword engine
+packages/db/      # Prisma schema + migrations
+packages/mailer/  # Email templates + Resend client
+
+### DATABASE RULES — CRITICAL
+- NEVER run `prisma migrate deploy` automatically.
+- After generating migration SQL, STOP. Show me the SQL. Wait for my explicit "yes" before continuing.
+- Default to dev DB only. Never touch .env.production.
+- Never delete database records, even in tests — use rollback transactions.
+
+### Environment files
+- .env.development → local dev (default)
+- .env.test → docker-compose.test.yml isolated DB
+- .env.production → DO NOT READ OR USE — human confirms all changes
+
+### Crawler rules
+- Respect Reddit API rate limit: max 60 req/min per OAuth token.
+- Crawler has no direct DB write access — submits via internal API only.
+- Never hardcode Reddit credentials.
+
+### Stripe rules
+- Never modify webhook handlers without showing the full diff first.
+- Test with Stripe CLI in dev, never hit production Stripe in dev.
+
+### What NOT to do
+- Don't add AI/semantic features unless explicitly asked.
+- Don't add logging frameworks — use console.log for now.
+- Don't add analytics — not needed for MVP.

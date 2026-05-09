@@ -1,0 +1,18 @@
+{
+  "name": "reddit-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @reddit-monitor/web dev",
+    "build": "pnpm --filter @reddit-monitor/web build",
+    "crawler": "pnpm --filter @reddit-monitor/crawler start",
+    "db:generate": "pnpm --filter @reddit-monitor/db generate",
+    "db:migrate:dev": "pnpm --filter @reddit-monitor/db migrate:dev",
+    "db:studio": "pnpm --filter @reddit-monitor/db studio",
+    "lint": "pnpm -r lint"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}
