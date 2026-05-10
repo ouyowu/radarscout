@@ -11,6 +11,7 @@
     "@anthropic-ai/sdk": "^0.39.0",
     "@reddit-monitor/matcher": "workspace:*",
     "bullmq": "^5",
+    "fast-xml-parser": "^5.7.3",
     "ioredis": "^5"
   },
   "devDependencies": {
