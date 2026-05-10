@@ -5,7 +5,11 @@ vi.mock('@/lib/auth', () => ({
   auth: (handler: Function) => handler,
 }))
 
-import middleware from '../middleware'
+import _middleware from '../middleware'
+
+// Cast away the next-auth NextMiddleware type (which requires a second `event`
+// argument) since our vi.mock('auth') makes it a plain single-arg handler.
+const middleware = _middleware as unknown as (req: NextRequest) => Response | undefined
 
 function makeReq(pathname: string, authValue: unknown = null) {
   const req = new NextRequest(`https://radarscout.io${pathname}`) as NextRequest & { auth: unknown }

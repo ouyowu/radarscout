@@ -3,6 +3,10 @@ import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { db } from '@reddit-monitor/db'
 
+vi.mock('@/lib/rateLimit', () => ({
+  rateLimit: vi.fn().mockResolvedValue(null),
+}))
+
 const mockDb = db as unknown as {
   user: {
     findUnique: ReturnType<typeof vi.fn>
@@ -63,6 +67,23 @@ describe('POST /api/auth/register', () => {
     expect(mockDb.user.findUnique).not.toHaveBeenCalled()
   })
 
+  it('returns 400 when password exceeds 72 characters', async () => {
+    const res = await POST(makeRequest({ email: 'test@example.com', password: 'A'.repeat(73) }))
+    const body = await res.json()
+
+    expect(res.status).toBe(400)
+    expect(body.error).toMatch(/72 characters/i)
+    expect(mockDb.user.findUnique).not.toHaveBeenCalled()
+  })
+
+  it('accepts password exactly 72 characters long', async () => {
+    mockDb.user.findUnique.mockResolvedValue(null)
+    mockDb.user.create.mockResolvedValue({ id: 'u', email: 'test@example.com', plan: 'FREE' })
+
+    const res = await POST(makeRequest({ email: 'test@example.com', password: 'A'.repeat(72) }))
+    expect(res.status).toBe(201)
+  })
+
   it('returns 400 when email is missing', async () => {
     const res = await POST(makeRequest({ password: 'password123' }))
     const body = await res.json()
@@ -77,5 +98,15 @@ describe('POST /api/auth/register', () => {
 
     expect(res.status).toBe(400)
     expect(body.error).toMatch(/8 characters/i)
+  })
+
+  it('returns 500 with JSON body when DB throws', async () => {
+    mockDb.user.findUnique.mockRejectedValue(new Error('DB connection failed'))
+
+    const res = await POST(makeRequest({ email: 'test@example.com', password: 'password123' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(body.error).toBe('Registration failed')
   })
 })
