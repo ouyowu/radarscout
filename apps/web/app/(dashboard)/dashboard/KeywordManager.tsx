@@ -6,6 +6,97 @@ import { PLAN_LIMITS } from '@reddit-monitor/db'
 type Plan = 'FREE' | 'STARTER' | 'PRO' | 'TEAM'
 type Keyword = { id: string; text: string; enabled: boolean; dailyHits: number }
 
+const PACKS = [
+  {
+    name: 'SaaS Founder',
+    desc: 'Catch buyers comparing tools and venting about competitors',
+    keywords: ['alternative to [competitor]', 'looking for [category] tool', 'recommend SaaS', 'frustrated with [tool]'],
+  },
+  {
+    name: 'Marketing Agency',
+    desc: 'Find businesses actively seeking agency services',
+    keywords: ['looking for agency', 'recommend SEO', 'need marketing help'],
+  },
+  {
+    name: 'B2B Sales',
+    desc: 'Intercept companies in active vendor evaluation',
+    keywords: ['vendor recommendation', 'software comparison', 'switching from'],
+  },
+]
+
+function OnboardingModal({
+  limit,
+  onUsePack,
+  onSkip,
+  loading,
+}: {
+  limit: number
+  onUsePack: (keywords: string[]) => void
+  onSkip: () => void
+  loading: boolean
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(10,10,15,0.6)', backdropFilter: 'blur(4px)' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-title"
+    >
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="px-6 pt-6 pb-4 border-b border-gray-100">
+          <h2 id="onboarding-title" className="text-lg font-semibold text-gray-900">
+            Start monitoring in one click
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Pick a keyword pack for your use case. You can edit or add more anytime.
+          </p>
+        </div>
+
+        <div className="p-6 grid gap-4 sm:grid-cols-3">
+          {PACKS.map(pack => (
+            <div
+              key={pack.name}
+              className="flex flex-col rounded-xl border border-gray-200 p-4"
+            >
+              <p className="font-semibold text-sm text-gray-900 mb-1">{pack.name}</p>
+              <p className="text-xs text-gray-500 mb-3 leading-relaxed">{pack.desc}</p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {pack.keywords.map(kw => (
+                  <span
+                    key={kw}
+                    className="px-2 py-0.5 rounded-full text-xs bg-orange-50 text-orange-700 border border-orange-100"
+                  >
+                    {kw}
+                  </span>
+                ))}
+              </div>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => onUsePack(pack.keywords.slice(0, limit))}
+                className="mt-auto w-full rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 transition-colors cursor-pointer"
+              >
+                {loading ? 'Adding…' : 'Use this pack →'}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-6 pb-5 text-center">
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          >
+            I&apos;ll set up my own keywords
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const PLAN_BADGE: Record<Plan, string> = {
   FREE:    'bg-gray-100 text-gray-600',
   STARTER: 'bg-blue-100 text-blue-700',
@@ -24,9 +115,34 @@ export function KeywordManager({
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(initialKeywords.length === 0)
+  const [packLoading, setPackLoading] = useState(false)
 
   const limit = PLAN_LIMITS[plan].keywords
   const atLimit = keywords.length >= limit
+
+  async function handleUsePack(packKeywords: string[]) {
+    setPackLoading(true)
+    const slots = limit - keywords.length
+    const toAdd = packKeywords.slice(0, slots > 0 ? slots : 0)
+    const added: Keyword[] = []
+
+    for (const text of toAdd) {
+      const res = await fetch('/api/keywords', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      })
+      if (res.ok) {
+        const kw = await res.json()
+        added.push({ ...kw, dailyHits: 0 })
+      }
+    }
+
+    setKeywords(prev => [...prev, ...added])
+    setPackLoading(false)
+    setShowModal(false)
+  }
 
   function fillKeyword(kw: string) {
     setInput(kw)
@@ -71,6 +187,14 @@ export function KeywordManager({
 
   return (
     <div>
+      {showModal && (
+        <OnboardingModal
+          limit={limit}
+          onUsePack={handleUsePack}
+          onSkip={() => setShowModal(false)}
+          loading={packLoading}
+        />
+      )}
       {(plan === 'FREE' || plan === 'STARTER') && keywords.length >= 2 && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
           <p className="text-sm text-orange-800">
