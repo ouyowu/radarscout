@@ -9,6 +9,12 @@ function isAuthorized(request: NextRequest): boolean {
   return !!secret && request.headers.get('x-internal-secret') === secret
 }
 
+function makeUnsubscribeUrl(userId: string): string {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+  const token = Buffer.from(userId).toString('base64url')
+  return `${base}/api/unsubscribe?token=${token}`
+}
+
 export async function POST(request: NextRequest) {
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -50,6 +56,7 @@ async function sendEmailIfDue(keywordId: string): Promise<void> {
     include: { user: true },
   })
   if (!keyword?.user?.email) return
+  if (!keyword.user.emailEnabled) return
 
   const userId = keyword.user.id
   const windowStart = new Date(Date.now() - BATCH_WINDOW_MS)
@@ -77,6 +84,7 @@ async function sendEmailIfDue(keywordId: string): Promise<void> {
 
   await sendMatchDigest({
     to: keyword.user.email,
+    unsubscribeUrl: makeUnsubscribeUrl(userId),
     matches: pending.map(m => ({
       keyword: m.keyword.text,
       subreddit: (m.keyword.flags as { subreddit?: string }).subreddit ?? '',

@@ -9,6 +9,7 @@ datasource db {
 
 enum Plan {
   FREE
+  STARTER
   PRO
   TEAM
 }
@@ -19,14 +20,16 @@ enum Platform {
 }
 
 model User {
-  id               String         @id @default(uuid())
-  email            String         @unique
-  passwordHash     String
-  plan             Plan           @default(FREE)
-  stripeCustomerId String?
-  createdAt        DateTime       @default(now())
-  keywords         Keyword[]
-  notifications    Notification[]
+  id                 String         @id @default(uuid())
+  email              String         @unique
+  passwordHash       String
+  plan               Plan           @default(FREE)
+  stripeCustomerId   String?
+  productDescription String?
+  emailEnabled       Boolean        @default(true)
+  createdAt          DateTime       @default(now())
+  keywords           Keyword[]
+  notifications      Notification[]
 }
 
 model Keyword {
@@ -42,15 +45,20 @@ model Keyword {
 }
 
 model Match {
-  id        String   @id @default(uuid())
-  keywordId String
-  platform  Platform
-  postId    String
-  title     String
-  url       String
-  snippet   String
-  matchedAt DateTime @default(now())
-  keyword   Keyword  @relation(fields: [keywordId], references: [id])
+  id             String   @id @default(uuid())
+  keywordId      String
+  platform       Platform
+  postId         String
+  title          String
+  url            String
+  snippet        String
+  matchedAt      DateTime @default(now())
+  intentScore    Int?
+  aiSummary      String?  @db.VarChar(200)
+  aiReplyDraft   String?
+  keyword        Keyword  @relation(fields: [keywordId], references: [id])
+
+  @@unique([keywordId, postId])
 }
 
 model Notification {

@@ -7,6 +7,7 @@ export interface MatchAlertParams {
   postTitle: string
   postUrl: string
   snippet: string
+  unsubscribeUrl: string
 }
 
 export async function sendMatchAlert(params: MatchAlertParams): Promise<void> {
@@ -17,13 +18,17 @@ export async function sendMatchAlert(params: MatchAlertParams): Promise<void> {
   }
 
   const resend = new Resend(apiKey)
-  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@reddit-monitor.dev'
+  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai'
 
   const { error } = await resend.emails.send({
     from,
     to: params.to,
-    subject: `[Reddit Monitor] "${params.keyword}" mentioned in r/${params.subreddit}`,
+    subject: `[LeadPulse] "${params.keyword}" mentioned in r/${params.subreddit}`,
     html: buildHtml(params),
+    headers: {
+      'List-Unsubscribe': `<${params.unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
   })
 
   if (error) {
@@ -33,6 +38,7 @@ export async function sendMatchAlert(params: MatchAlertParams): Promise<void> {
 
 export interface MatchDigestParams {
   to: string
+  unsubscribeUrl: string
   matches: Array<{
     keyword: string
     subreddit: string
@@ -50,18 +56,22 @@ export async function sendMatchDigest(params: MatchDigestParams): Promise<void> 
   }
 
   const resend = new Resend(apiKey)
-  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@reddit-monitor.dev'
+  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai'
   const count = params.matches.length
   const subject =
     count === 1
-      ? `[Reddit Monitor] "${params.matches[0].keyword}" mentioned`
-      : `[Reddit Monitor] ${count} new keyword matches`
+      ? `[LeadPulse] "${params.matches[0].keyword}" mentioned`
+      : `[LeadPulse] ${count} new keyword matches`
 
   const { error } = await resend.emails.send({
     from,
     to: params.to,
     subject,
     html: buildDigestHtml(params),
+    headers: {
+      'List-Unsubscribe': `<${params.unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
   })
 
   if (error) {
@@ -69,7 +79,7 @@ export async function sendMatchDigest(params: MatchDigestParams): Promise<void> 
   }
 }
 
-function buildDigestHtml({ matches }: MatchDigestParams): string {
+function buildDigestHtml({ matches, unsubscribeUrl }: MatchDigestParams): string {
   const rows = matches
     .map(
       m => `
@@ -98,7 +108,7 @@ function buildDigestHtml({ matches }: MatchDigestParams): string {
       <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
         <tr>
           <td style="background:#ea580c;padding:20px 32px;">
-            <span style="color:#fff;font-size:18px;font-weight:600;">Reddit Monitor</span>
+            <span style="color:#fff;font-size:18px;font-weight:600;">LeadPulse</span>
             <span style="color:#fed7aa;font-size:13px;margin-left:8px;">
               ${matches.length} new match${matches.length !== 1 ? 'es' : ''}
             </span>
@@ -107,8 +117,9 @@ function buildDigestHtml({ matches }: MatchDigestParams): string {
         <tr>
           <td style="padding:32px;">
             ${rows}
-            <p style="margin:0;font-size:12px;color:#9ca3af;">
+            <p style="margin:24px 0 0;font-size:12px;color:#9ca3af;">
               You&rsquo;re receiving this because you have active keyword monitors.
+              <a href="${esc(unsubscribeUrl)}" style="color:#9ca3af;">Unsubscribe</a>
             </p>
           </td>
         </tr>
@@ -119,7 +130,7 @@ function buildDigestHtml({ matches }: MatchDigestParams): string {
 </html>`
 }
 
-function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet }: MatchAlertParams): string {
+function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet, unsubscribeUrl }: MatchAlertParams): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
@@ -131,7 +142,7 @@ function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet }: MatchAle
         <!-- Header -->
         <tr>
           <td style="background:#ea580c;padding:20px 32px;">
-            <span style="color:#fff;font-size:18px;font-weight:600;">Reddit Monitor</span>
+            <span style="color:#fff;font-size:18px;font-weight:600;">LeadPulse</span>
           </td>
         </tr>
 
@@ -161,6 +172,7 @@ function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet }: MatchAle
             <p style="margin:0;font-size:12px;color:#9ca3af;">
               You're receiving this because you monitor <em>r/${esc(subreddit)}</em> for
               &ldquo;${esc(keyword)}&rdquo;.
+              <a href="${esc(unsubscribeUrl)}" style="color:#9ca3af;">Unsubscribe</a>
             </p>
           </td>
         </tr>

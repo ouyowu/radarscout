@@ -21,6 +21,10 @@ export interface CrawledItem {
   platform: 'REDDIT'
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export class RedditClient {
   private token = ''
   private tokenExpiry = 0
@@ -69,6 +73,40 @@ export class RedditClient {
     await this.refreshTokenIfNeeded()
   }
 
+  /**
+   * Fetches a URL with exponential backoff on 429 (up to 5 attempts)
+   * and a 10-minute pause on 403. Returns null on 403 (caller should return []).
+   */
+  private async fetchWithRetry(url: URL, init: RequestInit): Promise<Response | null> {
+    const MAX_ATTEMPTS = 5
+
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      const res = await fetch(url, init)
+
+      if (res.ok) return res
+
+      if (res.status === 403) {
+        console.warn(`[reddit] 403 — pausing 10 min before retrying`)
+        await sleep(10 * 60 * 1000)
+        return null
+      }
+
+      if (res.status === 429) {
+        const retryAfterHeader = res.headers.get('Retry-After')
+        const delay = retryAfterHeader
+          ? parseInt(retryAfterHeader, 10) * 1000
+          : Math.min(2 ** attempt * 1000, 64_000)
+        console.warn(`[reddit] 429 — backing off ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`)
+        await sleep(delay)
+        continue
+      }
+
+      throw new Error(`Reddit API error: ${res.status} ${url.toString()}`)
+    }
+
+    throw new Error(`Reddit API: exceeded ${MAX_ATTEMPTS} retries for ${url.toString()}`)
+  }
+
   async getNewPosts(subreddit: string, after?: string): Promise<RedditPost[]> {
     await this.limiter.throttle()
     await this.refreshTokenIfNeeded()
@@ -77,16 +115,14 @@ export class RedditClient {
     url.searchParams.set('limit', '25')
     if (after) url.searchParams.set('after', after)
 
-    const res = await fetch(url, {
+    const res = await this.fetchWithRetry(url, {
       headers: {
         Authorization: `Bearer ${this.token}`,
         'User-Agent': this.userAgent,
       },
     })
 
-    if (!res.ok) {
-      throw new Error(`Reddit API error: ${res.status} for r/${subreddit}`)
-    }
+    if (!res) return []
 
     const data = (await res.json()) as {
       data: { children: Array<{ data: RedditPost }> }
@@ -102,16 +138,14 @@ export class RedditClient {
     url.searchParams.set('limit', '25')
     if (after) url.searchParams.set('after', after)
 
-    const res = await fetch(url, {
+    const res = await this.fetchWithRetry(url, {
       headers: {
         Authorization: `Bearer ${this.token}`,
         'User-Agent': this.userAgent,
       },
     })
 
-    if (!res.ok) {
-      throw new Error(`Reddit API error: ${res.status} fetching /r/all/new`)
-    }
+    if (!res) return []
 
     const data = (await res.json()) as {
       data: {
@@ -138,16 +172,14 @@ export class RedditClient {
     url.searchParams.set('limit', '25')
     if (after) url.searchParams.set('after', after)
 
-    const res = await fetch(url, {
+    const res = await this.fetchWithRetry(url, {
       headers: {
         Authorization: `Bearer ${this.token}`,
         'User-Agent': this.userAgent,
       },
     })
 
-    if (!res.ok) {
-      throw new Error(`Reddit API error: ${res.status} fetching /r/all/comments`)
-    }
+    if (!res) return []
 
     const data = (await res.json()) as {
       data: {

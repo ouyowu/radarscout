@@ -13,16 +13,16 @@ export async function GET(request: NextRequest) {
 
   const keywords = await db.keyword.findMany({
     where: { enabled: true },
-    select: { id: true, text: true, flags: true },
+    select: { id: true, text: true, flags: true, user: { select: { plan: true } } },
   })
 
   // Group enabled keywords by subreddit for the crawler
-  const subredditMap = new Map<string, Array<{ id: string; text: string }>>()
+  const subredditMap = new Map<string, Array<{ id: string; text: string; userPlan: string }>>()
   for (const kw of keywords) {
     const subreddit = (kw.flags as { subreddit?: string }).subreddit
     if (!subreddit) continue
     const group = subredditMap.get(subreddit) ?? []
-    group.push({ id: kw.id, text: kw.text })
+    group.push({ id: kw.id, text: kw.text, userPlan: kw.user.plan })
     subredditMap.set(subreddit, group)
   }
 

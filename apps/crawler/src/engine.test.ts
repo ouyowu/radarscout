@@ -33,7 +33,7 @@ const rustPost = {
 
 describe('pollOnce()', () => {
   it('calls submitMatch when a keyword is found in a post title', async () => {
-    mockFetch.mockResolvedValue({ ok: true })
+    mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ id: 'match-1' }) })
 
     const client = {
       fetchNewPosts: vi.fn().mockResolvedValue([rustPost]),
@@ -65,7 +65,7 @@ describe('pollOnce()', () => {
   })
 
   it('skips posts whose IDs are already in seenIds', async () => {
-    mockFetch.mockResolvedValue({ ok: true })
+    mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ id: 'match-1' }) })
 
     const client = {
       fetchNewPosts: vi.fn().mockResolvedValue([rustPost]),

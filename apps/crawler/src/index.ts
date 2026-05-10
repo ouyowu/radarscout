@@ -13,7 +13,7 @@ const required = [
 
 const missing = required.filter(k => !process.env[k])
 if (missing.length > 0) {
-  console.error('[crawler] missing required env vars:', missing.join(', '))
+  console.error('[leadpulse] missing required env vars:', missing.join(', '))
   process.exit(1)
 }
 
@@ -33,12 +33,12 @@ connection.on('error', err => console.error('[redis]', err.message))
 
 const redditClient = new RedditClient(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT)
 
-console.log('[crawler] starting...')
+console.log('[leadpulse] starting...')
 
 startWorker(redditClient, connection)
   .then(shutdown => {
     const stop = async (signal: string) => {
-      console.log(`[crawler] ${signal} received — shutting down...`)
+      console.log(`[leadpulse] ${signal} received — shutting down...`)
       await shutdown()
       await connection.quit()
       process.exit(0)
@@ -47,6 +47,6 @@ startWorker(redditClient, connection)
     process.on('SIGINT', () => stop('SIGINT'))
   })
   .catch(err => {
-    console.error('[crawler] fatal:', err)
+    console.error('[leadpulse] fatal:', err)
     process.exit(1)
   })

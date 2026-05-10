@@ -1,15 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { PLAN_LIMITS } from '@reddit-monitor/db'
 
-type Plan = 'FREE' | 'PRO' | 'TEAM'
+type Plan = 'FREE' | 'STARTER' | 'PRO' | 'TEAM'
 type Keyword = { id: string; text: string; enabled: boolean; dailyHits: number }
 
-const PLAN_LIMITS: Record<Plan, number> = { FREE: 3, PRO: 30, TEAM: 100 }
 const PLAN_BADGE: Record<Plan, string> = {
-  FREE: 'bg-gray-100 text-gray-600',
-  PRO: 'bg-orange-100 text-orange-700',
-  TEAM: 'bg-purple-100 text-purple-700',
+  FREE:    'bg-gray-100 text-gray-600',
+  STARTER: 'bg-blue-100 text-blue-700',
+  PRO:     'bg-orange-100 text-orange-700',
+  TEAM:    'bg-purple-100 text-purple-700',
 }
 
 export function KeywordManager({
@@ -24,7 +25,7 @@ export function KeywordManager({
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const limit = PLAN_LIMITS[plan]
+  const limit = PLAN_LIMITS[plan].keywords
   const atLimit = keywords.length >= limit
 
   async function handleAdd(e: React.FormEvent) {
@@ -65,11 +66,11 @@ export function KeywordManager({
 
   return (
     <div>
-      {plan === 'FREE' && keywords.length >= 2 && (
+      {(plan === 'FREE' || plan === 'STARTER') && keywords.length >= 2 && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
           <p className="text-sm text-orange-800">
-            <span className="font-semibold">You&apos;re using {keywords.length} of 3 free keywords.</span>{' '}
-            Upgrade to Pro for 30 keywords and batch digest emails.
+            <span className="font-semibold">You&apos;re using {keywords.length} of {PLAN_LIMITS[plan].keywords} keywords.</span>{' '}
+            Upgrade to Pro for 10 keywords, AI scoring, and reply drafts.
           </p>
           <a
             href="/pricing"
@@ -91,7 +92,7 @@ export function KeywordManager({
           <span className={`font-medium ${atLimit ? 'text-red-500' : 'text-gray-900'}`}>
             {keywords.length}
           </span>{' '}
-          / {limit} keywords
+          / {limit === Infinity ? '∞' : limit} keywords
         </span>
       </div>
 

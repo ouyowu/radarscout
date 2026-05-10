@@ -2,11 +2,13 @@ import { Queue, Worker } from 'bullmq'
 import type { Redis } from 'ioredis'
 import { AhoCorasick } from '@reddit-monitor/matcher'
 import { RedditClient } from './reddit.js'
-import { submitMatch } from './submitter.js'
+import { submitMatch, patchMatchScore } from './submitter.js'
+import { scoreMatch } from './scorer.js'
 
 interface KeywordConfig {
   id: string
   text: string
+  userPlan: string
 }
 
 interface MonitorConfig {
@@ -61,9 +63,10 @@ async function pollSubreddit(
   config: MonitorConfig,
   ac: AhoCorasick,
   client: RedditClient,
+  redis: Redis,
 ): Promise<void> {
   const seen = seenIds.get(config.subreddit) ?? new Set<string>()
-  const kwIds = new Set(config.keywords.map(k => k.id))
+  const kwMap = new Map(config.keywords.map(k => [k.id, k]))
 
   let posts
   try {
@@ -81,15 +84,34 @@ async function pollSubreddit(
     const matches = ac.search(text)
 
     for (const m of matches) {
-      if (!kwIds.has(m.id)) continue
-      await submitMatch({
+      const kw = kwMap.get(m.id)
+      if (!kw) continue
+
+      const snippetText = snippet(text, m.start, m.end)
+
+      const dbMatchId = await submitMatch({
         keywordId: m.id,
         platform: 'REDDIT',
         postId: post.id,
         title: post.title,
         url: `https://reddit.com${post.permalink}`,
-        snippet: snippet(text, m.start, m.end),
+        snippet: snippetText,
       })
+
+      if (dbMatchId) {
+        // Fire-and-forget: never awaited, never blocks the poll loop
+        scoreMatch(kw.text, { title: post.title, snippet: snippetText }, {
+          keywordId: m.id,
+          postId: post.id,
+          plan: kw.userPlan,
+          redis,
+        }).then(({ score, summary }) => {
+          if (score === null) return
+          return patchMatchScore(dbMatchId, score, summary)
+        }).catch(() => {
+          // swallowed intentionally — scoring must never disrupt the pipeline
+        })
+      }
     }
   }
 
@@ -108,21 +130,31 @@ export async function startWorker(
 ): Promise<() => Promise<void>> {
   const queue = new Queue('crawler', { connection })
 
-  // Add a single repeatable poll job — BullMQ deduplicates by jobId
-  await queue.add('poll', {}, {
-    jobId: 'poll-singleton',
-    repeat: { every: 30_000 },
-  })
+  // Remove any legacy fixed-interval repeat jobs from previous deployments
+  const repeatableJobs = await queue.getRepeatableJobs()
+  for (const j of repeatableJobs) {
+    if (j.name === 'poll') await queue.removeRepeatableByKey(j.key)
+  }
+
+  // Kick off the first poll immediately
+  await queue.add('poll', {}, { jobId: 'poll-singleton' })
 
   const worker = new Worker(
     'crawler',
     async () => {
-      const configs = await fetchMonitorConfigs()
-      if (configs.length === 0) return
+      try {
+        const configs = await fetchMonitorConfigs()
+        if (configs.length === 0) return
 
-      const ac = buildAutomaton(configs)
-      for (const config of configs) {
-        await pollSubreddit(config, ac, redditClient)
+        const ac = buildAutomaton(configs)
+        for (const config of configs) {
+          await pollSubreddit(config, ac, redditClient, connection)
+        }
+      } finally {
+        await connection.set('lp:crawler:lastpoll', new Date().toISOString())
+        // Self-schedule next poll with jitter (45–75 s) to avoid thundering herd
+        const delay = Math.floor(45_000 + Math.random() * 30_000)
+        await queue.add('poll', {}, { delay })
       }
     },
     { connection },
@@ -131,7 +163,7 @@ export async function startWorker(
   worker.on('completed', job => console.log(`[worker] done ${job.id}`))
   worker.on('failed', (job, err) => console.error(`[worker] failed ${job?.id}:`, err.message))
 
-  console.log('[worker] running — polling every 30 s')
+  console.log('[worker] running — polling every 45–75 s')
 
   return async () => {
     await worker.close()

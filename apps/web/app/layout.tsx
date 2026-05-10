@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Reddit Monitor',
-  description: 'Monitor Reddit for keyword mentions',
+  title: 'LeadPulse.ai',
+  description: 'Turn Reddit conversations into qualified leads',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

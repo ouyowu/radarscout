@@ -1,13 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
-import { db } from '@reddit-monitor/db'
+import { db, PLAN_LIMITS, type PlanKey } from '@reddit-monitor/db'
 import { createCheckoutSession, openCustomerPortal } from './actions'
 
-const FREE_LIMIT = 3
-
 const PLAN_LABEL: Record<string, string> = {
-  FREE: 'Free',
-  PRO: 'Pro',
-  TEAM: 'Team',
+  FREE:    'Free',
+  STARTER: 'Starter',
+  PRO:     'Pro',
+  TEAM:    'Team',
 }
 
 export default async function BillingPage({
@@ -48,7 +47,10 @@ export default async function BillingPage({
           </div>
           <span
             className={`mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              plan === 'FREE' ? 'bg-gray-100 text-gray-600' : 'bg-orange-100 text-orange-700'
+              plan === 'FREE'    ? 'bg-gray-100 text-gray-600'   :
+              plan === 'STARTER' ? 'bg-blue-100 text-blue-700'   :
+              plan === 'TEAM'    ? 'bg-purple-100 text-purple-700' :
+                                   'bg-orange-100 text-orange-700'
             }`}
           >
             {plan}
@@ -58,8 +60,10 @@ export default async function BillingPage({
         <div className="text-sm text-gray-500 mb-5">
           <span className="font-medium text-gray-900">{keywordCount}</span> keyword
           {keywordCount !== 1 ? 's' : ''} active
-          {plan === 'FREE' && (
-            <span className="text-gray-400"> / {FREE_LIMIT} limit</span>
+          {(plan === 'FREE' || plan === 'STARTER') && (
+            <span className="text-gray-400">
+              {' '}/ {PLAN_LIMITS[plan as PlanKey]?.keywords ?? 3} limit
+            </span>
           )}
         </div>
 
@@ -85,19 +89,19 @@ export default async function BillingPage({
       </div>
 
       {/* Pro upsell */}
-      {plan === 'FREE' && (
+      {(plan === 'FREE' || plan === 'STARTER') && (
         <div className="bg-orange-50 border border-orange-100 rounded-xl p-5">
           <div className="flex items-baseline justify-between mb-3">
             <h3 className="font-semibold text-gray-900">Pro</h3>
             <span className="text-lg font-bold text-gray-900">
-              $9<span className="text-sm font-normal text-gray-500">/mo</span>
+              $29<span className="text-sm font-normal text-gray-500">/mo</span>
             </span>
           </div>
           <ul className="space-y-1.5 text-sm text-gray-600">
-            <li>✓ Unlimited keywords &amp; subreddits</li>
-            <li>✓ Email alerts for every match</li>
-            <li>✓ Full match history</li>
-            <li>✓ Priority support</li>
+            <li>✓ 10 keywords</li>
+            <li>✓ Unlimited hits per day</li>
+            <li>✓ AI intent scoring</li>
+            <li>✓ AI reply drafts</li>
           </ul>
         </div>
       )}

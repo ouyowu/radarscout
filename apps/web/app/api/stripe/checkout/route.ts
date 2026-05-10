@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { stripe } from '@/lib/stripe'
+import { PLAN_LIMITS, type PlanKey } from '@reddit-monitor/db'
 
 export async function POST(request: NextRequest) {
   const session = await auth()
@@ -8,14 +9,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await request.json()
-  const plan = body?.plan as string | undefined
+  const body = await request.json() as { plan?: string; billing?: string }
+  const plan = body.plan as PlanKey | undefined
+  const billing = body.billing === 'annual' ? 'annual' : 'monthly'
 
-  if (plan !== 'PRO' && plan !== 'TEAM') {
+  if (!plan || !(plan in PLAN_LIMITS) || plan === 'FREE') {
     return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
   }
 
-  const priceId = plan === 'PRO' ? process.env.STRIPE_PRO_PRICE_ID : process.env.STRIPE_TEAM_PRICE_ID
+  const monthlyPriceIds: Partial<Record<PlanKey, string | undefined>> = {
+    STARTER: process.env.STRIPE_STARTER_PRICE_ID,
+    PRO:     process.env.STRIPE_PRO_PRICE_ID,
+    TEAM:    process.env.STRIPE_TEAM_PRICE_ID,
+  }
+  const annualPriceIds: Partial<Record<PlanKey, string | undefined>> = {
+    STARTER: process.env.STRIPE_STARTER_ANNUAL_PRICE_ID,
+    PRO:     process.env.STRIPE_PRO_ANNUAL_PRICE_ID,
+    TEAM:    process.env.STRIPE_TEAM_ANNUAL_PRICE_ID,
+  }
+
+  const priceMap = billing === 'annual' ? annualPriceIds : monthlyPriceIds
+  const priceId = priceMap[plan] ?? monthlyPriceIds[plan]
+
   if (!priceId) {
     return NextResponse.json({ error: `Price ID for ${plan} not configured` }, { status: 400 })
   }

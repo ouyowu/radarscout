@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { Resend } from 'resend'
 import { stripe } from '@/lib/stripe'
-import { db } from '@reddit-monitor/db'
+import { redis } from '@/lib/redis'
+import { db, PLAN_LIMITS, type PlanKey } from '@reddit-monitor/db'
 
 // Raw body required for Stripe signature verification — do not parse as JSON
 export const dynamic = 'force-dynamic'
@@ -23,16 +24,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
+  // Idempotency: skip events already processed (Stripe retries on 5xx)
+  const idempotencyKey = `lp:stripe:event:${event.id}`
+  const alreadyProcessed = await redis.set(idempotencyKey, '1', 'EX', 86400, 'NX')
+  if (alreadyProcessed === null) {
+    return NextResponse.json({ received: true })
+  }
+
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
       if (session.mode !== 'subscription') break
 
       const userId = session.metadata?.userId
-      const plan = session.metadata?.plan as 'PRO' | 'TEAM' | undefined
+      const plan = session.metadata?.plan as PlanKey | undefined
       const customerId = session.customer as string | null
 
-      if (userId && plan && customerId) {
+      if (userId && plan && plan in PLAN_LIMITS && customerId) {
         await db.user.update({
           where: { id: userId },
           data: { plan, stripeCustomerId: customerId },
@@ -46,10 +54,35 @@ export async function POST(request: NextRequest) {
       const subscription = event.data.object as Stripe.Subscription
       const customerId = subscription.customer as string
 
-      await db.user.updateMany({
+      const user = await db.user.findFirst({
         where: { stripeCustomerId: customerId },
+        select: { id: true, email: true },
+      })
+
+      if (!user) break
+
+      await db.user.update({
+        where: { id: user.id },
         data: { plan: 'FREE' },
       })
+
+      // Disable keywords beyond FREE limit — oldest N are kept active
+      const freeLimit = PLAN_LIMITS.FREE.keywords
+      const keywords = await db.keyword.findMany({
+        where: { userId: user.id, enabled: true },
+        orderBy: { createdAt: 'asc' },
+        select: { id: true },
+      })
+
+      if (keywords.length > freeLimit) {
+        const toDisable = keywords.slice(freeLimit).map(k => k.id)
+        await db.keyword.updateMany({
+          where: { id: { in: toDisable } },
+          data: { enabled: false },
+        })
+        console.log(`[webhook] disabled ${toDisable.length} keywords for ${user.id} after downgrade`)
+      }
+
       console.log(`[webhook] downgraded customer ${customerId} to FREE`)
       break
     }
@@ -66,10 +99,10 @@ export async function POST(request: NextRequest) {
       if (user?.email && process.env.RESEND_API_KEY) {
         const resend = new Resend(process.env.RESEND_API_KEY)
         await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? 'alerts@reddit-monitor.dev',
+          from: process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai',
           to: user.email,
-          subject: '[Reddit Monitor] Payment failed — action required',
-          text: 'Your most recent Reddit Monitor payment failed. Please update your billing details to keep your subscription active.',
+          subject: '[LeadPulse] Payment failed — action required',
+          text: 'Your most recent LeadPulse payment failed. Please update your billing details to keep your subscription active.',
         })
       }
       console.log(`[webhook] payment_failed for customer ${customerId}`)

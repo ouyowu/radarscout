@@ -23,7 +23,7 @@
 - "Refactor" → tests pass before AND after.
 - Multi-step: state plan with verify steps before starting.
 
-## 5. Project: Reddit Monitor
+## 5. Project: LeadPulse
 
 ### Tech stack
 - Frontend: Next.js 14 App Router, TypeScript, Tailwind CSS

@@ -39,7 +39,7 @@ export default async function LandingPage() {
 
           <div className="h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-gray-900 text-sm flex-shrink-0">
-              Reddit Monitor
+              LeadPulse
             </Link>
 
             {/* Desktop nav */}
@@ -113,10 +113,10 @@ export default async function LandingPage() {
           {/* Left: copy */}
           <div className="text-center lg:text-left">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-              Get notified when Reddit mentions you
+              Turn Reddit conversations into qualified leads
             </h1>
             <p className="mt-5 text-lg text-gray-500 leading-relaxed max-w-md mx-auto lg:mx-0">
-              Reddit Monitor scans r/all 24/7 and emails you within 60 seconds when your keywords appear. Track your brand, competitors, or any topic in real time.
+              AI scores every mention for purchase intent — you only see people who are ready to buy
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <Link
@@ -188,7 +188,7 @@ export default async function LandingPage() {
                   <tr className="border-b border-gray-100">
                     <th className="text-left px-5 sm:px-6 py-4 font-medium text-gray-500 w-2/5">Feature</th>
                     <th className="px-5 sm:px-6 py-4 font-medium text-gray-500 w-[30%]">F5Bot</th>
-                    <th className="px-5 sm:px-6 py-4 font-semibold text-orange-600 w-[30%]">Reddit Monitor</th>
+                    <th className="px-5 sm:px-6 py-4 font-semibold text-orange-600 w-[30%]">LeadPulse</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -329,7 +329,7 @@ export default async function LandingPage() {
               },
               {
                 q: 'How is this different from F5Bot?',
-                a: "F5Bot is a great free service, but alerts can be delayed by up to an hour and there's no API, Slack integration, or AI filtering. Reddit Monitor is built for teams and businesses that need real-time signals.",
+                a: "F5Bot is a great free service, but alerts can be delayed by up to an hour and there's no API, Slack integration, or AI filtering. LeadPulse is built for teams and businesses that need real-time signals.",
               },
               {
                 q: 'Can I cancel anytime?',
@@ -382,13 +382,13 @@ export default async function LandingPage() {
       {/* ── FOOTER ─────────────────────────────────────────────────────── */}
       <footer className="bg-white border-t border-gray-100 py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-sm font-semibold text-gray-900">Reddit Monitor</span>
+          <span className="text-sm font-semibold text-gray-900">LeadPulse</span>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Footer">
             <Link href="/pricing" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Sign in</Link>
             <Link href="/auth/register" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Register</Link>
           </nav>
-          <p className="text-xs text-gray-400">© {new Date().getFullYear()} Reddit Monitor</p>
+          <p className="text-xs text-gray-400">© {new Date().getFullYear()} LeadPulse</p>
         </div>
       </footer>
 
