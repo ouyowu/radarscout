@@ -263,6 +263,19 @@ export default function RedditKeywordMonitorPage() {
 
       </main>
 
+      {/* Related pages */}
+      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <p className="text-label font-semibold text-white/30 uppercase tracking-wide mb-4">Related</p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/f5bot-alternative" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>F5Bot alternative →</Link>
+            <Link href="/pricing" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Pricing plans →</Link>
+            <Link href="/reddit-mention-alerts" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Reddit mention alerts →</Link>
+            <Link href="/auth/register" className="text-sm font-medium text-[#FF6B35] hover:text-[#FF4500] transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,69,0,0.25)' }}>Get started free →</Link>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">

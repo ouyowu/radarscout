@@ -1,6 +1,25 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import { PricingCards } from './PricingCards'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  return {
+    title: 'Pricing — RadarScout Reddit Monitoring Plans',
+    description:
+      'Free forever plan with 3 keywords. Pro at $29/month for AI intent scoring and reply drafts. No credit card required to start.',
+    alternates: { canonical: `${base}/pricing` },
+    openGraph: {
+      title: 'RadarScout Pricing — Free Reddit Monitoring to Start',
+      description:
+        'Free plan with 3 keywords forever. Upgrade to Pro for AI intent scoring, reply drafts, and unlimited alerts.',
+      type: 'website',
+      url: `${base}/pricing`,
+      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Pricing' }],
+    },
+  }
+}
 
 export default async function PricingPage() {
   const session = await auth()

@@ -1,6 +1,25 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import { LiveDemoWidget } from '@/components/LiveDemoWidget'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  return {
+    title: 'RadarScout — Reddit Lead Finder for Indie Hackers & Agencies',
+    description:
+      'Monitor Reddit for buying signals. AI scores every mention for purchase intent. Find customers before your competitors do. Free to start, no credit card.',
+    alternates: { canonical: base },
+    openGraph: {
+      title: 'Find customers on Reddit before your competitors do',
+      description:
+        'Monitor Reddit for buying signals. AI scores every mention for purchase intent. Find customers before your competitors. Free to start.',
+      type: 'website',
+      url: base,
+      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout — Reddit Lead Finder' }],
+    },
+  }
+}
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -558,6 +577,54 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── JSON-LD ──────────────────────────────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'RadarScout',
+          description: 'AI-powered Reddit keyword monitoring and lead generation tool',
+          url: 'https://radarscout.io',
+          applicationCategory: 'BusinessApplication',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          operatingSystem: 'Web',
+        }) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'How is RadarScout different from F5Bot?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'F5Bot sends every mention — including memes, rants, and spam. RadarScout uses AI to score each post for purchase intent, so you only see people who are actually ready to buy.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'Is there a free plan?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: "Yes. RadarScout's free plan includes 3 keywords monitored forever, with no credit card required.",
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'How fast are the alerts?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'RadarScout monitors Reddit every 90 seconds. You typically receive alerts within 1-3 minutes of a post going live.',
+              },
+            },
+          ],
+        }) }}
+      />
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
