@@ -4,7 +4,7 @@ import { DemoApp } from './DemoApp'
 export const metadata: Metadata = {
   title: 'Live Demo — See RadarScout in action',
   description: 'Explore the RadarScout dashboard with realistic data. No signup required.',
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
 }
 
 export default function DemoPage() {
