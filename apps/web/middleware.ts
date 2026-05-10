@@ -1,19 +1,20 @@
 import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 
+const PROTECTED = ['/monitors', '/billing', '/dashboard']
+
 export default auth((req) => {
   const { pathname } = req.nextUrl
-  const isAuthed = !!req.auth
+  const isAuthed = !!req.auth?.user
 
-  const isAuthRoute = pathname.startsWith('/auth')
-  const isPublicApi =
-    pathname.startsWith('/api/internal') || pathname === '/api/stripe/webhook'
+  const isAuthPage = pathname === '/auth/login' || pathname === '/auth/register'
+  const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/'))
 
-  if (!isAuthed && !isAuthRoute && !isPublicApi) {
+  if (!isAuthed && isProtected) {
     return NextResponse.redirect(new URL('/auth/login', req.url))
   }
 
-  if (isAuthed && (pathname === '/auth/login' || pathname === '/auth/register')) {
+  if (isAuthed && isAuthPage) {
     return NextResponse.redirect(new URL('/monitors', req.url))
   }
 })
