@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { redis } from '@/lib/redis'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const ts = new Date().toISOString()
   let dbStatus = 'ok'
