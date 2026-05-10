@@ -110,6 +110,7 @@ export function LiveDemoWidget() {
   const [matchCount, setMatchCount] = useState(847)
 
   const activeCardRef = useRef<HTMLDivElement>(null)
+  const feedRef       = useRef<HTMLDivElement>(null)
 
   const filteredPosts = useMemo(
     () => filter === 'all' ? POSTS : POSTS.filter(p => p.platform === filter),
@@ -137,9 +138,20 @@ export function LiveDemoWidget() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePost?.id])
 
-  /* Keep active post card in view */
+  /* Keep active post card in view — scroll only the feed container, never the page */
   useEffect(() => {
-    activeCardRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    const feed = feedRef.current
+    const card = activeCardRef.current
+    if (!feed || !card) return
+    const cardTop    = card.offsetTop
+    const cardBottom = cardTop + card.offsetHeight
+    const feedTop    = feed.scrollTop
+    const feedBottom = feedTop + feed.clientHeight
+    if (cardTop < feedTop) {
+      feed.scrollTop = cardTop
+    } else if (cardBottom > feedBottom) {
+      feed.scrollTop = cardBottom - feed.clientHeight
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePost?.id])
 
@@ -209,6 +221,7 @@ export function LiveDemoWidget() {
 
           {/* Left: scrolling post feed */}
           <div
+            ref={feedRef}
             className="flex-1 overflow-y-auto"
             style={{
               maxHeight: '272px',
