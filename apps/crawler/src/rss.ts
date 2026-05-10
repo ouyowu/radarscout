@@ -14,9 +14,22 @@ export interface RssItem {
 const CACHE_TTL = 180
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' })
 
+export const TARGET_SUBREDDITS = [
+  'SaaS',
+  'IndieHackers',
+  'Entrepreneur',
+  'SideProject',
+  'startups',
+  'marketing',
+]
+
 function cacheKey(keyword: string, subreddit?: string): string {
   const input = subreddit ? `${keyword}:${subreddit}` : keyword
   return `rs:rss:${createHash('sha1').update(input).digest('hex').slice(0, 16)}`
+}
+
+function subredditCacheKey(subreddit: string): string {
+  return `rs:rss:sub:${subreddit.toLowerCase()}`
 }
 
 function parseAtomFeed(xml: string): RssItem[] {
@@ -61,6 +74,26 @@ async function fetchFeed(feedUrl: string): Promise<RssItem[]> {
   return parseAtomFeed(await res.text())
 }
 
+// Fetches and caches a single subreddit's /new/.rss feed independently of any
+// keyword, so N keywords share one fetch per cache window instead of N fetches.
+export async function fetchSubredditFeed(subreddit: string, redis: Redis): Promise<RssItem[]> {
+  const key = subredditCacheKey(subreddit)
+  const cached = await redis.get(key)
+  if (cached) {
+    try {
+      return JSON.parse(cached) as RssItem[]
+    } catch {
+      // corrupt entry — fall through to fetch
+    }
+  }
+
+  const items = await fetchFeed(`https://www.reddit.com/r/${subreddit}/new/.rss`)
+  if (items.length > 0) {
+    await redis.set(key, JSON.stringify(items), 'EX', CACHE_TTL)
+  }
+  return items
+}
+
 export async function fetchRedditRSS(
   keyword: string,
   redis: Redis,
@@ -77,15 +110,20 @@ export async function fetchRedditRSS(
   }
 
   const encoded = encodeURIComponent(keyword)
-  const feeds: Array<[label: string, promise: Promise<RssItem[]>]> = [
+  const keywordFeeds: Array<[label: string, promise: Promise<RssItem[]>]> = [
     ['search', fetchFeed(`https://www.reddit.com/search.rss?q=${encoded}&sort=new&limit=25`)],
     ['all/new', fetchFeed('https://www.reddit.com/r/all/new/.rss')],
   ]
   if (subreddit) {
-    feeds.push([`r/${subreddit}`, fetchFeed(`https://www.reddit.com/r/${subreddit}/new/.rss`)])
+    keywordFeeds.push([`r/${subreddit}`, fetchFeed(`https://www.reddit.com/r/${subreddit}/new/.rss`)])
   }
 
-  const results = await Promise.allSettled(feeds.map(([, p]) => p))
+  const targetFeeds: Array<[label: string, promise: Promise<RssItem[]>]> = TARGET_SUBREDDITS.map(
+    sub => [`r/${sub}`, fetchSubredditFeed(sub, redis)],
+  )
+
+  const allFeeds = [...keywordFeeds, ...targetFeeds]
+  const results = await Promise.allSettled(allFeeds.map(([, p]) => p))
 
   const allItems: RssItem[] = []
   for (let i = 0; i < results.length; i++) {
@@ -93,7 +131,7 @@ export async function fetchRedditRSS(
     if (result.status === 'fulfilled') {
       allItems.push(...result.value)
     } else {
-      console.warn(`[rss] ${feeds[i][0]} feed failed:`, (result.reason as Error).message)
+      console.warn(`[rss] ${allFeeds[i][0]} feed failed:`, (result.reason as Error).message)
     }
   }
 
