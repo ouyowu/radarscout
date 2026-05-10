@@ -36,10 +36,10 @@ async function handleUnsubscribe(request: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Unsubscribed — LeadPulse</title></head>
+<head><meta charset="UTF-8"><title>Unsubscribed — RadarScout</title></head>
 <body style="font-family:sans-serif;max-width:480px;margin:80px auto;text-align:center;color:#374151;">
   <h1 style="font-size:24px;margin-bottom:12px;">You've been unsubscribed</h1>
-  <p style="color:#6b7280;">You'll no longer receive keyword match emails from LeadPulse.</p>
+  <p style="color:#6b7280;">You'll no longer receive keyword match emails from RadarScout.</p>
   <p style="margin-top:24px;">
     <a href="/" style="color:#ea580c;font-weight:600;">Go to dashboard</a>
   </p>

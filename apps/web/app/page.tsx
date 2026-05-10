@@ -38,7 +38,7 @@ function IntentBadge({ score, subreddit }: { score: number; subreddit: string })
 const comparisonTools = [
   { name: 'F5Bot',     aiScoring: false,            replyAssistant: false,          leadGen: false,          highlight: false },
   { name: 'Syften',   aiScoring: false,            replyAssistant: false,          leadGen: 'Basic',        highlight: false },
-  { name: 'LeadPulse',aiScoring: 'AI intent 1–10', replyAssistant: 'Reply drafts', leadGen: 'Built for it', highlight: true  },
+  { name: 'RadarScout',aiScoring: 'AI intent 1–10', replyAssistant: 'Reply drafts', leadGen: 'Built for it', highlight: true  },
 ]
 
 /* Reusable inline-style tokens */
@@ -62,7 +62,7 @@ export default async function LandingPage() {
 
           <div className="h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-[0.9375rem] text-white/90 flex-shrink-0 hover:text-white transition-colors">
-              LeadPulse
+              RadarScout
             </Link>
 
             <div className="hidden lg:flex items-center gap-6">
@@ -152,7 +152,7 @@ export default async function LandingPage() {
                 Find <span className="text-[#FF4500]">customers</span> already asking for tools like yours
               </h1>
               <p className="mt-5 text-body-lg text-white/55 max-w-md mx-auto lg:mx-0">
-                LeadPulse monitors Reddit 24/7 and uses AI to surface high-intent posts — people actively looking for what you sell. Reply before your competitors do.
+                RadarScout monitors Reddit 24/7 and uses AI to surface high-intent posts — people actively looking for what you sell. Reply before your competitors do.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Link
@@ -162,11 +162,11 @@ export default async function LandingPage() {
                   {isLoggedIn ? 'Go to dashboard →' : 'Start finding leads free →'}
                 </Link>
                 <Link
-                  href="#how-it-works"
+                  href="/demo"
                   className="inline-flex items-center justify-center font-semibold text-[0.9375rem] text-white/70 hover:text-white/90 px-6 py-3 rounded-xl transition-colors min-h-[44px]"
                   style={{ border: '1px solid rgba(255,255,255,0.15)' }}
                 >
-                  See how it works
+                  Try live demo →
                 </Link>
               </div>
               <p className="mt-4 text-label text-white/35">
@@ -314,7 +314,7 @@ export default async function LandingPage() {
               {
                 step: '01',
                 title: 'Add keywords',
-                body: 'Your product name, competitor names, category terms like "looking for [X]". LeadPulse watches all of them simultaneously across every subreddit.',
+                body: 'Your product name, competitor names, category terms like "looking for [X]". RadarScout watches all of them simultaneously across every subreddit.',
                 icon: (
                   <svg className="h-6 w-6 text-[#FF4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -374,7 +374,7 @@ export default async function LandingPage() {
       <section className="py-14 sm:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <h2 className="text-h2 font-bold text-white/90">How LeadPulse compares</h2>
+            <h2 className="text-h2 font-bold text-white/90">How RadarScout compares</h2>
             <p className="mt-2 text-body text-white/45">Built for lead gen — not just monitoring.</p>
           </div>
           <div className="overflow-x-auto -mx-4 sm:mx-0">
@@ -495,7 +495,7 @@ export default async function LandingPage() {
             {[
               {
                 q: 'How is this different from F5Bot?',
-                a: "F5Bot sends every mention — including memes, rants, and spam. LeadPulse uses AI to score each post for purchase intent, so you only see people who are actually ready to buy.",
+                a: "F5Bot sends every mention — including memes, rants, and spam. RadarScout uses AI to score each post for purchase intent, so you only see people who are actually ready to buy.",
               },
               {
                 q: 'What keywords should I monitor?',
@@ -561,14 +561,14 @@ export default async function LandingPage() {
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-[0.9375rem] font-semibold text-white/90">LeadPulse</span>
+          <span className="text-[0.9375rem] font-semibold text-white/90">RadarScout</span>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Footer">
             <Link href="/pricing" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/f5bot-alternative" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">F5Bot alternative</Link>
             <Link href="/auth/login" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Sign in</Link>
             <Link href="/auth/register" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Register</Link>
           </nav>
-          <p className="text-label text-white/25">© {new Date().getFullYear()} LeadPulse</p>
+          <p className="text-label text-white/25">© {new Date().getFullYear()} RadarScout</p>
         </div>
       </footer>
 

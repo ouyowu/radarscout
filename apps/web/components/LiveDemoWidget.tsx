@@ -177,7 +177,7 @@ export function LiveDemoWidget() {
               className="h-2 w-2 rounded-full bg-[#FF4500]"
               style={{ boxShadow: '0 0 8px rgba(255,69,0,0.8)' }}
             />
-            <span className="text-label font-semibold text-white/50">LeadPulse</span>
+            <span className="text-label font-semibold text-white/50">RadarScout</span>
           </div>
           <span className="text-label text-white/25">live demo</span>
         </div>

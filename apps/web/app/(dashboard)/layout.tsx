@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="font-semibold text-[0.9375rem] text-gray-900">LeadPulse</span>
+          <span className="font-semibold text-[0.9375rem] text-gray-900">RadarScout</span>
           <a href="/monitors" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
             Monitors
           </a>

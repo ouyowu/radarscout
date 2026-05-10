@@ -16,7 +16,7 @@ export default async function PricingPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            LeadPulse
+            RadarScout
           </Link>
           <div className="flex items-center gap-4">
             {isLoggedIn ? (

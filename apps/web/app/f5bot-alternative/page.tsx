@@ -2,24 +2,24 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'The F5Bot Alternative That Actually Finds You Customers | LeadPulse',
+    title: 'The F5Bot Alternative That Actually Finds You Customers | RadarScout',
     description:
-      'F5Bot tells you when you\'re mentioned. LeadPulse tells you when someone wants to buy. AI intent scoring, real-time alerts, and reply drafts — free to start.',
+      'F5Bot tells you when you\'re mentioned. RadarScout tells you when someone wants to buy. AI intent scoring, real-time alerts, and reply drafts — free to start.',
     alternates: { canonical: `${base}/f5bot-alternative` },
     openGraph: {
       title: 'The F5Bot Alternative That Actually Finds You Customers',
       description:
-        'F5Bot tells you when you\'re mentioned. LeadPulse tells you when someone wants to buy. AI intent scoring + reply drafts.',
+        'F5Bot tells you when you\'re mentioned. RadarScout tells you when someone wants to buy. AI intent scoring + reply drafts.',
       type: 'website',
       url: `${base}/f5bot-alternative`,
-      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'LeadPulse — F5Bot alternative with AI filtering' }],
+      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'RadarScout — F5Bot alternative with AI filtering' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'The F5Bot Alternative That Actually Finds You Customers | LeadPulse',
-      description: 'F5Bot tells you when you\'re mentioned. LeadPulse tells you when someone wants to buy.',
+      title: 'The F5Bot Alternative That Actually Finds You Customers | RadarScout',
+      description: 'F5Bot tells you when you\'re mentioned. RadarScout tells you when someone wants to buy.',
       images: [`${base}/og.png`],
     },
   }
@@ -68,7 +68,7 @@ export default function F5BotAlternativePage() {
         <nav className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="h-14 flex items-center justify-between">
             <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-              LeadPulse
+              RadarScout
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/pricing" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
@@ -103,7 +103,7 @@ export default function F5BotAlternativePage() {
               The F5Bot alternative that actually finds you <span className="text-[#FF4500]">customers</span>
             </h1>
             <p className="mt-5 text-body-lg text-white/55 max-w-2xl mx-auto">
-              F5Bot is a solid free tool — but it sends every match without any filtering. LeadPulse adds AI intent scoring so you only see Reddit mentions from people who are actually ready to buy.
+              F5Bot is a solid free tool — but it sends every match without any filtering. RadarScout adds AI intent scoring so you only see Reddit mentions from people who are actually ready to buy.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -155,7 +155,7 @@ export default function F5BotAlternativePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-label font-semibold text-[#FF6B35] uppercase mb-0.5">LeadPulse</p>
+                  <p className="text-label font-semibold text-[#FF6B35] uppercase mb-0.5">RadarScout</p>
                   <p className="text-sm font-medium text-white/85">Tells you when someone wants to buy</p>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function F5BotAlternativePage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h2 font-bold text-white/90">How LeadPulse is different</h2>
+              <h2 className="text-h2 font-bold text-white/90">How RadarScout is different</h2>
               <p className="mt-2 text-body text-white/45 max-w-2xl mx-auto">
                 Built for founders and marketers who need signal, not noise. Every match is scored and summarized by AI before it reaches you.
               </p>
@@ -234,7 +234,7 @@ export default function F5BotAlternativePage() {
                 },
                 {
                   title: 'AI reply drafts',
-                  body: 'When you spot a high-intent lead, LeadPulse can draft a Reddit reply on your behalf — one that leads with genuine value and naturally mentions your product. Copy it, tweak it, and post. The whole process takes under a minute.',
+                  body: 'When you spot a high-intent lead, RadarScout can draft a Reddit reply on your behalf — one that leads with genuine value and naturally mentions your product. Copy it, tweak it, and post. The whole process takes under a minute.',
                   icon: (
                     <svg className="h-6 w-6 text-[#FF4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -261,7 +261,7 @@ export default function F5BotAlternativePage() {
         <section className="py-14 sm:py-20" style={{ background: 'rgba(255,255,255,0.02)' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-h2 font-bold text-white/90">F5Bot vs LeadPulse — side by side</h2>
+              <h2 className="text-h2 font-bold text-white/90">F5Bot vs RadarScout — side by side</h2>
             </div>
             <div className="overflow-x-auto -mx-4 sm:mx-0">
               <div className="min-w-[480px] px-4 sm:px-0">
@@ -271,7 +271,7 @@ export default function F5BotAlternativePage() {
                       <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                         <th className="text-left px-5 sm:px-6 py-4 font-medium text-white/40 w-2/5">Feature</th>
                         <th className="px-5 sm:px-6 py-4 font-medium text-white/40 text-center">F5Bot</th>
-                        <th className="px-5 sm:px-6 py-4 font-semibold text-[#FF6B35] text-center">LeadPulse</th>
+                        <th className="px-5 sm:px-6 py-4 font-semibold text-[#FF6B35] text-center">RadarScout</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -314,14 +314,14 @@ export default function F5BotAlternativePage() {
               {[
                 {
                   q: 'Can I import my existing F5Bot keywords?',
-                  a: "You can add all your keywords manually in a few minutes — just type them into the LeadPulse dashboard one by one. There's no bulk import tool yet, but most users have fewer than 20 keywords and set them up in under two minutes.",
+                  a: "You can add all your keywords manually in a few minutes — just type them into the RadarScout dashboard one by one. There's no bulk import tool yet, but most users have fewer than 20 keywords and set them up in under two minutes.",
                 },
                 {
                   q: 'Is there a free tier like F5Bot?',
-                  a: 'Yes. LeadPulse has a free plan that lets you monitor 3 keywords forever with no credit card required. The free plan includes real-time alerts. AI intent scoring and reply drafts are Pro features.',
+                  a: 'Yes. RadarScout has a free plan that lets you monitor 3 keywords forever with no credit card required. The free plan includes real-time alerts. AI intent scoring and reply drafts are Pro features.',
                 },
                 {
-                  q: 'Does LeadPulse monitor Hacker News too?',
+                  q: 'Does RadarScout monitor Hacker News too?',
                   a: 'Reddit only for now — we cover r/all (all subreddits). Hacker News support is on the roadmap. For most use cases, Reddit has significantly more relevant conversations than HN.',
                 },
                 {
@@ -374,14 +374,14 @@ export default function F5BotAlternativePage() {
       {/* ── FOOTER ── */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-[0.9375rem] font-semibold text-white/90">LeadPulse</span>
+          <span className="text-[0.9375rem] font-semibold text-white/90">RadarScout</span>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Footer navigation">
             <Link href="/pricing"          className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/f5bot-alternative" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">F5Bot Alternative</Link>
             <Link href="/auth/login"       className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Sign in</Link>
             <Link href="/auth/register"    className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Register</Link>
           </nav>
-          <p className="text-label text-white/25">© {new Date().getFullYear()} LeadPulse</p>
+          <p className="text-label text-white/25">© {new Date().getFullYear()} RadarScout</p>
         </div>
       </footer>
 

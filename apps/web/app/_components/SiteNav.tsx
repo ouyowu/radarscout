@@ -12,7 +12,7 @@ export async function SiteNav() {
 
         <div className="h-14 flex items-center justify-between">
           <Link href="/" className="font-semibold text-gray-900 text-[0.9375rem] flex-shrink-0">
-            LeadPulse
+            RadarScout
           </Link>
 
           <div className="hidden lg:flex items-center gap-6">

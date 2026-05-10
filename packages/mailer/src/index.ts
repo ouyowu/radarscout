@@ -18,12 +18,12 @@ export async function sendMatchAlert(params: MatchAlertParams): Promise<void> {
   }
 
   const resend = new Resend(apiKey)
-  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai'
+  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@radarscout.io'
 
   const { error } = await resend.emails.send({
     from,
     to: params.to,
-    subject: `[LeadPulse] "${params.keyword}" mentioned in r/${params.subreddit}`,
+    subject: `[RadarScout] "${params.keyword}" mentioned in r/${params.subreddit}`,
     html: buildHtml(params),
     headers: {
       'List-Unsubscribe': `<${params.unsubscribeUrl}>`,
@@ -56,12 +56,12 @@ export async function sendMatchDigest(params: MatchDigestParams): Promise<void> 
   }
 
   const resend = new Resend(apiKey)
-  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai'
+  const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@radarscout.io'
   const count = params.matches.length
   const subject =
     count === 1
-      ? `[LeadPulse] "${params.matches[0].keyword}" mentioned`
-      : `[LeadPulse] ${count} new keyword matches`
+      ? `[RadarScout] "${params.matches[0].keyword}" mentioned`
+      : `[RadarScout] ${count} new keyword matches`
 
   const { error } = await resend.emails.send({
     from,
@@ -108,7 +108,7 @@ function buildDigestHtml({ matches, unsubscribeUrl }: MatchDigestParams): string
       <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
         <tr>
           <td style="background:#ea580c;padding:20px 32px;">
-            <span style="color:#fff;font-size:18px;font-weight:600;">LeadPulse</span>
+            <span style="color:#fff;font-size:18px;font-weight:600;">RadarScout</span>
             <span style="color:#fed7aa;font-size:13px;margin-left:8px;">
               ${matches.length} new match${matches.length !== 1 ? 'es' : ''}
             </span>
@@ -142,7 +142,7 @@ function buildHtml({ keyword, subreddit, postTitle, postUrl, snippet, unsubscrib
         <!-- Header -->
         <tr>
           <td style="background:#ea580c;padding:20px 32px;">
-            <span style="color:#fff;font-size:18px;font-weight:600;">LeadPulse</span>
+            <span style="color:#fff;font-size:18px;font-weight:600;">RadarScout</span>
           </td>
         </tr>
 

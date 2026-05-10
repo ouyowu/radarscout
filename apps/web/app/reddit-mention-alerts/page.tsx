@@ -2,23 +2,23 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'Real-Time Reddit Mention Alerts for Your Brand | LeadPulse',
+    title: 'Real-Time Reddit Mention Alerts for Your Brand | RadarScout',
     description:
       'Get instant Reddit mention alerts when anyone discusses your brand, product, or competitors. Respond fast, protect your reputation, and find your advocates automatically.',
     alternates: { canonical: `${base}/reddit-mention-alerts` },
     openGraph: {
-      title: 'Real-Time Reddit Mention Alerts for Your Brand | LeadPulse',
+      title: 'Real-Time Reddit Mention Alerts for Your Brand | RadarScout',
       description:
         'Get instant Reddit mention alerts when anyone discusses your brand, product, or competitors. Alerts in under 60 seconds.',
       type: 'website',
       url: `${base}/reddit-mention-alerts`,
-      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'LeadPulse Reddit Mention Alerts' }],
+      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'RadarScout Reddit Mention Alerts' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Real-Time Reddit Mention Alerts for Your Brand | LeadPulse',
+      title: 'Real-Time Reddit Mention Alerts for Your Brand | RadarScout',
       description: 'Get instant Reddit mention alerts for your brand. Respond in under 60 seconds.',
       images: [`${base}/og.png`],
     },
@@ -36,7 +36,7 @@ export default function RedditMentionAlertsPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            LeadPulse
+            RadarScout
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
@@ -67,7 +67,7 @@ export default function RedditMentionAlertsPage() {
               Real-Time Reddit Mention Alerts for Your Brand
             </h1>
             <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
-              Reddit is where real opinions form. LeadPulse monitors every subreddit 24/7 and alerts you within 60 seconds when someone mentions your brand — so you can respond before the thread goes cold or negative sentiment spreads.
+              Reddit is where real opinions form. RadarScout monitors every subreddit 24/7 and alerts you within 60 seconds when someone mentions your brand — so you can respond before the thread goes cold or negative sentiment spreads.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -102,7 +102,7 @@ export default function RedditMentionAlertsPage() {
                   But Reddit also moves fast. A negative thread about your brand can reach the front page of r/all before your marketing team even wakes up. Without real-time mention alerts, you find out about brand crises days later — after the damage is done and the conversation has already shaped public perception.
                 </p>
                 <p className="text-white/50 leading-relaxed">
-                  The brands that win on Reddit are the ones that show up in conversations quickly, authentically, and with something genuinely useful to say. LeadPulse gives you the speed and context to do exactly that.
+                  The brands that win on Reddit are the ones that show up in conversations quickly, authentically, and with something genuinely useful to say. RadarScout gives you the speed and context to do exactly that.
                 </p>
               </div>
               <div className="space-y-4">
@@ -135,7 +135,7 @@ export default function RedditMentionAlertsPage() {
               {[
                 {
                   title: 'Protect your reputation',
-                  body: 'When a user has a bad experience and vents on Reddit, speed matters. A prompt, honest response from the brand — especially one that offers to help — regularly turns a complaint thread into a positive story. Letting it sit for 12 hours does the opposite. LeadPulse gets you there in under a minute.',
+                  body: 'When a user has a bad experience and vents on Reddit, speed matters. A prompt, honest response from the brand — especially one that offers to help — regularly turns a complaint thread into a positive story. Letting it sit for 12 hours does the opposite. RadarScout gets you there in under a minute.',
                   icon: (
                     <svg className="h-6 w-6 text-[#FF4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -241,7 +241,7 @@ export default function RedditMentionAlertsPage() {
       {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 LeadPulse. All rights reserved.</p>
+          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
             <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>

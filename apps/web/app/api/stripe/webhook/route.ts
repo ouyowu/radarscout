@@ -99,10 +99,10 @@ export async function POST(request: NextRequest) {
       if (user?.email && process.env.RESEND_API_KEY) {
         const resend = new Resend(process.env.RESEND_API_KEY)
         await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? 'alerts@leadpulse.ai',
+          from: process.env.RESEND_FROM_EMAIL ?? 'alerts@radarscout.io',
           to: user.email,
-          subject: '[LeadPulse] Payment failed — action required',
-          text: 'Your most recent LeadPulse payment failed. Please update your billing details to keep your subscription active.',
+          subject: '[RadarScout] Payment failed — action required',
+          text: 'Your most recent RadarScout payment failed. Please update your billing details to keep your subscription active.',
         })
       }
       console.log(`[webhook] payment_failed for customer ${customerId}`)

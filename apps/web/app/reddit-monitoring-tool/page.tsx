@@ -2,23 +2,23 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'Best Reddit Monitoring Tool for Business in 2025 | LeadPulse',
+    title: 'Best Reddit Monitoring Tool for Business in 2025 | RadarScout',
     description:
-      'Compare the best Reddit monitoring tools. LeadPulse beats F5Bot, manual searching, and IFTTT with real-time alerts, AI intent scoring, and reply drafts — all in one place.',
+      'Compare the best Reddit monitoring tools. RadarScout beats F5Bot, manual searching, and IFTTT with real-time alerts, AI intent scoring, and reply drafts — all in one place.',
     alternates: { canonical: `${base}/reddit-monitoring-tool` },
     openGraph: {
-      title: 'Best Reddit Monitoring Tool for Business in 2025 | LeadPulse',
+      title: 'Best Reddit Monitoring Tool for Business in 2025 | RadarScout',
       description:
-        'Real-time Reddit monitoring with AI intent scoring. See how LeadPulse compares to F5Bot, IFTTT, and manual searching.',
+        'Real-time Reddit monitoring with AI intent scoring. See how RadarScout compares to F5Bot, IFTTT, and manual searching.',
       type: 'website',
       url: `${base}/reddit-monitoring-tool`,
-      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'LeadPulse Reddit Monitoring Tool Comparison' }],
+      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'RadarScout Reddit Monitoring Tool Comparison' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Best Reddit Monitoring Tool for Business in 2025 | LeadPulse',
+      title: 'Best Reddit Monitoring Tool for Business in 2025 | RadarScout',
       description: 'Real-time Reddit monitoring + AI intent scoring. Compare vs F5Bot and manual searching.',
       images: [`${base}/og.png`],
     },
@@ -54,7 +54,7 @@ const tools = [
     verdict: 'Great free option. But you get every match with zero context — noise overload at scale.',
   },
   {
-    name: 'LeadPulse',
+    name: 'RadarScout',
     cost: 'Free–$79/mo',
     delay: '< 60 seconds',
     aiScoring: true,
@@ -88,7 +88,7 @@ export default function RedditMonitoringToolPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            LeadPulse
+            RadarScout
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
@@ -119,7 +119,7 @@ export default function RedditMonitoringToolPage() {
               The Reddit Monitoring Tool That Turns Mentions into Revenue
             </h1>
             <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
-              Most Reddit monitoring solutions give you raw data and leave you to figure out what to do with it. LeadPulse goes further — AI scores every mention for purchase intent, so you know which conversations are worth your time before you even open them.
+              Most Reddit monitoring solutions give you raw data and leave you to figure out what to do with it. RadarScout goes further — AI scores every mention for purchase intent, so you know which conversations are worth your time before you even open them.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -159,7 +159,7 @@ export default function RedditMonitoringToolPage() {
               </div>
               <div className="space-y-4">
                 {[
-                  { problem: 'Manual search misses 90%+ of mentions', solution: 'LeadPulse watches 24/7 — nothing is missed' },
+                  { problem: 'Manual search misses 90%+ of mentions', solution: 'RadarScout watches 24/7 — nothing is missed' },
                   { problem: 'Reddit\'s own search returns stale results', solution: 'Real-time crawler catches posts within 60 seconds' },
                   { problem: 'No way to prioritise which threads matter', solution: 'AI intent score 1–10 on every match' },
                   { problem: 'Responding takes time to draft each reply', solution: 'One-click AI reply drafts built in' },
@@ -270,7 +270,7 @@ export default function RedditMonitoringToolPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">What makes LeadPulse different</h2>
+              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">What makes RadarScout different</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
               {[
@@ -330,7 +330,7 @@ export default function RedditMonitoringToolPage() {
       {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 LeadPulse. All rights reserved.</p>
+          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
             <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>

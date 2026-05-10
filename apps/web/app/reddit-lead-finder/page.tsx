@@ -2,23 +2,23 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'Reddit Lead Finder — Automatically Find Buyers on Reddit | LeadPulse',
+    title: 'Reddit Lead Finder — Automatically Find Buyers on Reddit | RadarScout',
     description:
-      'Find high-intent leads on Reddit automatically. LeadPulse monitors every subreddit for buying signals, scores purchase intent with AI, and helps you respond before competitors do.',
+      'Find high-intent leads on Reddit automatically. RadarScout monitors every subreddit for buying signals, scores purchase intent with AI, and helps you respond before competitors do.',
     alternates: { canonical: `${base}/reddit-lead-finder` },
     openGraph: {
-      title: 'Reddit Lead Finder — Automatically Find Buyers on Reddit | LeadPulse',
+      title: 'Reddit Lead Finder — Automatically Find Buyers on Reddit | RadarScout',
       description:
         'Find high-intent leads on Reddit automatically. AI intent scoring + real-time alerts so you reach buyers first.',
       type: 'website',
       url: `${base}/reddit-lead-finder`,
-      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'LeadPulse Reddit Lead Finder' }],
+      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'RadarScout Reddit Lead Finder' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Reddit Lead Finder — Find Buyers on Reddit Automatically | LeadPulse',
+      title: 'Reddit Lead Finder — Find Buyers on Reddit Automatically | RadarScout',
       description: 'Find high-intent leads on Reddit automatically. AI scoring + alerts in < 60s.',
       images: [`${base}/og.png`],
     },
@@ -36,7 +36,7 @@ export default function RedditLeadFinderPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            LeadPulse
+            RadarScout
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
@@ -67,7 +67,7 @@ export default function RedditLeadFinderPage() {
               Find High-Intent Leads on Reddit Automatically
             </h1>
             <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
-              Every day, thousands of people ask Reddit what tool to use, which product to buy, or how to solve a problem your business solves. LeadPulse finds those threads in real time and scores them by purchase intent so you can reach the right people before your competitors do.
+              Every day, thousands of people ask Reddit what tool to use, which product to buy, or how to solve a problem your business solves. RadarScout finds those threads in real time and scores them by purchase intent so you can reach the right people before your competitors do.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -102,7 +102,7 @@ export default function RedditLeadFinderPage() {
                   A thread in r/entrepreneur asking &ldquo;what project management tool do you use for a 5-person remote team?&rdquo; isn&rsquo;t just a question — it&rsquo;s a warm lead. The person is actively in the market. A thoughtful, genuinely helpful reply — one that mentions your product naturally — converts at a rate that paid ads can rarely match.
                 </p>
                 <p className="text-white/50 leading-relaxed">
-                  The challenge is finding these threads before they get buried. Reddit moves fast. Manual searching is inconsistent and misses most opportunities. LeadPulse automates the entire discovery layer so you can focus on the conversation.
+                  The challenge is finding these threads before they get buried. Reddit moves fast. Manual searching is inconsistent and misses most opportunities. RadarScout automates the entire discovery layer so you can focus on the conversation.
                 </p>
               </div>
               <div className="space-y-3">
@@ -135,7 +135,7 @@ export default function RedditLeadFinderPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The LeadPulse lead-gen workflow</h2>
+              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The RadarScout lead-gen workflow</h2>
               <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
                 From keyword to closed deal — a repeatable process that works while you sleep.
               </p>
@@ -145,7 +145,7 @@ export default function RedditLeadFinderPage() {
                 {
                   step: '1',
                   title: 'Define your high-intent keyword list',
-                  body: 'Add the phrases your best prospects use when they\'re ready to buy: competitor alternatives, pain-point searches, product category questions. LeadPulse watches all of them simultaneously.',
+                  body: 'Add the phrases your best prospects use when they\'re ready to buy: competitor alternatives, pain-point searches, product category questions. RadarScout watches all of them simultaneously.',
                 },
                 {
                   step: '2',
@@ -155,7 +155,7 @@ export default function RedditLeadFinderPage() {
                 {
                   step: '3',
                   title: 'Draft a reply in seconds',
-                  body: 'Describe your product once. For any high-intent lead, click "Draft reply" and LeadPulse writes a Reddit-native response that leads with genuine value. Edit, copy, and post — the whole process takes under 60 seconds.',
+                  body: 'Describe your product once. For any high-intent lead, click "Draft reply" and RadarScout writes a Reddit-native response that leads with genuine value. Edit, copy, and post — the whole process takes under 60 seconds.',
                 },
                 {
                   step: '4',
@@ -187,7 +187,7 @@ export default function RedditLeadFinderPage() {
             <div className="text-center mb-10">
               <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The math works in your favour</h2>
               <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
-                One customer from Reddit pays for years of LeadPulse. The question is how many you&rsquo;re missing today.
+                One customer from Reddit pays for years of RadarScout. The question is how many you&rsquo;re missing today.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -241,7 +241,7 @@ export default function RedditLeadFinderPage() {
       {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 LeadPulse. All rights reserved.</p>
+          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
             <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>

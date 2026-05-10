@@ -2,23 +2,23 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'Reddit Keyword Monitor for Business — Real-Time Alerts | LeadPulse',
+    title: 'Reddit Keyword Monitor for Business — Real-Time Alerts | RadarScout',
     description:
-      'Monitor Reddit for any keyword in real time. LeadPulse watches r/all 24/7, scores every mention with AI, and sends you only the conversations worth joining.',
+      'Monitor Reddit for any keyword in real time. RadarScout watches r/all 24/7, scores every mention with AI, and sends you only the conversations worth joining.',
     alternates: { canonical: `${base}/reddit-keyword-monitor` },
     openGraph: {
-      title: 'Reddit Keyword Monitor for Business — Real-Time Alerts | LeadPulse',
+      title: 'Reddit Keyword Monitor for Business — Real-Time Alerts | RadarScout',
       description:
         'Monitor Reddit for any keyword in real time. Alerts in under 60 seconds, AI intent scoring, and draft replies — all in one tool.',
       type: 'website',
       url: `${base}/reddit-keyword-monitor`,
-      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'LeadPulse Reddit Keyword Monitor' }],
+      images: [{ url: `${base}/og.png`, width: 1200, height: 630, alt: 'RadarScout Reddit Keyword Monitor' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Reddit Keyword Monitor for Business | LeadPulse',
+      title: 'Reddit Keyword Monitor for Business | RadarScout',
       description: 'Monitor Reddit for any keyword in real time. AI scoring + alerts in < 60s.',
       images: [`${base}/og.png`],
     },
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const features = [
   {
     title: 'Track any keyword across all of Reddit',
-    body: 'Add brand names, product categories, competitor names, pain-point phrases, or anything else. LeadPulse monitors r/all continuously — every new post and comment across every public subreddit.',
+    body: 'Add brand names, product categories, competitor names, pain-point phrases, or anything else. RadarScout monitors r/all continuously — every new post and comment across every public subreddit.',
     icon: (
       <svg className="h-6 w-6 text-[#FF4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -73,7 +73,7 @@ const features = [
   },
   {
     title: 'One-click reply drafts',
-    body: 'Describe your product once. Whenever you see a high-intent lead, click "Draft reply" and LeadPulse generates a Reddit-native response that leads with value and naturally introduces your product — ready to copy and post.',
+    body: 'Describe your product once. Whenever you see a high-intent lead, click "Draft reply" and RadarScout generates a Reddit-native response that leads with value and naturally introduces your product — ready to copy and post.',
     icon: (
       <svg className="h-6 w-6 text-[#FF4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -93,7 +93,7 @@ export default function RedditKeywordMonitorPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            LeadPulse
+            RadarScout
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
@@ -124,7 +124,7 @@ export default function RedditKeywordMonitorPage() {
               Reddit Keyword Monitor Built for Business Growth
             </h1>
             <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
-              LeadPulse watches every subreddit in real time and uses AI to score each mention for purchase intent. Stop sifting through noise — see only the conversations that matter to your business.
+              RadarScout watches every subreddit in real time and uses AI to score each mention for purchase intent. Stop sifting through noise — see only the conversations that matter to your business.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -195,7 +195,7 @@ export default function RedditKeywordMonitorPage() {
                 {
                   step: '03',
                   title: 'Reply at the right moment',
-                  body: 'You get an alert within 60 seconds. Open the match, read the AI summary, and decide whether to reply. On Pro, click "Draft reply" and LeadPulse writes the first version for you.',
+                  body: 'You get an alert within 60 seconds. Open the match, read the AI summary, and decide whether to reply. On Pro, click "Draft reply" and RadarScout writes the first version for you.',
                 },
               ].map(({ step, title, body }) => (
                 <div key={step} className="flex flex-col items-center md:items-start text-center md:text-left">
@@ -266,7 +266,7 @@ export default function RedditKeywordMonitorPage() {
       {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 LeadPulse. All rights reserved.</p>
+          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
             <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>

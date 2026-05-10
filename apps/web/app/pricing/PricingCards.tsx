@@ -16,7 +16,7 @@ function RoiCalculator() {
       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
     >
       <p className="text-sm font-semibold text-white/85 mb-1">
-        If LeadPulse helps you close just 1 extra customer per month&hellip;
+        If RadarScout helps you close just 1 extra customer per month&hellip;
       </p>
       <p className="text-label text-white/35 mb-4">Based on Pro plan at $29/mo</p>
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
@@ -42,7 +42,7 @@ function RoiCalculator() {
         <p className="mt-4 text-sm text-white/65">
           That&rsquo;s{' '}
           <span className="text-xl font-bold text-[#FF4500]">{roi}×</span>
-          {' '}ROI on your LeadPulse subscription.
+          {' '}ROI on your RadarScout subscription.
         </p>
       )}
       {roi === null && value === '' && (
