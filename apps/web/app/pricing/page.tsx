@@ -15,8 +15,9 @@ export default async function PricingPage() {
         style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
-            RadarScout
+          <Link href="/" className="flex items-center" aria-label="RadarScout home">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-dark.svg" alt="RadarScout" height={36} style={{ width: 'auto' }} />
           </Link>
           <div className="flex items-center gap-4">
             {isLoggedIn ? (

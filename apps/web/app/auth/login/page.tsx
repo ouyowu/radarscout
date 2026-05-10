@@ -40,6 +40,8 @@ function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.svg" alt="RadarScout" height={32} style={{ width: 'auto', marginBottom: '24px' }} />
         <h1 className="text-xl font-semibold text-gray-900 mb-6">Sign in</h1>
 
         {message && (

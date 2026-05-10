@@ -61,8 +61,9 @@ export default async function LandingPage() {
           <input type="checkbox" id="nav-open" className="peer sr-only" aria-label="Toggle navigation" />
 
           <div className="h-14 flex items-center justify-between">
-            <Link href="/" className="font-semibold text-[0.9375rem] text-white/90 flex-shrink-0 hover:text-white transition-colors">
-              RadarScout
+            <Link href="/" className="flex-shrink-0 flex items-center" aria-label="RadarScout home">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-dark.svg" alt="RadarScout" height={36} style={{ width: 'auto' }} />
             </Link>
 
             <div className="hidden lg:flex items-center gap-6">
