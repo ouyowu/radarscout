@@ -23,11 +23,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="font-semibold text-gray-900">LeadPulse</span>
-          <a href="/monitors" className="text-sm text-gray-600 hover:text-gray-900">
+          <span className="font-semibold text-[0.9375rem] text-gray-900">LeadPulse</span>
+          <a href="/monitors" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
             Monitors
           </a>
-          <a href="/billing" className="text-sm text-gray-600 hover:text-gray-900">
+          <a href="/billing" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
             Billing
           </a>
         </div>
@@ -38,13 +38,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {isPaid ? (
             <ManageSubButton className="text-sm text-gray-500 hover:text-gray-900 disabled:opacity-60 cursor-pointer" />
           ) : (
-            <Link href="/pricing" className="text-sm font-medium text-orange-600 hover:text-orange-700">
+            <Link href="/pricing" className="text-[0.9375rem] font-medium text-orange-600 hover:text-orange-700">
               Upgrade to Pro →
             </Link>
           )}
-          <span className="text-sm text-gray-500">{session.user.email}</span>
+          <span className="text-[0.9375rem] text-gray-500">{session.user.email}</span>
           <form action={handleSignOut}>
-            <button type="submit" className="text-sm text-gray-500 hover:text-gray-900">
+            <button type="submit" className="text-[0.9375rem] text-gray-500 hover:text-gray-900">
               Sign out
             </button>
           </form>

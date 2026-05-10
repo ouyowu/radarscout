@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { SiteNav } from '../_components/SiteNav'
-import { SiteFooter } from '../_components/SiteFooter'
 
 export async function generateMetadata(): Promise<Metadata> {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://leadpulse.ai'
@@ -29,60 +27,86 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RedditLeadFinderPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <SiteNav />
+    <div className="min-h-screen" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+
+      {/* Nav */}
+      <header
+        className="sticky top-0 z-50 backdrop-blur-xl"
+        style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
+            LeadPulse
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+              Sign in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+            >
+              Get started free
+            </Link>
+          </div>
+        </div>
+      </header>
 
       <main>
+
         {/* Hero */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-14 pb-16 sm:pt-20 sm:pb-24">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="inline-block mb-4 px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-semibold tracking-wide uppercase">
+            <span
+              className="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase"
+              style={{ background: 'rgba(255,69,0,0.12)', color: '#FF6B35' }}
+            >
               Reddit Lead Generation
             </span>
-            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
+            <h1 className="text-h1 sm:text-display font-extrabold text-white/95 leading-tight tracking-tight">
               Find High-Intent Leads on Reddit Automatically
             </h1>
-            <p className="mt-5 text-lg text-gray-500 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
               Every day, thousands of people ask Reddit what tool to use, which product to buy, or how to solve a problem your business solves. LeadPulse finds those threads in real time and scores them by purchase intent so you can reach the right people before your competitors do.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
               >
                 Start finding leads free →
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center border border-gray-300 text-gray-700 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px]"
+                className="inline-flex items-center justify-center border border-white/15 text-white/70 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-white/90 hover:bg-white/[0.08] transition-colors min-h-[44px]"
               >
                 See pricing
               </Link>
             </div>
-            <p className="mt-4 text-xs text-gray-400">3 keywords free · No credit card required</p>
+            <p className="mt-4 text-label text-white/30">3 keywords free · No credit card required</p>
           </div>
         </section>
 
         {/* Reddit as lead source */}
-        <section className="bg-gray-50 py-14 sm:py-20">
+        <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                <h2 className="text-h3 sm:text-h2 font-bold text-white/90 mb-4">
                   Reddit is the most underrated lead source on the internet
                 </h2>
-                <p className="text-gray-500 leading-relaxed mb-4">
+                <p className="text-white/50 leading-relaxed mb-4">
                   Reddit has over 50 million daily active users, and they&rsquo;re uniquely valuable as a lead source because they show up with specific, explicit intent. They&rsquo;re not passively scrolling a feed — they&rsquo;re asking questions, comparing options, and seeking recommendations. The purchase intent is baked into the post.
                 </p>
-                <p className="text-gray-500 leading-relaxed mb-4">
-                  A thread in r/entrepreneur asking "what project management tool do you use for a 5-person remote team?" isn&rsquo;t just a question — it&rsquo;s a warm lead. The person is actively in the market. A thoughtful, genuinely helpful reply — one that mentions your product naturally — converts at a rate that paid ads can rarely match.
+                <p className="text-white/50 leading-relaxed mb-4">
+                  A thread in r/entrepreneur asking &ldquo;what project management tool do you use for a 5-person remote team?&rdquo; isn&rsquo;t just a question — it&rsquo;s a warm lead. The person is actively in the market. A thoughtful, genuinely helpful reply — one that mentions your product naturally — converts at a rate that paid ads can rarely match.
                 </p>
-                <p className="text-gray-500 leading-relaxed">
+                <p className="text-white/50 leading-relaxed">
                   The challenge is finding these threads before they get buried. Reddit moves fast. Manual searching is inconsistent and misses most opportunities. LeadPulse automates the entire discovery layer so you can focus on the conversation.
                 </p>
               </div>
               <div className="space-y-3">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">High-intent Reddit signals</p>
+                <p className="text-label font-bold text-white/30 uppercase tracking-widest mb-4">High-intent Reddit signals</p>
                 {[
                   '"Looking for a tool that does X"',
                   '"Anyone know a good alternative to [competitor]?"',
@@ -91,11 +115,15 @@ export default function RedditLeadFinderPage() {
                   '"Just started [relevant job role], what do you use for X?"',
                   '"Our company needs to solve X — what do you recommend?"',
                 ].map(signal => (
-                  <div key={signal} className="flex items-start gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3">
-                    <svg className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <div
+                    key={signal}
+                    className="flex items-start gap-3 rounded-xl px-4 py-3"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  >
+                    <svg className="h-4 w-4 text-[#FF4500] flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-sm text-gray-700 italic">{signal}</span>
+                    <span className="text-sm text-white/65 italic">{signal}</span>
                   </div>
                 ))}
               </div>
@@ -107,8 +135,8 @@ export default function RedditLeadFinderPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">The LeadPulse lead-gen workflow</h2>
-              <p className="mt-2 text-gray-500 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The LeadPulse lead-gen workflow</h2>
+              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
                 From keyword to closed deal — a repeatable process that works while you sleep.
               </p>
             </div>
@@ -135,13 +163,17 @@ export default function RedditLeadFinderPage() {
                   body: 'Over time, you\'ll see which keywords bring the highest-intent leads. Double down on what works. Disable or refine what doesn\'t. Your lead-gen machine gets smarter every week.',
                 },
               ].map(({ step, title, body }) => (
-                <div key={step} className="flex gap-5 bg-gray-50 rounded-2xl p-6">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-orange-500 text-white text-sm font-bold flex-shrink-0 mt-0.5">
+                <div
+                  key={step}
+                  className="flex gap-5 rounded-2xl p-6"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                >
+                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#FF4500] text-white text-sm font-bold flex-shrink-0 mt-0.5">
                     {step}
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
+                    <h3 className="text-base font-semibold text-white/85 mb-1">{title}</h3>
+                    <p className="text-sm text-white/50 leading-relaxed">{body}</p>
                   </div>
                 </div>
               ))}
@@ -150,11 +182,11 @@ export default function RedditLeadFinderPage() {
         </section>
 
         {/* ROI framing */}
-        <section className="bg-gray-50 py-14 sm:py-20">
+        <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">The math works in your favour</h2>
-              <p className="mt-2 text-gray-500 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The math works in your favour</h2>
+              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
                 One customer from Reddit pays for years of LeadPulse. The question is how many you&rsquo;re missing today.
               </p>
             </div>
@@ -164,14 +196,18 @@ export default function RedditLeadFinderPage() {
                 { figure: '< 60s', label: 'Alert delay from Reddit post to your dashboard' },
                 { figure: '$29/mo', label: 'Pro plan — less than most single B2B customer LTVs' },
               ].map(({ figure, label }) => (
-                <div key={figure} className="bg-white rounded-xl border border-gray-200 p-6 text-center">
-                  <p className="text-3xl font-bold text-orange-500 mb-2">{figure}</p>
-                  <p className="text-sm text-gray-500 leading-snug">{label}</p>
+                <div
+                  key={figure}
+                  className="rounded-xl p-6 text-center"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                >
+                  <p className="text-3xl font-bold text-[#FF4500] mb-2">{figure}</p>
+                  <p className="text-sm text-white/50 leading-snug">{label}</p>
                 </div>
               ))}
             </div>
             <p className="text-center">
-              <Link href="/pricing" className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors">
+              <Link href="/pricing" className="text-sm font-semibold text-[#FF4500] hover:text-[#ff6b35] transition-colors">
                 See all pricing options →
               </Link>
             </p>
@@ -179,29 +215,41 @@ export default function RedditLeadFinderPage() {
         </section>
 
         {/* CTA banner */}
-        <section className="bg-orange-500 py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: 'linear-gradient(135deg, #c93500 0%, #FF4500 50%, #ff6b35 100%)' }}>
           <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">Start finding Reddit leads today</h2>
-            <p className="mt-3 text-orange-100 text-sm sm:text-base">Free plan forever. 3 keywords. No credit card. Up and running in 2 minutes.</p>
+            <h2 className="text-h3 sm:text-h2 font-bold text-white">Start finding Reddit leads today</h2>
+            <p className="mt-3 text-white/75 text-sm sm:text-base">Free plan forever. 3 keywords. No credit card. Up and running in 2 minutes.</p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center justify-center bg-white text-orange-600 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-orange-50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500"
+                className="inline-flex items-center justify-center bg-white text-[#FF4500] font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#FF4500]"
               >
                 Create free account →
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center border border-orange-300 text-white font-semibold text-sm px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors min-h-[44px]"
+                className="inline-flex items-center justify-center border border-white/30 text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:bg-white/10 transition-colors min-h-[44px]"
               >
                 See pricing
               </Link>
             </div>
           </div>
         </section>
+
       </main>
 
-      <SiteFooter />
+      {/* Footer */}
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-label text-white/30">© 2025 LeadPulse. All rights reserved.</p>
+          <nav className="flex items-center gap-6" aria-label="Footer">
+            <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
+            <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>
+            <Link href="/auth/register" className="text-label text-white/35 hover:text-white/70 transition-colors">Get started</Link>
+          </nav>
+        </div>
+      </footer>
+
     </div>
   )
 }
