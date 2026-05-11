@@ -49,32 +49,32 @@ function IntentBadge({ score, subreddit }: { score: number; subreddit: string })
         </svg>
         Intent {score}/10
       </span>
-      <span className="text-label text-white/40">r/{subreddit}</span>
+      <span className="text-label text-gray-400">r/{subreddit}</span>
     </div>
   )
 }
 
 const comparisonTools = [
-  { name: 'F5Bot',     aiScoring: false,            replyAssistant: false,          leadGen: false,          highlight: false },
-  { name: 'Syften',   aiScoring: false,            replyAssistant: false,          leadGen: 'Basic',        highlight: false },
-  { name: 'RadarScout',aiScoring: 'AI intent 1–10', replyAssistant: 'Reply drafts', leadGen: 'Built for it', highlight: true  },
+  { name: 'F5Bot',      aiScoring: false,            replyAssistant: false,          leadGen: false,          campaignMode: false, highlight: false },
+  { name: 'Syften',    aiScoring: false,            replyAssistant: false,          leadGen: 'Basic',        campaignMode: false, highlight: false },
+  { name: 'RadarScout', aiScoring: 'AI intent 1–10', replyAssistant: 'Reply drafts', leadGen: 'Built for it', campaignMode: true,  highlight: true  },
 ]
 
 /* Reusable inline-style tokens */
-const card   = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' } as const
-const cardHi = { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '16px' } as const
+const card   = { background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px' } as const
+const cardHi = { background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '16px' } as const
 
 export default async function LandingPage() {
   const session = await auth()
   const isLoggedIn = !!session?.user?.id
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+    <div className="min-h-screen" style={{ background: 'white', color: '#111827' }}>
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
       <header
         className="sticky top-0 z-50 backdrop-blur-xl"
-        style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid #e5e7eb' }}
       >
         <nav className="max-w-5xl mx-auto px-4 sm:px-6">
           <input type="checkbox" id="nav-open" className="peer sr-only" aria-label="Toggle navigation" />
@@ -82,11 +82,11 @@ export default async function LandingPage() {
           <div className="h-14 flex items-center justify-between">
             <Link href="/" className="flex-shrink-0 flex items-center" aria-label="RadarScout home">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-dark.svg" alt="RadarScout" height={36} style={{ width: 'auto' }} />
+              <img src="/logo.svg" alt="RadarScout" height={36} style={{ width: 'auto' }} />
             </Link>
 
             <div className="hidden lg:flex items-center gap-6">
-              <Link href="/pricing" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+              <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-500 hover:text-gray-900 transition-colors">
                 Pricing
               </Link>
               {isLoggedIn ? (
@@ -95,12 +95,12 @@ export default async function LandingPage() {
                 </Link>
               ) : (
                 <>
-                  <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+                  <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-500 hover:text-gray-900 transition-colors">
                     Sign in
                   </Link>
                   <Link
                     href="/auth/register"
-                    className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+                    className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
                   >
                     Get started free
                   </Link>
@@ -110,7 +110,7 @@ export default async function LandingPage() {
 
             <label
               htmlFor="nav-open"
-              className="lg:hidden flex items-center justify-center h-11 w-11 -mr-2 cursor-pointer text-white/55 hover:text-white/90 rounded-lg transition-colors"
+              className="lg:hidden flex items-center justify-center h-11 w-11 -mr-2 cursor-pointer text-gray-500 hover:text-gray-900 rounded-lg transition-colors"
               aria-label="Open navigation menu"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -119,18 +119,18 @@ export default async function LandingPage() {
             </label>
           </div>
 
-          <div className="hidden peer-checked:block lg:hidden pb-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="hidden peer-checked:block lg:hidden pb-4" style={{ borderTop: '1px solid #e5e7eb' }}>
             <div className="flex flex-col pt-3 gap-1">
-              <Link href="/pricing" className="text-[0.9375rem] font-medium text-white/65 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-white/5">
+              <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-600 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-gray-100">
                 Pricing
               </Link>
               {isLoggedIn ? (
-                <Link href="/dashboard" className="text-[0.9375rem] font-semibold text-[#FF4500] px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-white/5">
+                <Link href="/dashboard" className="text-[0.9375rem] font-semibold text-[#FF4500] px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-gray-100">
                   Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/65 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-white/5">
+                  <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-600 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] flex items-center hover:bg-gray-100">
                     Sign in
                   </Link>
                   <Link
@@ -151,12 +151,12 @@ export default async function LandingPage() {
         {/* Ambient blobs */}
         <div
           className="absolute pointer-events-none"
-          style={{ top: '-220px', left: '-120px', height: '520px', width: '520px', borderRadius: '50%', background: 'rgba(255,69,0,0.11)', filter: 'blur(90px)', animation: 'blob-drift 22s ease-in-out infinite' }}
+          style={{ top: '-220px', left: '-120px', height: '520px', width: '520px', borderRadius: '50%', background: 'rgba(255,69,0,0.06)', filter: 'blur(90px)', animation: 'blob-drift 22s ease-in-out infinite' }}
           aria-hidden="true"
         />
         <div
           className="absolute pointer-events-none"
-          style={{ bottom: '-180px', right: '-120px', height: '440px', width: '440px', borderRadius: '50%', background: 'rgba(100,50,220,0.07)', filter: 'blur(90px)', animation: 'blob-drift 28s ease-in-out infinite reverse' }}
+          style={{ bottom: '-180px', right: '-120px', height: '440px', width: '440px', borderRadius: '50%', background: 'rgba(100,50,220,0.04)', filter: 'blur(90px)', animation: 'blob-drift 28s ease-in-out infinite reverse' }}
           aria-hidden="true"
         />
 
@@ -168,28 +168,28 @@ export default async function LandingPage() {
               className="text-center lg:text-left"
               style={{ animation: 'fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both' }}
             >
-              <h1 className="text-h1 sm:text-display font-extrabold text-white/95">
-                Find <span className="text-[#FF4500]">customers</span> already asking for tools like yours
+              <h1 className="text-h1 sm:text-display font-extrabold text-gray-900">
+                Discover <span className="text-[#FF4500]">high-intent</span> Reddit conversations before your competitors do
               </h1>
-              <p className="mt-5 text-body-lg text-white/55 max-w-md mx-auto lg:mx-0">
-                RadarScout monitors Reddit 24/7 and uses AI to surface high-intent posts — people actively looking for what you sell. Reply before your competitors do.
+              <p className="mt-5 text-body-lg text-gray-500 max-w-md mx-auto lg:mx-0">
+                RadarScout monitors Reddit 24/7 and uses AI to surface buying signals, alternative-seekers, and pain points — organized into campaigns so you can act fast.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Link
                   href={isLoggedIn ? '/dashboard' : '/auth/register'}
-                  className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+                  className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
                 >
                   {isLoggedIn ? 'Go to dashboard →' : 'Start finding leads free →'}
                 </Link>
                 <Link
                   href="/demo"
-                  className="inline-flex items-center justify-center font-semibold text-[0.9375rem] text-white/70 hover:text-white/90 px-6 py-3 rounded-xl transition-colors min-h-[44px]"
-                  style={{ border: '1px solid rgba(255,255,255,0.15)' }}
+                  className="inline-flex items-center justify-center font-semibold text-[0.9375rem] text-gray-600 hover:text-gray-900 px-6 py-3 rounded-xl transition-colors min-h-[44px]"
+                  style={{ border: '1px solid #e5e7eb' }}
                 >
                   Try live demo →
                 </Link>
               </div>
-              <p className="mt-4 text-label text-white/35">
+              <p className="mt-4 text-label text-gray-400">
                 Free forever · No credit card · Setup in 2 minutes
               </p>
             </div>
@@ -207,7 +207,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ── PAIN POINTS ──────────────────────────────────────────────────── */}
-      <section className="py-14 sm:py-20" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
@@ -217,8 +217,8 @@ export default async function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 ),
-                title: 'Stop missing opportunities',
-                body: 'High-value Reddit posts disappear in hours. We catch them the moment they\'re posted.',
+                title: '🎯 Intent Scoring',
+                body: 'AI scores every mention 1-10 for purchase intent. Filter by buying intent, complaints, or recommendation requests.',
               },
               {
                 icon: (
@@ -226,8 +226,8 @@ export default async function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 ),
-                title: 'Only high-intent leads',
-                body: 'AI scores every mention 1–10 for purchase intent. You only see people who are ready to buy.',
+                title: '📋 Campaign Mode',
+                body: 'Group keywords by product, competitor, or use case. See your opportunity feed organized and prioritized.',
               },
               {
                 icon: (
@@ -235,8 +235,8 @@ export default async function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 ),
-                title: 'Reply before competitors',
-                body: 'Get notified within minutes. First reply gets 3× more clicks.',
+                title: '✍️ AI Reply Draft',
+                body: 'Generate the perfect non-salesy reply in seconds. Be first to respond to high-intent posts.',
               },
             ].map(({ icon, title, body }) => (
               <div key={title} style={{ ...card, padding: '24px' }}>
@@ -246,8 +246,8 @@ export default async function LandingPage() {
                 >
                   {icon}
                 </div>
-                <h3 className="text-h3 font-semibold text-white/90 mb-2">{title}</h3>
-                <p className="text-body text-white/50 leading-relaxed">{body}</p>
+                <h3 className="text-h3 font-semibold text-gray-900 mb-2">{title}</h3>
+                <p className="text-body text-gray-500 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -258,7 +258,7 @@ export default async function LandingPage() {
       <section className="py-14 sm:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-h2 font-bold text-white/90">Built for people who sell things online</h2>
+            <h2 className="text-h2 font-bold text-gray-900">Built for people who sell things online</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -269,13 +269,13 @@ export default async function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
               </div>
-              <h3 className="text-h3 font-semibold text-white/90 mb-2">Indie Hackers &amp; Solo Founders</h3>
-              <p className="text-body text-white/50 leading-relaxed mb-4">
+              <h3 className="text-h3 font-semibold text-gray-900 mb-2">Indie Hackers &amp; Solo Founders</h3>
+              <p className="text-body text-gray-500 leading-relaxed mb-4">
                 Monitor keywords like &ldquo;alternative to [competitor]&rdquo; or &ldquo;looking for [your category]&rdquo;. Find your first 100 customers on Reddit.
               </p>
               <div className="mt-auto" style={{ ...cardHi, padding: '14px' }}>
                 <IntentBadge score={9} subreddit="SaaS" />
-                <p className="text-sm text-white/70 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   &ldquo;Anyone know a good Stripe analytics tool? Been using Baremetrics but it&rsquo;s too expensive&hellip;&rdquo;
                 </p>
               </div>
@@ -288,13 +288,13 @@ export default async function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <h3 className="text-h3 font-semibold text-white/90 mb-2">Marketing Agencies</h3>
-              <p className="text-body text-white/50 leading-relaxed mb-4">
+              <h3 className="text-h3 font-semibold text-gray-900 mb-2">Marketing Agencies</h3>
+              <p className="text-body text-gray-500 leading-relaxed mb-4">
                 Track brand mentions, monitor competitors, and find new client opportunities — all in one dashboard. Show clients real ROI.
               </p>
               <div className="mt-auto" style={{ ...cardHi, padding: '14px' }}>
                 <IntentBadge score={8} subreddit="Entrepreneur" />
-                <p className="text-sm text-white/70 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   &ldquo;Looking to hire an SEO agency for our SaaS. Budget is $3k/month&hellip;&rdquo;
                 </p>
               </div>
@@ -307,14 +307,14 @@ export default async function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="text-h3 font-semibold text-white/90 mb-2">B2B SaaS Teams</h3>
-              <p className="text-body text-white/50 leading-relaxed mb-4">
+              <h3 className="text-h3 font-semibold text-gray-900 mb-2">B2B SaaS Teams</h3>
+              <p className="text-body text-gray-500 leading-relaxed mb-4">
                 Replace expensive social listening tools. Get real-time buying signals from 500M+ Reddit users.
               </p>
               <div className="mt-auto" style={{ ...cardHi, padding: '14px' }}>
-                <p className="text-label font-medium text-white/35 uppercase mb-2">Example keywords</p>
+                <p className="text-label font-medium text-gray-400 uppercase mb-2">Example keywords</p>
                 {['"switching from [competitor]"', '"frustrated with [tool]"', '"software comparison"'].map(kw => (
-                  <div key={kw} className="text-sm text-white/60 py-0.5">{kw}</div>
+                  <div key={kw} className="text-sm text-gray-500 py-0.5">{kw}</div>
                 ))}
               </div>
             </div>
@@ -324,10 +324,10 @@ export default async function LandingPage() {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-14 sm:py-20" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section id="how-it-works" className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-h2 font-bold text-white/90">Up and running in 2 minutes</h2>
+            <h2 className="text-h2 font-bold text-gray-900">Up and running in 2 minutes</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
             {[
@@ -367,8 +367,8 @@ export default async function LandingPage() {
                   {icon}
                 </div>
                 <p className="text-label font-bold text-[#FF4500] uppercase mb-2">{step}</p>
-                <h3 className="text-h3 font-semibold text-white/90 mb-2">{title}</h3>
-                <p className="text-body text-white/50 leading-relaxed">{body}</p>
+                <h3 className="text-h3 font-semibold text-gray-900 mb-2">{title}</h3>
+                <p className="text-body text-gray-500 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -376,15 +376,15 @@ export default async function LandingPage() {
       </section>
 
       {/* ── SOCIAL PROOF BAR ─────────────────────────────────────────────── */}
-      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }} className="py-5">
+      <section style={{ borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb' }} className="py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-0 text-center sm:divide-x sm:divide-white/10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-0 text-center sm:divide-x sm:divide-gray-200">
             {[
               'Monitoring 500M+ Reddit posts',
               'AI-scored for purchase intent',
               'Trusted by indie hackers and agencies',
             ].map(item => (
-              <span key={item} className="text-body text-white/35 sm:px-8 leading-relaxed">{item}</span>
+              <span key={item} className="text-body text-gray-400 sm:px-8 leading-relaxed">{item}</span>
             ))}
           </div>
         </div>
@@ -394,31 +394,32 @@ export default async function LandingPage() {
       <section className="py-14 sm:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <h2 className="text-h2 font-bold text-white/90">How RadarScout compares</h2>
-            <p className="mt-2 text-body text-white/45">Built for lead gen — not just monitoring.</p>
+            <h2 className="text-h2 font-bold text-gray-900">How RadarScout compares</h2>
+            <p className="mt-2 text-body text-gray-400">Built for lead gen — not just monitoring.</p>
           </div>
           <div className="overflow-x-auto -mx-4 sm:mx-0">
             <div className="min-w-[520px] px-4 sm:px-0 sm:min-w-0">
               <div style={{ ...card, overflow: 'hidden' }}>
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-                      <th className="text-left px-5 sm:px-6 py-4 font-medium text-white/40 w-2/5">Tool</th>
-                      <th className="px-4 py-4 font-medium text-white/40 text-center">AI scoring</th>
-                      <th className="px-4 py-4 font-medium text-white/40 text-center">Reply assistant</th>
-                      <th className="px-4 py-4 font-medium text-white/40 text-center">Lead gen focus</th>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                      <th className="text-left px-5 sm:px-6 py-4 font-medium text-gray-400 w-2/5">Tool</th>
+                      <th className="px-4 py-4 font-medium text-gray-400 text-center">AI scoring</th>
+                      <th className="px-4 py-4 font-medium text-gray-400 text-center">Campaign Mode</th>
+                      <th className="px-4 py-4 font-medium text-gray-400 text-center">Reply assistant</th>
+                      <th className="px-4 py-4 font-medium text-gray-400 text-center">Lead gen focus</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {comparisonTools.map(({ name, aiScoring, replyAssistant, leadGen, highlight }) => (
+                    {comparisonTools.map(({ name, aiScoring, campaignMode, replyAssistant, leadGen, highlight }) => (
                       <tr
                         key={name}
                         style={{
-                          borderBottom: '1px solid rgba(255,255,255,0.05)',
-                          background: highlight ? 'rgba(255,69,0,0.06)' : undefined,
+                          borderBottom: '1px solid #f3f4f6',
+                          background: highlight ? 'rgba(255,69,0,0.05)' : undefined,
                         }}
                       >
-                        <td className={`px-5 sm:px-6 py-3.5 font-semibold ${highlight ? 'text-[#FF6B35]' : 'text-white/70'}`}>
+                        <td className={`px-5 sm:px-6 py-3.5 font-semibold ${highlight ? 'text-[#FF6B35]' : 'text-gray-600'}`}>
                           {name}
                           {highlight && (
                             <span className="ml-2 text-label font-semibold bg-[#FF4500] text-white px-1.5 py-0.5 rounded">You</span>
@@ -428,22 +429,27 @@ export default async function LandingPage() {
                           {typeof aiScoring === 'boolean'
                             ? aiScoring
                               ? <CheckIcon className="h-5 w-5 text-[#FF4500] mx-auto" />
-                              : <XIcon className="h-5 w-5 text-white/20 mx-auto" />
+                              : <XIcon className="h-5 w-5 text-gray-300 mx-auto" />
                             : <span className="text-label font-medium text-[#FF6B35]">{aiScoring}</span>}
+                        </td>
+                        <td className="px-4 py-3.5 text-center">
+                          {campaignMode
+                            ? <CheckIcon className="h-5 w-5 text-[#FF4500] mx-auto" />
+                            : <XIcon className="h-5 w-5 text-gray-300 mx-auto" />}
                         </td>
                         <td className="px-4 py-3.5 text-center">
                           {typeof replyAssistant === 'boolean'
                             ? replyAssistant
                               ? <CheckIcon className="h-5 w-5 text-[#FF4500] mx-auto" />
-                              : <XIcon className="h-5 w-5 text-white/20 mx-auto" />
+                              : <XIcon className="h-5 w-5 text-gray-300 mx-auto" />
                             : <span className="text-label font-medium text-[#FF6B35]">{replyAssistant}</span>}
                         </td>
                         <td className="px-4 py-3.5 text-center">
                           {typeof leadGen === 'boolean'
                             ? leadGen
                               ? <CheckIcon className="h-5 w-5 text-[#FF4500] mx-auto" />
-                              : <XIcon className="h-5 w-5 text-white/20 mx-auto" />
-                            : <span className={`text-label font-medium ${highlight ? 'text-[#FF6B35]' : 'text-white/50'}`}>{leadGen}</span>}
+                              : <XIcon className="h-5 w-5 text-gray-300 mx-auto" />
+                            : <span className={`text-label font-medium ${highlight ? 'text-[#FF6B35]' : 'text-gray-500'}`}>{leadGen}</span>}
                         </td>
                       </tr>
                     ))}
@@ -456,25 +462,25 @@ export default async function LandingPage() {
       </section>
 
       {/* ── PRICING TEASER ───────────────────────────────────────────────── */}
-      <section className="py-14 sm:py-20" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <h2 className="text-h2 font-bold text-white/90">Start free, scale as you grow</h2>
-            <p className="mt-2 text-body text-white/45">No credit card required to get started.</p>
+            <h2 className="text-h2 font-bold text-gray-900">Start free, scale as you grow</h2>
+            <p className="mt-2 text-body text-gray-400">No credit card required to get started.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             {/* Free */}
             <div style={{ ...card, padding: '20px' }}>
-              <p className="text-label font-semibold text-white/45 uppercase mb-1">Free</p>
+              <p className="text-label font-semibold text-gray-400 uppercase mb-1">Free</p>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-white/90">$0</span>
-                <span className="text-body text-white/35">forever</span>
+                <span className="text-3xl font-bold text-gray-900">$0</span>
+                <span className="text-body text-gray-400">forever</span>
               </div>
-              <p className="mt-1 text-label text-white/35">For testing the waters</p>
-              <p className="mt-2 text-body text-white/50">3 keywords · email alerts</p>
+              <p className="mt-1 text-label text-gray-400">For testing the waters</p>
+              <p className="mt-2 text-body text-gray-500">3 keywords · email alerts</p>
             </div>
             {/* Pro */}
-            <div className="relative" style={{ background: 'rgba(255,69,0,0.08)', border: '1.5px solid rgba(255,69,0,0.5)', borderRadius: '16px', padding: '20px' }}>
+            <div className="relative" style={{ background: 'rgba(255,69,0,0.07)', border: '1.5px solid rgba(255,69,0,0.45)', borderRadius: '16px', padding: '20px' }}>
               <span
                 className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF4500] text-white text-label font-semibold px-3 py-1 rounded-full whitespace-nowrap"
               >
@@ -482,21 +488,21 @@ export default async function LandingPage() {
               </span>
               <p className="text-label font-semibold text-[#FF6B35] uppercase mb-1">Pro</p>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-white/90">$29</span>
-                <span className="text-body text-white/35">/month</span>
+                <span className="text-3xl font-bold text-gray-900">$29</span>
+                <span className="text-body text-gray-400">/month</span>
               </div>
-              <p className="mt-1 text-label text-white/35">For founders ready to scale lead gen</p>
-              <p className="mt-2 text-body text-white/60">10 keywords · AI scoring + drafts</p>
+              <p className="mt-1 text-label text-gray-400">For founders ready to scale lead gen</p>
+              <p className="mt-2 text-body text-gray-600">10 keywords · AI scoring + drafts</p>
             </div>
             {/* Team */}
             <div style={{ ...card, padding: '20px' }}>
-              <p className="text-label font-semibold text-purple-400 uppercase mb-1">Team</p>
+              <p className="text-label font-semibold text-purple-600 uppercase mb-1">Team</p>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-white/90">$79</span>
-                <span className="text-body text-white/35">/month</span>
+                <span className="text-3xl font-bold text-gray-900">$79</span>
+                <span className="text-body text-gray-400">/month</span>
               </div>
-              <p className="mt-1 text-label text-white/35">For agencies managing multiple clients</p>
-              <p className="mt-2 text-body text-white/50">Unlimited keywords · team accounts</p>
+              <p className="mt-1 text-label text-gray-400">For agencies managing multiple clients</p>
+              <p className="mt-2 text-body text-gray-500">Unlimited keywords · team accounts</p>
             </div>
           </div>
           <p className="text-center">
@@ -510,8 +516,8 @@ export default async function LandingPage() {
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
       <section className="py-14 sm:py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
-          <h2 className="text-h2 font-bold text-white/90 mb-8 text-center">Frequently asked questions</h2>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <h2 className="text-h2 font-bold text-gray-900 mb-8 text-center">Frequently asked questions</h2>
+          <div style={{ borderTop: '1px solid #e5e7eb' }}>
             {[
               {
                 q: 'How is this different from F5Bot?',
@@ -534,11 +540,11 @@ export default async function LandingPage() {
                 a: "Yes. Free plan includes 3 keywords forever. No credit card required.",
               },
             ].map(({ q, a }) => (
-              <details key={q} className="group" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                <summary className="flex items-center justify-between py-4 cursor-pointer text-white/80 font-medium text-body select-none [&::-webkit-details-marker]:hidden list-none min-h-[44px] hover:text-white/95 transition-colors">
+              <details key={q} className="group" style={{ borderBottom: '1px solid #e5e7eb' }}>
+                <summary className="flex items-center justify-between py-4 cursor-pointer text-gray-700 font-medium text-body select-none [&::-webkit-details-marker]:hidden list-none min-h-[44px] hover:text-gray-900 transition-colors">
                   <span>{q}</span>
                   <svg
-                    className="h-5 w-5 text-white/30 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-4"
+                    className="h-5 w-5 text-gray-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -548,7 +554,7 @@ export default async function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <p className="pb-5 text-body text-white/50 leading-relaxed">{a}</p>
+                <p className="pb-5 text-body text-gray-500 leading-relaxed">{a}</p>
               </details>
             ))}
           </div>
@@ -627,16 +633,16 @@ export default async function LandingPage() {
       />
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
+      <footer style={{ borderTop: '1px solid #e5e7eb' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-[0.9375rem] font-semibold text-white/90">RadarScout</span>
+          <span className="text-[0.9375rem] font-semibold text-gray-900">RadarScout</span>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Footer">
-            <Link href="/pricing" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Pricing</Link>
-            <Link href="/f5bot-alternative" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">F5Bot alternative</Link>
-            <Link href="/auth/login" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Sign in</Link>
-            <Link href="/auth/register" className="text-[0.9375rem] text-white/40 hover:text-white/70 transition-colors">Register</Link>
+            <Link href="/pricing" className="text-[0.9375rem] text-gray-500 hover:text-gray-700 transition-colors">Pricing</Link>
+            <Link href="/f5bot-alternative" className="text-[0.9375rem] text-gray-500 hover:text-gray-700 transition-colors">F5Bot alternative</Link>
+            <Link href="/auth/login" className="text-[0.9375rem] text-gray-500 hover:text-gray-700 transition-colors">Sign in</Link>
+            <Link href="/auth/register" className="text-[0.9375rem] text-gray-500 hover:text-gray-700 transition-colors">Register</Link>
           </nav>
-          <p className="text-label text-white/25">© {new Date().getFullYear()} RadarScout</p>
+          <p className="text-label text-gray-400">© {new Date().getFullYear()} RadarScout</p>
         </div>
       </footer>
 

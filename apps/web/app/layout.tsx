@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'RadarScout — Reddit Lead Finder for Indie Hackers & Agencies',
-  description: 'Monitor Reddit for buying signals. AI scores every mention for purchase intent. Find customers before your competitors. Free to start.',
+  description: 'Monitor Reddit for buying signals and pain points. AI intent scoring + campaign mode + reply drafts. Free plan available.',
   icons: {
     icon: '/logo-icon.svg',
     apple: '/logo-icon.svg',
