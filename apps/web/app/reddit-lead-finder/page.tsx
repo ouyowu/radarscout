@@ -27,24 +27,24 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RedditLeadFinderPage() {
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+    <div className="min-h-screen" style={{ background: 'white', color: '#111827' }}>
 
       {/* Nav */}
       <header
         className="sticky top-0 z-50 backdrop-blur-xl"
-        style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid #e5e7eb' }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
+          <Link href="/" className="text-[0.9375rem] font-semibold text-gray-900 hover:text-gray-700 transition-colors">
             RadarScout
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-500 hover:text-gray-900 transition-colors">
               Sign in
             </Link>
             <Link
               href="/auth/register"
-              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
             >
               Get started free
             </Link>
@@ -63,27 +63,27 @@ export default function RedditLeadFinderPage() {
             >
               Reddit Lead Generation
             </span>
-            <h1 className="text-h1 sm:text-display font-extrabold text-white/95 leading-tight tracking-tight">
+            <h1 className="text-h1 sm:text-display font-extrabold text-gray-900 leading-tight tracking-tight">
               Find High-Intent Leads on Reddit Automatically
             </h1>
-            <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-5 text-body-lg text-gray-500 leading-relaxed max-w-2xl mx-auto">
               Every day, thousands of people ask Reddit what tool to use, which product to buy, or how to solve a problem your business solves. RadarScout finds those threads in real time and scores them by purchase intent so you can reach the right people before your competitors do.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
               >
                 Start finding leads free →
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center border border-white/15 text-white/70 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-white/90 hover:bg-white/[0.08] transition-colors min-h-[44px]"
+                className="inline-flex items-center justify-center border border-gray-200 text-gray-600 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-gray-900 hover:bg-gray-100 transition-colors min-h-[44px]"
               >
                 See pricing
               </Link>
             </div>
-            <p className="mt-4 text-label text-white/30">3 keywords free · No credit card required</p>
+            <p className="mt-4 text-label text-gray-400">3 keywords free · No credit card required</p>
           </div>
         </section>
 
@@ -92,21 +92,21 @@ export default function RedditLeadFinderPage() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-h3 sm:text-h2 font-bold text-white/90 mb-4">
+                <h2 className="text-h3 sm:text-h2 font-bold text-gray-900 mb-4">
                   Reddit is the most underrated lead source on the internet
                 </h2>
-                <p className="text-white/50 leading-relaxed mb-4">
+                <p className="text-gray-500 leading-relaxed mb-4">
                   Reddit has over 50 million daily active users, and they&rsquo;re uniquely valuable as a lead source because they show up with specific, explicit intent. They&rsquo;re not passively scrolling a feed — they&rsquo;re asking questions, comparing options, and seeking recommendations. The purchase intent is baked into the post.
                 </p>
-                <p className="text-white/50 leading-relaxed mb-4">
+                <p className="text-gray-500 leading-relaxed mb-4">
                   A thread in r/entrepreneur asking &ldquo;what project management tool do you use for a 5-person remote team?&rdquo; isn&rsquo;t just a question — it&rsquo;s a warm lead. The person is actively in the market. A thoughtful, genuinely helpful reply — one that mentions your product naturally — converts at a rate that paid ads can rarely match.
                 </p>
-                <p className="text-white/50 leading-relaxed">
+                <p className="text-gray-500 leading-relaxed">
                   The challenge is finding these threads before they get buried. Reddit moves fast. Manual searching is inconsistent and misses most opportunities. RadarScout automates the entire discovery layer so you can focus on the conversation.
                 </p>
               </div>
               <div className="space-y-3">
-                <p className="text-label font-bold text-white/30 uppercase tracking-widest mb-4">High-intent Reddit signals</p>
+                <p className="text-label font-bold text-gray-400 uppercase tracking-widest mb-4">High-intent Reddit signals</p>
                 {[
                   '"Looking for a tool that does X"',
                   '"Anyone know a good alternative to [competitor]?"',
@@ -118,12 +118,12 @@ export default function RedditLeadFinderPage() {
                   <div
                     key={signal}
                     className="flex items-start gap-3 rounded-xl px-4 py-3"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
                   >
                     <svg className="h-4 w-4 text-[#FF4500] flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-sm text-white/65 italic">{signal}</span>
+                    <span className="text-sm text-gray-600 italic">{signal}</span>
                   </div>
                 ))}
               </div>
@@ -132,11 +132,11 @@ export default function RedditLeadFinderPage() {
         </section>
 
         {/* The lead-finding workflow */}
-        <section className="py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The RadarScout lead-gen workflow</h2>
-              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">The RadarScout lead-gen workflow</h2>
+              <p className="mt-2 text-gray-400 text-sm sm:text-base max-w-xl mx-auto">
                 From keyword to closed deal — a repeatable process that works while you sleep.
               </p>
             </div>
@@ -166,14 +166,14 @@ export default function RedditLeadFinderPage() {
                 <div
                   key={step}
                   className="flex gap-5 rounded-2xl p-6"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: 'white', border: '1px solid #e5e7eb' }}
                 >
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#FF4500] text-white text-sm font-bold flex-shrink-0 mt-0.5">
                     {step}
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white/85 mb-1">{title}</h3>
-                    <p className="text-sm text-white/50 leading-relaxed">{body}</p>
+                    <h3 className="text-base font-semibold text-gray-800 mb-1">{title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
                   </div>
                 </div>
               ))}
@@ -185,8 +185,8 @@ export default function RedditLeadFinderPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">The math works in your favour</h2>
-              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">The math works in your favour</h2>
+              <p className="mt-2 text-gray-400 text-sm sm:text-base max-w-xl mx-auto">
                 One customer from Reddit pays for years of RadarScout. The question is how many you&rsquo;re missing today.
               </p>
             </div>
@@ -199,10 +199,10 @@ export default function RedditLeadFinderPage() {
                 <div
                   key={figure}
                   className="rounded-xl p-6 text-center"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
                 >
                   <p className="text-3xl font-bold text-[#FF4500] mb-2">{figure}</p>
-                  <p className="text-sm text-white/50 leading-snug">{label}</p>
+                  <p className="text-sm text-gray-500 leading-snug">{label}</p>
                 </div>
               ))}
             </div>
@@ -239,26 +239,28 @@ export default function RedditLeadFinderPage() {
       </main>
 
       {/* Related pages */}
-      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
+      <section style={{ borderTop: '1px solid #e5e7eb' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <p className="text-label font-semibold text-white/30 uppercase tracking-wide mb-4">Related</p>
+          <p className="text-label font-semibold text-gray-400 uppercase tracking-wide mb-4">Related</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/f5bot-alternative" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>F5Bot alternative →</Link>
-            <Link href="/pricing" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Pricing plans →</Link>
-            <Link href="/reddit-monitoring-tool" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Reddit monitoring tool →</Link>
+            <Link href="/f5bot-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>F5Bot alternative →</Link>
+            <Link href="/gummysearch-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>GummySearch alternative →</Link>
+            <Link href="/social-listening-reddit" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit social listening →</Link>
+            <Link href="/pricing" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Pricing plans →</Link>
+            <Link href="/reddit-monitoring-tool" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit monitoring tool →</Link>
             <Link href="/auth/register" className="text-sm font-medium text-[#FF6B35] hover:text-[#FF4500] transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,69,0,0.25)' }}>Get started free →</Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <footer style={{ borderTop: '1px solid #e5e7eb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
+          <p className="text-label text-gray-400">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
-            <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
-            <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>
-            <Link href="/auth/register" className="text-label text-white/35 hover:text-white/70 transition-colors">Get started</Link>
+            <Link href="/pricing" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Pricing</Link>
+            <Link href="/auth/login" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Sign in</Link>
+            <Link href="/auth/register" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Get started</Link>
           </nav>
         </div>
       </footer>

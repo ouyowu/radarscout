@@ -27,24 +27,24 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RedditMentionAlertsPage() {
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+    <div className="min-h-screen" style={{ background: 'white', color: '#111827' }}>
 
       {/* Nav */}
       <header
         className="sticky top-0 z-50 backdrop-blur-xl"
-        style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid #e5e7eb' }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
+          <Link href="/" className="text-[0.9375rem] font-semibold text-gray-900 hover:text-gray-700 transition-colors">
             RadarScout
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-500 hover:text-gray-900 transition-colors">
               Sign in
             </Link>
             <Link
               href="/auth/register"
-              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
             >
               Get started free
             </Link>
@@ -63,45 +63,45 @@ export default function RedditMentionAlertsPage() {
             >
               Reddit Mention Alerts
             </span>
-            <h1 className="text-h1 sm:text-display font-extrabold text-white/95 leading-tight tracking-tight">
+            <h1 className="text-h1 sm:text-display font-extrabold text-gray-900 leading-tight tracking-tight">
               Real-Time Reddit Mention Alerts for Your Brand
             </h1>
-            <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-5 text-body-lg text-gray-500 leading-relaxed max-w-2xl mx-auto">
               Reddit is where real opinions form. RadarScout monitors every subreddit 24/7 and alerts you within 60 seconds when someone mentions your brand — so you can respond before the thread goes cold or negative sentiment spreads.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
               >
                 Start free monitoring →
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center border border-white/15 text-white/70 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-white/90 hover:bg-white/[0.08] transition-colors min-h-[44px]"
+                className="inline-flex items-center justify-center border border-gray-200 text-gray-600 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-gray-900 hover:bg-gray-100 transition-colors min-h-[44px]"
               >
                 See plans
               </Link>
             </div>
-            <p className="mt-4 text-label text-white/30">3 keywords free forever · No credit card required</p>
+            <p className="mt-4 text-label text-gray-400">3 keywords free forever · No credit card required</p>
           </div>
         </section>
 
         {/* Why brand monitoring matters */}
-        <section className="py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-h3 sm:text-h2 font-bold text-white/90 mb-4">
+                <h2 className="text-h3 sm:text-h2 font-bold text-gray-900 mb-4">
                   Why Reddit brand monitoring matters in 2025
                 </h2>
-                <p className="text-white/50 leading-relaxed mb-4">
+                <p className="text-gray-500 leading-relaxed mb-4">
                   Reddit has more than 50 million daily active users, and they&rsquo;re brutally honest. Unlike Twitter or LinkedIn, Reddit rewards authenticity — which means product recommendations there carry outsized weight. A single well-received comment in the right subreddit can drive hundreds of signups overnight.
                 </p>
-                <p className="text-white/50 leading-relaxed mb-4">
+                <p className="text-gray-500 leading-relaxed mb-4">
                   But Reddit also moves fast. A negative thread about your brand can reach the front page of r/all before your marketing team even wakes up. Without real-time mention alerts, you find out about brand crises days later — after the damage is done and the conversation has already shaped public perception.
                 </p>
-                <p className="text-white/50 leading-relaxed">
+                <p className="text-gray-500 leading-relaxed">
                   The brands that win on Reddit are the ones that show up in conversations quickly, authentically, and with something genuinely useful to say. RadarScout gives you the speed and context to do exactly that.
                 </p>
               </div>
@@ -114,10 +114,10 @@ export default function RedditMentionAlertsPage() {
                   <div
                     key={stat}
                     className="rounded-xl p-5 flex items-center gap-5"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    style={{ background: 'white', border: '1px solid #e5e7eb' }}
                   >
                     <p className="text-3xl font-bold text-[#FF4500] flex-shrink-0 w-20">{stat}</p>
-                    <p className="text-sm text-white/55 leading-snug">{label}</p>
+                    <p className="text-sm text-gray-500 leading-snug">{label}</p>
                   </div>
                 ))}
               </div>
@@ -129,7 +129,7 @@ export default function RedditMentionAlertsPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">Three ways teams use Reddit mention alerts</h2>
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">Three ways teams use Reddit mention alerts</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
@@ -164,7 +164,7 @@ export default function RedditMentionAlertsPage() {
                 <div
                   key={title}
                   className="rounded-2xl p-6"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
                 >
                   <div
                     className="flex items-center justify-center h-12 w-12 rounded-xl mb-4"
@@ -172,8 +172,8 @@ export default function RedditMentionAlertsPage() {
                   >
                     {icon}
                   </div>
-                  <h3 className="text-base font-semibold text-white/85 mb-2">{title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{body}</p>
+                  <h3 className="text-base font-semibold text-gray-800 mb-2">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -181,11 +181,11 @@ export default function RedditMentionAlertsPage() {
         </section>
 
         {/* What keywords to monitor */}
-        <section className="py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">What keywords to monitor for brand protection</h2>
-              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">What keywords to monitor for brand protection</h2>
+              <p className="mt-2 text-gray-400 text-sm sm:text-base max-w-xl mx-auto">
                 Most teams start with these and add more as they discover their own patterns.
               </p>
             </div>
@@ -199,10 +199,10 @@ export default function RedditMentionAlertsPage() {
                 <div
                   key={category}
                   className="rounded-xl p-5"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: 'white', border: '1px solid #e5e7eb' }}
                 >
-                  <p className="text-sm font-semibold text-white/85 mb-1">{category}</p>
-                  <p className="text-sm text-white/50">{examples}</p>
+                  <p className="text-sm font-semibold text-gray-800 mb-1">{category}</p>
+                  <p className="text-sm text-gray-500">{examples}</p>
                 </div>
               ))}
             </div>
@@ -239,26 +239,28 @@ export default function RedditMentionAlertsPage() {
       </main>
 
       {/* Related pages */}
-      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
+      <section style={{ borderTop: '1px solid #e5e7eb' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <p className="text-label font-semibold text-white/30 uppercase tracking-wide mb-4">Related</p>
+          <p className="text-label font-semibold text-gray-400 uppercase tracking-wide mb-4">Related</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/f5bot-alternative" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>F5Bot alternative →</Link>
-            <Link href="/pricing" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Pricing plans →</Link>
-            <Link href="/reddit-lead-finder" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Reddit lead finder →</Link>
+            <Link href="/f5bot-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>F5Bot alternative →</Link>
+            <Link href="/gummysearch-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>GummySearch alternative →</Link>
+            <Link href="/social-listening-reddit" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit social listening →</Link>
+            <Link href="/pricing" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Pricing plans →</Link>
+            <Link href="/reddit-lead-finder" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit lead finder →</Link>
             <Link href="/auth/register" className="text-sm font-medium text-[#FF6B35] hover:text-[#FF4500] transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,69,0,0.25)' }}>Get started free →</Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <footer style={{ borderTop: '1px solid #e5e7eb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
+          <p className="text-label text-gray-400">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
-            <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
-            <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>
-            <Link href="/auth/register" className="text-label text-white/35 hover:text-white/70 transition-colors">Get started</Link>
+            <Link href="/pricing" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Pricing</Link>
+            <Link href="/auth/login" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Sign in</Link>
+            <Link href="/auth/register" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Get started</Link>
           </nav>
         </div>
       </footer>

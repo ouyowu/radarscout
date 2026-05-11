@@ -84,24 +84,24 @@ const features = [
 
 export default function RedditKeywordMonitorPage() {
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+    <div className="min-h-screen" style={{ background: 'white', color: '#111827' }}>
 
       {/* Nav */}
       <header
         className="sticky top-0 z-50 backdrop-blur-xl"
-        style={{ background: 'rgba(10,10,15,0.82)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid #e5e7eb' }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-[0.9375rem] font-semibold text-white/90 hover:text-white transition-colors">
+          <Link href="/" className="text-[0.9375rem] font-semibold text-gray-900 hover:text-gray-700 transition-colors">
             RadarScout
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-white/55 hover:text-white/90 transition-colors">
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-500 hover:text-gray-900 transition-colors">
               Sign in
             </Link>
             <Link
               href="/auth/register"
-              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+              className="text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white px-4 py-2 rounded-xl transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
             >
               Get started free
             </Link>
@@ -120,36 +120,36 @@ export default function RedditKeywordMonitorPage() {
             >
               Reddit Keyword Monitor
             </span>
-            <h1 className="text-h1 sm:text-display font-extrabold text-white/95 leading-tight tracking-tight">
+            <h1 className="text-h1 sm:text-display font-extrabold text-gray-900 leading-tight tracking-tight">
               Reddit Keyword Monitor Built for Business Growth
             </h1>
-            <p className="mt-5 text-body-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-5 text-body-lg text-gray-500 leading-relaxed max-w-2xl mx-auto">
               RadarScout watches every subreddit in real time and uses AI to score each mention for purchase intent. Stop sifting through noise — see only the conversations that matter to your business.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+                className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-6 py-3 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
               >
                 Start monitoring free →
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center border border-white/15 text-white/70 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-white/90 hover:bg-white/[0.08] transition-colors min-h-[44px]"
+                className="inline-flex items-center justify-center border border-gray-200 text-gray-600 font-semibold text-[0.9375rem] px-6 py-3 rounded-xl hover:text-gray-900 hover:bg-gray-100 transition-colors min-h-[44px]"
               >
                 See pricing
               </Link>
             </div>
-            <p className="mt-4 text-label text-white/30">3 keywords free forever · No credit card required</p>
+            <p className="mt-4 text-label text-gray-400">3 keywords free forever · No credit card required</p>
           </div>
         </section>
 
         {/* Features grid */}
-        <section className="py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">Everything you need to monitor Reddit</h2>
-              <p className="mt-2 text-white/45 text-sm sm:text-base max-w-xl mx-auto">
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">Everything you need to monitor Reddit</h2>
+              <p className="mt-2 text-gray-400 text-sm sm:text-base max-w-xl mx-auto">
                 One tool for keyword tracking, intent scoring, and lead engagement — nothing else to install.
               </p>
             </div>
@@ -158,7 +158,7 @@ export default function RedditKeywordMonitorPage() {
                 <div
                   key={title}
                   className="rounded-2xl p-6"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: 'white', border: '1px solid #e5e7eb' }}
                 >
                   <div
                     className="flex items-center justify-center h-12 w-12 rounded-xl mb-4"
@@ -166,8 +166,8 @@ export default function RedditKeywordMonitorPage() {
                   >
                     {icon}
                   </div>
-                  <h3 className="text-base font-semibold text-white/85 mb-2">{title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{body}</p>
+                  <h3 className="text-base font-semibold text-gray-800 mb-2">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -178,7 +178,7 @@ export default function RedditKeywordMonitorPage() {
         <section className="py-14 sm:py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">Up and running in 2 minutes</h2>
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">Up and running in 2 minutes</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
               {[
@@ -205,8 +205,8 @@ export default function RedditKeywordMonitorPage() {
                   >
                     <span className="text-sm font-bold text-[#FF4500]">{step}</span>
                   </div>
-                  <h3 className="text-base font-semibold text-white/85 mb-2">{title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{body}</p>
+                  <h3 className="text-base font-semibold text-gray-800 mb-2">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -214,10 +214,10 @@ export default function RedditKeywordMonitorPage() {
         </section>
 
         {/* Who is it for */}
-        <section className="py-14 sm:py-20">
+        <section className="py-14 sm:py-20" style={{ background: '#f9fafb' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
-              <h2 className="text-h3 sm:text-h2 font-bold text-white/90">Who uses a Reddit keyword monitor?</h2>
+              <h2 className="text-h3 sm:text-h2 font-bold text-gray-900">Who uses a Reddit keyword monitor?</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
@@ -229,10 +229,10 @@ export default function RedditKeywordMonitorPage() {
                 <div
                   key={role}
                   className="rounded-xl p-5"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  style={{ background: 'white', border: '1px solid #e5e7eb' }}
                 >
-                  <p className="text-sm font-semibold text-white/85 mb-2">{role}</p>
-                  <p className="text-sm text-white/50 leading-relaxed">{use}</p>
+                  <p className="text-sm font-semibold text-gray-800 mb-2">{role}</p>
+                  <p className="text-sm text-gray-500 leading-relaxed">{use}</p>
                 </div>
               ))}
             </div>
@@ -264,26 +264,28 @@ export default function RedditKeywordMonitorPage() {
       </main>
 
       {/* Related pages */}
-      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} className="py-10">
+      <section style={{ borderTop: '1px solid #e5e7eb' }} className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <p className="text-label font-semibold text-white/30 uppercase tracking-wide mb-4">Related</p>
+          <p className="text-label font-semibold text-gray-400 uppercase tracking-wide mb-4">Related</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/f5bot-alternative" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>F5Bot alternative →</Link>
-            <Link href="/pricing" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Pricing plans →</Link>
-            <Link href="/reddit-mention-alerts" className="text-sm font-medium text-white/55 hover:text-white/90 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.10)' }}>Reddit mention alerts →</Link>
+            <Link href="/f5bot-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>F5Bot alternative →</Link>
+            <Link href="/gummysearch-alternative" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>GummySearch alternative →</Link>
+            <Link href="/social-listening-reddit" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit social listening →</Link>
+            <Link href="/pricing" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Pricing plans →</Link>
+            <Link href="/reddit-mention-alerts" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid #e5e7eb' }}>Reddit mention alerts →</Link>
             <Link href="/auth/register" className="text-sm font-medium text-[#FF6B35] hover:text-[#FF4500] transition-colors px-4 py-2 rounded-lg" style={{ border: '1px solid rgba(255,69,0,0.25)' }}>Get started free →</Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <footer style={{ borderTop: '1px solid #e5e7eb' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-label text-white/30">© 2025 RadarScout. All rights reserved.</p>
+          <p className="text-label text-gray-400">© 2025 RadarScout. All rights reserved.</p>
           <nav className="flex items-center gap-6" aria-label="Footer">
-            <Link href="/pricing" className="text-label text-white/35 hover:text-white/70 transition-colors">Pricing</Link>
-            <Link href="/auth/login" className="text-label text-white/35 hover:text-white/70 transition-colors">Sign in</Link>
-            <Link href="/auth/register" className="text-label text-white/35 hover:text-white/70 transition-colors">Get started</Link>
+            <Link href="/pricing" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Pricing</Link>
+            <Link href="/auth/login" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Sign in</Link>
+            <Link href="/auth/register" className="text-label text-gray-500 hover:text-gray-700 transition-colors">Get started</Link>
           </nav>
         </div>
       </footer>
