@@ -22,7 +22,20 @@ vi.mock('@reddit-monitor/db', async (importOriginal) => {
       },
       match: {
         findUnique: vi.fn(),
+        create: vi.fn(),
         update: vi.fn(),
+      },
+      campaign: {
+        findMany: vi.fn(),
+        findUnique: vi.fn(),
+        count: vi.fn(),
+        create: vi.fn(),
+        update: vi.fn(),
+        deleteMany: vi.fn(),
+      },
+      competitor: {
+        create: vi.fn(),
+        deleteMany: vi.fn(),
       },
     },
   }

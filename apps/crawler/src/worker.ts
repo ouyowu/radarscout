@@ -105,9 +105,9 @@ async function pollSubreddit(
           postId: post.id,
           plan: kw.userPlan,
           redis,
-        }).then(({ score, summary }) => {
+        }).then(({ score, summary, painPoints, opportunityType, competitors }) => {
           if (score === null) return
-          return patchMatchScore(dbMatchId, score, summary)
+          return patchMatchScore(dbMatchId, score, summary, painPoints, opportunityType, competitors)
         }).catch(() => {
           // swallowed intentionally — scoring must never disrupt the pipeline
         })

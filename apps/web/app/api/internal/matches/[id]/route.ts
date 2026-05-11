@@ -15,15 +15,24 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { intentScore, aiSummary } = body as {
+  const { intentScore, aiSummary, painPoints, opportunityType, competitors } = body as {
     intentScore?: number | null
     aiSummary?: string | null
+    painPoints?: string | null
+    opportunityType?: string | null
+    competitors?: string[]
   }
 
   try {
     await db.match.update({
       where: { id: params.id },
-      data: { intentScore, aiSummary },
+      data: {
+        ...(intentScore !== undefined && { intentScore }),
+        ...(aiSummary !== undefined && { aiSummary }),
+        ...(painPoints !== undefined && { painPoints }),
+        ...(opportunityType !== undefined && { opportunityType }),
+        ...(competitors !== undefined && { competitors }),
+      },
     })
   } catch {
     return NextResponse.json({ error: 'Match not found' }, { status: 404 })

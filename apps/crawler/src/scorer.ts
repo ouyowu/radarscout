@@ -8,15 +8,37 @@ export interface ScoreMatchOpts {
   redis: Redis
 }
 
+export interface ScoreResult {
+  score: number | null
+  summary: string | null
+  painPoints: string | null
+  opportunityType: string | null
+  competitors: string[]
+}
+
+const NULL_RESULT: ScoreResult = {
+  score: null,
+  summary: null,
+  painPoints: null,
+  opportunityType: null,
+  competitors: [],
+}
+
+const OPPORTUNITY_TYPES = [
+  'buying_intent',
+  'alternative_seeking',
+  'complaint',
+  'recommendation_request',
+  'research',
+] as const
+
 const CACHE_TTL = 7 * 24 * 60 * 60 // 7 days in seconds
 
 export async function scoreMatch(
   keyword: string,
   post: { title: string; snippet: string },
   opts: ScoreMatchOpts,
-): Promise<{ score: number | null; summary: string | null }> {
-  const NULL_RESULT = { score: null, summary: null }
-
+): Promise<ScoreResult> {
   if (opts.plan !== 'PRO' && opts.plan !== 'TEAM') {
     return NULL_RESULT
   }
@@ -26,7 +48,7 @@ export async function scoreMatch(
   try {
     const cached = await opts.redis.get(cacheKey)
     if (cached) {
-      return JSON.parse(cached) as { score: number; summary: string }
+      return JSON.parse(cached) as ScoreResult
     }
 
     const apiKey = process.env.ANTHROPIC_API_KEY
@@ -39,10 +61,16 @@ export async function scoreMatch(
 
     const response = await client.messages.create({
       model: 'claude-haiku-20250307',
-      max_tokens: 128,
+      max_tokens: 256,
       system: `Score this Reddit post for purchase intent regarding '${keyword}'.
 Return valid JSON only, no markdown, no explanation:
-{"score": number, "summary": string}
+{
+  "score": number,
+  "summary": string,
+  "painPoints": string,
+  "opportunityType": string,
+  "competitors": string[]
+}
 
 Scoring:
 9-10: Actively asking for product/service recommendation
@@ -51,7 +79,10 @@ Scoring:
 3-4:  Tangentially related
 1-2:  Irrelevant, venting, or negative sentiment
 
-Summary: max 12 words describing what this person needs.`,
+summary: max 15 words describing what this person needs.
+painPoints: the main pain point in one sentence.
+opportunityType: one of exactly: buying_intent | alternative_seeking | complaint | recommendation_request | research
+competitors: array of competitor product/service names explicitly mentioned (empty array if none).`,
       messages: [
         { role: 'user', content: `Title: ${post.title}\n\n${post.snippet}` },
       ],
@@ -63,16 +94,29 @@ Summary: max 12 words describing what this person needs.`,
     const parsed = JSON.parse(text) as unknown
     if (
       typeof parsed !== 'object' ||
-      parsed === null ||
-      typeof (parsed as Record<string, unknown>).score !== 'number' ||
-      typeof (parsed as Record<string, unknown>).summary !== 'string'
+      parsed === null
     ) {
       return NULL_RESULT
     }
 
-    const result = {
-      score: (parsed as { score: number }).score,
-      summary: (parsed as { summary: string }).summary,
+    const p = parsed as Record<string, unknown>
+
+    if (
+      typeof p.score !== 'number' ||
+      typeof p.summary !== 'string' ||
+      typeof p.painPoints !== 'string' ||
+      !OPPORTUNITY_TYPES.includes(p.opportunityType as typeof OPPORTUNITY_TYPES[number]) ||
+      !Array.isArray(p.competitors)
+    ) {
+      return NULL_RESULT
+    }
+
+    const result: ScoreResult = {
+      score: p.score,
+      summary: p.summary,
+      painPoints: p.painPoints,
+      opportunityType: p.opportunityType as string,
+      competitors: (p.competitors as unknown[]).filter(c => typeof c === 'string') as string[],
     }
 
     await opts.redis.set(cacheKey, JSON.stringify(result), 'EX', CACHE_TTL)

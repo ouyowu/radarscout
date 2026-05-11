@@ -21,13 +21,16 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { keywordId, platform, postId, title, url, snippet } = body as {
+  const { keywordId, platform, postId, title, url, snippet, painPoints, opportunityType, competitors } = body as {
     keywordId?: string
     platform?: string
     postId?: string
     title?: string
     url?: string
     snippet?: string
+    painPoints?: string
+    opportunityType?: string
+    competitors?: string[]
   }
 
   if (!keywordId || !platform || !postId || !title || !url) {
@@ -39,7 +42,17 @@ export async function POST(request: NextRequest) {
   }
 
   const match = await db.match.create({
-    data: { keywordId, platform, postId, title, url, snippet: snippet ?? '' },
+    data: {
+      keywordId,
+      platform,
+      postId,
+      title,
+      url,
+      snippet: snippet ?? '',
+      ...(painPoints !== undefined && { painPoints }),
+      ...(opportunityType !== undefined && { opportunityType }),
+      ...(competitors !== undefined && { competitors }),
+    },
   })
 
   // Fire-and-forget: batch notifications per user over a 60-second window

@@ -30,33 +30,67 @@ model User {
   createdAt          DateTime       @default(now())
   keywords           Keyword[]
   notifications      Notification[]
+  campaigns          Campaign[]
+}
+
+model Campaign {
+  id             String       @id @default(uuid())
+  userId         String
+  name           String
+  description    String?
+  industry       String?
+  targetCustomer String?
+  status         String       @default("active")
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  keywords       Keyword[]
+  competitors    Competitor[]
+
+  @@index([userId])
+}
+
+model Competitor {
+  id         String   @id @default(uuid())
+  campaignId String
+  name       String
+  createdAt  DateTime @default(now())
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
 }
 
 model Keyword {
-  id        String   @id @default(uuid())
-  userId    String
-  text      String
-  flags     Json     @default("{}")
-  enabled   Boolean  @default(true)
-  dailyHits Int      @default(0)
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  matches   Match[]
+  id         String    @id @default(uuid())
+  userId     String
+  campaignId String?
+  text       String
+  flags      Json      @default("{}")
+  enabled    Boolean   @default(true)
+  dailyHits  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id])
+  campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  matches    Match[]
+
+  @@index([campaignId])
 }
 
 model Match {
-  id             String   @id @default(uuid())
-  keywordId      String
-  platform       Platform
-  postId         String
-  title          String
-  url            String
-  snippet        String
-  matchedAt      DateTime @default(now())
-  intentScore    Int?
-  aiSummary      String?  @db.VarChar(200)
-  aiReplyDraft   String?
-  keyword        Keyword  @relation(fields: [keywordId], references: [id])
+  id              String   @id @default(uuid())
+  keywordId       String
+  platform        Platform
+  postId          String
+  title           String
+  url             String
+  snippet         String
+  matchedAt       DateTime @default(now())
+  intentScore     Int?
+  aiSummary       String?  @db.VarChar(200)
+  aiReplyDraft    String?
+  painPoints      String?
+  opportunityType String?
+  competitors     String[]
+  keyword         Keyword  @relation(fields: [keywordId], references: [id])
 
   @@unique([keywordId, postId])
 }

@@ -38,6 +38,9 @@ export async function patchMatchScore(
   matchId: string,
   intentScore: number,
   aiSummary: string | null,
+  painPoints: string | null,
+  opportunityType: string | null,
+  competitors: string[],
 ): Promise<void> {
   const apiUrl = process.env.INTERNAL_API_URL
   const secret = process.env.INTERNAL_API_SECRET
@@ -50,7 +53,7 @@ export async function patchMatchScore(
         'Content-Type': 'application/json',
         'x-internal-secret': secret,
       },
-      body: JSON.stringify({ intentScore, aiSummary }),
+      body: JSON.stringify({ intentScore, aiSummary, painPoints, opportunityType, competitors }),
     })
   } catch (err) {
     console.error('[submitter] patch score failed:', err)
