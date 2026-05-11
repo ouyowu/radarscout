@@ -173,31 +173,30 @@ export function LiveDemoWidget() {
       <div
         className="rounded-[20px] overflow-hidden"
         style={{
-          background:    'rgba(255,255,255,0.04)',
-          border:        '1px solid rgba(255,255,255,0.08)',
-          backdropFilter:'blur(16px)',
+          background:    'white',
+          border:        '1px solid #e5e7eb',
         }}
       >
 
         {/* ── Header bar ── */}
         <div
           className="flex items-center justify-between px-4 py-2.5"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderBottom: '1px solid #f3f4f6' }}
         >
           <div className="flex items-center gap-2">
             <span
               className="h-2 w-2 rounded-full bg-[#FF4500]"
               style={{ boxShadow: '0 0 8px rgba(255,69,0,0.8)' }}
             />
-            <span className="text-label font-semibold text-white/50">RadarScout</span>
+            <span className="text-label font-semibold text-gray-500">RadarScout</span>
           </div>
-          <span className="text-label text-white/25">live demo</span>
+          <span className="text-label text-gray-400">live demo</span>
         </div>
 
         {/* ── Platform filter tabs ── */}
         <div
           className="flex items-center gap-1 px-3 py-2 overflow-x-auto"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderBottom: '1px solid #f3f4f6' }}
         >
           {FILTERS.map(({ key, label }) => (
             <button
@@ -207,7 +206,7 @@ export function LiveDemoWidget() {
               style={
                 filter === key
                   ? { background: 'rgba(255,69,0,0.15)', color: '#FF6B35' }
-                  : { color: 'rgba(255,255,255,0.38)' }
+                  : { color: '#6b7280' }
               }
             >
               {key !== 'all' && <PlatformLogo platform={key as Platform} size={13} />}
@@ -225,7 +224,7 @@ export function LiveDemoWidget() {
             className="flex-1 overflow-y-auto"
             style={{
               maxHeight: '272px',
-              borderRight: '1px solid rgba(255,255,255,0.05)',
+              borderRight: '1px solid #f3f4f6',
             }}
           >
             <div className="p-3 space-y-2">
@@ -244,8 +243,8 @@ export function LiveDemoWidget() {
                             boxShadow:  '0 0 0 2px rgba(255,69,0,0.06) inset',
                           }
                         : {
-                            background: 'rgba(255,255,255,0.03)',
-                            border:     '1px solid rgba(255,255,255,0.06)',
+                            background: '#fafafa',
+                            border:     '1px solid #f3f4f6',
                             opacity:    0.5,
                           }
                     }
@@ -253,16 +252,16 @@ export function LiveDemoWidget() {
                     {/* Source row */}
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <PlatformLogo platform={post.platform} size={14} />
-                      <span className="text-label font-medium text-white/50 flex-1 truncate">
+                      <span className="text-label font-medium text-gray-500 flex-1 truncate">
                         {post.source}
                       </span>
-                      <span className="text-label text-white/25 flex-shrink-0">{post.time}</span>
+                      <span className="text-label text-gray-400 flex-shrink-0">{post.time}</span>
                     </div>
 
                     {/* Title */}
                     <p
                       className="text-sm leading-snug line-clamp-2"
-                      style={{ color: isActive ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.5)' }}
+                      style={{ color: isActive ? '#111827' : '#9ca3af' }}
                     >
                       {post.title}
                     </p>
@@ -270,7 +269,7 @@ export function LiveDemoWidget() {
                     {/* Active-card footer */}
                     {isActive && (
                       <div className="mt-2 flex items-center gap-2">
-                        <span className="text-label text-white/30">Score:</span>
+                        <span className="text-label text-gray-400">Score:</span>
                         <ScoreBadge score={post.score} />
                         <span
                           className="text-label font-semibold ml-auto"
@@ -289,7 +288,7 @@ export function LiveDemoWidget() {
           {/* Right: alerts panel */}
           <div className="sm:w-[152px] flex-shrink-0 p-3">
             <div className="flex items-center justify-between mb-2.5">
-              <p className="text-label font-semibold text-white/30 uppercase">Alerts</p>
+              <p className="text-label font-semibold text-gray-400 uppercase">Alerts</p>
               <span
                 className="text-label font-semibold tabular-nums"
                 style={{ color: '#FF6B35' }}
@@ -304,8 +303,8 @@ export function LiveDemoWidget() {
                   key={entry.key}
                   className="rounded-xl p-2.5"
                   style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border:     '1px solid rgba(255,255,255,0.07)',
+                    background: '#f9fafb',
+                    border:     '1px solid #e5e7eb',
                     animation:  i === 0
                       ? 'alert-slide-in 0.35s cubic-bezier(0.16,1,0.3,1) both'
                       : undefined,
@@ -315,7 +314,7 @@ export function LiveDemoWidget() {
                     <ScoreBadge score={entry.post.score} />
                     <PlatformLogo platform={entry.post.platform} size={12} />
                   </div>
-                  <p className="text-[0.7rem] leading-snug line-clamp-2 text-white/50">
+                  <p className="text-[0.7rem] leading-snug line-clamp-2 text-gray-500">
                     {entry.post.title}
                   </p>
                 </div>
@@ -327,14 +326,14 @@ export function LiveDemoWidget() {
         {/* ── Footer: monitoring bar ── */}
         <div
           className="flex items-center justify-between px-4 py-2.5"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ borderTop: '1px solid #f3f4f6' }}
         >
           <div className="flex items-center gap-2">
             <span
               className="h-2 w-2 rounded-full bg-green-500 flex-shrink-0"
               style={{ animation: 'pulse-dot 1.5s ease-in-out infinite' }}
             />
-            <span className="text-label text-white/40">Monitoring 24/7</span>
+            <span className="text-label text-gray-400">Monitoring 24/7</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span
@@ -343,7 +342,7 @@ export function LiveDemoWidget() {
             >
               {matchCount.toLocaleString()}
             </span>
-            <span className="text-label text-white/30">posts scanned</span>
+            <span className="text-label text-gray-400">posts scanned</span>
           </div>
         </div>
 

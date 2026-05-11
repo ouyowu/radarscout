@@ -97,7 +97,7 @@ export function ReplyButton({ matchId, postUrl, existingDraft, existingProductDe
       {/* Modal backdrop */}
       {(state === 'modal' || state === 'loading' || state === 'draft') && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-800/40"
           onClick={e => {
             if (e.target === e.currentTarget && state !== 'loading') setState('idle')
           }}

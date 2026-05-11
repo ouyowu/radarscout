@@ -69,10 +69,10 @@ export function LiveAlertTicker() {
               </svg>
               Intent {alert.score}/10
             </span>
-            <span className="text-label text-white/40">r/{alert.subreddit}</span>
-            <span className="text-label text-white/30 ml-auto">{alert.time}</span>
+            <span className="text-label text-gray-400">r/{alert.subreddit}</span>
+            <span className="text-label text-gray-400 ml-auto">{alert.time}</span>
           </div>
-          <p className="text-sm font-medium leading-snug text-white/85">
+          <p className="text-sm font-medium leading-snug text-gray-800">
             {alert.text}
           </p>
           <span className="mt-2 inline-block text-label font-semibold" style={{ color: '#FF6B35' }}>

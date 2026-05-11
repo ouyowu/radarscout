@@ -201,7 +201,7 @@ function IntentBadge({ score }: { score: number }) {
   } else if (score >= 60) {
     bg = 'rgba(234,179,8,0.15)'; color = '#facc15'; label = `${score}% intent`
   } else {
-    bg = 'rgba(255,255,255,0.08)'; color = 'rgba(255,255,255,0.40)'; label = `${score}% intent`
+    bg = '#f3f4f6'; color = '#9ca3af'; label = `${score}% intent`
   }
   return (
     <span
@@ -265,18 +265,18 @@ function ReplyModal({ post, onClose }: { post: Post; onClose: () => void }) {
       {/* Panel */}
       <div
         className="relative w-full max-w-lg rounded-2xl p-6 flex flex-col gap-4"
-        style={{ background: '#111118', border: '1px solid rgba(255,255,255,0.12)' }}
+        style={{ background: 'white', border: '1px solid #e5e7eb' }}
       >
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-label font-semibold text-white/40 uppercase mb-1">AI Draft Reply</p>
-            <p className="text-sm font-semibold text-white/85 leading-snug line-clamp-2">{post.title}</p>
+            <p className="text-label font-semibold text-gray-400 uppercase mb-1">AI Draft Reply</p>
+            <p className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2">{post.title}</p>
           </div>
           <button
             ref={closeRef}
             onClick={onClose}
-            className="flex-shrink-0 rounded-lg p-1.5 text-white/40 hover:text-white/80 hover:bg-white/[0.08] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
+            className="flex-shrink-0 rounded-lg p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300"
             aria-label="Close modal"
           >
             <CloseSvg />
@@ -288,8 +288,8 @@ function ReplyModal({ post, onClose }: { post: Post; onClose: () => void }) {
           readOnly
           value={SAMPLE_REPLY}
           rows={5}
-          className="w-full text-sm text-white/75 leading-relaxed rounded-xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF4500]"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}
+          className="w-full text-sm text-gray-700 leading-relaxed rounded-xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF4500]"
+          style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
           aria-label="AI-generated reply draft"
         />
 
@@ -297,20 +297,20 @@ function ReplyModal({ post, onClose }: { post: Post; onClose: () => void }) {
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={copy}
-            className="flex-1 py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
-            style={{ border: '1px solid rgba(255,255,255,0.15)', color: copied ? '#4ade80' : 'rgba(255,255,255,0.75)' }}
+            className="flex-1 py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300"
+            style={{ border: '1px solid #d1d5db', color: copied ? '#16a34a' : '#374151' }}
           >
             {copied ? 'Copied!' : 'Copy reply'}
           </button>
           <Link
             href="/auth/register"
-            className="flex-1 py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold text-white bg-[#FF4500] hover:bg-[#e63e00] transition-colors text-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#111118] min-h-[44px] flex items-center justify-center"
+            className="flex-1 py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold text-white bg-[#FF4500] hover:bg-[#e63e00] transition-colors text-center focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white min-h-[44px] flex items-center justify-center"
           >
             Sign up to post →
           </Link>
         </div>
 
-        <p className="text-label text-white/30 text-center">
+        <p className="text-label text-gray-400 text-center">
           Sign up to generate custom AI replies tailored to your product
         </p>
       </div>
@@ -343,21 +343,21 @@ function PostCard({
   return (
     <article
       className="rounded-2xl p-5 flex flex-col gap-3 transition-colors"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+      style={{ background: 'white', border: '1px solid #e5e7eb' }}
     >
       {/* Source row */}
       <div className="flex items-center gap-2 flex-wrap">
         <PlatformIcon platform={post.platform} size={15} />
-        <span className="text-label font-medium text-white/55">{sourceLabel(post)}</span>
-        <span className="text-label text-white/25 ml-auto flex-shrink-0">{post.time}</span>
+        <span className="text-label font-medium text-gray-500">{sourceLabel(post)}</span>
+        <span className="text-label text-gray-400 ml-auto flex-shrink-0">{post.time}</span>
       </div>
 
       {/* Title */}
-      <h3 className="text-sm font-semibold text-white/90 leading-snug">{post.title}</h3>
+      <h3 className="text-sm font-semibold text-gray-900 leading-snug">{post.title}</h3>
 
       {/* Body */}
       {post.body && (
-        <p className="text-sm text-white/45 leading-relaxed line-clamp-2">{post.body}</p>
+        <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{post.body}</p>
       )}
 
       {/* Intent + tags */}
@@ -367,7 +367,7 @@ function PostCard({
           <span
             key={tag}
             className="text-label px-1.5 py-0.5 rounded-md"
-            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.35)' }}
+            style={{ background: '#f3f4f6', color: '#6b7280' }}
           >
             {tag}
           </span>
@@ -397,8 +397,8 @@ function PostCard({
             onBlur={() => setShowTooltip(false)}
             className="inline-flex items-center gap-1.5 text-label font-semibold px-3 py-1.5 rounded-lg transition-colors min-h-[36px]"
             style={{
-              border: '1px solid rgba(255,255,255,0.10)',
-              color: 'rgba(255,255,255,0.25)',
+              border: '1px solid #e5e7eb',
+              color: '#9ca3af',
               cursor: 'not-allowed',
               opacity: 0.5,
             }}
@@ -411,23 +411,23 @@ function PostCard({
           {showTooltip && (
             <div
               className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg text-label text-white/80 whitespace-nowrap pointer-events-none z-10"
-              style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.12)' }}
+              style={{ background: '#1f2937', border: '1px solid #374151' }}
               role="tooltip"
             >
               Sign up to open on Reddit
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent" style={{ borderTopColor: '#1a1a24' }} />
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent" style={{ borderTopColor: '#1f2937' }} />
             </div>
           )}
         </div>
 
         {/* Engagement */}
-        <span className="text-label text-white/30 ml-auto flex-shrink-0">{engagementLabel}</span>
+        <span className="text-label text-gray-400 ml-auto flex-shrink-0">{engagementLabel}</span>
 
         {/* Bookmark */}
         <button
           onClick={() => onSave(post.id)}
-          className={`rounded-lg p-1.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30 min-h-[36px] min-w-[36px] flex items-center justify-center ${
-            saved ? 'text-[#FF4500]' : 'text-white/30 hover:text-white/60'
+          className={`rounded-lg p-1.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300 min-h-[36px] min-w-[36px] flex items-center justify-center ${
+            saved ? 'text-[#FF4500]' : 'text-gray-400 hover:text-gray-600'
           }`}
           aria-label={saved ? 'Unsave post' : 'Save post'}
           aria-pressed={saved}
@@ -488,7 +488,7 @@ function InboxView({
               style={
                 filter === key
                   ? { background: 'rgba(255,69,0,0.15)', color: '#FF6B35' }
-                  : { color: 'rgba(255,255,255,0.40)' }
+                  : { color: '#6b7280' }
               }
               aria-pressed={filter === key}
             >
@@ -507,9 +507,9 @@ function InboxView({
           onChange={e => setSort(e.target.value as Sort)}
           className="text-label font-medium rounded-lg px-3 py-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#FF4500] min-h-[36px]"
           style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.10)',
-            color: 'rgba(255,255,255,0.60)',
+            background: 'white',
+            border: '1px solid #d1d5db',
+            color: '#374151',
           }}
           aria-label="Sort posts"
         >
@@ -522,7 +522,7 @@ function InboxView({
       {/* Post list */}
       {sorted.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-white/30 text-sm">No posts match this filter.</p>
+          <p className="text-gray-400 text-sm">No posts match this filter.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -569,10 +569,10 @@ function AnalyticsView() {
           <div
             key={label}
             className="rounded-2xl p-4 flex flex-col gap-1"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+            style={{ background: 'white', border: '1px solid #e5e7eb' }}
           >
-            <p className="text-2xl font-bold text-white/90 tabular-nums">{value}</p>
-            <p className="text-label text-white/40 leading-snug">{label}</p>
+            <p className="text-2xl font-bold text-gray-900 tabular-nums">{value}</p>
+            <p className="text-label text-gray-400 leading-snug">{label}</p>
           </div>
         ))}
       </div>
@@ -580,11 +580,11 @@ function AnalyticsView() {
       {/* Bar chart */}
       <div
         className="rounded-2xl p-5"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: 'white', border: '1px solid #e5e7eb' }}
       >
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-          <h2 className="text-sm font-semibold text-white/80">Intent distribution this week</h2>
-          <div className="flex items-center gap-4 text-label text-white/40">
+          <h2 className="text-sm font-semibold text-gray-700">Intent distribution this week</h2>
+          <div className="flex items-center gap-4 text-label text-gray-400">
             <span className="flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-sm" style={{ background: '#4ade80' }} aria-hidden="true" />
               High
@@ -594,7 +594,7 @@ function AnalyticsView() {
               Medium
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="inline-block h-2 w-2 rounded-sm" style={{ background: 'rgba(255,255,255,0.18)' }} aria-hidden="true" />
+              <span className="inline-block h-2 w-2 rounded-sm" style={{ background: '#d1d5db' }} aria-hidden="true" />
               Low
             </span>
           </div>
@@ -613,11 +613,11 @@ function AnalyticsView() {
             return (
               <div key={day} className="flex-1 flex flex-col items-center gap-1">
                 <div className="w-full flex flex-col justify-end rounded-t-lg overflow-hidden" style={{ height: `${((total / maxTotal) * 128)}px` }}>
-                  <div style={{ height: `${lowPct}%`, background: 'rgba(255,255,255,0.18)', minHeight: low > 0 ? 2 : 0 }} />
+                  <div style={{ height: `${lowPct}%`, background: '#d1d5db', minHeight: low > 0 ? 2 : 0 }} />
                   <div style={{ height: `${medPct}%`, background: '#facc15', minHeight: med > 0 ? 2 : 0 }} />
                   <div style={{ height: `${highPct}%`, background: '#4ade80', borderRadius: '4px 4px 0 0', minHeight: high > 0 ? 2 : 0 }} />
                 </div>
-                <span className="text-label text-white/30">{day}</span>
+                <span className="text-label text-gray-400">{day}</span>
               </div>
             )
           })}
@@ -641,15 +641,15 @@ function KeywordsView() {
   return (
     <div className="p-4 sm:p-6 max-w-3xl mx-auto space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-semibold text-white/70">Active keywords</h2>
-        <span className="text-label text-white/30">Demo plan · 3/3 used</span>
+        <h2 className="text-sm font-semibold text-gray-700">Active keywords</h2>
+        <span className="text-label text-gray-400">Demo plan · 3/3 used</span>
       </div>
 
       {keywords.map(({ kw, matches }) => (
         <div
           key={kw}
           className="rounded-2xl p-5 flex items-center justify-between gap-4"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ background: 'white', border: '1px solid #e5e7eb' }}
         >
           <div className="flex items-center gap-3 min-w-0">
             <div
@@ -659,13 +659,13 @@ function KeywordsView() {
               <KeywordsSvg />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white/80 truncate">{kw}</p>
-              <p className="text-label text-white/35">active · watching r/all</p>
+              <p className="text-sm font-medium text-gray-700 truncate">{kw}</p>
+              <p className="text-label text-gray-400">active · watching r/all</p>
             </div>
           </div>
           <div className="flex-shrink-0 text-right">
             <p className="text-sm font-bold text-[#FF4500] tabular-nums">{matches}</p>
-            <p className="text-label text-white/30">today</p>
+            <p className="text-label text-gray-400">today</p>
           </div>
         </div>
       ))}
@@ -676,10 +676,10 @@ function KeywordsView() {
           className="rounded-2xl p-5 text-center"
           style={{ background: 'rgba(255,69,0,0.06)', border: '1px solid rgba(255,69,0,0.25)' }}
         >
-          <p className="text-sm text-white/65 mb-3">Sign up to add more keywords and unlock real-time monitoring.</p>
+          <p className="text-sm text-gray-600 mb-3">Sign up to add more keywords and unlock real-time monitoring.</p>
           <Link
             href="/auth/register"
-            className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-5 py-2.5 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+            className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-5 py-2.5 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
           >
             Sign up free →
           </Link>
@@ -687,8 +687,8 @@ function KeywordsView() {
       ) : (
         <button
           onClick={() => setShowSignup(true)}
-          className="w-full rounded-2xl p-4 text-sm font-medium text-white/40 hover:text-white/60 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 min-h-[52px] flex items-center justify-center gap-2"
-          style={{ border: '1px dashed rgba(255,255,255,0.12)' }}
+          className="w-full rounded-2xl p-4 text-sm font-medium text-gray-400 hover:text-gray-500 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-200 min-h-[52px] flex items-center justify-center gap-2"
+          style={{ border: '1px dashed #d1d5db' }}
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -707,7 +707,7 @@ function SettingsView() {
     <div className="p-4 sm:p-6 max-w-3xl mx-auto">
       <div
         className="rounded-2xl p-8 text-center"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: 'white', border: '1px solid #e5e7eb' }}
       >
         <div
           className="h-14 w-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
@@ -715,13 +715,13 @@ function SettingsView() {
         >
           <SettingsSvg />
         </div>
-        <h2 className="text-base font-semibold text-white/80 mb-2">Settings are locked in demo</h2>
-        <p className="text-sm text-white/45 mb-5 max-w-xs mx-auto">
+        <h2 className="text-base font-semibold text-gray-700 mb-2">Settings are locked in demo</h2>
+        <p className="text-sm text-gray-500 mb-5 max-w-xs mx-auto">
           Sign up to configure email alerts, notification preferences, and team access.
         </p>
         <Link
           href="/auth/register"
-          className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-5 py-2.5 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+          className="inline-flex items-center justify-center bg-[#FF4500] hover:bg-[#e63e00] text-white font-semibold text-[0.9375rem] px-5 py-2.5 rounded-xl transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
         >
           Create free account →
         </Link>
@@ -753,10 +753,10 @@ function Sidebar({
   return (
     <aside
       className={`flex flex-col h-full ${mobile ? 'w-64' : 'w-64'}`}
-      style={{ background: '#0d0d14', borderRight: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: '#f9fafb', borderRight: '1px solid #e5e7eb' }}
     >
       {/* Logo */}
-      <div className="h-14 flex items-center gap-2.5 px-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="h-14 flex items-center gap-2.5 px-5" style={{ borderBottom: '1px solid #e5e7eb' }}>
         <div className="h-7 w-7 rounded-lg bg-[#FF4500] flex items-center justify-center flex-shrink-0">
           <svg className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <circle cx="10" cy="10" r="10" fill="#FF4500" />
@@ -772,11 +772,11 @@ function Sidebar({
             </g>
           </svg>
         </div>
-        <span className="text-[0.9375rem] font-semibold text-white/90">RadarScout</span>
+        <span className="text-[0.9375rem] font-semibold text-gray-900">RadarScout</span>
         {mobile && onClose && (
           <button
             onClick={onClose}
-            className="ml-auto rounded-lg p-1.5 text-white/40 hover:text-white/70 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
+            className="ml-auto rounded-lg p-1.5 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300"
             aria-label="Close sidebar"
           >
             <CloseSvg className="h-4 w-4" />
@@ -796,7 +796,7 @@ function Sidebar({
               style={
                 active
                   ? { background: 'rgba(255,69,0,0.12)', color: '#FF6B35' }
-                  : { color: 'rgba(255,255,255,0.45)' }
+                  : { color: '#6b7280' }
               }
               aria-current={active ? 'page' : undefined}
             >
@@ -808,7 +808,7 @@ function Sidebar({
       </nav>
 
       {/* Bottom */}
-      <div className="px-4 py-5 space-y-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="px-4 py-5 space-y-3" style={{ borderTop: '1px solid #e5e7eb' }}>
         <div
           className="flex items-center gap-2 px-3 py-2 rounded-xl"
           style={{ background: 'rgba(255,69,0,0.08)', border: '1px solid rgba(255,69,0,0.20)' }}
@@ -821,7 +821,7 @@ function Sidebar({
         </div>
         <Link
           href="/auth/register"
-          className="flex items-center justify-center w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0d0d14]"
+          className="flex items-center justify-center w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold bg-[#FF4500] hover:bg-[#e63e00] text-white transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white"
         >
           Sign up free →
         </Link>
@@ -893,7 +893,7 @@ export function DemoApp() {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden" style={{ background: '#0a0a0f', color: 'rgba(255,255,255,0.87)' }}>
+    <div className="flex h-dvh overflow-hidden" style={{ background: 'white', color: '#111' }}>
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex flex-col flex-shrink-0" style={{ width: 256 }}>
@@ -924,24 +924,24 @@ export function DemoApp() {
         {/* Top bar */}
         <header
           className="flex-shrink-0 flex items-center gap-3 px-4 sm:px-6 h-14"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(10,10,15,0.90)', backdropFilter: 'blur(12px)' }}
+          style={{ borderBottom: '1px solid #e5e7eb', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)' }}
         >
           {/* Mobile hamburger */}
           <button
             onClick={() => setSidebarOpen(true)}
-            className="md:hidden flex items-center justify-center rounded-lg p-2 text-white/50 hover:text-white/80 hover:bg-white/[0.08] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30 min-h-[44px] min-w-[44px]"
+            className="md:hidden flex items-center justify-center rounded-lg p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300 min-h-[44px] min-w-[44px]"
             aria-label="Open navigation"
             aria-expanded={sidebarOpen}
           >
             <MenuSvg />
           </button>
 
-          <h1 className="text-[0.9375rem] font-semibold text-white/80">{viewTitle[view]}</h1>
+          <h1 className="text-[0.9375rem] font-semibold text-gray-700">{viewTitle[view]}</h1>
 
           <div className="ml-auto flex items-center gap-2">
             <span
               className="text-label font-medium px-2.5 py-1 rounded-lg hidden sm:inline"
-              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.35)' }}
+              style={{ background: '#f3f4f6', color: '#6b7280' }}
             >
               Demo data
             </span>
@@ -961,7 +961,7 @@ export function DemoApp() {
         <main
           id="main-content"
           className="flex-1 overflow-y-auto"
-          style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.10) transparent' }}
+          style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,0,0,0.15) transparent' }}
         >
           {view === 'inbox'     && <InboxView savedIds={savedIds} onSave={toggleSave} onReply={setReplyPost} />}
           {view === 'analytics' && <AnalyticsView />}

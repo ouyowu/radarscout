@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={GeistSans.variable} style={{ colorScheme: 'light', background: 'white' }}>
-      <body className="font-sans" style={{ overscrollBehavior: 'none' }}>{children}</body>
+      <body className="font-sans" style={{ background: 'white', color: '#111', overscrollBehavior: 'none' }}>{children}</body>
     </html>
   )
 }
