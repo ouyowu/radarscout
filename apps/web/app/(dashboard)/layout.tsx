@@ -27,6 +27,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <a href="/monitors" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
             Monitors
           </a>
+          <a href="/campaigns" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
+            Campaigns
+          </a>
           <a href="/billing" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900">
             Billing
           </a>
