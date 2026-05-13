@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db, PLAN_LIMITS, type PlanKey } from '@reddit-monitor/db'
+import { effectivePlan } from '@/lib/admin'
 
 export async function GET() {
   const session = await auth()
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const plan = (session.user.plan ?? 'FREE') as PlanKey
+  const plan = effectivePlan(session.user.plan, session.user.email) as PlanKey
   const limit = PLAN_LIMITS[plan]?.keywords ?? 3
   const count = await db.keyword.count({ where: { userId: session.user.id } })
   if (count >= limit) {

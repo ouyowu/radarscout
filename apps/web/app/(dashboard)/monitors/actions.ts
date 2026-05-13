@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { db } from '@reddit-monitor/db'
+import { effectivePlan } from '@/lib/admin'
 
 export async function createMonitor(formData: FormData) {
   const session = await auth()
@@ -25,7 +26,8 @@ export async function createMonitor(formData: FormData) {
   const dbUser = await db.user.findUnique({ where: { id: session.user.id } })
   if (!dbUser) redirect('/login')
 
-  if (dbUser.plan === 'FREE') {
+  const plan = effectivePlan(dbUser.plan, dbUser.email)
+  if (plan === 'FREE') {
     const existing = await db.keyword.count({ where: { userId: dbUser.id, enabled: true } })
     if (existing + keywords.length > FREE_LIMIT) {
       redirect(
