@@ -33,9 +33,9 @@ beforeEach(() => {
 describe('TARGET_SUBREDDITS', () => {
   it('includes the expected Thailand travel communities', () => {
     expect(TARGET_SUBREDDITS).toEqual(
-      expect.arrayContaining(['ThailandTourism', 'Thailand', 'Bangkok', 'Pattaya', 'phuket', 'chiangmai', 'solotravel', 'travel']),
+      expect.arrayContaining(['ThailandTourism', 'Thailand', 'Bangkok', 'Pattaya', 'phuket', 'chiangmai', 'solotravel', 'travelpartners', 'digitalnomad', 'travel']),
     )
-    expect(TARGET_SUBREDDITS).toHaveLength(8)
+    expect(TARGET_SUBREDDITS).toHaveLength(10)
   })
 })
 

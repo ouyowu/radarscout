@@ -22,6 +22,8 @@ export const TARGET_SUBREDDITS = [
   'phuket',
   'chiangmai',
   'solotravel',
+  'travelpartners',
+  'digitalnomad',
   'travel',
 ]
 

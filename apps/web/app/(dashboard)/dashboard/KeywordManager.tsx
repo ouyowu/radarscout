@@ -8,19 +8,19 @@ type Keyword = { id: string; text: string; enabled: boolean; dailyHits: number }
 
 const PACKS = [
   {
-    name: 'SaaS Founder',
-    desc: 'Catch buyers comparing tools and venting about competitors',
-    keywords: ['alternative to [competitor]', 'looking for [category] tool', 'recommend SaaS', 'frustrated with [tool]'],
+    name: 'Thailand Nightlife',
+    desc: 'Find traveler questions about bars, clubs, safety, and where to go tonight',
+    keywords: ['Bangkok nightlife tonight', 'Pattaya bars safe', 'Phuket club recommendation', 'Chiang Mai live music'],
   },
   {
-    name: 'Marketing Agency',
-    desc: 'Find businesses actively seeking agency services',
-    keywords: ['looking for agency', 'recommend SEO', 'need marketing help'],
+    name: 'Going-Out Friends',
+    desc: 'Catch solo travelers looking for people to join bars, clubs, and night markets',
+    keywords: ['solo traveler Bangkok tonight', 'anyone want to go out Bangkok', 'meet people in Pattaya'],
   },
   {
-    name: 'B2B Sales',
-    desc: 'Intercept companies in active vendor evaluation',
-    keywords: ['vendor recommendation', 'software comparison', 'switching from'],
+    name: 'Deals & Warnings',
+    desc: 'Monitor special offers, price checks, scams, transport, and tourist warnings',
+    keywords: ['Bangkok happy hour', 'Thailand nightlife scam', 'bar price check'],
   },
 ]
 
@@ -232,7 +232,7 @@ export function KeywordManager({
           onChange={e => setInput(e.target.value)}
           disabled={atLimit || loading}
           maxLength={100}
-          placeholder={atLimit ? 'Upgrade to add more keywords' : 'e.g. alternative to baremetrics'}
+          placeholder={atLimit ? 'Upgrade to add more keywords' : 'e.g. Bangkok nightlife tonight'}
           className="flex-1 border border-gray-300 rounded-lg px-3 py-3 sm:py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
         />
         <button
@@ -264,16 +264,16 @@ export function KeywordManager({
         <div className="pt-3 pb-2 space-y-4">
           {[
             {
-              category: 'SaaS Tools',
-              keywords: ['alternative to', 'looking for tool', 'recommend software', 'too expensive'],
+              category: 'Events & venues',
+              keywords: ['Bangkok nightlife tonight', 'Phuket club recommendation', 'Chiang Mai live music', 'Pattaya walking street'],
             },
             {
-              category: 'Agencies',
-              keywords: ['looking for agency', 'recommend SEO', 'need help with marketing', 'hiring'],
+              category: 'Social plans',
+              keywords: ['solo traveler Bangkok tonight', 'anyone want to go out Bangkok', 'meet people in Pattaya', 'bar crawl Bangkok'],
             },
             {
-              category: 'B2B Sales',
-              keywords: ['vendor recommendation', 'software comparison', 'switching from', 'frustrated with'],
+              category: 'Offers & warnings',
+              keywords: ['Bangkok happy hour', 'free entry Bangkok club', 'Thailand nightlife scam', 'taxi after club Bangkok'],
             },
           ].map(({ category, keywords: ideas }) => (
             <div key={category}>

@@ -83,22 +83,23 @@ export async function POST(
   const response = await client.messages.create({
     model: 'claude-haiku-20250307',
     max_tokens: 256,
-    system: `You are a Reddit community expert writing on behalf of a founder.
-Write a genuine reply that helps the person AND naturally mentions the product as a solution.
+    system: `You are writing a human-reviewed reply draft for a Thailand nightlife travel community.
+Write a genuine reply that helps the person first. Mention ThaiNight only if it is contextually useful, never as a hard sell.
 Rules:
-- Lead with empathy or useful information
-- Mention the product in the last 1-2 sentences only
+- Lead with practical Thailand nightlife advice, safety context, or planning help
+- If mentioning ThaiNight, do it in the last sentence only and keep it optional
 - Max 4 sentences total
-- Sound like a real Reddit user, not a marketer
+- Sound like a real traveler or local helper, not a marketer
 - No exclamation marks
 - Never start with "Great question" or similar
-- Do not make claims you cannot verify`,
+- Do not make claims you cannot verify
+- Do not post automatically; this is only a draft for a human to review`,
     messages: [
       {
         role: 'user',
         content: `Reddit post title: ${match.title}
 Post content: ${match.snippet}
-My product: ${resolvedDesc}`,
+Site/context to mention only when appropriate: ${resolvedDesc}`,
       },
     ],
   })
