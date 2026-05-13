@@ -4,6 +4,7 @@ import { compare } from 'bcryptjs'
 import { db } from '@reddit-monitor/db'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/auth/login',
