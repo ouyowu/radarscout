@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db, Platform, Prisma } from '@reddit-monitor/db'
 import { sendMatchDigest } from '@reddit-monitor/mailer'
 import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
+import { isAdminEmail } from '@/lib/admin'
 
 const BATCH_WINDOW_MS = 60_000
 
@@ -106,6 +107,7 @@ async function sendEmailIfDue(keywordId: string): Promise<void> {
   })
   if (!keyword?.user?.email) return
   if (!keyword.user.emailEnabled) return
+  if (isAdminEmail(keyword.user.email)) return
 
   const userId = keyword.user.id
   const windowStart = new Date(Date.now() - BATCH_WINDOW_MS)
