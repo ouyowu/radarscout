@@ -23,7 +23,7 @@
 - "Refactor" → tests pass before AND after.
 - Multi-step: state plan with verify steps before starting.
 
-## 5. Project: LeadPulse
+## 5. Project: RadarScout
 
 ### Tech stack
 - Frontend: Next.js 14 App Router, TypeScript, Tailwind CSS
@@ -31,7 +31,7 @@
 - Queue: BullMQ + Redis
 - Email: Resend
 - Payments: Stripe
-- Crawler: Node.js worker (Reddit OAuth API)
+- Crawler: Node.js worker (RSS-first, no OAuth required)
 - Package manager: pnpm (monorepo)
 
 ### Structure
@@ -53,9 +53,11 @@ packages/mailer/  # Email templates + Resend client
 - .env.production → DO NOT READ OR USE — human confirms all changes
 
 ### Crawler rules
-- Respect Reddit API rate limit: max 60 req/min per OAuth token.
+- RSS-first: fetches `reddit.com/search.rss` + `r/all/new/.rss` per keyword; no OAuth required.
+- Optional Google fallback via Serper.dev (`SERPER_API_KEY`); silently skipped if unset.
+- Staggered polling: each keyword fires at `(90s / n) * i` offset within the 90s window.
+- Compound seenIds key `${postId}:${keywordId}` — same post can match multiple keywords.
 - Crawler has no direct DB write access — submits via internal API only.
-- Never hardcode Reddit credentials.
 
 ### Stripe rules
 - Never modify webhook handlers without showing the full diff first.

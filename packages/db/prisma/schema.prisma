@@ -17,6 +17,10 @@ enum Plan {
 enum Platform {
   REDDIT
   HN
+  X
+  QUORA
+  RSS
+  FORUM
 }
 
 model User {
@@ -90,6 +94,12 @@ model Match {
   painPoints      String?
   opportunityType String?
   competitors     String[]
+  location         String?
+  contentCategory  String?
+  travelIntentScore Int?
+  credibilityScore Int?
+  commercialScore  Int?
+  sourceMeta       Json     @default("{}")
   keyword         Keyword  @relation(fields: [keywordId], references: [id])
 
   @@unique([keywordId, postId])

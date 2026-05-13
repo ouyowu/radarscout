@@ -74,3 +74,116 @@ export class AhoCorasick {
     return results
   }
 }
+
+export interface ThaiNightVenue {
+  id?: string
+  slug: string
+  name: string
+  city?: string
+  area_slug?: string
+  area_name?: string | null
+  category?: string | null
+  url?: string
+}
+
+export interface VenueFuzzyMatch {
+  venue: ThaiNightVenue
+  score: number
+  matchedText: string
+}
+
+type ThaiNightVenueResponse =
+  | ThaiNightVenue[]
+  | { venues?: ThaiNightVenue[]; data?: ThaiNightVenue[]; items?: ThaiNightVenue[] }
+
+function normalizeText(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+function tokens(value: string): string[] {
+  return normalizeText(value).split(/\s+/).filter(token => token.length >= 3)
+}
+
+const GENERIC_VENUE_TOKENS = new Set([
+  'bar',
+  'and',
+  'bars',
+  'club',
+  'clubs',
+  'pub',
+  'eatery',
+  'restaurant',
+  'bangkok',
+  'pattaya',
+  'phuket',
+  'chiang',
+  'mai',
+])
+
+function tokenOverlapScore(venueName: string, text: string): number {
+  const venueTokens = tokens(venueName).filter(token => !GENERIC_VENUE_TOKENS.has(token))
+  if (venueTokens.length === 0) return 0
+  const textTokens = new Set(tokens(text))
+  const hits = venueTokens.filter(token => textTokens.has(token)).length
+  return hits / venueTokens.length
+}
+
+function extractVenues(payload: ThaiNightVenueResponse): ThaiNightVenue[] {
+  if (Array.isArray(payload)) return payload
+  return payload.venues ?? payload.data ?? payload.items ?? []
+}
+
+export async function fetchThaiNightVenues(
+  endpoint = 'https://thainightlife.com/api/venues',
+): Promise<ThaiNightVenue[]> {
+  try {
+    const response = await fetch(endpoint, {
+      headers: { accept: 'application/json' },
+    })
+    if (!response.ok) return []
+    const payload = (await response.json()) as ThaiNightVenueResponse
+    return extractVenues(payload).filter(
+      venue => typeof venue.name === 'string' && typeof venue.slug === 'string',
+    )
+  } catch {
+    return []
+  }
+}
+
+export function fuzzyMatchVenue(
+  text: string,
+  venues: ThaiNightVenue[],
+  minScore = 0.72,
+): VenueFuzzyMatch | null {
+  const normalizedText = normalizeText(text)
+  let best: VenueFuzzyMatch | null = null
+
+  for (const venue of venues) {
+    const normalizedName = normalizeText(venue.name)
+    if (!normalizedName) continue
+
+    const exactScore = normalizedText.includes(normalizedName) ? 1 : 0
+    const overlapScore = tokenOverlapScore(venue.name, text)
+    const score = Math.max(exactScore, overlapScore)
+
+    if (score >= minScore && (!best || score > best.score)) {
+      best = { venue, score, matchedText: venue.name }
+    }
+  }
+
+  return best
+}
+
+export async function fuzzyMatchVenueFromThaiNight(
+  text: string,
+  options: { endpoint?: string; minScore?: number } = {},
+): Promise<VenueFuzzyMatch | null> {
+  const venues = await fetchThaiNightVenues(options.endpoint)
+  return fuzzyMatchVenue(text, venues, options.minScore)
+}

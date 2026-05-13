@@ -20,14 +20,24 @@ const NULL_RESULT = {
   painPoints: null,
   opportunityType: null,
   competitors: [],
+  location: null,
+  contentCategory: null,
+  travelIntentScore: null,
+  credibilityScore: null,
+  commercialScore: null,
 }
 
 const FULL_RESPONSE = JSON.stringify({
   score: 9,
-  summary: 'Seeking CRM for small team',
-  painPoints: 'Team lacks a centralised tool to track deals and follow-ups.',
-  opportunityType: 'buying_intent',
-  competitors: ['HubSpot', 'Pipedrive'],
+  summary: 'Visitor needs safe Bangkok nightlife advice',
+  painPoints: 'Traveler wants to avoid unsafe nightlife areas.',
+  opportunityType: 'traveler_question',
+  competitors: ['Nana Plaza', 'Soi Cowboy'],
+  location: 'Bangkok',
+  contentCategory: 'safety',
+  travelIntentScore: 9,
+  credibilityScore: 8,
+  commercialScore: 7,
 })
 
 describe('scoreMatch', () => {
@@ -43,7 +53,7 @@ describe('scoreMatch', () => {
     vi.mocked(Anthropic).mockImplementation(() => ({ messages: { create } }) as never)
 
     const redis = makeMockRedis()
-    const result = await scoreMatch('CRM software', POST, {
+    const result = await scoreMatch('bangkok nightlife', POST, {
       ...BASE_OPTS,
       plan: 'PRO',
       redis: redis as never,
@@ -51,10 +61,15 @@ describe('scoreMatch', () => {
 
     expect(result).toEqual({
       score: 9,
-      summary: 'Seeking CRM for small team',
-      painPoints: 'Team lacks a centralised tool to track deals and follow-ups.',
-      opportunityType: 'buying_intent',
-      competitors: ['HubSpot', 'Pipedrive'],
+      summary: 'Visitor needs safe Bangkok nightlife advice',
+      painPoints: 'Traveler wants to avoid unsafe nightlife areas.',
+      opportunityType: 'traveler_question',
+      competitors: ['Nana Plaza', 'Soi Cowboy'],
+      location: 'Bangkok',
+      contentCategory: 'safety',
+      travelIntentScore: 9,
+      credibilityScore: 8,
+      commercialScore: 7,
     })
     expect(create).toHaveBeenCalledOnce()
     expect(redis.set).toHaveBeenCalledOnce()
@@ -65,7 +80,7 @@ describe('scoreMatch', () => {
     vi.mocked(Anthropic).mockImplementation(() => ({ messages: { create } }) as never)
 
     const redis = makeMockRedis()
-    const result = await scoreMatch('CRM software', POST, {
+    const result = await scoreMatch('bangkok nightlife', POST, {
       ...BASE_OPTS,
       plan: 'FREE',
       redis: redis as never,
@@ -81,7 +96,7 @@ describe('scoreMatch', () => {
     vi.mocked(Anthropic).mockImplementation(() => ({ messages: { create } }) as never)
 
     const redis = makeMockRedis()
-    const result = await scoreMatch('CRM software', POST, {
+    const result = await scoreMatch('bangkok nightlife', POST, {
       ...BASE_OPTS,
       plan: 'PRO',
       redis: redis as never,
@@ -97,21 +112,26 @@ describe('scoreMatch', () => {
 
     const cached = JSON.stringify({
       score: 8,
-      summary: 'Comparing solutions for team use',
-      painPoints: 'Current tool is too slow.',
-      opportunityType: 'alternative_seeking',
+      summary: 'Comparing Pattaya nightlife areas',
+      painPoints: 'Traveler wants current Walking Street price guidance.',
+      opportunityType: 'price_check',
       competitors: [],
+      location: 'Pattaya',
+      contentCategory: 'price',
+      travelIntentScore: 8,
+      credibilityScore: 7,
+      commercialScore: 8,
     })
     const redis = makeMockRedis(cached)
 
-    const result = await scoreMatch('CRM software', POST, {
+    const result = await scoreMatch('bangkok nightlife', POST, {
       ...BASE_OPTS,
       plan: 'PRO',
       redis: redis as never,
     })
 
     expect(result.score).toBe(8)
-    expect(result.opportunityType).toBe('alternative_seeking')
+    expect(result.opportunityType).toBe('price_check')
     expect(create).not.toHaveBeenCalled()
     expect(redis.set).not.toHaveBeenCalled()
   })
@@ -123,7 +143,7 @@ describe('scoreMatch', () => {
     vi.mocked(Anthropic).mockImplementation(() => ({ messages: { create } }) as never)
 
     const redis = makeMockRedis()
-    const result = await scoreMatch('CRM software', POST, {
+    const result = await scoreMatch('bangkok nightlife', POST, {
       ...BASE_OPTS,
       plan: 'PRO',
       redis: redis as never,

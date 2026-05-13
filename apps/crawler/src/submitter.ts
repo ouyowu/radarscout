@@ -1,10 +1,11 @@
 export interface MatchPayload {
   keywordId: string
-  platform: 'REDDIT'
+  platform: 'REDDIT' | 'X' | 'QUORA' | 'RSS' | 'FORUM'
   postId: string
   title: string
   url: string
   snippet: string
+  sourceMeta?: Record<string, unknown>
 }
 
 export async function submitMatch(payload: MatchPayload): Promise<string | null> {
@@ -41,6 +42,13 @@ export async function patchMatchScore(
   painPoints: string | null,
   opportunityType: string | null,
   competitors: string[],
+  travelFields?: {
+    location: string | null
+    contentCategory: string | null
+    travelIntentScore: number | null
+    credibilityScore: number | null
+    commercialScore: number | null
+  },
 ): Promise<void> {
   const apiUrl = process.env.INTERNAL_API_URL
   const secret = process.env.INTERNAL_API_SECRET
@@ -53,7 +61,14 @@ export async function patchMatchScore(
         'Content-Type': 'application/json',
         'x-internal-secret': secret,
       },
-      body: JSON.stringify({ intentScore, aiSummary, painPoints, opportunityType, competitors }),
+      body: JSON.stringify({
+        intentScore,
+        aiSummary,
+        painPoints,
+        opportunityType,
+        competitors,
+        ...(travelFields ?? {}),
+      }),
     })
   } catch (err) {
     console.error('[submitter] patch score failed:', err)

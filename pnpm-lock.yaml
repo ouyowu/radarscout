@@ -50,6 +50,9 @@ importers:
       '@reddit-monitor/mailer':
         specifier: workspace:*
         version: link:../../packages/mailer
+      '@reddit-monitor/matcher':
+        specifier: workspace:*
+        version: link:../../packages/matcher
       '@supabase/ssr':
         specifier: ^0.5
         version: 0.5.2(@supabase/supabase-js@2.105.3)

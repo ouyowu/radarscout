@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { AhoCorasick } from './index'
+import { AhoCorasick, fuzzyMatchVenue } from './index'
 
 describe('AhoCorasick', () => {
   // ── 空输入 ──────────────────────────────────────────────────────────────────
@@ -130,5 +130,23 @@ describe('AhoCorasick', () => {
     ac.build()
     ac.build() // should not throw
     expect(ac.search('hello')).toHaveLength(1)
+  })
+})
+
+describe('ThaiNight venue fuzzy matching', () => {
+  it('matches exact venue names inside text', () => {
+    const match = fuzzyMatchVenue('Any update on Nana Plaza tonight?', [
+      { slug: 'nana-plaza', name: 'Nana Plaza', city: 'bangkok' },
+    ])
+    expect(match?.venue.slug).toBe('nana-plaza')
+    expect(match?.score).toBe(1)
+  })
+
+  it('matches venue names by token overlap', () => {
+    const match = fuzzyMatchVenue('Is Rabbit Hole still open in Thonglor?', [
+      { slug: 'rabbit-hole-bar-eatery', name: 'Rabbit Hole Bar & Eatery' },
+    ])
+    expect(match?.venue.slug).toBe('rabbit-hole-bar-eatery')
+    expect(match?.score).toBeGreaterThanOrEqual(0.75)
   })
 })

@@ -15,12 +15,14 @@ const CACHE_TTL = 180
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' })
 
 export const TARGET_SUBREDDITS = [
-  'SaaS',
-  'IndieHackers',
-  'Entrepreneur',
-  'SideProject',
-  'startups',
-  'marketing',
+  'ThailandTourism',
+  'Thailand',
+  'Bangkok',
+  'Pattaya',
+  'phuket',
+  'chiangmai',
+  'solotravel',
+  'travel',
 ]
 
 function cacheKey(keyword: string, subreddit?: string): string {

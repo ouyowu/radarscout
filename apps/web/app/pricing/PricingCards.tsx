@@ -13,15 +13,15 @@ function RoiCalculator() {
   return (
     <div
       className="mt-10 rounded-2xl p-6"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+      style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
     >
-      <p className="text-sm font-semibold text-white/85 mb-1">
+      <p className="text-sm font-semibold text-gray-800 mb-1">
         If RadarScout helps you close just 1 extra customer per month&hellip;
       </p>
-      <p className="text-label text-white/35 mb-4">Based on Pro plan at $29/mo</p>
+      <p className="text-label text-gray-400 mb-4">Based on Pro plan at $29/mo</p>
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
         <div className="relative flex-1 max-w-[200px]">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm font-medium select-none">$</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium select-none">$</span>
           <input
             type="text"
             inputMode="numeric"
@@ -29,24 +29,24 @@ function RoiCalculator() {
             onChange={e => setValue(e.target.value.replace(/\D/g, ''))}
             placeholder="500"
             aria-label="Your average customer value in dollars"
-            className="w-full pl-7 pr-3 py-2.5 text-sm text-white/85 placeholder-white/25 rounded-lg min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-0 transition-colors"
+            className="w-full pl-7 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 rounded-lg min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-0 transition-colors"
             style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.10)',
+              background: 'white',
+              border: '1px solid #d1d5db',
             }}
           />
         </div>
-        <p className="text-sm text-white/40">avg customer value</p>
+        <p className="text-sm text-gray-400">avg customer value</p>
       </div>
       {roi !== null && (
-        <p className="mt-4 text-sm text-white/65">
+        <p className="mt-4 text-sm text-gray-600">
           That&rsquo;s{' '}
           <span className="text-xl font-bold text-[#FF4500]">{roi}×</span>
           {' '}ROI on your RadarScout subscription.
         </p>
       )}
       {roi === null && value === '' && (
-        <p className="mt-4 text-label text-white/30">Enter your average customer value to see your ROI.</p>
+        <p className="mt-4 text-label text-gray-400">Enter your average customer value to see your ROI.</p>
       )}
     </div>
   )
@@ -76,8 +76,8 @@ const ANNUAL  = { STARTER: 10, PRO: 19, TEAM: 49 }
 
 /* ── Shared style tokens ── */
 const cardBase = {
-  background: 'rgba(255,255,255,0.04)',
-  border:     '1px solid rgba(255,255,255,0.08)',
+  background: '#f9fafb',
+  border:     '1px solid #e5e7eb',
 } as const
 
 const cardPro = {
@@ -94,14 +94,14 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
     <div>
       {/* ── Billing toggle ── */}
       <div className="flex items-center justify-center gap-3 mb-10">
-        <span className={`text-sm font-medium transition-colors ${billing === 'monthly' ? 'text-white/85' : 'text-white/35'}`}>
+        <span className={`text-sm font-medium transition-colors ${billing === 'monthly' ? 'text-gray-800' : 'text-gray-400'}`}>
           Monthly
         </span>
         <button
           onClick={() => setBilling(b => b === 'monthly' ? 'annual' : 'monthly')}
           aria-label="Toggle billing period"
-          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-[#0a0a0f] ${
-            billing === 'annual' ? 'bg-[#FF4500]' : 'bg-white/15'
+          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:ring-offset-2 focus:ring-offset-white ${
+            billing === 'annual' ? 'bg-[#FF4500]' : 'bg-gray-200'
           }`}
         >
           <span
@@ -110,9 +110,9 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
             }`}
           />
         </button>
-        <span className={`text-sm font-medium transition-colors ${billing === 'annual' ? 'text-white/85' : 'text-white/35'}`}>
+        <span className={`text-sm font-medium transition-colors ${billing === 'annual' ? 'text-gray-800' : 'text-gray-400'}`}>
           Annual
-          <span className="ml-1.5 inline-block px-1.5 py-0.5 rounded text-label font-semibold bg-green-500/15 text-green-400">
+          <span className="ml-1.5 inline-block px-1.5 py-0.5 rounded text-label font-semibold bg-green-100 text-green-700">
             Save ~33%
           </span>
         </span>
@@ -130,16 +130,16 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
           style={cardBase}
         >
           <div className="mb-6">
-            <p className="text-label font-semibold text-purple-400 uppercase mb-1">Team</p>
+            <p className="text-label font-semibold text-purple-600 uppercase mb-1">Team</p>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-white/90">${prices.TEAM}</span>
-              <span className="text-sm text-white/35">/mo</span>
+              <span className="text-4xl font-bold text-gray-900">${prices.TEAM}</span>
+              <span className="text-sm text-gray-400">/mo</span>
             </div>
-            <p className="text-label text-white/35 mt-1">
+            <p className="text-label text-gray-400 mt-1">
               {billing === 'annual' ? `billed $${prices.TEAM * 12}/yr · ` : ''}For agencies managing multiple clients
             </p>
           </div>
-          <ul className="space-y-3 text-sm text-white/60 mb-8 flex-1">
+          <ul className="space-y-3 text-sm text-gray-500 mb-8 flex-1">
             <li className="flex items-center gap-2"><Check /><span>Unlimited keywords</span></li>
             <li className="flex items-center gap-2"><Check /><span>Everything in Pro</span></li>
             <li className="flex items-center gap-2"><Check /><span>5 team members</span></li>
@@ -151,7 +151,7 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
             billing={billing}
             label="Upgrade to Team"
             isLoggedIn={isLoggedIn}
-            className="w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-white/15 text-white/70 hover:text-white/90 hover:bg-white/[0.08]"
+            className="w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           />
         </div>
 
@@ -168,14 +168,14 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
           <div className="mb-6">
             <p className="text-label font-semibold text-[#FF6B35] uppercase mb-1">Pro</p>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-white/90">${prices.PRO}</span>
-              <span className="text-sm text-white/35">/mo</span>
+              <span className="text-4xl font-bold text-gray-900">${prices.PRO}</span>
+              <span className="text-sm text-gray-400">/mo</span>
             </div>
-            <p className="text-label text-white/35 mt-1">
+            <p className="text-label text-gray-400 mt-1">
               {billing === 'annual' ? `billed $${prices.PRO * 12}/yr · ` : ''}For founders ready to scale lead gen
             </p>
           </div>
-          <ul className="space-y-3 text-sm text-white/65 mb-8 flex-1">
+          <ul className="space-y-3 text-sm text-gray-600 mb-8 flex-1">
             <li className="flex items-center gap-2"><Check /><span>10 keywords</span></li>
             <li className="flex items-center gap-2"><Check /><span>Unlimited hits per day</span></li>
             <li className="flex items-center gap-2"><Check /><span>AI intent scoring</span></li>
@@ -196,16 +196,16 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
           style={cardBase}
         >
           <div className="mb-6">
-            <p className="text-label font-semibold text-blue-400 uppercase mb-1">Starter</p>
+            <p className="text-label font-semibold text-blue-600 uppercase mb-1">Starter</p>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-white/90">${prices.STARTER}</span>
-              <span className="text-sm text-white/35">/mo</span>
+              <span className="text-4xl font-bold text-gray-900">${prices.STARTER}</span>
+              <span className="text-sm text-gray-400">/mo</span>
             </div>
-            <p className="text-label text-white/35 mt-1">
+            <p className="text-label text-gray-400 mt-1">
               {billing === 'annual' ? `billed $${prices.STARTER * 12}/yr · ` : ''}For solo founders getting started
             </p>
           </div>
-          <ul className="space-y-3 text-sm text-white/60 mb-8 flex-1">
+          <ul className="space-y-3 text-sm text-gray-500 mb-8 flex-1">
             <li className="flex items-center gap-2"><Check /><span>3 keywords</span></li>
             <li className="flex items-center gap-2"><Check /><span>200 hits per day</span></li>
             <li className="flex items-center gap-2"><Check /><span>Email alerts</span></li>
@@ -216,7 +216,7 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
             billing={billing}
             label="Get Starter"
             isLoggedIn={isLoggedIn}
-            className="w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-white/15 text-white/70 hover:text-white/90 hover:bg-white/[0.08]"
+            className="w-full py-2.5 px-4 rounded-xl text-[0.9375rem] font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           />
         </div>
       </div>
@@ -224,7 +224,7 @@ export function PricingCards({ isLoggedIn }: { isLoggedIn: boolean }) {
       <RoiCalculator />
 
       {/* Free tier note */}
-      <p className="mt-8 text-center text-sm text-white/35">
+      <p className="mt-8 text-center text-sm text-gray-400">
         Just exploring?{' '}
         <Link href={isLoggedIn ? '/dashboard' : '/auth/register'} className="text-[#FF4500] hover:text-[#ff6b35] transition-colors">
           {isLoggedIn ? 'Go to dashboard' : 'Start for free'} →

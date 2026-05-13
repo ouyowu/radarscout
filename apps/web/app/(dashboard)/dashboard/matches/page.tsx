@@ -17,21 +17,25 @@ function timeAgo(date: Date): string {
 const PLATFORM_BADGE: Record<string, string> = {
   REDDIT: 'bg-orange-100 text-orange-700',
   HN: 'bg-amber-100 text-amber-700',
+  X: 'bg-gray-900 text-white',
+  QUORA: 'bg-red-100 text-red-700',
+  RSS: 'bg-blue-100 text-blue-700',
+  FORUM: 'bg-emerald-100 text-emerald-700',
 }
 
 type Intent = 'all' | 'high' | 'medium' | 'low'
 
 const TABS: { label: string; value: Intent }[] = [
   { label: 'All', value: 'all' },
-  { label: '🔥 High Intent (7+)', value: 'high' },
-  { label: '⚡ Medium (4–6)', value: 'medium' },
+  { label: 'High Travel Value (7+)', value: 'high' },
+  { label: 'Medium (4-6)', value: 'medium' },
   { label: 'Low (1–3)', value: 'low' },
 ]
 
 function buildIntentWhere(intent: Intent) {
-  if (intent === 'high') return { intentScore: { gte: 7 } }
-  if (intent === 'medium') return { intentScore: { gte: 4, lt: 7 } }
-  if (intent === 'low') return { intentScore: { lt: 4 } }
+  if (intent === 'high') return { travelIntentScore: { gte: 7 } }
+  if (intent === 'medium') return { travelIntentScore: { gte: 4, lt: 7 } }
+  if (intent === 'low') return { travelIntentScore: { lt: 4 } }
   return {}
 }
 
@@ -94,7 +98,7 @@ export default async function MatchesPage({
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">Recent Matches</h1>
+        <h1 className="text-lg font-semibold text-gray-900">Nightlife Intelligence Feed</h1>
         {matches.length > 0 && (
           <span className="text-sm text-gray-400">
             {matches.length} result{matches.length !== 1 ? 's' : ''}
@@ -134,8 +138,8 @@ export default async function MatchesPage({
         <div className="mb-5 flex flex-col sm:flex-row sm:items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
           <p className="flex-1 text-sm text-amber-800 leading-snug">
             🔒{' '}
-            <span className="font-semibold">AI Intent Scoring is a Pro feature.</span>{' '}
-            Upgrade to see which mentions are worth your time.
+            <span className="font-semibold">AI travel intelligence scoring is a Pro feature.</span>{' '}
+            Upgrade to see which nightlife tips, warnings, and traveler questions matter most.
           </p>
           <Link
             href="/pricing"
@@ -172,6 +176,16 @@ export default async function MatchesPage({
                     <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded font-mono">
                       {match.keyword.text}
                     </span>
+                    {match.location && (
+                      <span className="text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                        {match.location}
+                      </span>
+                    )}
+                    {match.contentCategory && (
+                      <span className="text-xs text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
+                        {match.contentCategory}
+                      </span>
+                    )}
                     <time
                       dateTime={match.matchedAt.toISOString()}
                       className="sm:hidden ml-auto text-xs text-gray-400 whitespace-nowrap"
@@ -200,6 +214,12 @@ export default async function MatchesPage({
                     <p className="mt-1.5 text-xs text-gray-400 italic">{match.aiSummary}</p>
                   )}
 
+                  {isPro && (match.credibilityScore !== null || match.commercialScore !== null) && (
+                    <p className="mt-1.5 text-xs text-gray-400">
+                      Credibility {match.credibilityScore ?? 'n/a'}/10 · thainight value {match.commercialScore ?? 'n/a'}/10
+                    </p>
+                  )}
+
                   {/* Reply button */}
                   <div className="mt-3">
                     <ReplyButton
@@ -220,13 +240,13 @@ export default async function MatchesPage({
                   >
                     {timeAgo(new Date(match.matchedAt))}
                   </time>
-                  {isPro && <IntentBadge score={match.intentScore} />}
+                  {isPro && <IntentBadge score={match.travelIntentScore ?? match.intentScore} />}
                 </div>
 
                 {/* Badge only on mobile (timestamp is already in the flex-wrap row) */}
-                {isPro && match.intentScore !== null && (
+                {isPro && (match.travelIntentScore !== null || match.intentScore !== null) && (
                   <div className="sm:hidden flex-shrink-0 mt-0.5">
-                    <IntentBadge score={match.intentScore} />
+                    <IntentBadge score={match.travelIntentScore ?? match.intentScore} />
                   </div>
                 )}
               </div>

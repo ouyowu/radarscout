@@ -5,20 +5,20 @@ import { useState, useEffect } from 'react'
 const ALERTS = [
   {
     score: 9,
-    subreddit: 'SaaS',
-    text: '"Anyone know a good Stripe analytics tool? Been using Baremetrics but it\'s too expensive…"',
+    subreddit: 'ThailandTourism',
+    text: '"First time in Bangkok. Is Nana or Soi Cowboy safer for a solo traveler tonight?"',
     time: '2m ago',
   },
   {
     score: 8,
-    subreddit: 'Entrepreneur',
-    text: '"Looking to hire an SEO agency for our SaaS startup. Budget ~$3k/month, need real ROI…"',
+    subreddit: 'Pattaya',
+    text: '"What are the current Walking Street prices and which bars should tourists avoid?"',
     time: '7m ago',
   },
   {
     score: 9,
-    subreddit: 'startups',
-    text: '"What\'s the best alternative to Baremetrics for MRR tracking? Open to paid options."',
+    subreddit: 'phuket',
+    text: '"Any late-night places near Patong that are fun but not too aggressive for first timers?"',
     time: '14m ago',
   },
 ]
@@ -67,7 +67,7 @@ export function LiveAlertTicker() {
               <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
               </svg>
-              Intent {alert.score}/10
+              Travel value {alert.score}/10
             </span>
             <span className="text-label text-gray-400">r/{alert.subreddit}</span>
             <span className="text-label text-gray-400 ml-auto">{alert.time}</span>
@@ -76,7 +76,7 @@ export function LiveAlertTicker() {
             {alert.text}
           </p>
           <span className="mt-2 inline-block text-label font-semibold" style={{ color: '#FF6B35' }}>
-            Draft reply with AI →
+            Send to thainight →
           </span>
         </div>
       </div>

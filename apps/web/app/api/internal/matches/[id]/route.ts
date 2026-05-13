@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@reddit-monitor/db'
+import { db, Prisma } from '@reddit-monitor/db'
+import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INTERNAL_API_SECRET
@@ -15,16 +16,34 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { intentScore, aiSummary, painPoints, opportunityType, competitors } = body as {
+  const {
+    intentScore,
+    aiSummary,
+    painPoints,
+    opportunityType,
+    competitors,
+    location,
+    contentCategory,
+    travelIntentScore,
+    credibilityScore,
+    commercialScore,
+    sourceMeta,
+  } = body as {
     intentScore?: number | null
     aiSummary?: string | null
     painPoints?: string | null
     opportunityType?: string | null
     competitors?: string[]
+    location?: string | null
+    contentCategory?: string | null
+    travelIntentScore?: number | null
+    credibilityScore?: number | null
+    commercialScore?: number | null
+    sourceMeta?: Record<string, unknown>
   }
 
   try {
-    await db.match.update({
+    const match = await db.match.update({
       where: { id: params.id },
       data: {
         ...(intentScore !== undefined && { intentScore }),
@@ -32,8 +51,21 @@ export async function PATCH(
         ...(painPoints !== undefined && { painPoints }),
         ...(opportunityType !== undefined && { opportunityType }),
         ...(competitors !== undefined && { competitors }),
+        ...(location !== undefined && { location }),
+        ...(contentCategory !== undefined && { contentCategory }),
+        ...(travelIntentScore !== undefined && { travelIntentScore }),
+        ...(credibilityScore !== undefined && { credibilityScore }),
+        ...(commercialScore !== undefined && { commercialScore }),
+        ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as Prisma.InputJsonValue }),
+      },
+      include: {
+        keyword: { select: { text: true, flags: true } },
       },
     })
+
+    sendThaiNightWebhookIfNeeded(match).catch(err =>
+      console.error('[matches] thainight webhook error:', err),
+    )
   } catch {
     return NextResponse.json({ error: 'Match not found' }, { status: 404 })
   }

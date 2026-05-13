@@ -3,15 +3,15 @@ import { GeistSans } from 'geist/font/sans'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'RadarScout — Reddit Lead Finder for Indie Hackers & Agencies',
-  description: 'Monitor Reddit for buying signals and pain points. AI intent scoring + campaign mode + reply drafts. Free plan available.',
+  title: 'RadarScout — Thailand Nightlife Intelligence Feed',
+  description: 'Monitor Reddit, X, Quora, RSS and travel communities for fresh Thailand nightlife tips, warnings, questions and hidden gems.',
   icons: {
     icon: '/logo-icon.svg',
     apple: '/logo-icon.svg',
   },
   openGraph: {
-    title: 'Find customers on Reddit before your competitors do',
-    description: 'Monitor Reddit for buying signals. AI scores every mention for purchase intent. Find customers before your competitors. Free to start.',
+    title: 'Thailand nightlife intelligence for travelers',
+    description: 'Fresh nightlife tips, warnings, questions and hidden gems from public travel communities.',
     type: 'website',
     images: ['https://radarscout.io/og-image.png'],
   },

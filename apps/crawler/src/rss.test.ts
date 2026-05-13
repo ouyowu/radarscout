@@ -31,11 +31,11 @@ beforeEach(() => {
 })
 
 describe('TARGET_SUBREDDITS', () => {
-  it('includes the six expected communities', () => {
+  it('includes the expected Thailand travel communities', () => {
     expect(TARGET_SUBREDDITS).toEqual(
-      expect.arrayContaining(['SaaS', 'IndieHackers', 'Entrepreneur', 'SideProject', 'startups', 'marketing']),
+      expect.arrayContaining(['ThailandTourism', 'Thailand', 'Bangkok', 'Pattaya', 'phuket', 'chiangmai', 'solotravel', 'travel']),
     )
-    expect(TARGET_SUBREDDITS).toHaveLength(6)
+    expect(TARGET_SUBREDDITS).toHaveLength(8)
   })
 })
 
@@ -86,8 +86,8 @@ describe('fetchSubredditFeed()', () => {
 })
 
 describe('fetchRedditRSS() — target subreddit integration', () => {
-  it('fetches search.rss, r/all/new, and all 6 target subreddits', async () => {
-    // search.rss + r/all/new + 6 target subreddits = 8 fetches
+  it('fetches search.rss, r/all/new, and all target subreddits', async () => {
+    // search.rss + r/all/new + target subreddits
     mockFetch.mockResolvedValue(okXml('x001', 'SaaS'))
 
     await fetchRedditRSS('my keyword', mockRedis as never)
@@ -101,22 +101,22 @@ describe('fetchRedditRSS() — target subreddit integration', () => {
   })
 
   it('includes items from target subreddits in the result', async () => {
-    // Return empty for everything except r/IndieHackers
+    // Return empty for everything except r/ThailandTourism
     mockFetch.mockImplementation((url: string) => {
-      if (url.includes('IndieHackers')) return Promise.resolve(okXml('ih001', 'IndieHackers'))
+      if (url.includes('ThailandTourism')) return Promise.resolve(okXml('tt001', 'ThailandTourism'))
       return Promise.resolve({ ok: true, text: async () => '<feed/>', status: 200 })
     })
 
     const items = await fetchRedditRSS('my keyword', mockRedis as never)
 
-    expect(items.some(i => i.postId === 'ih001')).toBe(true)
+    expect(items.some(i => i.postId === 'tt001')).toBe(true)
   })
 
   it('deduplicates posts that appear in both search results and a target subreddit', async () => {
     const dupId = 'dup001'
     mockFetch.mockImplementation((url: string) => {
-      if (url.includes('search.rss')) return Promise.resolve(okXml(dupId, 'SaaS'))
-      if (url.includes('r/SaaS/new')) return Promise.resolve(okXml(dupId, 'SaaS'))
+      if (url.includes('search.rss')) return Promise.resolve(okXml(dupId, 'Bangkok'))
+      if (url.includes('r/Bangkok/new')) return Promise.resolve(okXml(dupId, 'Bangkok'))
       return Promise.resolve({ ok: true, text: async () => '<feed/>', status: 200 })
     })
 
@@ -138,28 +138,28 @@ describe('fetchRedditRSS() — target subreddit integration', () => {
 
   it('does not abort all feeds when one target subreddit fails', async () => {
     mockFetch.mockImplementation((url: string) => {
-      if (url.includes('r/SaaS/new')) return Promise.reject(new Error('timeout'))
-      if (url.includes('r/startups/new')) return Promise.resolve(okXml('st001', 'startups'))
+      if (url.includes('r/Bangkok/new')) return Promise.reject(new Error('timeout'))
+      if (url.includes('r/Pattaya/new')) return Promise.resolve(okXml('pt001', 'Pattaya'))
       return Promise.resolve({ ok: true, text: async () => '<feed/>', status: 200 })
     })
 
     const items = await fetchRedditRSS('my keyword', mockRedis as never)
 
-    expect(items.some(i => i.postId === 'st001')).toBe(true)
+    expect(items.some(i => i.postId === 'pt001')).toBe(true)
   })
 
   it('target subreddit feeds are cached at the subreddit level, not per-keyword', async () => {
-    mockFetch.mockResolvedValue(okXml('x001', 'SaaS'))
+    mockFetch.mockResolvedValue(okXml('x001', 'Bangkok'))
 
     // First keyword — populates subreddit caches
     await fetchRedditRSS('keyword one', mockRedis as never)
 
-    const saasKey = 'rs:rss:sub:saas'
+    const saasKey = 'rs:rss:sub:bangkok'
     const setCalls = mockRedis.set.mock.calls.map((args) => args[0] as string)
     expect(setCalls).toContain(saasKey)
 
-    // Second keyword — subreddit cache returns data, no second HTTP fetch for SaaS
-    const cachedSaas = JSON.stringify([{ postId: 'saas1', title: 't', url: 'u', snippet: 's', platform: 'REDDIT', subreddit: 'SaaS' }])
+    // Second keyword — subreddit cache returns data, no second HTTP fetch for Bangkok
+    const cachedSaas = JSON.stringify([{ postId: 'bkk1', title: 't', url: 'u', snippet: 's', platform: 'REDDIT', subreddit: 'Bangkok' }])
     mockRedis.get.mockImplementation((k: string) =>
       k === saasKey ? Promise.resolve(cachedSaas) : Promise.resolve(null),
     )
@@ -169,6 +169,6 @@ describe('fetchRedditRSS() — target subreddit integration', () => {
     await fetchRedditRSS('keyword two', mockRedis as never)
 
     const fetchedUrls = mockFetch.mock.calls.map((args) => args[0] as string)
-    expect(fetchedUrls.every((u: string) => !u.includes('r/SaaS/new'))).toBe(true)
+    expect(fetchedUrls.every((u: string) => !u.includes('r/Bangkok/new'))).toBe(true)
   })
 })

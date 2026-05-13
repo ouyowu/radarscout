@@ -11,6 +11,41 @@ const nextConfig = {
         destination: 'https://radarscout.io/:path*',
         permanent: true,
       },
+      {
+        source: '/f5bot-alternative',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/gummysearch-alternative',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/reddit-keyword-monitor',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/reddit-mention-alerts',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/reddit-lead-finder',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/reddit-monitoring-tool',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/social-listening-reddit',
+        destination: '/',
+        permanent: false,
+      },
     ]
   },
 

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radarscout.io/docs/feed-schema.json",
+  "title": "RadarScout ThaiNight Intelligence Feed",
+  "description": "Response schema and actual example for GET /api/thainight/intelligence.",
+  "type": "object",
+  "required": ["source", "partner", "generatedAt", "count", "limit", "offset", "items"],
+  "properties": {
+    "source": { "type": "string", "const": "RadarScout" },
+    "partner": { "type": "string", "const": "thainight" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "count": { "type": "integer", "minimum": 0 },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "offset": { "type": "integer", "minimum": 0 },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "title",
+          "url",
+          "snippet",
+          "keyword",
+          "location",
+          "city",
+          "category",
+          "thainight_value",
+          "matched_venue",
+          "matchedAt"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "platform": { "type": "string", "examples": ["REDDIT"] },
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "snippet": { "type": "string" },
+          "summary": { "type": ["string", "null"] },
+          "keyword": { "type": "string" },
+          "campaign": {
+            "type": ["object", "null"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          },
+          "location": { "type": ["string", "null"], "examples": ["Bangkok"] },
+          "city": { "type": ["string", "null"], "examples": ["Bangkok"] },
+          "category": { "type": ["string", "null"], "examples": ["safety"] },
+          "opportunityType": { "type": ["string", "null"], "examples": ["safety_report"] },
+          "travelIntentScore": { "type": ["integer", "null"], "minimum": 1, "maximum": 10 },
+          "credibilityScore": { "type": ["integer", "null"], "minimum": 1, "maximum": 10 },
+          "commercialScore": { "type": ["integer", "null"], "minimum": 1, "maximum": 10 },
+          "thainight_value": { "type": "number", "minimum": 0, "maximum": 1 },
+          "matched_venue": {
+            "type": ["object", "null"],
+            "properties": {
+              "slug": { "type": "string" },
+              "name": { "type": "string" },
+              "city": { "type": ["string", "null"] },
+              "area_slug": { "type": ["string", "null"] },
+              "score": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          },
+          "matchedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "example": {
+    "source": "RadarScout",
+    "partner": "thainight",
+    "generatedAt": "2026-05-12T07:30:00.000Z",
+    "count": 1,
+    "limit": 25,
+    "offset": 0,
+    "items": [
+      {
+        "id": "match_01jzexample",
+        "platform": "REDDIT",
+        "title": "Police raid near Nana Plaza tonight?",
+        "url": "https://reddit.com/r/ThailandTourism/comments/example",
+        "snippet": "Anyone know if Nana Plaza is open? Heard there was a police raid nearby tonight.",
+        "summary": "Traveler asks about possible raid near Nana Plaza.",
+        "keyword": "nana plaza",
+        "campaign": {
+          "id": "campaign_thainight",
+          "name": "ThaiNight Intelligence"
+        },
+        "location": "Bangkok",
+        "city": "Bangkok",
+        "category": "safety",
+        "opportunityType": "safety_report",
+        "travelIntentScore": 9,
+        "credibilityScore": 7,
+        "commercialScore": 9,
+        "thainight_value": 0.9,
+        "matched_venue": {
+          "slug": "nana-plaza",
+          "name": "Nana Plaza",
+          "city": "bangkok",
+          "area_slug": "nana",
+          "score": 1
+        },
+        "matchedAt": "2026-05-12T07:22:10.000Z"
+      }
+    ]
+  }
+}

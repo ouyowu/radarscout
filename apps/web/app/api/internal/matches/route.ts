@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@reddit-monitor/db'
+import { db, Platform, Prisma } from '@reddit-monitor/db'
 import { sendMatchDigest } from '@reddit-monitor/mailer'
+import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
 
 const BATCH_WINDOW_MS = 60_000
 
@@ -21,7 +22,23 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { keywordId, platform, postId, title, url, snippet, painPoints, opportunityType, competitors } = body as {
+  const {
+    keywordId,
+    platform,
+    postId,
+    title,
+    url,
+    snippet,
+    painPoints,
+    opportunityType,
+    competitors,
+    location,
+    contentCategory,
+    travelIntentScore,
+    credibilityScore,
+    commercialScore,
+    sourceMeta,
+  } = body as {
     keywordId?: string
     platform?: string
     postId?: string
@@ -31,20 +48,26 @@ export async function POST(request: NextRequest) {
     painPoints?: string
     opportunityType?: string
     competitors?: string[]
+    location?: string
+    contentCategory?: string
+    travelIntentScore?: number
+    credibilityScore?: number
+    commercialScore?: number
+    sourceMeta?: Record<string, unknown>
   }
 
   if (!keywordId || !platform || !postId || !title || !url) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  if (platform !== 'REDDIT' && platform !== 'HN') {
+  if (!Object.values(Platform).includes(platform as Platform)) {
     return NextResponse.json({ error: 'Invalid platform' }, { status: 400 })
   }
 
   const match = await db.match.create({
     data: {
       keywordId,
-      platform,
+      platform: platform as Platform,
       postId,
       title,
       url,
@@ -52,8 +75,21 @@ export async function POST(request: NextRequest) {
       ...(painPoints !== undefined && { painPoints }),
       ...(opportunityType !== undefined && { opportunityType }),
       ...(competitors !== undefined && { competitors }),
+      ...(location !== undefined && { location }),
+      ...(contentCategory !== undefined && { contentCategory }),
+      ...(travelIntentScore !== undefined && { travelIntentScore }),
+      ...(credibilityScore !== undefined && { credibilityScore }),
+      ...(commercialScore !== undefined && { commercialScore }),
+      ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as Prisma.InputJsonValue }),
+    },
+    include: {
+      keyword: { select: { text: true, flags: true } },
     },
   })
+
+  sendThaiNightWebhookIfNeeded(match).catch(err =>
+    console.error('[matches] thainight webhook error:', err),
+  )
 
   // Fire-and-forget: batch notifications per user over a 60-second window
   sendEmailIfDue(keywordId).catch(err =>
