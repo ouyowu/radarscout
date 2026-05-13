@@ -1,14 +1,11 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth'
 import { db } from '@reddit-monitor/db'
 
 export async function createMonitor(formData: FormData) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user?.email) redirect('/login')
+  const session = await auth()
+  if (!session?.user?.id) redirect('/auth/login')
 
   const subreddit = (formData.get('subreddit') as string)
     .trim()
@@ -25,7 +22,7 @@ export async function createMonitor(formData: FormData) {
   }
 
   const FREE_LIMIT = 3
-  const dbUser = await db.user.findUnique({ where: { email: user.email } })
+  const dbUser = await db.user.findUnique({ where: { id: session.user.id } })
   if (!dbUser) redirect('/login')
 
   if (dbUser.plan === 'FREE') {
@@ -49,13 +46,10 @@ export async function createMonitor(formData: FormData) {
 }
 
 export async function deleteKeyword(keywordId: string) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user?.email) redirect('/login')
+  const session = await auth()
+  if (!session?.user?.id) redirect('/auth/login')
 
-  const dbUser = await db.user.findUnique({ where: { email: user.email } })
+  const dbUser = await db.user.findUnique({ where: { id: session.user.id } })
   if (!dbUser) return
 
   // Only delete if owned by this user

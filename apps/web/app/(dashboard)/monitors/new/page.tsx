@@ -36,7 +36,7 @@ export default function NewMonitorPage({
               name="subreddit"
               type="text"
               required
-              placeholder="MachineLearning"
+              placeholder="ThailandTourism"
               className="flex-1 px-3 py-2 text-sm outline-none bg-white"
             />
           </div>
@@ -54,7 +54,7 @@ export default function NewMonitorPage({
             name="keywords"
             required
             rows={6}
-            placeholder={'GPT-4\ntransformer\nfine-tuning'}
+            placeholder={'Bangkok nightlife tonight\nsolo traveler Bangkok tonight\nThailand nightlife scam'}
             className="w-full border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>

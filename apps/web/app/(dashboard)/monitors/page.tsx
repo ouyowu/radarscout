@@ -1,23 +1,16 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { auth } from '@/lib/auth'
 import { db } from '@reddit-monitor/db'
 
 export default async function MonitorsPage() {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
+  if (!session?.user?.id) redirect('/auth/login')
 
-  const dbUser = user?.email
-    ? await db.user.findUnique({ where: { email: user.email } })
-    : null
-
-  const keywords = dbUser
-    ? await db.keyword.findMany({
-        where: { userId: dbUser.id, enabled: true },
-        orderBy: { createdAt: 'asc' },
-      })
-    : []
+  const keywords = await db.keyword.findMany({
+    where: { userId: session.user.id, enabled: true },
+    orderBy: { createdAt: 'asc' },
+  })
 
   // Group keywords by subreddit (stored in flags.subreddit)
   const bySubreddit = new Map<string, typeof keywords>()
@@ -43,6 +36,9 @@ export default async function MonitorsPage() {
       {bySubreddit.size === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p className="text-base">No monitors yet.</p>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-6">
+            Add a Thailand travel subreddit and 1-3 nightlife keywords to start feeding ThaiNight.
+          </p>
           <Link
             href="/monitors/new"
             className="mt-2 inline-block text-sm text-orange-600 hover:underline"
