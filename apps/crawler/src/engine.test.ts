@@ -72,6 +72,28 @@ describe('processKeyword()', () => {
     expect(submitMatch).toHaveBeenCalledTimes(1)
   })
 
+  it('filters unrelated subreddit noise before creating a match', async () => {
+    vi.mocked(fetchRedditRSS).mockResolvedValue([
+      {
+        postId: 'noise1',
+        title: 'What happened to this app icon?',
+        url: 'https://reddit.com/r/graphic_design/comments/noise1/app_icon',
+        snippet: 'A general design discussion with no travel or nightlife context',
+        platform: 'REDDIT',
+        subreddit: 'graphic_design',
+      },
+    ])
+
+    await processKeyword(
+      { id: 'kw-bkk', text: 'Bangkok nightlife tonight', userPlan: 'TEAM' },
+      mockRedis,
+      new Set(),
+      opts,
+    )
+
+    expect(submitMatch).not.toHaveBeenCalled()
+  })
+
   it('submits Google result when RSS returns nothing', async () => {
     vi.mocked(fetchRedditRSS).mockResolvedValue([])
     vi.mocked(searchRedditViaGoogle).mockResolvedValue([sampleItem])

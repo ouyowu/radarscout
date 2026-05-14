@@ -14,6 +14,99 @@ export interface Keyword {
   subreddit?: string
 }
 
+const THAILAND_TERMS = [
+  'thailand',
+  'thai',
+  'bangkok',
+  'bkk',
+  'pattaya',
+  'phuket',
+  'chiang mai',
+  'chiangmai',
+  'koh phangan',
+  'samui',
+  'walking street',
+  'sukhumvit',
+  'thonglor',
+  'silom',
+  'khao san',
+]
+
+const NIGHTLIFE_TERMS = [
+  'nightlife',
+  'night club',
+  'nightclub',
+  'club',
+  'bar',
+  'rooftop',
+  'party',
+  'drinks',
+  'happy hour',
+  'dj',
+  'event',
+  'concert',
+  'festival',
+  'ticket',
+  'entry',
+  'late entry',
+  'cover charge',
+  'massage',
+  'ladyboy',
+  'gogo',
+  'walking street',
+  'date',
+  'dating',
+  'solo',
+  'scam',
+  'safe',
+  'unsafe',
+  'overcharge',
+  'taxi',
+]
+
+const GENERIC_KEYWORD_TERMS = new Set([
+  'the',
+  'and',
+  'for',
+  'with',
+  'tonight',
+  'today',
+  'tomorrow',
+  'night',
+  'nights',
+  'travel',
+  'traveler',
+  'traveller',
+  'tourism',
+  'tourist',
+])
+
+function includesAny(text: string, terms: string[]): boolean {
+  return terms.some(term => text.includes(term))
+}
+
+function keywordTokens(keyword: string): string[] {
+  return keyword
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .map(token => token.trim())
+    .filter(token => token.length >= 4 && !GENERIC_KEYWORD_TERMS.has(token))
+}
+
+export function isRelevantNightlifeItem(kw: Keyword, item: RssItem): boolean {
+  const text = `${item.title}\n${item.snippet}\nr/${item.subreddit}`.toLowerCase()
+  const tokens = keywordTokens(kw.text)
+  const tokenHits = tokens.filter(token => text.includes(token)).length
+  const hasThailand = includesAny(text, THAILAND_TERMS)
+  const hasNightlife = includesAny(text, NIGHTLIFE_TERMS)
+
+  if (tokens.length > 0 && tokenHits >= Math.min(2, tokens.length)) return true
+  if (hasThailand && hasNightlife) return true
+  if (hasThailand && tokenHits >= 1) return true
+
+  return false
+}
+
 async function loadKeywords(apiUrl: string, apiSecret: string): Promise<Keyword[]> {
   const res = await fetch(`${apiUrl}/api/internal/monitors`, {
     headers: { 'x-internal-secret': apiSecret },
@@ -72,7 +165,7 @@ export async function processKeyword(
   const items = [...rssItems, ...googleItems].filter(item => {
     if (seenPostIds.has(item.postId)) return false
     seenPostIds.add(item.postId)
-    return true
+    return isRelevantNightlifeItem(kw, item)
   })
 
   for (const item of items) {

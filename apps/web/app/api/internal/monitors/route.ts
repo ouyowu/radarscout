@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { effectivePlan } from '@/lib/admin'
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INTERNAL_API_SECRET
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   const keywords = await db.keyword.findMany({
     where: { enabled: true },
-    select: { id: true, text: true, flags: true, user: { select: { plan: true } } },
+    select: { id: true, text: true, flags: true, user: { select: { plan: true, email: true } } },
   })
 
   // Group enabled keywords by subreddit for the crawler
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     const subreddit = (kw.flags as { subreddit?: string }).subreddit
     if (!subreddit) continue
     const group = subredditMap.get(subreddit) ?? []
-    group.push({ id: kw.id, text: kw.text, userPlan: kw.user.plan })
+    group.push({ id: kw.id, text: kw.text, userPlan: effectivePlan(kw.user.plan, kw.user.email) })
     subredditMap.set(subreddit, group)
   }
 
