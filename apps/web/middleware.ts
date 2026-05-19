@@ -1,11 +1,16 @@
-import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 
 const PROTECTED = ['/monitors', '/billing', '/dashboard']
+const SESSION_COOKIE_NAMES = [
+  'authjs.session-token',
+  '__Secure-authjs.session-token',
+  'next-auth.session-token',
+  '__Secure-next-auth.session-token',
+]
 
-export default auth((req) => {
+export default function middleware(req: Request & { nextUrl: URL; cookies: { get: (name: string) => { value: string } | undefined } }) {
   const { pathname } = req.nextUrl
-  const isAuthed = !!req.auth?.user
+  const isAuthed = SESSION_COOKIE_NAMES.some((name) => Boolean(req.cookies.get(name)?.value))
 
   const isAuthPage = pathname === '/auth/login' || pathname === '/auth/register'
   const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/'))
@@ -17,7 +22,7 @@ export default auth((req) => {
   if (isAuthed && isAuthPage) {
     return NextResponse.redirect(new URL('/monitors', req.url))
   }
-})
+}
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api/auth).*)'],
