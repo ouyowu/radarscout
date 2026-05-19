@@ -7,6 +7,15 @@ import { isAdminEmail } from '@/lib/admin'
 const BATCH_WINDOW_MS = 60_000
 const PLATFORM_VALUES = ['REDDIT', 'HN', 'X', 'QUORA', 'RSS', 'FORUM'] as const
 type PlatformValue = (typeof PLATFORM_VALUES)[number]
+type PendingDigestMatch = {
+  title: string
+  url: string
+  snippet: string
+  keyword: {
+    text: string
+    flags: unknown
+  }
+}
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INTERNAL_API_SECRET
@@ -128,7 +137,7 @@ async function sendEmailIfDue(keywordId: string): Promise<void> {
   })
   const since = prev?.deliveredAt ?? new Date(0)
 
-  const pending = await db.match.findMany({
+  const pending: PendingDigestMatch[] = await db.match.findMany({
     where: { matchedAt: { gt: since }, keyword: { userId } },
     include: { keyword: true },
     orderBy: { matchedAt: 'asc' },
@@ -138,7 +147,7 @@ async function sendEmailIfDue(keywordId: string): Promise<void> {
   await sendMatchDigest({
     to: keyword.user.email,
     unsubscribeUrl: makeUnsubscribeUrl(userId),
-    matches: pending.map(m => ({
+    matches: pending.map((m: PendingDigestMatch) => ({
       keyword: m.keyword.text,
       subreddit: (m.keyword.flags as { subreddit?: string }).subreddit ?? '',
       postTitle: m.title,
