@@ -136,7 +136,7 @@ export async function sendThaiNightWebhookIfNeeded(match: WebhookMatch): Promise
           ...meta,
           thainightWebhookSentAt: new Date().toISOString(),
           thainightWebhookEvent: payload.event,
-        } as Prisma.InputJsonValue,
+        } as any,
       },
     })
   } catch (err) {

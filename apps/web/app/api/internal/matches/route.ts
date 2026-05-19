@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, Platform, Prisma } from '@reddit-monitor/db'
+import { db, Platform } from '@reddit-monitor/db'
 import { sendMatchDigest } from '@reddit-monitor/mailer'
 import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
 import { isAdminEmail } from '@/lib/admin'
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       ...(travelIntentScore !== undefined && { travelIntentScore }),
       ...(credibilityScore !== undefined && { credibilityScore }),
       ...(commercialScore !== undefined && { commercialScore }),
-      ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as Prisma.InputJsonValue }),
+      ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as any }),
     },
     include: {
       keyword: { select: { text: true, flags: true } },

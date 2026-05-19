@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, Prisma } from '@reddit-monitor/db'
+import { db } from '@reddit-monitor/db'
 import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
 
 function isAuthorized(request: NextRequest): boolean {
@@ -56,7 +56,7 @@ export async function PATCH(
         ...(travelIntentScore !== undefined && { travelIntentScore }),
         ...(credibilityScore !== undefined && { credibilityScore }),
         ...(commercialScore !== undefined && { commercialScore }),
-        ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as Prisma.InputJsonValue }),
+        ...(sourceMeta !== undefined && { sourceMeta: sourceMeta as any }),
       },
       include: {
         keyword: { select: { text: true, flags: true } },
