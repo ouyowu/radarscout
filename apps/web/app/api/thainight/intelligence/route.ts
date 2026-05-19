@@ -2,6 +2,60 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { fetchThaiNightVenues, fuzzyMatchVenue, type ThaiNightVenue } from '@reddit-monitor/matcher'
 
+type ThaiNightFeedItem = {
+  id: string
+  platform: string
+  title: string
+  url: string
+  snippet: string
+  aiSummary: string | null
+  location: string | null
+  contentCategory: string | null
+  opportunityType: string | null
+  travelIntentScore: number | null
+  intentScore: number | null
+  credibilityScore: number | null
+  commercialScore: number | null
+  matchedAt: Date
+  keyword: {
+    text: string
+    campaign: {
+      id: string
+      name: string
+    } | null
+  }
+}
+
+type ThaiNightPayloadItem = {
+  id: string
+  platform: string
+  title: string
+  url: string
+  snippet: string
+  summary: string | null
+  keyword: string
+  campaign: {
+    id: string
+    name: string
+  } | null
+  location: string | null
+  city: string | null
+  category: string | null
+  opportunityType: string | null
+  travelIntentScore: number | null
+  credibilityScore: number | null
+  commercialScore: number | null
+  thainight_value: number
+  matched_venue: {
+    slug: string
+    name: string
+    city: string | null
+    area_slug: string | null
+    score: number
+  } | null
+  matchedAt: string
+}
+
 function isAuthorized(request: NextRequest): boolean {
   const token = process.env.THAINIGHT_FEED_TOKEN
   if (!token) return true
@@ -81,8 +135,8 @@ export async function GET(request: NextRequest) {
   }
 
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
-  const payload = items
-    .map(item => {
+  const payload = (items as ThaiNightFeedItem[])
+    .map((item): ThaiNightPayloadItem => {
       const thainightValue = (item.commercialScore ?? 0) / 10
       const venueMatch = fuzzyMatchVenue(
         `${item.title}\n${item.snippet}\n${item.aiSummary ?? ''}`,
@@ -110,15 +164,15 @@ export async function GET(request: NextRequest) {
           ? {
               slug: venueMatch.venue.slug,
               name: venueMatch.venue.name,
-              city: venueMatch.venue.city,
-              area_slug: venueMatch.venue.area_slug,
+              city: venueMatch.venue.city ?? null,
+              area_slug: venueMatch.venue.area_slug ?? null,
               score: venueMatch.score,
             }
           : null,
         matchedAt: item.matchedAt.toISOString(),
       }
     })
-    .filter(item => !matchedOnly || item.matched_venue)
+    .filter((item) => !matchedOnly || item.matched_venue)
 
   if (format === 'rss') {
     const xmlItems = payload.map(item => {
