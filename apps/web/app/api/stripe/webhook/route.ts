@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { Resend } from 'resend'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { redis } from '@/lib/redis'
 import { db, PLAN_LIMITS, type PlanKey } from '@reddit-monitor/db'
 
 // Raw body required for Stripe signature verification — do not parse as JSON
 export const dynamic = 'force-dynamic'
+type KeywordIdRecord = { id: string }
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
 
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(body, sig, secret)
+    event = getStripe().webhooks.constructEvent(body, sig, secret)
   } catch {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
@@ -68,14 +69,14 @@ export async function POST(request: NextRequest) {
 
       // Disable keywords beyond FREE limit — oldest N are kept active
       const freeLimit = PLAN_LIMITS.FREE.keywords
-      const keywords = await db.keyword.findMany({
+      const keywords: KeywordIdRecord[] = await db.keyword.findMany({
         where: { userId: user.id, enabled: true },
         orderBy: { createdAt: 'asc' },
         select: { id: true },
       })
 
       if (keywords.length > freeLimit) {
-        const toDisable = keywords.slice(freeLimit).map(k => k.id)
+        const toDisable = keywords.slice(freeLimit).map((k: KeywordIdRecord) => k.id)
         await db.keyword.updateMany({
           where: { id: { in: toDisable } },
           data: { enabled: false },

@@ -1,7 +1,7 @@
 'use server'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { db } from '@reddit-monitor/db'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
@@ -16,7 +16,7 @@ export async function createCheckoutSession() {
   const dbUser = await db.user.findUnique({ where: { email: user.email } })
   if (!dbUser) redirect('/login')
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     mode: 'subscription',
     customer_email: user.email,
     line_items: [{ price: process.env.STRIPE_PRO_PRICE_ID!, quantity: 1 }],
@@ -39,7 +39,7 @@ export async function openCustomerPortal() {
   const dbUser = await db.user.findUnique({ where: { email: user.email } })
   if (!dbUser?.stripeCustomerId) redirect('/billing')
 
-  const portal = await stripe.billingPortal.sessions.create({
+  const portal = await getStripe().billingPortal.sessions.create({
     customer: dbUser.stripeCustomerId,
     return_url: `${SITE_URL}/billing`,
   })
