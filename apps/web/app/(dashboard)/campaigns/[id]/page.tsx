@@ -52,6 +52,21 @@ const MAIN_TABS = [
 ]
 
 type Tab = 'opportunities' | 'keywords' | 'competitors'
+type OpportunityMatch = {
+  id: string
+  url: string
+  title: string
+  snippet: string
+  platform: string
+  matchedAt: Date
+  intentScore: number | null
+  aiSummary: string | null
+  aiReplyDraft: string | null
+  painPoints: string | null
+  opportunityType: string | null
+  competitors: string[]
+  keyword: { text: string }
+}
 
 function IntentBadge({ score }: { score: number | null }) {
   if (score === null) return null
@@ -122,7 +137,7 @@ export default async function CampaignDetailPage({
   const validOppTypes = ['buying_intent', 'alternative_seeking', 'complaint', 'recommendation_request', 'research']
   const oppType = rawOppType && validOppTypes.includes(rawOppType) ? rawOppType : 'all'
 
-  const matches =
+  const matches: OpportunityMatch[] =
     activeTab === 'opportunities'
       ? await db.match.findMany({
           where: {
