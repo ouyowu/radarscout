@@ -4,11 +4,27 @@ import { auth } from '@/lib/auth'
 import { db } from '@reddit-monitor/db'
 import { KeywordManager } from './KeywordManager'
 
+type DashboardCampaign = {
+  id: string
+  name: string
+  status: string
+  _count: {
+    keywords: number
+  }
+}
+
+type DashboardKeyword = {
+  id: string
+  text: string
+  enabled: boolean
+  dailyHits: number
+}
+
 export default async function DashboardPage() {
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/login')
 
-  const [keywords, campaigns] = await Promise.all([
+  const [keywords, campaigns]: [DashboardKeyword[], DashboardCampaign[]] = await Promise.all([
     db.keyword.findMany({
       where: { userId: session.user.id },
       select: { id: true, text: true, enabled: true, dailyHits: true },
@@ -52,7 +68,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="grid gap-2 sm:grid-cols-3">
-            {campaigns.map(c => (
+            {campaigns.map((c: DashboardCampaign) => (
               <Link
                 key={c.id}
                 href={`/campaigns/${c.id}`}
