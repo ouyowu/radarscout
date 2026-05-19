@@ -25,6 +25,26 @@ const PLATFORM_BADGE: Record<string, string> = {
 
 type Intent = 'all' | 'high' | 'medium' | 'low'
 
+type MatchListItem = {
+  id: string
+  url: string
+  title: string
+  snippet: string | null
+  platform: string
+  matchedAt: Date
+  location: string | null
+  contentCategory: string | null
+  aiSummary: string | null
+  credibilityScore: number | null
+  commercialScore: number | null
+  aiReplyDraft: string | null
+  travelIntentScore: number | null
+  intentScore: number | null
+  keyword: {
+    text: string
+  }
+}
+
 const TABS: { label: string; value: Intent }[] = [
   { label: 'All', value: 'all' },
   { label: 'High Travel Value (7+)', value: 'high' },
@@ -87,7 +107,7 @@ export default async function MatchesPage({
     select: { productDescription: true },
   })
 
-  const matches = await db.match.findMany({
+  const matches: MatchListItem[] = await db.match.findMany({
     where: { keyword: { userId: session.user.id }, ...buildIntentWhere(effectiveIntent) },
     take: 50,
     orderBy: { matchedAt: 'desc' },
@@ -160,7 +180,7 @@ export default async function MatchesPage({
         </div>
       ) : (
         <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100">
-          {matches.map(match => (
+          {matches.map((match: MatchListItem) => (
             <div key={match.id} className="px-4 py-4">
               <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
