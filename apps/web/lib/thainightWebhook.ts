@@ -1,4 +1,6 @@
-import { db, Prisma } from '@reddit-monitor/db'
+import { db } from '@reddit-monitor/db'
+
+type JsonObjectLike = Record<string, unknown>
 
 type WebhookMatch = {
   id: string
@@ -16,8 +18,8 @@ type WebhookMatch = {
   travelIntentScore: number | null
   credibilityScore: number | null
   commercialScore: number | null
-  sourceMeta: Prisma.JsonValue
-  keyword?: { text: string; flags?: Prisma.JsonValue }
+  sourceMeta: unknown
+  keyword?: { text: string; flags?: unknown }
 }
 
 const RAID_KEYWORDS = [
@@ -31,9 +33,9 @@ const RAID_KEYWORDS = [
   'shutdown',
 ]
 
-function sourceMetaObject(value: Prisma.JsonValue): Record<string, unknown> {
+function sourceMetaObject(value: unknown): JsonObjectLike {
   if (value && typeof value === 'object' && !Array.isArray(value)) {
-    return value as Record<string, unknown>
+    return value as JsonObjectLike
   }
   return {}
 }
