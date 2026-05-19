@@ -3,17 +3,23 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { db } from '@reddit-monitor/db'
 
+type MonitorKeyword = {
+  id: string
+  text: string
+  flags: unknown
+}
+
 export default async function MonitorsPage() {
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/login')
 
-  const keywords = await db.keyword.findMany({
+  const keywords: MonitorKeyword[] = await db.keyword.findMany({
     where: { userId: session.user.id, enabled: true },
     orderBy: { createdAt: 'asc' },
   })
 
   // Group keywords by subreddit (stored in flags.subreddit)
-  const bySubreddit = new Map<string, typeof keywords>()
+  const bySubreddit = new Map<string, MonitorKeyword[]>()
   for (const kw of keywords) {
     const subreddit = (kw.flags as { subreddit?: string }).subreddit ?? '(unknown)'
     const group = bySubreddit.get(subreddit) ?? []
@@ -57,7 +63,7 @@ export default async function MonitorsPage() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {kws.map(kw => (
+                {kws.map((kw: MonitorKeyword) => (
                   <span
                     key={kw.id}
                     className="bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full"
