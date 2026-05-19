@@ -16,6 +16,17 @@ const OPP_LABELS: Record<string, string> = {
   research: 'Research',
 }
 
+type CampaignCard = {
+  id: string
+  name: string
+  industry: string | null
+  status: string
+  _count: {
+    keywords: number
+    competitors: number
+  }
+}
+
 export default async function CampaignsPage() {
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/login')
@@ -24,7 +35,7 @@ export default async function CampaignsPage() {
   const limit = PLAN_LIMITS[plan]?.campaigns ?? 1
   const limitDisplay = limit === Infinity ? '∞' : String(limit)
 
-  const campaigns = await db.campaign.findMany({
+  const campaigns: CampaignCard[] = await db.campaign.findMany({
     where: { userId: session.user.id },
     select: {
       id: true,
@@ -101,7 +112,7 @@ export default async function CampaignsPage() {
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {campaigns.map(c => {
+          {campaigns.map((c: CampaignCard) => {
             const stats = matchStats.get(c.id)
             const topOpp = stats
               ? Object.entries(stats.oppCounts).sort((a, b) => b[1] - a[1])[0]?.[0]
