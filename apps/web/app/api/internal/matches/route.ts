@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, Platform } from '@reddit-monitor/db'
+import { db } from '@reddit-monitor/db'
 import { sendMatchDigest } from '@reddit-monitor/mailer'
 import { sendThaiNightWebhookIfNeeded } from '@/lib/thainightWebhook'
 import { isAdminEmail } from '@/lib/admin'
 
 const BATCH_WINDOW_MS = 60_000
+const PLATFORM_VALUES = ['REDDIT', 'HN', 'X', 'QUORA', 'RSS', 'FORUM'] as const
+type PlatformValue = (typeof PLATFORM_VALUES)[number]
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INTERNAL_API_SECRET
@@ -61,14 +63,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  if (!Object.values(Platform).includes(platform as Platform)) {
+  if (!PLATFORM_VALUES.includes(platform as PlatformValue)) {
     return NextResponse.json({ error: 'Invalid platform' }, { status: 400 })
   }
 
   const match = await db.match.create({
     data: {
       keywordId,
-      platform: platform as Platform,
+      platform: platform as PlatformValue,
       postId,
       title,
       url,
