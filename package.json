@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --filter @reddit-monitor/web dev",
-    "build": "pnpm --filter @reddit-monitor/web build",
+    "build": "pnpm --filter @reddit-monitor/db generate && pnpm --filter @reddit-monitor/web build",
     "crawler": "pnpm --filter @reddit-monitor/crawler start",
     "db:generate": "pnpm --filter @reddit-monitor/db generate",
     "db:migrate:dev": "pnpm --filter @reddit-monitor/db migrate:dev",
