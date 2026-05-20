@@ -9,8 +9,9 @@ import { ProductCard } from '@/components/product/ProductCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
 import { AffiliateDisclosure } from '@/components/monetization/AffiliateDisclosure';
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const product = getProductBySlug(slug);
   
   if (!product) {
     return {};
@@ -24,8 +25,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   });
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const product = getProductBySlug(slug);
 
   if (!product) {
     notFound();

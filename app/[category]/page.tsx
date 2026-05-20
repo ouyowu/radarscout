@@ -5,9 +5,9 @@ import { AdSlot } from '@/components/monetization/AdSlot';
 import { notFound } from 'next/navigation';
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 const categoryInfo: Record<string, { title: string; description: string }> = {
@@ -30,7 +30,8 @@ const categoryInfo: Record<string, { title: string; description: string }> = {
 };
 
 export async function generateMetadata({ params }: CategoryPageProps) {
-  const info = categoryInfo[params.category];
+  const { category } = await params;
+  const info = categoryInfo[category];
   
   if (!info) {
     return {};
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   return generateSEO({
     title: `${info.title} - RadarScout`,
     description: info.description,
-    path: `/${params.category}`,
+    path: `/${category}`,
   });
 }
 
@@ -49,9 +50,10 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const articles = getArticlesByCategory(params.category);
-  const info = categoryInfo[params.category];
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { category } = await params;
+  const articles = getArticlesByCategory(category);
+  const info = categoryInfo[category];
 
   if (!info || articles.length === 0) {
     notFound();

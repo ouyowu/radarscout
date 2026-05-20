@@ -13,10 +13,10 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 interface ArticlePageProps {
-  params: {
+  params: Promise<{
     category: string;
     slug: string;
-  };
+  }>;
 }
 
 // Generate static params for all articles
@@ -38,7 +38,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps) {
-  const article = getArticle(params.category, params.slug);
+  const { category, slug } = await params;
+  const article = getArticle(category, slug);
   
   if (!article) {
     return {};
@@ -47,15 +48,16 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   return generateSEO({
     title: article.frontmatter.title,
     description: article.frontmatter.description,
-    path: `/${params.category}/${params.slug}`,
+    path: `/${category}/${slug}`,
     type: 'article',
     publishedTime: article.frontmatter.publishedAt,
     modifiedTime: article.frontmatter.updatedAt,
   });
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticle(params.category, params.slug);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { category, slug } = await params;
+  const article = getArticle(category, slug);
 
   if (!article) {
     notFound();
@@ -83,7 +85,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back link */}
           <Link
-            href={`/${params.category}`}
+            href={`/${category}`}
             className="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
