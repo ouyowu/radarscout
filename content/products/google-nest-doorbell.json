@@ -1,0 +1,79 @@
+{
+  "slug": "google-nest-doorbell",
+  "name": "Google Nest Doorbell (Battery)",
+  "brand": "Google",
+  "category": "Smart Doorbell",
+  "summary": "A battery-powered smart doorbell with HD video, person detection, and seamless Google Home integration.",
+  "priceRange": "$$",
+  "officialUrl": "https://store.google.com/product/nest_doorbell_battery",
+  "releaseYear": 2023,
+  "ecosystems": ["Google Home", "Matter"],
+  "connectivity": ["Wi-Fi", "Bluetooth"],
+  "sensors": [
+    "Camera",
+    "Motion detection",
+    "Sound detection"
+  ],
+  "features": [
+    "HD video recording",
+    "Person, package, and vehicle detection",
+    "Two-way audio",
+    "Night vision",
+    "3-hour event history (free)",
+    "Pre-recorded quick responses"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 2.5 months per charge",
+  "pros": [
+    "Wire-free installation with battery power",
+    "Excellent AI-powered detection features",
+    "Works with Google Home ecosystem",
+    "Free cloud storage for recent events",
+    "Matter support for broader compatibility"
+  ],
+  "cons": [
+    "Requires Nest Aware subscription for full features",
+    "Battery needs periodic charging",
+    "Limited to Google ecosystem features",
+    "No continuous recording without subscription"
+  ],
+  "bestFor": [
+    "Google Home users",
+    "Renters who can't install wired doorbells",
+    "Smart home enthusiasts",
+    "People wanting AI detection without subscription"
+  ],
+  "notBestFor": [
+    "Those wanting 24/7 continuous recording",
+    "HomeKit-exclusive users",
+    "People avoiding any subscription services"
+  ],
+  "alternatives": [
+    "ring-video-doorbell",
+    "aqara-doorbell",
+    "eufy-doorbell"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Google Store",
+      "merchant": "Google",
+      "region": "Global",
+      "url": "https://store.google.com/product/nest_doorbell_battery",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://store.google.com/product/nest_doorbell_battery"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

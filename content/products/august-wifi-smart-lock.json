@@ -1,0 +1,73 @@
+{
+  "slug": "august-wifi-smart-lock",
+  "name": "August WiFi Smart Lock (4th Gen)",
+  "brand": "August",
+  "category": "Smart Lock",
+  "summary": "Retrofit smart lock that works with existing deadbolt, no key replacement needed.",
+  "priceRange": "$$",
+  "officialUrl": "https://august.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "DoorSense"
+  ],
+  "features": [
+    "Auto-lock",
+    "Auto-unlock",
+    "Remote access",
+    "Activity log",
+    "Guest access"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "4-6 months (4 AA batteries)",
+  "pros": [
+    "Keeps existing keys",
+    "Easy installation",
+    "Multi-platform support",
+    "Built-in WiFi"
+  ],
+  "cons": [
+    "Bulky interior design",
+    "Battery-powered only",
+    "No keypad included"
+  ],
+  "bestFor": [
+    "Renters",
+    "Easy installation needs",
+    "Keeping existing keys"
+  ],
+  "notBestFor": [
+    "Those wanting keypad",
+    "Minimalist design preference",
+    "Outdoor access needs"
+  ],
+  "alternatives": [
+    "yale-assure-lock",
+    "schlage-encode",
+    "level-lock"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://august.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

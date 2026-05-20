@@ -1,0 +1,69 @@
+{
+  "slug": "xiaomi-band-8",
+  "name": "Xiaomi Smart Band 8",
+  "brand": "Xiaomi",
+  "category": "Fitness Band",
+  "summary": "Ultra-affordable fitness band with AMOLED display and comprehensive tracking.",
+  "priceRange": "$",
+  "officialUrl": "https://mi.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Heart rate",
+    "SpO2"
+  ],
+  "features": [
+    "AMOLED display",
+    "150+ sports modes",
+    "Sleep tracking",
+    "5ATM waterproof"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 16 days",
+  "pros": [
+    "Extremely affordable",
+    "Excellent battery",
+    "Bright display",
+    "Lightweight"
+  ],
+  "cons": [
+    "Basic smart features",
+    "Limited third-party apps",
+    "GPS via phone only"
+  ],
+  "bestFor": [
+    "Budget buyers",
+    "Basic tracking",
+    "First-time wearable users"
+  ],
+  "notBestFor": [
+    "Advanced athletes",
+    "Standalone GPS needs"
+  ],
+  "alternatives": [
+    "fitbit-charge-6",
+    "garmin-vivosmart-5"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official",
+      "url": "https://mi.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

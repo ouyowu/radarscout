@@ -1,0 +1,45 @@
+{
+  "name": "Contour Next One Blood Glucose Meter",
+  "slug": "contour-next-one",
+  "brand": "Contour",
+  "category": "Health Devices",
+  "price": 29.99,
+  "rating": 4.7,
+  "imageUrl": "/images/products/contour-next-one.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B01FQ1XUTK?tag=radarscout-20",
+  "summary": "Best traditional glucose meter with second-chance sampling and Bluetooth connectivity.",
+  "features": [
+    "Bluetooth sync to Contour app",
+    "Second-chance sampling (add more blood within 60 seconds)",
+    "Excellent accuracy (meets FDA standards)",
+    "Large easy-to-read display",
+    "Smartlight indicator (high/low/in-range)",
+    "5-second test time",
+    "Pre/post meal markers",
+    "Stores 800 results"
+  ],
+  "specs": {
+    "Test Time": "5 seconds",
+    "Sample Size": "0.6 microliters",
+    "Memory": "800 results",
+    "Connectivity": "Bluetooth",
+    "Battery": "2x CR2032"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Second-chance sampling saves wasted strips",
+      "Very accurate readings",
+      "Bluetooth for app tracking",
+      "Smartlight visual feedback",
+      "Generic strips available"
+    ],
+    "cons": [
+      "Strips more expensive than some competitors",
+      "Still requires finger pricks",
+      "Bluetooth occasionally drops"
+    ]
+  },
+  "bestFor": "Anyone needing traditional glucose meter with phone tracking",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

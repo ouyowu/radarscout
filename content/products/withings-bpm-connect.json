@@ -1,0 +1,72 @@
+{
+  "slug": "withings-bpm-connect",
+  "name": "Withings BPM Connect",
+  "brand": "Withings",
+  "category": "Blood Pressure Monitor",
+  "summary": "Compact WiFi blood pressure monitor with automatic sync to Health Mate app.",
+  "priceRange": "$$",
+  "officialUrl": "https://withings.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "Apple Health"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Blood pressure",
+    "Heart rate"
+  ],
+  "features": [
+    "WiFi sync",
+    "Clinically validated",
+    "Color-coded feedback",
+    "Multi-user"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "6+ months (4 AAA)",
+  "pros": [
+    "WiFi connectivity",
+    "Compact design",
+    "Easy to use",
+    "App integration"
+  ],
+  "cons": [
+    "Wrist measurement less accurate",
+    "Small display",
+    "Premium price"
+  ],
+  "bestFor": [
+    "Frequent monitoring",
+    "App tracking",
+    "Travel"
+  ],
+  "notBestFor": [
+    "Upper arm preference",
+    "Budget buyers"
+  ],
+  "alternatives": [
+    "omron-complete",
+    "qardioarm",
+    "evolv-bp-monitor"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://withings.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

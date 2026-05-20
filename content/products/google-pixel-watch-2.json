@@ -1,0 +1,84 @@
+{
+  "slug": "google-pixel-watch-2",
+  "name": "Google Pixel Watch 2",
+  "brand": "Google",
+  "category": "Smart Watch",
+  "summary": "Google's refined smartwatch with Fitbit integration, excellent for Android users.",
+  "priceRange": "$$$",
+  "officialUrl": "https://store.google.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "Android",
+    "Limited iOS"
+  ],
+  "connectivity": [
+    "Bluetooth",
+    "Wi-Fi",
+    "LTE"
+  ],
+  "sensors": [
+    "Heart rate",
+    "ECG",
+    "SpO2",
+    "Skin temperature",
+    "Accelerometer"
+  ],
+  "features": [
+    "Fitbit integration",
+    "Google Assistant",
+    "Wear OS apps",
+    "Safety features"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 24 hours",
+  "pros": [
+    "Excellent Android integration",
+    "Fitbit health tracking",
+    "Clean design",
+    "Google ecosystem benefits"
+  ],
+  "cons": [
+    "Short battery life",
+    "Limited iOS support",
+    "Smaller app selection than Apple",
+    "Crown can be finicky"
+  ],
+  "bestFor": [
+    "Android users",
+    "Google ecosystem fans",
+    "Fitbit migrators"
+  ],
+  "notBestFor": [
+    "iPhone users",
+    "Multi-day battery seekers",
+    "Advanced fitness athletes"
+  ],
+  "alternatives": [
+    "samsung-galaxy-watch-6",
+    "apple-watch-series",
+    "fitbit-sense"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Google Store",
+      "merchant": "Google",
+      "region": "Global",
+      "url": "https://store.google.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://store.google.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

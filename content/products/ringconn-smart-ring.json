@@ -1,0 +1,86 @@
+{
+  "slug": "ringconn-smart-ring",
+  "name": "RingConn Smart Ring",
+  "brand": "RingConn",
+  "category": "Smart Ring",
+  "benefit": "get essential health tracking on a budget",
+  "key_feature": "subscription-free tracking",
+  "category_desc": "budget-friendly",
+  "summary": "RingConn delivers essential health tracking features without ongoing subscription costs, making smart ring technology accessible to first-time users and budget-conscious buyers.",
+  "priceRange": "$$",
+  "officialUrl": "https://ringconn.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth"
+  ],
+  "sensors": [
+    "PPG heart rate",
+    "SpO2 sensor",
+    "Temperature monitoring",
+    "Accelerometer"
+  ],
+  "features": [
+    "Basic sleep tracking",
+    "Daily activity counting",
+    "Continuous heart monitoring",
+    "Step tracking"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 7 days",
+  "pros": [
+    "Priced 40-50% below premium smart rings",
+    "Zero monthly fees for core functionality",
+    "Battery lasts a full week between charges",
+    "Accurate step counting and basic heart rate",
+    "IP68 water resistance for daily wear"
+  ],
+  "cons": [
+    "Mobile app interface feels basic compared to competitors",
+    "Missing advanced analytics like readiness scores",
+    "Brand lacks the recognition of established players",
+    "Fewer total features than Oura or Ultrahuman"
+  ],
+  "bestFor": [
+    "First-time smart ring users testing the category",
+    "Budget-conscious buyers under $150",
+    "Anyone wanting core health tracking without complexity",
+    "People avoiding all subscription models"
+  ],
+  "notBestFor": [
+    "Competitive athletes needing deep training metrics",
+    "Users expecting detailed health analytics",
+    "Those prioritizing ecosystem integration options"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "ultrahuman-ring-air",
+    "circular-ring"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "View latest price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "Shop RingConn official store",
+      "merchant": "RingConn",
+      "region": "Global",
+      "url": "https://ringconn.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "RingConn product specifications",
+      "url": "https://ringconn.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

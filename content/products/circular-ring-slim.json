@@ -1,0 +1,77 @@
+{
+  "slug": "circular-ring-slim",
+  "name": "Circular Ring Slim",
+  "brand": "Circular",
+  "category": "Smart Ring",
+  "benefit": "receive actionable health guidance",
+  "key_feature": "AI-powered insights and keto mode",
+  "category_desc": "insight-driven",
+  "summary": "Circular Ring Slim focuses on turning health data into actionable recommendations, with special features for keto diet followers and those wanting guidance rather than just numbers.",
+  "priceRange": "$$$",
+  "officialUrl": "https://circular.xyz",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Heart rate sensor",
+    "HRV tracking",
+    "Skin temperature",
+    "Blood oxygen",
+    "Motion detection"
+  ],
+  "features": [
+    "AI-powered daily guidance",
+    "Energy level predictions",
+    "Keto tracking mode",
+    "Circadian rhythm analysis"
+  ],
+  "subscriptionRequired": true,
+  "batteryLife": "Up to 5 days",
+  "pros": [
+    "Slimmest profile among major smart rings",
+    "AI provides specific daily recommendations",
+    "Dedicated keto mode tracks ketosis indicators",
+    "Elegant design works as jewelry"
+  ],
+  "cons": [
+    "Monthly subscription required for full features",
+    "Battery life shorter than Oura or RingConn",
+    "Limited integration with other health apps"
+  ],
+  "bestFor": [
+    "Fashion-conscious wearers wanting discrete tech",
+    "Keto diet practitioners tracking metabolic state",
+    "Users preferring guided advice over raw data"
+  ],
+  "notBestFor": [
+    "Subscription-averse buyers",
+    "Those wanting maximum battery longevity",
+    "Users needing 5+ days between charges"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "ultrahuman-ring-air",
+    "ringconn-smart-ring"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Purchase from Circular",
+      "merchant": "Circular",
+      "region": "Global",
+      "url": "https://circular.xyz",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Circular official product page",
+      "url": "https://circular.xyz"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

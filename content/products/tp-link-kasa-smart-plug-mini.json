@@ -1,0 +1,45 @@
+{
+  "name": "TP-Link Kasa Smart Plug Mini (EP25)",
+  "slug": "tp-link-kasa-smart-plug-mini",
+  "brand": "TP-Link",
+  "category": "Smart Home",
+  "price": 12.99,
+  "rating": 4.6,
+  "imageUrl": "/images/products/tp-link-kasa-plug.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B0B8CHHX2C?tag=radarscout-20",
+  "summary": "Matter-certified smart plug with energy monitoring. Perfect entry point into smart home automation.",
+  "features": [
+    "Matter certified - works with Apple Home, Google Home, and Alexa",
+    "Energy monitoring to track power consumption",
+    "No hub required - connects directly to WiFi",
+    "Compact design doesn't block adjacent outlets",
+    "Voice control via Siri, Google Assistant, or Alexa",
+    "Scheduling and timer functions",
+    "Away mode for security",
+    "Kasa app for remote control"
+  ],
+  "specs": {
+    "Connectivity": "WiFi 2.4GHz, Matter",
+    "Max Load": "15A, 1800W",
+    "Dimensions": "2.6 x 1.5 x 2.4 inches",
+    "Weight": "2.4 oz",
+    "App": "Kasa Smart (iOS/Android)"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Matter support ensures broad compatibility",
+      "Energy monitoring helps reduce electricity costs",
+      "Very affordable at $10-15",
+      "Compact size",
+      "Reliable connectivity"
+    ],
+    "cons": [
+      "2.4GHz WiFi only (no 5GHz)",
+      "Basic features compared to premium plugs",
+      "No USB ports"
+    ]
+  },
+  "bestFor": "Anyone starting smart home journey or needing affordable, reliable smart plugs",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

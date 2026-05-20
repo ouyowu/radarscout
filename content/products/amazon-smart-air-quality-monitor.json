@@ -1,0 +1,46 @@
+{
+  "name": "Amazon Smart Air Quality Monitor",
+  "slug": "amazon-smart-air-quality-monitor",
+  "brand": "Amazon",
+  "category": "Health Devices",
+  "price": 69.99,
+  "rating": 4.3,
+  "imageUrl": "/images/products/amazon-aqm.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B08W8KS8D3?tag=radarscout-20",
+  "summary": "Budget air quality monitor with essential sensors. Works with Alexa routines for automation.",
+  "features": [
+    "Tracks PM2.5, VOC, CO, humidity, temperature",
+    "Alexa integration for voice alerts",
+    "Automate smart plugs/purifiers via routines",
+    "Color-coded LED for quick status",
+    "Historical data in Alexa app",
+    "Compact hockey-puck design",
+    "USB-C powered",
+    "Easy setup"
+  ],
+  "specs": {
+    "Sensors": "PM2.5, VOC, CO, humidity, temperature",
+    "Connectivity": "WiFi 2.4GHz",
+    "Power": "USB-C",
+    "Dimensions": "2.9 x 2.9 x 1 inches",
+    "Weight": "3.5 oz"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Very affordable ($70)",
+      "Works with Alexa routines",
+      "Covers essential air quality metrics",
+      "Tiny and portable",
+      "Simple setup"
+    ],
+    "cons": [
+      "No CO2 sensor (measures CO instead)",
+      "Basic Alexa app interface",
+      "Alexa ecosystem only",
+      "Less accurate than premium monitors"
+    ]
+  },
+  "bestFor": "Budget buyers or Alexa users wanting basic air quality tracking",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

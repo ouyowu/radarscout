@@ -1,0 +1,72 @@
+{
+  "slug": "ecovacs-deebot-x2",
+  "name": "ECOVACS DEEBOT X2 OMNI",
+  "brand": "ECOVACS",
+  "category": "Robot Vacuum",
+  "summary": "Square-shaped robot vacuum with powerful suction and auto-maintenance station.",
+  "priceRange": "$$$$",
+  "officialUrl": "https://ecovacs.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "AIVI 3D",
+    "LiDAR"
+  ],
+  "features": [
+    "Square design",
+    "8000Pa suction",
+    "Auto-empty",
+    "Hot water mopping"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 210 mins",
+  "pros": [
+    "Square shape for corners",
+    "Powerful suction",
+    "Hot water mop cleaning",
+    "Advanced AI"
+  ],
+  "cons": [
+    "Very expensive",
+    "Large dock",
+    "Noisy"
+  ],
+  "bestFor": [
+    "Corner cleaning",
+    "Tile/hardwood floors",
+    "Hands-off maintenance"
+  ],
+  "notBestFor": [
+    "Budget buyers",
+    "Small spaces"
+  ],
+  "alternatives": [
+    "roborock-s8-pro-ultra",
+    "irobot-roomba-j9",
+    "dreame-l10s-ultra"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official",
+      "url": "https://ecovacs.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

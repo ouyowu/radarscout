@@ -1,0 +1,45 @@
+{
+  "name": "Aqara Motion Sensor P2",
+  "slug": "aqara-motion-sensor-p2",
+  "brand": "Aqara",
+  "category": "Smart Home",
+  "price": 19.99,
+  "rating": 4.5,
+  "imageUrl": "/images/products/aqara-motion-p2.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B0BXVK7RFZ?tag=radarscout-20",
+  "summary": "Matter-certified motion sensor with 5-year battery life. Perfect for automatic lighting and home automation.",
+  "features": [
+    "Matter certified for universal compatibility",
+    "5-year battery life (CR2450 battery)",
+    "170° detection angle",
+    "7-meter detection range",
+    "Light sensor for brightness-based automation",
+    "Magnetic mounting with adhesive pad",
+    "Works with Echo, HomePod, Google Home as hub",
+    "IP44 water resistance"
+  ],
+  "specs": {
+    "Battery": "CR2450 (5 year life)",
+    "Detection": "170° angle, 7m range",
+    "Connectivity": "Zigbee, Matter",
+    "Dimensions": "1.5 x 1.5 x 0.9 inches",
+    "Weight": "0.8 oz"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Exceptional 5-year battery life",
+      "Matter support ensures future compatibility",
+      "Tiny and unobtrusive",
+      "Reliable motion detection",
+      "Built-in light sensor"
+    ],
+    "cons": [
+      "Requires Zigbee hub (Echo/HomePod/etc)",
+      "Not as fast as wired sensors",
+      "Limited to indoor use despite IP44 rating"
+    ]
+  },
+  "bestFor": "Automatic lighting in hallways, bathrooms, closets, or security alerts",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

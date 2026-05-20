@@ -1,0 +1,72 @@
+{
+  "slug": "garmin-index-s2",
+  "name": "Garmin Index S2 Smart Scale",
+  "brand": "Garmin",
+  "category": "Smart Scale",
+  "summary": "Smart scale with comprehensive body composition and Garmin Connect integration.",
+  "priceRange": "$$",
+  "officialUrl": "https://garmin.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "Garmin Connect"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Weight",
+    "Body composition"
+  ],
+  "features": [
+    "Body composition",
+    "Multi-user",
+    "Weather display",
+    "Trend graphs"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 9 months",
+  "pros": [
+    "Garmin ecosystem integration",
+    "Accurate",
+    "Weather display",
+    "Multi-user"
+  ],
+  "cons": [
+    "Garmin ecosystem focused",
+    "Expensive for features",
+    "Basic app"
+  ],
+  "bestFor": [
+    "Garmin watch users",
+    "Athletes",
+    "Multi-user families"
+  ],
+  "notBestFor": [
+    "Non-Garmin users",
+    "Budget buyers"
+  ],
+  "alternatives": [
+    "withings-body-comp",
+    "fitbit-aria-air",
+    "eufy-smart-scale"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://garmin.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

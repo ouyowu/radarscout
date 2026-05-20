@@ -1,0 +1,47 @@
+{
+  "name": "Wyze Video Doorbell",
+  "slug": "wyze-video-doorbell",
+  "brand": "Wyze",
+  "category": "Smart Home",
+  "price": 34.99,
+  "rating": 4.3,
+  "imageUrl": "/images/products/wyze-doorbell.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B08FHTK8VZ?tag=radarscout-20",
+  "summary": "Budget video doorbell with local storage option and no required subscription fees.",
+  "features": [
+    "1080p HD video with HDR",
+    "Local storage via microSD card (no subscription)",
+    "Free cloud storage for 12-second clips",
+    "Night vision",
+    "Two-way audio",
+    "Hardwired installation",
+    "Chime included",
+    "Person detection (AI)",
+    "Works with Alexa and Google Assistant"
+  ],
+  "specs": {
+    "Video": "1080p HD with HDR",
+    "Field of View": "3:4 aspect ratio (vertical)",
+    "Storage": "microSD up to 256GB",
+    "Installation": "Hardwired (requires doorbell wire)",
+    "Power": "16-24V AC"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Incredibly affordable at $35",
+      "Local storage option (no subscription required)",
+      "Free cloud tier available",
+      "Good video quality for price",
+      "Chime included"
+    ],
+    "cons": [
+      "Hardwired only (no battery option)",
+      "Free cloud only saves 12-second clips",
+      "Wyze Plus subscription adds features",
+      "Less polished than Ring/Nest"
+    ]
+  },
+  "bestFor": "Budget-conscious users wanting video doorbell without ongoing subscription costs",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

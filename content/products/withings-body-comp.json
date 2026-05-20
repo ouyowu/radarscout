@@ -1,0 +1,77 @@
+{
+  "slug": "withings-body-comp",
+  "name": "Withings Body Comp",
+  "brand": "Withings",
+  "category": "Smart Scale",
+  "summary": "Advanced smart scale with comprehensive body composition and cardiovascular health insights.",
+  "priceRange": "$$$",
+  "officialUrl": "https://withings.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "Apple Health",
+    "Google Fit"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Weight",
+    "Body composition",
+    "Segmental analysis",
+    "ECG"
+  ],
+  "features": [
+    "Body composition",
+    "Vascular age",
+    "Nerve health score",
+    "Segmental analysis",
+    "Multi-user"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 18 months",
+  "pros": [
+    "Most comprehensive metrics",
+    "No subscription needed",
+    "ECG functionality",
+    "Excellent app integration"
+  ],
+  "cons": [
+    "Expensive",
+    "Some metrics need medical validation",
+    "Overkill for basic needs"
+  ],
+  "bestFor": [
+    "Comprehensive health tracking",
+    "Athletes",
+    "Health enthusiasts",
+    "Multi-user households"
+  ],
+  "notBestFor": [
+    "Budget buyers",
+    "Simple weight tracking needs"
+  ],
+  "alternatives": [
+    "garmin-index-s2",
+    "fitbit-aria-air",
+    "eufy-smart-scale"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://withings.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

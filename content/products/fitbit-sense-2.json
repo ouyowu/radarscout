@@ -1,0 +1,84 @@
+{
+  "slug": "fitbit-sense-2",
+  "name": "Fitbit Sense 2",
+  "brand": "Fitbit",
+  "category": "Smart Watch",
+  "summary": "Health-focused smartwatch with stress management and comprehensive wellness features.",
+  "priceRange": "$$",
+  "officialUrl": "https://fitbit.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth",
+    "GPS"
+  ],
+  "sensors": [
+    "Heart rate",
+    "ECG",
+    "EDA sensor",
+    "Skin temperature",
+    "SpO2"
+  ],
+  "features": [
+    "Stress management",
+    "Sleep tracking",
+    "Guided breathing",
+    "Active Zone Minutes"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 6 days",
+  "pros": [
+    "Excellent battery life",
+    "Stress management focus",
+    "Comfortable design",
+    "More affordable than Apple Watch"
+  ],
+  "cons": [
+    "Limited app selection",
+    "Best features need subscription",
+    "No music storage",
+    "Slower processor"
+  ],
+  "bestFor": [
+    "Stress management focus",
+    "Multi-day battery life",
+    "Fitbit ecosystem users",
+    "Wellness-focused users"
+  ],
+  "notBestFor": [
+    "Power users",
+    "Music lovers",
+    "Advanced athletes"
+  ],
+  "alternatives": [
+    "google-pixel-watch-2",
+    "garmin-venu",
+    "apple-watch-series"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Fitbit",
+      "merchant": "Fitbit",
+      "region": "Global",
+      "url": "https://fitbit.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://fitbit.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

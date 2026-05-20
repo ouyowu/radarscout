@@ -1,0 +1,71 @@
+{
+  "slug": "eufy-video-doorbell-2k",
+  "name": "eufy Security Video Doorbell 2K",
+  "brand": "eufy",
+  "category": "Smart Doorbell",
+  "summary": "Battery-powered doorbell with 2K resolution and local storage, no subscription needed.",
+  "priceRange": "$$",
+  "officialUrl": "https://eufy.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "Camera",
+    "Motion",
+    "Person detection"
+  ],
+  "features": [
+    "2K resolution",
+    "Local storage",
+    "No subscription",
+    "AI detection"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 180 days",
+  "pros": [
+    "No subscription needed",
+    "Local storage",
+    "Long battery",
+    "2K video"
+  ],
+  "cons": [
+    "No HomeKit",
+    "Basic app",
+    "Slower notifications"
+  ],
+  "bestFor": [
+    "Privacy-conscious users",
+    "No subscription preference",
+    "Budget-conscious"
+  ],
+  "notBestFor": [
+    "HomeKit users",
+    "Cloud storage preference"
+  ],
+  "alternatives": [
+    "ring-video-doorbell-pro-2",
+    "google-nest-doorbell",
+    "aqara-doorbell"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://eufy.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

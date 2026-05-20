@@ -1,0 +1,75 @@
+{
+  "slug": "yale-assure-lock-2",
+  "name": "Yale Assure Lock 2",
+  "brand": "Yale",
+  "category": "Smart Lock",
+  "summary": "Keyless smart lock with built-in keypad and Matter support.",
+  "priceRange": "$$$",
+  "officialUrl": "https://yale.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "Matter",
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Matter",
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Touchscreen keypad"
+  ],
+  "features": [
+    "Matter certified",
+    "Keypad access",
+    "Auto-lock",
+    "Tamper alert",
+    "Voice control"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 12 months",
+  "pros": [
+    "Matter support",
+    "No keys needed",
+    "Long battery life",
+    "Multiple access methods"
+  ],
+  "cons": [
+    "Expensive",
+    "Full replacement lock",
+    "Complex installation for some"
+  ],
+  "bestFor": [
+    "Keyless access preference",
+    "Matter ecosystem",
+    "Family access management"
+  ],
+  "notBestFor": [
+    "Renters",
+    "Budget buyers",
+    "DIY installation hesitant"
+  ],
+  "alternatives": [
+    "schlage-encode",
+    "august-wifi-smart-lock",
+    "level-lock"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://yale.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

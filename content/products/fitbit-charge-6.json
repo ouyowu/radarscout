@@ -1,0 +1,47 @@
+{
+  "name": "Fitbit Charge 6",
+  "slug": "fitbit-charge-6",
+  "brand": "Fitbit",
+  "category": "Wearables",
+  "price": 159.99,
+  "rating": 4.4,
+  "imageUrl": "/images/products/fitbit-charge-6.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B0CC5WKXD8?tag=radarscout-20",
+  "summary": "Best fitness tracker for Google ecosystem users. Heart rate accuracy improved 60% over Charge 5.",
+  "features": [
+    "60% more accurate heart rate tracking",
+    "Built-in GPS",
+    "Google Maps turn-by-turn directions",
+    "YouTube Music controls",
+    "Google Wallet for payments",
+    "7-day battery life",
+    "Sleep tracking with Sleep Profile",
+    "Stress management tools",
+    "40+ exercise modes"
+  ],
+  "specs": {
+    "Display": "Color AMOLED",
+    "Battery": "7 days",
+    "Water Resistance": "5 ATM",
+    "Sensors": "HR, SpO2, GPS, accelerometer",
+    "Weight": "29g"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Much improved heart rate accuracy",
+      "Deep Google integration",
+      "Slim and comfortable",
+      "Good battery life",
+      "Affordable fitness tracking"
+    ],
+    "cons": [
+      "Requires Fitbit Premium for best features ($10/month)",
+      "Small screen",
+      "No music storage",
+      "Google ecosystem lock-in"
+    ]
+  },
+  "bestFor": "Google users wanting accurate, affordable fitness tracking",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Garmin Venu 3",
+  "slug": "garmin-venu-3",
+  "brand": "Garmin",
+  "category": "Wearables",
+  "price": 449.99,
+  "rating": 4.6,
+  "imageUrl": "/images/products/garmin-venu-3.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B0C62K5JFZ?tag=radarscout-20",
+  "summary": "Premium sports watch with comprehensive sleep tracking and 14-day battery life.",
+  "features": [
+    "14-day battery life",
+    "AMOLED touchscreen display",
+    "Advanced sleep tracking with coaching",
+    "HRV status and training readiness",
+    "Body Battery energy monitoring",
+    "Wheelchair mode",
+    "Built-in speaker and microphone",
+    "30+ sport modes",
+    "5 ATM water resistance"
+  ],
+  "specs": {
+    "Display": "1.4-inch AMOLED",
+    "Battery": "14 days smartwatch, 26 hours GPS",
+    "Water Resistance": "5 ATM (50m)",
+    "Sensors": "HR, SpO2, GPS, altimeter, compass",
+    "Weight": "47g"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Exceptional battery life",
+      "Comprehensive health tracking",
+      "Excellent for serious athletes",
+      "Beautiful AMOLED display",
+      "Wheelchair accessibility features"
+    ],
+    "cons": [
+      "Expensive",
+      "Garmin ecosystem learning curve",
+      "Not as smart as Apple Watch",
+      "Larger/heavier than some prefer"
+    ]
+  },
+  "bestFor": "Athletes wanting long battery and comprehensive health/training data",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

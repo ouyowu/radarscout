@@ -1,0 +1,79 @@
+{
+  "slug": "eight-sleep-pod-4",
+  "name": "Eight Sleep Pod 4",
+  "brand": "Eight Sleep",
+  "category": "Sleep Tracker",
+  "summary": "Smart mattress cover with temperature control and comprehensive sleep tracking.",
+  "priceRange": "$$$$",
+  "officialUrl": "https://eightsleep.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Heart rate",
+    "HRV",
+    "Respiratory rate",
+    "Movement",
+    "Room temperature"
+  ],
+  "features": [
+    "Temperature regulation",
+    "Sleep stages",
+    "Smart alarm",
+    "Health insights",
+    "Autopilot mode"
+  ],
+  "subscriptionRequired": true,
+  "batteryLife": "N/A (Powered)",
+  "pros": [
+    "Active temperature control",
+    "Comprehensive sleep data",
+    "Non-wearable tracking",
+    "Partner-friendly dual zones"
+  ],
+  "cons": [
+    "Very expensive",
+    "Requires subscription",
+    "Not portable",
+    "Complex setup"
+  ],
+  "bestFor": [
+    "Sleep optimization enthusiasts",
+    "Hot/cold sleepers",
+    "People who dislike wearables",
+    "Couples with different temp preferences"
+  ],
+  "notBestFor": [
+    "Budget buyers",
+    "Renters",
+    "Travelers",
+    "Those avoiding subscriptions"
+  ],
+  "alternatives": [
+    "withings-sleep",
+    "oura-ring-4",
+    "whoop"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "View on Eight Sleep",
+      "merchant": "Eight Sleep",
+      "region": "Global",
+      "url": "https://eightsleep.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://eightsleep.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

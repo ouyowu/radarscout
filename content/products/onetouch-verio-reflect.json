@@ -1,0 +1,45 @@
+{
+  "name": "OneTouch Verio Reflect",
+  "slug": "onetouch-verio-reflect",
+  "brand": "OneTouch",
+  "category": "Health Devices",
+  "price": 34.99,
+  "rating": 4.6,
+  "imageUrl": "/images/products/onetouch-verio.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B07RWWLM6V?tag=radarscout-20",
+  "summary": "Glucose meter with AI coaching features. Analyzes patterns and provides personalized guidance.",
+  "features": [
+    "Blood Sugar Mentor (AI pattern analysis)",
+    "ColorSure technology (visual high/low indicators)",
+    "Bluetooth sync to OneTouch Reveal app",
+    "Personalized insights and coaching",
+    "Simple three-button design",
+    "Backlit display",
+    "5-second test time",
+    "Stores 750 results"
+  ],
+  "specs": {
+    "Test Time": "5 seconds",
+    "Sample Size": "0.4 microliters",
+    "Memory": "750 results",
+    "Connectivity": "Bluetooth",
+    "Battery": "1x CR2032"
+  },
+  "prosAndCons": {
+    "pros": [
+      "AI coaching helps understand patterns",
+      "ColorSure makes readings easy to interpret",
+      "OneTouch strips widely available",
+      "Good app with insights",
+      "Backlit display for low light"
+    ],
+    "cons": [
+      "Strips are pricier",
+      "Coaching requires consistent app use",
+      "Basic compared to CGM systems"
+    ]
+  },
+  "bestFor": "Newly diagnosed diabetics needing guidance interpreting results",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

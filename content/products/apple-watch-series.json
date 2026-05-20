@@ -1,0 +1,92 @@
+{
+  "slug": "apple-watch-series",
+  "name": "Apple Watch Series 10",
+  "brand": "Apple",
+  "category": "Smart Watch",
+  "summary": "The latest Apple Watch combining fitness tracking, health monitoring, and full smartwatch capabilities in the Apple ecosystem.",
+  "priceRange": "$$$",
+  "officialUrl": "https://apple.com/watch",
+  "releaseYear": 2024,
+  "ecosystems": ["iOS", "HomeKit"],
+  "connectivity": ["Bluetooth", "Wi-Fi", "Cellular"],
+  "sensors": [
+    "Heart rate",
+    "ECG",
+    "Blood oxygen",
+    "Accelerometer",
+    "Gyroscope",
+    "GPS",
+    "Temperature"
+  ],
+  "features": [
+    "Sleep tracking",
+    "Workout tracking",
+    "ECG monitoring",
+    "Fall detection",
+    "Crash detection",
+    "Always-on display",
+    "App ecosystem"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 18 hours",
+  "pros": [
+    "Full smartwatch functionality with apps",
+    "Seamless integration with iPhone and Apple ecosystem",
+    "Comprehensive health and fitness tracking",
+    "Large app library and third-party support",
+    "No subscription required for core features"
+  ],
+  "cons": [
+    "Only works with iPhone",
+    "Short battery life requires daily charging",
+    "Expensive compared to fitness-only trackers",
+    "Sleep tracking limited by battery constraints"
+  ],
+  "bestFor": [
+    "iPhone users wanting a complete smartwatch",
+    "People who value app ecosystem and notifications",
+    "Fitness tracking with smartwatch features",
+    "Apple ecosystem integration"
+  ],
+  "notBestFor": [
+    "Android users",
+    "Multi-day battery life priority",
+    "Budget-conscious buyers",
+    "Sleep-focused tracking (due to daily charging)"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "whoop",
+    "garmin-watch"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Apple Store",
+      "merchant": "Apple",
+      "region": "Global",
+      "url": "https://apple.com/watch",
+      "isAffiliate": false
+    },
+    {
+      "label": "Compare at Best Buy",
+      "merchant": "Best Buy",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://apple.com/watch"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

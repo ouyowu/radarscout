@@ -1,0 +1,72 @@
+{
+  "slug": "amazfit-gtr-4",
+  "name": "Amazfit GTR 4",
+  "brand": "Amazfit",
+  "category": "Smart Watch",
+  "summary": "Affordable smartwatch with comprehensive health tracking and impressive battery life.",
+  "priceRange": "$$",
+  "officialUrl": "https://amazfit.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth",
+    "GPS"
+  ],
+  "sensors": [
+    "Heart rate",
+    "SpO2",
+    "Stress"
+  ],
+  "features": [
+    "Dual-band GPS",
+    "150+ sports modes",
+    "Alexa built-in",
+    "Music storage"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 14 days",
+  "pros": [
+    "Great battery life",
+    "Affordable",
+    "AMOLED display",
+    "Comprehensive tracking"
+  ],
+  "cons": [
+    "Basic smart features",
+    "Third-party app limitations",
+    "Weaker ecosystem"
+  ],
+  "bestFor": [
+    "Budget buyers",
+    "Battery life priority",
+    "Fitness tracking"
+  ],
+  "notBestFor": [
+    "Advanced smart features",
+    "Strong ecosystem needs"
+  ],
+  "alternatives": [
+    "fitbit-sense-2",
+    "samsung-galaxy-watch-6",
+    "garmin-venu"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://amazfit.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

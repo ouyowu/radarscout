@@ -1,0 +1,73 @@
+{
+  "slug": "polar-h10",
+  "name": "Polar H10 Heart Rate Sensor",
+  "brand": "Polar",
+  "category": "Heart Rate Monitor",
+  "summary": "Professional-grade chest strap heart rate monitor with exceptional accuracy.",
+  "priceRange": "$$",
+  "officialUrl": "https://polar.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "ANT+"
+  ],
+  "connectivity": [
+    "Bluetooth",
+    "ANT+"
+  ],
+  "sensors": [
+    "Heart rate",
+    "ECG"
+  ],
+  "features": [
+    "Most accurate HR",
+    "Waterproof",
+    "Internal memory",
+    "Multi-sport"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "400 hours (CR2025)",
+  "pros": [
+    "Most accurate",
+    "Waterproof",
+    "ANT+ and Bluetooth",
+    "Proven reliability"
+  ],
+  "cons": [
+    "Chest strap less comfortable",
+    "No display",
+    "Requires washing"
+  ],
+  "bestFor": [
+    "Serious athletes",
+    "Accuracy priority",
+    "Training zones"
+  ],
+  "notBestFor": [
+    "Casual users",
+    "24/7 tracking",
+    "Strap aversion"
+  ],
+  "alternatives": [
+    "garmin-hrm-pro",
+    "wahoo-tickr-x",
+    "coros-pod-2"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://polar.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

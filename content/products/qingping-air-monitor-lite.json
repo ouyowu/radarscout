@@ -1,0 +1,47 @@
+{
+  "name": "Qingping Air Monitor Lite",
+  "slug": "qingping-air-monitor-lite",
+  "brand": "Qingping",
+  "category": "Health Devices",
+  "price": 79.99,
+  "rating": 4.5,
+  "imageUrl": "/images/products/qingping-lite.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B09JQKZ3KW?tag=radarscout-20",
+  "summary": "Best value CO2 monitor with HomeKit integration. Compact with real-time LCD display.",
+  "features": [
+    "NDIR CO2 sensor (accurate type)",
+    "Tracks PM2.5, CO2, humidity, temperature",
+    "Apple HomeKit native support",
+    "LCD display shows all readings",
+    "Historical data and trends",
+    "Magnetic mounting option",
+    "USB-C powered",
+    "Export data for analysis"
+  ],
+  "specs": {
+    "Sensors": "PM2.5, CO2 (NDIR), humidity, temperature",
+    "Connectivity": "WiFi, HomeKit",
+    "Display": "LCD screen",
+    "Power": "USB-C",
+    "Dimensions": "3.1 x 3.1 x 1.2 inches",
+    "Weight": "4.2 oz"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Includes accurate NDIR CO2 sensor",
+      "HomeKit integration (rare for air monitors)",
+      "Good value at $80",
+      "Real-time LCD display",
+      "Clean minimalist design"
+    ],
+    "cons": [
+      "No VOC sensor",
+      "Smaller brand, less support",
+      "App translations sometimes awkward",
+      "HomeKit only (no Alexa/Google)"
+    ]
+  },
+  "bestFor": "HomeKit users or anyone wanting affordable CO2 monitoring",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

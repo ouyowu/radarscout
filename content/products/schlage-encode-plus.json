@@ -1,0 +1,70 @@
+{
+  "slug": "schlage-encode-plus",
+  "name": "Schlage Encode Plus",
+  "brand": "Schlage",
+  "category": "Smart Lock",
+  "summary": "WiFi smart lock with built-in alarm and Apple Home Key support.",
+  "priceRange": "$$$",
+  "officialUrl": "https://schlage.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "Keypad"
+  ],
+  "features": [
+    "Apple Home Key",
+    "Built-in alarm",
+    "Auto-lock",
+    "Voice control"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 12 months",
+  "pros": [
+    "Apple Home Key",
+    "Built-in WiFi",
+    "Alarm feature",
+    "No hub needed"
+  ],
+  "cons": [
+    "Expensive",
+    "Full lock replacement",
+    "Battery-powered"
+  ],
+  "bestFor": [
+    "iPhone users",
+    "Security priority",
+    "Keyless preference"
+  ],
+  "notBestFor": [
+    "Budget buyers",
+    "Renters"
+  ],
+  "alternatives": [
+    "yale-assure-lock-2",
+    "august-wifi-smart-lock",
+    "level-lock"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://schlage.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "Philips Hue White Starter Kit (2 Bulbs)",
+  "slug": "philips-hue-white-starter-kit",
+  "brand": "Philips",
+  "category": "Smart Lighting",
+  "price": 39.99,
+  "rating": 4.6,
+  "imageUrl": "/images/products/philips-hue-white-kit.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B07QV9XB87?tag=radarscout-20",
+  "summary": "Most reliable smart bulbs with Bluetooth connectivity. Works without hub initially, expandable with Hue Bridge.",
+  "features": [
+    "Bluetooth control without hub required",
+    "Dimmable white light (warm to cool)",
+    "Works with Alexa, Google Home, Apple HomeKit",
+    "Add Hue Bridge later for advanced features",
+    "Works even when internet is down",
+    "16 million colors with Color bulbs (upgrade option)",
+    "Zigbee connectivity for home automation",
+    "25,000 hour lifespan (22+ years at 3 hours/day)"
+  ],
+  "specs": {
+    "Brightness": "800 lumens",
+    "Wattage": "9W (60W equivalent)",
+    "Base": "E26",
+    "Connectivity": "Bluetooth, Zigbee",
+    "Color Temperature": "2700K warm white"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Works without hub via Bluetooth",
+      "Most reliable smart bulbs available",
+      "Works during internet outages",
+      "Excellent ecosystem and compatibility",
+      "Very long lifespan"
+    ],
+    "cons": [
+      "More expensive than competitors",
+      "Need Hue Bridge for best features",
+      "White bulbs can't change colors"
+    ]
+  },
+  "bestFor": "Anyone wanting the most reliable smart bulbs that work perfectly every time",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

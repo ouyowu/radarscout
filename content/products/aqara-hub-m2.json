@@ -1,0 +1,70 @@
+{
+  "slug": "aqara-hub-m2",
+  "name": "Aqara Hub M2",
+  "brand": "Aqara",
+  "category": "Smart Home Hub",
+  "summary": "Affordable Zigbee 3.0 hub with HomeKit integration and IR control.",
+  "priceRange": "$",
+  "officialUrl": "https://aqara.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Ethernet",
+    "Zigbee",
+    "IR"
+  ],
+  "sensors": [],
+  "features": [
+    "Zigbee 3.0",
+    "IR blaster",
+    "HomeKit support",
+    "Alarm siren"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "N/A",
+  "pros": [
+    "Very affordable",
+    "HomeKit native",
+    "IR control",
+    "Built-in siren"
+  ],
+  "cons": [
+    "Requires ethernet",
+    "Limited to Aqara ecosystem",
+    "Basic UI"
+  ],
+  "bestFor": [
+    "Budget HomeKit",
+    "Aqara device users",
+    "IR control needs"
+  ],
+  "notBestFor": [
+    "WiFi-only setups",
+    "Non-Aqara devices"
+  ],
+  "alternatives": [
+    "hubitat-elevation",
+    "smartthings-hub",
+    "homey-pro"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official",
+      "url": "https://aqara.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

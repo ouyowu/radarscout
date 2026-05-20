@@ -1,0 +1,85 @@
+{
+  "slug": "oura-ring-4",
+  "name": "Oura Ring 4",
+  "brand": "Oura",
+  "category": "Smart Ring",
+  "summary": "A premium smart ring focused on sleep, recovery, and health tracking with enhanced sensors and longer battery life.",
+  "priceRange": "$$$",
+  "officialUrl": "https://ouraring.com",
+  "releaseYear": 2024,
+  "ecosystems": ["iOS", "Android"],
+  "connectivity": ["Bluetooth"],
+  "sensors": [
+    "Heart rate",
+    "HRV",
+    "Skin temperature",
+    "SpO2",
+    "Accelerometer",
+    "Gyroscope"
+  ],
+  "features": [
+    "Sleep tracking",
+    "Readiness score",
+    "Activity tracking",
+    "Cycle tracking",
+    "Stress monitoring",
+    "Heart rate variability"
+  ],
+  "subscriptionRequired": true,
+  "batteryLife": "Up to 8 days",
+  "pros": [
+    "Comfortable form factor ideal for 24/7 wear",
+    "Industry-leading sleep tracking accuracy",
+    "Long battery life compared to smartwatches",
+    "Comprehensive health insights dashboard",
+    "Sleek, discreet design"
+  ],
+  "cons": [
+    "Requires $5.99/month subscription for full insights",
+    "No screen for quick data viewing",
+    "Not ideal for real-time workout tracking",
+    "Limited sizing options may not fit all fingers",
+    "Higher upfront cost"
+  ],
+  "bestFor": [
+    "Sleep optimization and recovery tracking",
+    "People who prefer rings over watches",
+    "24/7 health monitoring",
+    "Athletes focused on recovery",
+    "Minimalist wearable enthusiasts"
+  ],
+  "notBestFor": [
+    "Real-time workout feedback during exercise",
+    "Budget-conscious buyers",
+    "People who want a smartwatch display",
+    "Those avoiding subscription models"
+  ],
+  "alternatives": [
+    "whoop",
+    "apple-watch-series",
+    "ultrahuman-ring"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Oura Official",
+      "merchant": "Oura",
+      "region": "Global",
+      "url": "https://ouraring.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://ouraring.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

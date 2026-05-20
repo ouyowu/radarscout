@@ -1,0 +1,74 @@
+{
+  "slug": "coros-apex-2-pro",
+  "name": "COROS APEX 2 Pro",
+  "brand": "COROS",
+  "category": "Smart Watch",
+  "summary": "Ultra-endurance GPS watch with exceptional battery life for serious athletes.",
+  "priceRange": "$$$",
+  "officialUrl": "https://coros.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth",
+    "GPS"
+  ],
+  "sensors": [
+    "Heart rate",
+    "SpO2",
+    "Barometer",
+    "Compass"
+  ],
+  "features": [
+    "Multi-GNSS",
+    "Training load tracking",
+    "Race predictor",
+    "Global maps"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 30 days",
+  "pros": [
+    "Exceptional battery life",
+    "Accurate GPS",
+    "Detailed training metrics",
+    "No subscription"
+  ],
+  "cons": [
+    "Smaller app ecosystem",
+    "Less smart features",
+    "Basic UI"
+  ],
+  "bestFor": [
+    "Ultra-endurance athletes",
+    "Multi-day adventures",
+    "Detailed training data"
+  ],
+  "notBestFor": [
+    "Casual users",
+    "Smartwatch features",
+    "Fashion-conscious buyers"
+  ],
+  "alternatives": [
+    "garmin-fenix-7",
+    "polar-grit-x",
+    "suunto-9-peak"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://coros.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

@@ -1,0 +1,73 @@
+{
+  "slug": "aqara-video-doorbell-g4",
+  "name": "Aqara Video Doorbell G4",
+  "brand": "Aqara",
+  "category": "Smart Doorbell",
+  "summary": "HomeKit-compatible video doorbell with package detection and local storage.",
+  "priceRange": "$$",
+  "officialUrl": "https://aqara.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "Camera",
+    "Motion detection",
+    "Package detection"
+  ],
+  "features": [
+    "1080p video",
+    "Package detection",
+    "Local storage",
+    "Dual-band Wi-Fi",
+    "Face recognition"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Wired",
+  "pros": [
+    "HomeKit Secure Video support",
+    "No subscription required",
+    "Local storage option",
+    "Multi-platform support"
+  ],
+  "cons": [
+    "Lower resolution than competitors",
+    "Requires Aqara hub for some features",
+    "Smaller brand recognition"
+  ],
+  "bestFor": [
+    "HomeKit users",
+    "Privacy-conscious buyers",
+    "Multi-platform needs"
+  ],
+  "notBestFor": [
+    "4K video seekers",
+    "Those wanting wireless option"
+  ],
+  "alternatives": [
+    "google-nest-doorbell",
+    "ring-video-doorbell-pro-2",
+    "eufy-doorbell"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://aqara.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

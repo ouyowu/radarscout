@@ -1,0 +1,69 @@
+{
+  "slug": "freestyle-libre-3",
+  "name": "FreeStyle Libre 3",
+  "brand": "Abbott",
+  "category": "Glucose Monitor",
+  "summary": "Compact CGM with real-time glucose readings and smartphone alerts.",
+  "priceRange": "$$",
+  "officialUrl": "https://freestylelibre.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Glucose sensor"
+  ],
+  "features": [
+    "Real-time readings",
+    "Minute-by-minute data",
+    "Customizable alarms",
+    "14-day wear",
+    "Smallest sensor"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "14 days per sensor",
+  "pros": [
+    "Smallest CGM sensor",
+    "More affordable than Dexcom",
+    "14-day wear time",
+    "Real-time alerts"
+  ],
+  "cons": [
+    "Requires prescription",
+    "Less accurate than Dexcom G7",
+    "No sensor warmup period shown"
+  ],
+  "bestFor": [
+    "Diabetes management",
+    "Budget-conscious diabetics",
+    "Discreet sensor preference"
+  ],
+  "notBestFor": [
+    "Those wanting highest accuracy",
+    "Non-prescription users"
+  ],
+  "alternatives": [
+    "dexcom-g7",
+    "guardian-connect"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "View on Abbott",
+      "merchant": "Abbott",
+      "region": "Global",
+      "url": "https://freestylelibre.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://freestylelibre.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

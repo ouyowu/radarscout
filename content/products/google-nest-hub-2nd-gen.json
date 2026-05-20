@@ -1,0 +1,47 @@
+{
+  "name": "Google Nest Hub (2nd Gen)",
+  "slug": "google-nest-hub-2nd-gen",
+  "brand": "Google",
+  "category": "Smart Home",
+  "price": 99.99,
+  "rating": 4.7,
+  "imageUrl": "/images/products/nest-hub-2.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B08KSLT8BV?tag=radarscout-20",
+  "summary": "Smart display with sleep tracking and Thread border router. Central control panel for smart home.",
+  "features": [
+    "7-inch touchscreen display",
+    "Soli sleep tracking (no camera/wearable needed)",
+    "Thread border router for Matter devices",
+    "Google Assistant built-in",
+    "Smart home control panel",
+    "YouTube, Netflix, photos, recipes",
+    "Audio quality optimized for voice/music",
+    "Ambient EQ adjusts screen brightness",
+    "Privacy with mic/camera hardware switch"
+  ],
+  "specs": {
+    "Display": "7-inch touchscreen",
+    "Connectivity": "WiFi, Bluetooth, Thread",
+    "Audio": "43.5mm full-range driver",
+    "Dimensions": "7 x 4.7 x 2.7 inches",
+    "Weight": "12.3 oz"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Screen makes smart home control visual",
+      "Thread border router adds value",
+      "Sleep tracking without wearable",
+      "Great for kitchen (recipes/timers)",
+      "Good sound for size"
+    ],
+    "cons": [
+      "Small screen (7-inch)",
+      "Google ecosystem lock-in",
+      "Camera-less (can't make video calls)",
+      "Sleep tracking less accurate than wearables"
+    ]
+  },
+  "bestFor": "Google Home users wanting visual smart home control and sleep tracking",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

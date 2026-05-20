@@ -1,0 +1,46 @@
+{
+  "name": "Level Lock+",
+  "slug": "level-lock-plus",
+  "brand": "Level",
+  "category": "Smart Home",
+  "price": 329.99,
+  "rating": 4.4,
+  "imageUrl": "/images/products/level-lock-plus.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B08SGZXGZ8?tag=radarscout-20",
+  "summary": "Completely invisible smart lock. Entire mechanism fits inside existing deadbolt.",
+  "features": [
+    "Completely invisible from both sides",
+    "Works with Apple HomeKit natively",
+    "Touch-to-lock convenience",
+    "One-year battery life (CR2)",
+    "Auto-lock and unlock",
+    "Remote access with Level Connect (sold separately)",
+    "Premium build quality",
+    "Fits standard deadbolts"
+  ],
+  "specs": {
+    "Compatibility": "Standard US deadbolts",
+    "Battery": "CR2 (1 year)",
+    "Connectivity": "Bluetooth, HomeKit",
+    "Finish": "Satin Nickel, Matte Black",
+    "Installation": "Replaces interior mechanism"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Totally invisible installation",
+      "Premium build and materials",
+      "Excellent HomeKit integration",
+      "Year-long battery",
+      "Looks like normal lock"
+    ],
+    "cons": [
+      "Very expensive ($330)",
+      "Bluetooth only without Level Connect bridge",
+      "HomeKit focused (limited Alexa/Google)",
+      "Installation slightly more complex"
+    ]
+  },
+  "bestFor": "Apple users prioritizing aesthetics and invisible smart home tech",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

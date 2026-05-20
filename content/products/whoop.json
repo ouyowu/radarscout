@@ -1,0 +1,82 @@
+{
+  "slug": "whoop",
+  "name": "Whoop 5.0",
+  "brand": "Whoop",
+  "category": "Fitness Band",
+  "summary": "A screenless fitness tracker designed for serious athletes, focusing on recovery, strain, and sleep optimization.",
+  "priceRange": "$$",
+  "officialUrl": "https://whoop.com",
+  "releaseYear": 2024,
+  "ecosystems": ["iOS", "Android"],
+  "connectivity": ["Bluetooth"],
+  "sensors": [
+    "Heart rate",
+    "HRV",
+    "Skin temperature",
+    "SpO2",
+    "Accelerometer"
+  ],
+  "features": [
+    "Recovery score",
+    "Strain tracking",
+    "Sleep performance",
+    "Respiratory rate",
+    "Skin temperature monitoring",
+    "Workout detection"
+  ],
+  "subscriptionRequired": true,
+  "batteryLife": "Up to 5 days",
+  "pros": [
+    "No screen means no distractions during workouts",
+    "Detailed recovery and strain metrics",
+    "Excellent for athletes and serious fitness enthusiasts",
+    "Waterproof design",
+    "Hardware included with membership"
+  ],
+  "cons": [
+    "Requires ongoing $30/month subscription",
+    "No display for quick data checks",
+    "Band-only design less versatile than watches",
+    "More expensive long-term than one-time purchase devices"
+  ],
+  "bestFor": [
+    "Serious athletes and fitness enthusiasts",
+    "Recovery-focused training",
+    "People who want screenless tracking",
+    "CrossFit and endurance athletes"
+  ],
+  "notBestFor": [
+    "Casual fitness users",
+    "Budget-conscious buyers",
+    "People who want smartwatch features",
+    "Those avoiding subscriptions"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "garmin-vivosmart",
+    "apple-watch-series"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "View on Whoop Official",
+      "merchant": "Whoop",
+      "region": "Global",
+      "url": "https://whoop.com",
+      "isAffiliate": false
+    },
+    {
+      "label": "Check deals on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://whoop.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

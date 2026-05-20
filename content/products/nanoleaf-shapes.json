@@ -1,0 +1,73 @@
+{
+  "slug": "nanoleaf-shapes",
+  "name": "Nanoleaf Shapes Hexagons",
+  "brand": "Nanoleaf",
+  "category": "Smart Lighting",
+  "summary": "Modular hexagonal light panels with touch control and music sync.",
+  "priceRange": "$$$",
+  "officialUrl": "https://nanoleaf.me",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "Matter",
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi",
+    "Thread"
+  ],
+  "sensors": [
+    "Touch"
+  ],
+  "features": [
+    "16M colors",
+    "Touch-reactive",
+    "Music sync",
+    "Screen mirror"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "N/A",
+  "pros": [
+    "Unique design",
+    "Touch control",
+    "Music reactive",
+    "Expandable"
+  ],
+  "cons": [
+    "Very expensive",
+    "Requires planning",
+    "Not for general lighting"
+  ],
+  "bestFor": [
+    "Ambient lighting",
+    "Gaming setups",
+    "Creative spaces"
+  ],
+  "notBestFor": [
+    "Budget buyers",
+    "General lighting",
+    "Traditional decor"
+  ],
+  "alternatives": [
+    "philips-hue-gradient",
+    "govee-glide",
+    "lifx-beam"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://nanoleaf.me"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

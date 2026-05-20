@@ -1,0 +1,69 @@
+{
+  "slug": "lifx-color-a19",
+  "name": "LIFX Color A19",
+  "brand": "LIFX",
+  "category": "Smart Lighting",
+  "summary": "WiFi smart bulb with vibrant colors, no hub required.",
+  "priceRange": "$$",
+  "officialUrl": "https://lifx.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "Matter",
+    "HomeKit",
+    "Alexa",
+    "Google Home"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [],
+  "features": [
+    "16M colors",
+    "No hub needed",
+    "Matter support",
+    "Extremely bright"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "N/A",
+  "pros": [
+    "No hub required",
+    "Very bright",
+    "Excellent colors",
+    "Matter certified"
+  ],
+  "cons": [
+    "Expensive per bulb",
+    "WiFi only",
+    "Larger bulb size"
+  ],
+  "bestFor": [
+    "No hub preference",
+    "Maximum brightness",
+    "HomeKit users"
+  ],
+  "notBestFor": [
+    "Budget lighting",
+    "Bridge-based systems"
+  ],
+  "alternatives": [
+    "philips-hue-starter-kit",
+    "nanoleaf-shapes",
+    "wyze-bulbs"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official",
+      "url": "https://lifx.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

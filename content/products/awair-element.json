@@ -1,0 +1,46 @@
+{
+  "name": "Awair Element",
+  "slug": "awair-element",
+  "brand": "Awair",
+  "category": "Health Devices",
+  "price": 199.99,
+  "rating": 4.4,
+  "imageUrl": "/images/products/awair-element.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B07L8FLMLH?tag=radarscout-20",
+  "summary": "Premium air quality monitor with smart home automation triggers. Tracks PM2.5, VOC, CO2, humidity, and temperature.",
+  "features": [
+    "Tracks PM2.5, VOC, CO2, humidity, temperature",
+    "Works with Alexa, Google Home, IFTTT",
+    "Automate air purifiers based on air quality",
+    "Historical data and trends",
+    "Personalized tips for better air",
+    "LED indicator shows air quality at a glance",
+    "Compact modern design",
+    "Local and cloud data storage"
+  ],
+  "specs": {
+    "Sensors": "PM2.5, VOC, CO2, humidity, temperature",
+    "Connectivity": "WiFi 2.4/5GHz",
+    "Power": "USB-C (cable included)",
+    "Dimensions": "4.5 x 4.5 x 1.4 inches",
+    "Weight": "11 oz"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Comprehensive air quality tracking",
+      "Smart home automation triggers",
+      "Accurate sensors",
+      "Clean, minimal design",
+      "Good app with insights"
+    ],
+    "cons": [
+      "Expensive at $200",
+      "Requires constant power",
+      "No radon detection",
+      "Cloud-dependent for some features"
+    ]
+  },
+  "bestFor": "Smart home users wanting automated air quality management",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

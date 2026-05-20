@@ -1,0 +1,84 @@
+{
+  "slug": "withings-sleep",
+  "name": "Withings Sleep Tracking Mat",
+  "brand": "Withings",
+  "category": "Sleep Tracker",
+  "summary": "Non-wearable sleep tracking mat that slips under your mattress for effortless monitoring.",
+  "priceRange": "$$",
+  "officialUrl": "https://withings.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "iOS",
+    "Android",
+    "IFTTT"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "Pressure",
+    "Movement",
+    "Heart rate",
+    "Snoring detection"
+  ],
+  "features": [
+    "Sleep score",
+    "Sleep cycle analysis",
+    "Snoring detection",
+    "Smart home integration"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "N/A (Powered)",
+  "pros": [
+    "No wearable needed",
+    "Set and forget",
+    "Smart home integration",
+    "No subscription",
+    "Affordable"
+  ],
+  "cons": [
+    "Not portable",
+    "Single user only",
+    "Less accurate than wearables",
+    "Requires power outlet nearby"
+  ],
+  "bestFor": [
+    "People who dislike wearables",
+    "Smart home enthusiasts",
+    "Casual sleep tracking",
+    "Budget-conscious buyers"
+  ],
+  "notBestFor": [
+    "Couples sharing a bed",
+    "Travelers",
+    "Detailed metrics seekers"
+  ],
+  "alternatives": [
+    "eight-sleep-pod-4",
+    "oura-ring-4",
+    "emfit-qs"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "View on Withings",
+      "merchant": "Withings",
+      "region": "Global",
+      "url": "https://withings.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://withings.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

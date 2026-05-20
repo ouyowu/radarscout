@@ -1,0 +1,46 @@
+{
+  "name": "Amazon Smart Thermostat",
+  "slug": "amazon-smart-thermostat",
+  "brand": "Amazon",
+  "category": "Smart Home",
+  "price": 79.99,
+  "rating": 4.4,
+  "imageUrl": "/images/products/amazon-thermostat.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B08J4C8871?tag=radarscout-20",
+  "summary": "Most affordable quality smart thermostat. Works with Alexa and pays for itself in energy savings.",
+  "features": [
+    "Alexa built-in for voice control",
+    "Automatic temperature adjustments based on routines",
+    "Energy savings tracking",
+    "Certified by Energy Star",
+    "Many utilities offer rebates ($50-100)",
+    "Remote control via Alexa app",
+    "Geofencing (auto adjust when leaving/arriving)",
+    "Simple installation (C-wire required)"
+  ],
+  "specs": {
+    "Compatibility": "Most 24V HVAC systems",
+    "Display": "Touchscreen LCD",
+    "Connectivity": "WiFi 2.4GHz",
+    "Power": "C-wire required",
+    "Dimensions": "3.6 x 3.6 x 1 inches"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Cheapest reliable smart thermostat ($80)",
+      "Often available with utility rebates",
+      "Simple Alexa integration",
+      "Saves $50+ annually on energy",
+      "Easy to install for most homes"
+    ],
+    "cons": [
+      "Requires C-wire (common wire)",
+      "Basic features compared to Nest/Ecobee",
+      "Alexa ecosystem only",
+      "No remote sensors"
+    ]
+  },
+  "bestFor": "Alexa users wanting affordable smart thermostat that pays for itself quickly",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

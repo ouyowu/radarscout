@@ -1,0 +1,88 @@
+{
+  "slug": "ultrahuman-ring-air",
+  "name": "Ultrahuman Ring Air",
+  "brand": "Ultrahuman",
+  "category": "Smart Ring",
+  "benefit": "track metabolic health without subscriptions",
+  "key_feature": "continuous glucose insights integration",
+  "category_desc": "metabolism-focused",
+  "summary": "Built for metabolic tracking enthusiasts, Ultrahuman Ring Air combines continuous glucose monitoring integration with comprehensive health metrics in the lightest smart ring available.",
+  "priceRange": "$$$",
+  "officialUrl": "https://ultrahuman.com",
+  "releaseYear": 2024,
+  "ecosystems": [
+    "iOS",
+    "Android"
+  ],
+  "connectivity": [
+    "Bluetooth"
+  ],
+  "sensors": [
+    "Optical heart rate",
+    "HRV sensor",
+    "Skin temp sensor",
+    "SpO2",
+    "3-axis accelerometer"
+  ],
+  "features": [
+    "Sleep stage tracking",
+    "Movement index",
+    "Recovery metrics",
+    "CGM integration",
+    "Menstrual cycle insights"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 6 days",
+  "pros": [
+    "Weighs just 2.4-3.6g depending on size",
+    "Lifetime membership included - no recurring fees",
+    "Integrates with Abbott FreeStyle Libre for glucose tracking",
+    "Provides detailed metabolic insights and movement scores",
+    "Comfortable enough to forget you're wearing it"
+  ],
+  "cons": [
+    "Color options limited to silver tones only",
+    "Smaller user community compared to Oura",
+    "Integration ecosystem still developing",
+    "Higher upfront investment than budget alternatives"
+  ],
+  "bestFor": [
+    "Anyone monitoring metabolic health or blood sugar",
+    "Users wanting lifetime access without subscriptions",
+    "Athletes optimizing recovery through detailed metrics",
+    "People with pre-diabetes or insulin sensitivity concerns"
+  ],
+  "notBestFor": [
+    "Those needing extensive third-party app connections",
+    "Budget-focused buyers under $250",
+    "Users preferring smartwatch displays for quick glances"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "whoop",
+    "ringconn-smart-ring"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check current price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    },
+    {
+      "label": "Buy direct from Ultrahuman",
+      "merchant": "Ultrahuman",
+      "region": "Global",
+      "url": "https://ultrahuman.com",
+      "isAffiliate": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Ultrahuman official specifications",
+      "url": "https://ultrahuman.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}

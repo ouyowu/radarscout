@@ -1,0 +1,45 @@
+{
+  "name": "Amazon Echo Dot (5th Gen)",
+  "slug": "amazon-echo-dot-5th-gen",
+  "brand": "Amazon",
+  "category": "Smart Home",
+  "price": 49.99,
+  "rating": 4.7,
+  "imageUrl": "/images/products/echo-dot-5.jpg",
+  "affiliateUrl": "https://www.amazon.com/dp/B09B8V1LZ3?tag=radarscout-20",
+  "summary": "Best-selling smart speaker with improved sound quality and built-in Zigbee hub for smart home control.",
+  "features": [
+    "Improved audio with clearer vocals and deeper bass",
+    "Built-in Zigbee hub for connecting compatible devices",
+    "Alexa voice assistant for smart home control",
+    "Temperature sensor for routine automation",
+    "Tap gestures to pause/play music or snooze alarms",
+    "Eero WiFi network extension",
+    "Works as Bluetooth speaker",
+    "Privacy controls with mic off button"
+  ],
+  "specs": {
+    "Speaker": "1.73-inch front-firing driver",
+    "Connectivity": "WiFi, Bluetooth, Zigbee",
+    "Dimensions": "3.9 x 3.9 x 3.5 inches",
+    "Weight": "10.7 oz",
+    "Colors": "Charcoal, Glacier White, Deep Sea Blue"
+  },
+  "prosAndCons": {
+    "pros": [
+      "Significantly better sound than previous generation",
+      "Built-in Zigbee hub saves buying separate hub",
+      "Temperature sensor enables useful automations",
+      "Affordable price, frequent sales",
+      "Works with thousands of smart home devices"
+    ],
+    "cons": [
+      "Alexa ecosystem lock-in",
+      "Privacy concerns for some users",
+      "Limited compared to Echo Show with screen"
+    ]
+  },
+  "bestFor": "Alexa users wanting affordable voice control and smart home hub functionality",
+  "publishedAt": "2026-05-20",
+  "updatedAt": "2026-05-20"
+}

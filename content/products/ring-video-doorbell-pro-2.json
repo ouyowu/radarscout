@@ -1,0 +1,73 @@
+{
+  "slug": "ring-video-doorbell-pro-2",
+  "name": "Ring Video Doorbell Pro 2",
+  "brand": "Ring",
+  "category": "Smart Doorbell",
+  "summary": "Advanced video doorbell with 3D motion detection and bird's eye view.",
+  "priceRange": "$$",
+  "officialUrl": "https://ring.com",
+  "releaseYear": 2023,
+  "ecosystems": [
+    "Alexa",
+    "Ring"
+  ],
+  "connectivity": [
+    "Wi-Fi"
+  ],
+  "sensors": [
+    "Camera",
+    "Motion detection",
+    "Audio"
+  ],
+  "features": [
+    "1536p HD video",
+    "3D motion detection",
+    "Bird's Eye View",
+    "Two-way talk",
+    "Pre-roll video"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Wired",
+  "pros": [
+    "Excellent video quality",
+    "3D motion detection",
+    "Bird's Eye aerial view",
+    "Alexa integration"
+  ],
+  "cons": [
+    "Requires Ring Protect for full features",
+    "Wired only",
+    "Limited to Amazon ecosystem"
+  ],
+  "bestFor": [
+    "Alexa users",
+    "Detailed motion tracking",
+    "High-quality video needs"
+  ],
+  "notBestFor": [
+    "HomeKit users",
+    "Wireless installation needs",
+    "Those avoiding subscriptions"
+  ],
+  "alternatives": [
+    "google-nest-doorbell",
+    "aqara-doorbell",
+    "eufy-doorbell"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://ring.com"
+    }
+  ],
+  "lastUpdated": "2026-05-19"
+}
