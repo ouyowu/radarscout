@@ -7,7 +7,6 @@ import { Footer } from "@/components/layouts/Footer";
 const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
 const adsensePublisherId =
   process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || defaultAdsensePublisherId;
-const adsEnabled = process.env.NEXT_PUBLIC_ENABLE_ADS === 'true';
 
 export const metadata: Metadata = {
   title: "RadarScout - Your Radar for Smart Home & Health Tech",
@@ -53,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        {adsEnabled && adsensePublisherId ? (
+        {adsensePublisherId ? (
           <Script
             id="adsense-script"
             async
