@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 
+const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
+
 function normalizePublisherForAdsTxt(value: string) {
   if (!value) return '';
   return value.replace(/^ca-/, '');
 }
 
 export function GET() {
-  const rawPublisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || '';
+  const rawPublisherId =
+    process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || defaultAdsensePublisherId;
   const publisherId = normalizePublisherForAdsTxt(rawPublisherId);
 
   const body = publisherId

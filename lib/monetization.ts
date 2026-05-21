@@ -5,11 +5,13 @@ function normalizeAdsensePublisherId(value: string) {
   return value.startsWith('ca-pub-') ? value : `ca-${value}`;
 }
 
+const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
+
 export const monetizationConfig = {
   enableAds: process.env.NEXT_PUBLIC_ENABLE_ADS === 'true',
   enableAffiliateLinks: process.env.NEXT_PUBLIC_ENABLE_AFFILIATE === 'true',
   adsensePublisherId: normalizeAdsensePublisherId(
-    process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || ''
+    process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || defaultAdsensePublisherId
   ),
   
   defaultAffiliateDisclosure: `RadarScout may earn a commission when you buy through links on our site. This does not affect our editorial recommendations.`,

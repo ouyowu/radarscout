@@ -4,7 +4,9 @@ import "./globals.css";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 
-const adsensePublisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || '';
+const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
+const adsensePublisherId =
+  process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || defaultAdsensePublisherId;
 const adsEnabled = process.env.NEXT_PUBLIC_ENABLE_ADS === 'true';
 
 export const metadata: Metadata = {
