@@ -51,6 +51,7 @@ export interface ArticleFrontmatter {
   heroImage?: string;
   heroImageAlt?: string;
   keywords?: string[];
+  quickAnswer?: string;
 }
 
 export interface Article {

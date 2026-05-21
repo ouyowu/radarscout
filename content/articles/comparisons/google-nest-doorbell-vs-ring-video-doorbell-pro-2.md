@@ -52,6 +52,17 @@ The total cost of ownership shifts the value equation. Don't just compare sticke
 
 Why? Consider both upfront cost and long-term expenses. Google Nest Doorbell (Battery) and Ring Video Doorbell Pro 2 serve different user priorities.
 
+## Frequently Asked Questions
+
+**Q: Does Google Nest Doorbell work without a subscription?**
+Yes — basic smart detection (people, packages, animals, vehicles) is free with no subscription required. You also get 3 hours of event history at no cost. Nest Aware ($6/month) unlocks 30-day history, familiar face detection, and activity zones, but the free tier is genuinely useful for most households.
+
+**Q: Which doorbell is better for avoiding false alerts?**
+Google Nest wins clearly. Its AI categorizes motion events accurately, so you get alerts like "Person at front door" rather than generic motion pings. Ring's motion detection is broader and generates significantly more false alerts — especially for passing cars — unless you pay for its person-detection subscription tier.
+
+**Q: Can I use Google Nest Doorbell with Alexa or Ring with Google Home?**
+Both have limited cross-ecosystem support, but it's not seamless. Nest works with Alexa for basic live view on Echo Show devices, but advanced features require Google Home. Ring works with Google Home for live view only. For the best experience, match your doorbell to your existing ecosystem: Ring if you use Alexa, Nest if you use Google Home.
+
 ---
 
 *Last updated: May 19, 2026*

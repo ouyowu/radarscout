@@ -52,6 +52,17 @@ The total cost of ownership shifts the value equation. Don't just compare sticke
 
 Why? Consider both upfront cost and long-term expenses. Philips Hue White and Color Starter Kit and LIFX Color A19 serve different user priorities.
 
+## Frequently Asked Questions
+
+**Q: Do I really need the Philips Hue Bridge, or can I skip it?**
+You need the Bridge for the full Hue experience — it's what enables local control, supports 50+ bulbs, and keeps the Zigbee mesh network reliable. Without it, you can use Bluetooth to control a limited number of bulbs directly, but you lose remote access, voice control through most platforms, and the ability to create complex automations. For more than 3 bulbs, the $50 Bridge investment is worth it.
+
+**Q: Which is better for a smart home beginner — Philips Hue or LIFX?**
+LIFX is easier to start with: screw in the bulb, connect to WiFi, and you're done in minutes. Philips Hue requires setting up the Bridge first, which adds 10 minutes but pays off quickly as you add more bulbs. If you're buying just 1-2 bulbs to test smart lighting, start with LIFX. If you're committed to building out a full smart home, start with the Hue starter kit.
+
+**Q: Will Philips Hue or LIFX work if my internet goes down?**
+Philips Hue has a major advantage here: local control via the Bridge means your lights still respond to the app and voice commands on your local network even without internet. LIFX bulbs connect directly to WiFi and require internet for most functions — if your connection drops, you may lose remote and voice control. For reliability-critical setups (like hallway lights you always need working), Hue's local control is a meaningful practical advantage.
+
 ---
 
 *Last updated: May 19, 2026*

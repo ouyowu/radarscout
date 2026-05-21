@@ -186,10 +186,17 @@ export function generateArticleSchema(article: {
     isPartOf: {
       '@id': `${siteConfig.url}/#website`,
     },
-    // speakable: key sections that voice assistants and AI can read aloud (GEO)
+    // speakable: sections voice assistants and AI engines extract for answers (GEO)
     speakable: {
       '@type': 'SpeakableSpecification',
-      cssSelector: ['h1', 'h2', '.article-summary', 'article p:first-of-type'],
+      cssSelector: [
+        'h1',
+        'h2',
+        '.quick-answer',
+        '.article-summary',
+        '.verdict',
+        'article > p:first-of-type',
+      ],
     },
     ...(article.tags && article.tags.length > 0 && {
       keywords: article.tags.join(', '),

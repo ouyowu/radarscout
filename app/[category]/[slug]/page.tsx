@@ -15,6 +15,7 @@ import { MDXComponents } from '@/components/shared/MDXComponents';
 import { ArticleCard } from '@/components/shared/ArticleCard';
 import { AffiliateDisclosure } from '@/components/monetization/AffiliateDisclosure';
 import { AdSlot } from '@/components/monetization/AdSlot';
+import { QuickAnswerBox } from '@/components/shared/QuickAnswerBox';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -192,6 +193,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Article content */}
           <div className="lg:col-span-2">
+            {article.frontmatter.quickAnswer && (
+              <QuickAnswerBox answer={article.frontmatter.quickAnswer} />
+            )}
             <article className="prose prose-invert prose-lg max-w-none">
               <MDXRemote
                 source={article.content}
