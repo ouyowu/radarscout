@@ -3,7 +3,14 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { getArticle, getRelatedArticles, getArticlesByCategory } from '@/lib/data/articles';
-import { generateSEO, generateArticleSchema } from '@/lib/seo/metadata';
+import {
+  generateSEO,
+  generateArticleSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  extractFAQsFromContent,
+  siteConfig,
+} from '@/lib/seo/metadata';
 import { MDXComponents } from '@/components/shared/MDXComponents';
 import { ArticleCard } from '@/components/shared/ArticleCard';
 import { AffiliateDisclosure } from '@/components/monetization/AffiliateDisclosure';
@@ -49,9 +56,11 @@ export async function generateMetadata({ params }: ArticlePageProps) {
     title: article.frontmatter.title,
     description: article.frontmatter.description,
     path: `/${category}/${slug}`,
+    image: article.frontmatter.heroImage,
     type: 'article',
     publishedTime: article.frontmatter.publishedAt,
     modifiedTime: article.frontmatter.updatedAt,
+    keywords: article.frontmatter.keywords ?? article.frontmatter.tags,
   });
 }
 
@@ -64,6 +73,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const relatedArticles = getRelatedArticles(article, 3);
+  const pageUrl = `${siteConfig.url}/${category}/${slug}`;
+  const faqs = extractFAQsFromContent(article.content);
+
+  const categoryLabel = category
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
 
   return (
     <div className="bg-slate-950 min-h-screen">
@@ -76,9 +92,34 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             description: article.frontmatter.description,
             publishedAt: article.frontmatter.publishedAt,
             updatedAt: article.frontmatter.updatedAt,
+            author: article.frontmatter.author,
+            heroImage: article.frontmatter.heroImage,
+            url: pageUrl,
+            category: article.frontmatter.category,
+            tags: article.frontmatter.tags,
           })),
         }}
       />
+
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateBreadcrumbSchema([
+            { name: 'Home', url: '/' },
+            { name: categoryLabel, url: `/${category}` },
+            { name: article.frontmatter.title, url: `/${category}/${slug}` },
+          ])),
+        }}
+      />
+
+      {/* FAQ Schema — only injected when Q&A pairs are detected */}
+      {faqs.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(faqs)) }}
+        />
+      )}
 
       {/* Header */}
       <header className="bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800 py-12">

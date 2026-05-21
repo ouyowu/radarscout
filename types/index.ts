@@ -48,6 +48,9 @@ export interface ArticleFrontmatter {
   author?: string;
   tags?: string[];
   featured?: boolean;
+  heroImage?: string;
+  heroImageAlt?: string;
+  keywords?: string[];
 }
 
 export interface Article {
