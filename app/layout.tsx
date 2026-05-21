@@ -7,6 +7,9 @@ import { Footer } from "@/components/layouts/Footer";
 const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
 const adsensePublisherId =
   process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || defaultAdsensePublisherId;
+const defaultGaMeasurementId = 'G-KXWJY9VRVC';
+const gaMeasurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || defaultGaMeasurementId;
 
 export const metadata: Metadata = {
   title: "RadarScout - Your Radar for Smart Home & Health Tech",
@@ -52,6 +55,25 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        {gaMeasurementId ? (
+          <>
+            <Script
+              id="ga4-script"
+              async
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+            />
+            <Script id="ga4-config" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', '${gaMeasurementId}');
+              `}
+            </Script>
+          </>
+        ) : null}
         {adsensePublisherId ? (
           <Script
             id="adsense-script"
