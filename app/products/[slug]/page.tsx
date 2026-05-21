@@ -8,6 +8,13 @@ import { ProsCons } from '@/components/product/ProsCons';
 import { ProductCard } from '@/components/product/ProductCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
 import { AffiliateDisclosure } from '@/components/monetization/AffiliateDisclosure';
+import { getAllProducts } from '@/lib/data/products';
+
+export async function generateStaticParams() {
+  return getAllProducts().map((product) => ({
+    slug: product.slug,
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

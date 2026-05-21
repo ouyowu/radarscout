@@ -1,15 +1,23 @@
 import type { AdSlotConfig } from '@/types';
 
+function normalizeAdsensePublisherId(value: string) {
+  if (!value) return '';
+  return value.startsWith('ca-pub-') ? value : `ca-${value}`;
+}
+
 export const monetizationConfig = {
   enableAds: process.env.NEXT_PUBLIC_ENABLE_ADS === 'true',
   enableAffiliateLinks: process.env.NEXT_PUBLIC_ENABLE_AFFILIATE === 'true',
-  adsensePublisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || '',
+  adsensePublisherId: normalizeAdsensePublisherId(
+    process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || ''
+  ),
   
   defaultAffiliateDisclosure: `RadarScout may earn a commission when you buy through links on our site. This does not affect our editorial recommendations.`,
   
   healthDisclaimer: `RadarScout provides general information about consumer health technology. It is not medical advice. Always consult a qualified healthcare professional for medical decisions.`,
   
   adSlots: {
+    // Paste your numeric AdSense slot IDs into the adUnitId fields below.
     homepage_top: {
       placement: 'homepage_top',
       enabled: true,

@@ -4,7 +4,7 @@ const siteConfig = {
   name: 'RadarScout',
   url: 'https://radarscout.io',
   description: 'Your radar for smart home, wearables, and health tech. Discover, compare, and track the best smart devices.',
-  ogImage: '/og-image.png',
+  ogImage: '/opengraph-image',
 };
 
 export function generateSEO({
@@ -109,7 +109,7 @@ export function generateArticleSchema(article: any) {
       name: siteConfig.name,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteConfig.url}/logo.png`,
+        url: `${siteConfig.url}/logo.svg`,
       },
     },
   };
