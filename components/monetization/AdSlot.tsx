@@ -1,37 +1,79 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { monetizationConfig } from '@/lib/monetization';
 import type { AdPlacement } from '@/types';
+import { hasCookieConsent } from '@/components/shared/CookieConsent';
+
+declare global {
+  interface Window {
+    adsbygoogle: unknown[];
+  }
+}
 
 interface AdSlotProps {
   placement: AdPlacement;
   className?: string;
 }
 
+function pushAd() {
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch {
+    // Script may not have loaded yet — ignore
+  }
+}
+
 export function AdSlot({ placement, className = '' }: AdSlotProps) {
   const config = monetizationConfig.adSlots[placement];
-  
+  const publisherId = monetizationConfig.adsensePublisherId;
+  const [consentReady, setConsentReady] = useState(false);
+
+  useEffect(() => {
+    if (hasCookieConsent()) {
+      setConsentReady(true);
+      return;
+    }
+
+    function handleConsent() {
+      setConsentReady(true);
+    }
+
+    window.addEventListener('cookie-consent-accepted', handleConsent);
+    return () => {
+      window.removeEventListener('cookie-consent-accepted', handleConsent);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (consentReady) {
+      pushAd();
+    }
+  }, [consentReady]);
+
   if (!monetizationConfig.enableAds || !config?.enabled) {
     return null;
   }
 
-  // Placeholder for development - replace with real AdSense code
+  if (!publisherId) {
+    return null;
+  }
+
+  const adUnitId = config.adUnitId ?? '';
+
   return (
-    <div className={`ad-slot ${className}`}>
-      <div className="bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-6 flex flex-col items-center justify-center min-h-[250px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-slate-200 dark:bg-grid-slate-700 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.5))] opacity-20" />
-        <div className="relative z-10 text-center space-y-2">
-          <div className="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-            Advertisement
-          </div>
-          <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-            {placement.replace(/_/g, ' ')}
-          </div>
-          <div className="text-xs text-slate-400 dark:text-slate-600">
-            728 × 90 • Leaderboard
-          </div>
-        </div>
-      </div>
+    <div className={`ad-slot not-prose ${className}`}>
+      <p className="text-[10px] text-slate-500 text-right mb-1 uppercase tracking-wider">
+        Advertisement
+      </p>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-client={publisherId}
+        data-ad-slot={adUnitId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
     </div>
   );
 }

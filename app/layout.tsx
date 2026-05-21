@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
+import { CookieConsent } from "@/components/shared/CookieConsent";
+import { GoogleAdSense } from "@/components/monetization/GoogleAdSense";
 import { generateWebSiteSchema, generateOrganizationSchema } from "@/lib/seo/metadata";
+import { monetizationConfig } from "@/lib/monetization";
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +48,8 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <CookieConsent />
+        <GoogleAdSense publisherId={monetizationConfig.adsensePublisherId} />
       </body>
     </html>
   );

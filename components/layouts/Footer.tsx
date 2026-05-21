@@ -5,22 +5,23 @@ import { Radar, Mail } from 'lucide-react';
 
 const footerLinks = {
   product: [
-    { label: 'Smart Home', href: '/smart-home' },
-    { label: 'Health Tech', href: '/health-tech' },
-    { label: 'Wearables', href: '/wearables' },
+    { label: 'Buying Guides', href: '/buying-guides' },
     { label: 'Reviews', href: '/reviews' },
+    { label: 'Comparisons', href: '/comparisons' },
+    { label: 'Guides & Tips', href: '/guides' },
   ],
   content: [
-    { label: 'Buying Guides', href: '/buying-guides' },
-    { label: 'Comparisons', href: '/comparisons' },
+    { label: 'Smart Rings', href: '/buying-guides/best-smart-rings' },
+    { label: 'Sleep Trackers', href: '/buying-guides/best-sleep-trackers' },
     { label: 'Product Database', href: '/products' },
-    { label: 'Latest News', href: '/guides' },
+    { label: 'Search', href: '/search' },
   ],
   company: [
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/about/contact' },
     { label: 'Affiliate Disclosure', href: '/about/affiliate-disclosure' },
     { label: 'Privacy Policy', href: '/about/privacy-policy' },
+    { label: 'Terms of Service', href: '/about/terms-of-service' },
   ],
 };
 
