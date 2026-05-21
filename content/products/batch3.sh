@@ -10,7 +10,7 @@ cat > contour-next-one.json << 'EOF'
   "price": 29.99,
   "rating": 4.7,
   "imageUrl": "/images/products/contour-next-one.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B01FQ1XUTK?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B01FQ1XUTK?tag=radarscout20-20",
   "summary": "Best traditional glucose meter with second-chance sampling and Bluetooth connectivity.",
   "features": [
     "Bluetooth sync to Contour app",
@@ -59,7 +59,7 @@ cat > onetouch-verio-reflect.json << 'EOF'
   "price": 34.99,
   "rating": 4.6,
   "imageUrl": "/images/products/onetouch-verio.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B07RWWLM6V?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B07RWWLM6V?tag=radarscout20-20",
   "summary": "Glucose meter with AI coaching features. Analyzes patterns and provides personalized guidance.",
   "features": [
     "Blood Sugar Mentor (AI pattern analysis)",
@@ -108,7 +108,7 @@ cat > level-lock-plus.json << 'EOF'
   "price": 329.99,
   "rating": 4.4,
   "imageUrl": "/images/products/level-lock-plus.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08SGZXGZ8?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08SGZXGZ8?tag=radarscout20-20",
   "summary": "Completely invisible smart lock. Entire mechanism fits inside existing deadbolt.",
   "features": [
     "Completely invisible from both sides",
@@ -158,7 +158,7 @@ cat > level-bolt.json << 'EOF'
   "price": 129.99,
   "rating": 4.2,
   "imageUrl": "/images/products/level-bolt.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B07V6KF1VY?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B07V6KF1VY?tag=radarscout20-20",
   "summary": "Entry-level invisible smart lock. Basic lock/unlock via phone with year-long battery.",
   "features": [
     "Completely invisible installation",

@@ -10,7 +10,7 @@ cat > awair-element.json << 'EOF'
   "price": 199.99,
   "rating": 4.4,
   "imageUrl": "/images/products/awair-element.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B07L8FLMLH?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B07L8FLMLH?tag=radarscout20-20",
   "summary": "Premium air quality monitor with smart home automation triggers. Tracks PM2.5, VOC, CO2, humidity, and temperature.",
   "features": [
     "Tracks PM2.5, VOC, CO2, humidity, temperature",
@@ -60,7 +60,7 @@ cat > amazon-smart-air-quality-monitor.json << 'EOF'
   "price": 69.99,
   "rating": 4.3,
   "imageUrl": "/images/products/amazon-aqm.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08W8KS8D3?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08W8KS8D3?tag=radarscout20-20",
   "summary": "Budget air quality monitor with essential sensors. Works with Alexa routines for automation.",
   "features": [
     "Tracks PM2.5, VOC, CO, humidity, temperature",
@@ -110,7 +110,7 @@ cat > qingping-air-monitor-lite.json << 'EOF'
   "price": 79.99,
   "rating": 4.5,
   "imageUrl": "/images/products/qingping-lite.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B09JQKZ3KW?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B09JQKZ3KW?tag=radarscout20-20",
   "summary": "Best value CO2 monitor with HomeKit integration. Compact with real-time LCD display.",
   "features": [
     "NDIR CO2 sensor (accurate type)",
