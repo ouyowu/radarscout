@@ -4,6 +4,7 @@ import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 import { CookieConsent } from "@/components/shared/CookieConsent";
 import { GoogleAdSense } from "@/components/monetization/GoogleAdSense";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { generateWebSiteSchema, generateOrganizationSchema } from "@/lib/seo/metadata";
 import { monetizationConfig } from "@/lib/monetization";
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         <Footer />
         <CookieConsent />
         <GoogleAdSense publisherId={monetizationConfig.adsensePublisherId} />
+        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? ''} />
       </body>
     </html>
   );
