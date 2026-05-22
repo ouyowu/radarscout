@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 
 export const siteConfig = {
   name: 'RadarScout',
-  url: 'https://radarscout.io',
+  url: 'https://www.radarscout.io',
   description: 'Your radar for smart home, wearables, and health tech. Discover, compare, and track the best smart devices.',
-  ogImage: '/og-image.png',
-  logoUrl: 'https://radarscout.io/logo.png',
+  ogImage: '/opengraph-image',
+  logoUrl: 'https://www.radarscout.io/logo.png',
   twitterHandle: '@radarscout',
   foundingYear: 2024,
 };
@@ -192,6 +192,7 @@ export function generateArticleSchema(article: {
       cssSelector: [
         'h1',
         'h2',
+        'h3',
         '.quick-answer',
         '.article-summary',
         '.verdict',

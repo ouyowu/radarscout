@@ -55,22 +55,20 @@ export function AdSlot({ placement, className = '' }: AdSlotProps) {
     return null;
   }
 
-  if (!publisherId) {
+  if (!publisherId || !config.adUnitId) {
     return null;
   }
 
-  const adUnitId = config.adUnitId ?? '';
-
   return (
-    <div className={`ad-slot not-prose ${className}`}>
-      <p className="text-[10px] text-slate-500 text-right mb-1 uppercase tracking-wider">
+    <div className={`ad-slot not-prose overflow-hidden rounded-lg border border-slate-800 bg-slate-900/40 ${className}`}>
+      <p className="text-[10px] text-slate-500 text-right mb-1 uppercase tracking-wider px-2 pt-1">
         Advertisement
       </p>
       <ins
-        className="adsbygoogle"
+        className="adsbygoogle block"
         style={{ display: 'block' }}
         data-ad-client={publisherId}
-        data-ad-slot={adUnitId}
+        data-ad-slot={config.adUnitId}
         data-ad-format="auto"
         data-full-width-responsive="true"
       />

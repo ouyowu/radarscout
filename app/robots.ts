@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/_next/'],
       },
     ],
-    sitemap: 'https://radarscout.io/sitemap.xml',
-    host: 'https://radarscout.io',
+    sitemap: 'https://www.radarscout.io/sitemap.xml',
+    host: 'https://www.radarscout.io',
   };
 }

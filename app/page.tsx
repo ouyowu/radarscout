@@ -7,6 +7,30 @@ import { ProductCard } from '@/components/product/ProductCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
 import { NewsletterForm } from '@/components/shared/NewsletterForm';
 
+const homePageSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'RadarScout',
+      url: 'https://www.radarscout.io',
+      description:
+        'Discover, compare, and track the best smart home devices, wearables, and health tech.',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://www.radarscout.io/search?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'Organization',
+      name: 'RadarScout',
+      url: 'https://www.radarscout.io',
+      logo: 'https://www.radarscout.io/logo.svg',
+    },
+  ],
+};
+
 export default function HomePage() {
   const featuredArticles = getFeaturedArticles(6);
   const recentArticles = getAllArticles().slice(0, 3);
@@ -14,6 +38,12 @@ export default function HomePage() {
 
   return (
     <div className="bg-slate-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homePageSchema),
+        }}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
