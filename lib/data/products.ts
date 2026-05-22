@@ -6,6 +6,7 @@ const productsDirectory = path.join(process.cwd(), 'content/products');
 const publicDirectory = path.join(process.cwd(), 'public');
 
 type RawProduct = Partial<Product> & {
+  affiliateUrl?: string;
   prosAndCons?: {
     pros?: string[];
     cons?: string[];
@@ -20,13 +21,31 @@ function normalizeProduct(raw: RawProduct): Product {
         : undefined
       : raw.imageUrl;
 
+  const affiliateLinks =
+    Array.isArray(raw.affiliateLinks) && raw.affiliateLinks.length > 0
+      ? raw.affiliateLinks
+      : typeof raw.affiliateUrl === 'string' && raw.affiliateUrl.length > 0
+        ? [
+            {
+              label: 'Check price',
+              merchant: 'Amazon',
+              region: 'US',
+              url: raw.affiliateUrl,
+              isAffiliate: true,
+            },
+          ]
+        : [];
+
   return {
     slug: raw.slug || '',
     name: raw.name || '',
     brand: raw.brand || '',
     category: raw.category || '',
     summary: raw.summary || '',
+    price: typeof raw.price === 'number' ? raw.price : undefined,
     priceRange: raw.priceRange || '',
+    rating: typeof raw.rating === 'number' ? raw.rating : undefined,
+    reviewCount: typeof raw.reviewCount === 'number' ? raw.reviewCount : undefined,
     officialUrl: raw.officialUrl || '',
     releaseYear: raw.releaseYear,
     ecosystems: Array.isArray(raw.ecosystems) ? raw.ecosystems : [],
@@ -48,7 +67,7 @@ function normalizeProduct(raw: RawProduct): Product {
     bestFor: Array.isArray(raw.bestFor) ? raw.bestFor : [],
     notBestFor: Array.isArray(raw.notBestFor) ? raw.notBestFor : [],
     alternatives: Array.isArray(raw.alternatives) ? raw.alternatives : [],
-    affiliateLinks: Array.isArray(raw.affiliateLinks) ? raw.affiliateLinks : [],
+    affiliateLinks,
     sources: Array.isArray(raw.sources) ? raw.sources : [],
     lastUpdated: raw.lastUpdated || '',
     imageUrl,

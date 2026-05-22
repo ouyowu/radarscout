@@ -213,11 +213,25 @@ export function generateProductSchema(product: {
   name: string;
   brand: string;
   summary: string;
+  price?: number;
   rating?: number;
   reviewCount?: number;
   priceRange?: string;
   imageUrl?: string;
+  offerCount?: number;
 }) {
+  const offers =
+    typeof product.price === 'number'
+      ? {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          lowPrice: product.price.toFixed(2),
+          highPrice: product.price.toFixed(2),
+          offerCount: product.offerCount || 1,
+        }
+      : undefined;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -228,12 +242,16 @@ export function generateProductSchema(product: {
     },
     description: product.summary,
     ...(product.imageUrl && { image: product.imageUrl }),
-    offers: {
-      '@type': 'AggregateOffer',
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      ...(product.priceRange && { description: product.priceRange }),
-    },
+    ...(offers && { offers }),
+    ...(!offers && product.priceRange && {
+      additionalProperty: [
+        {
+          '@type': 'PropertyValue',
+          name: 'Price Range',
+          value: product.priceRange,
+        },
+      ],
+    }),
     ...(product.rating && {
       aggregateRating: {
         '@type': 'AggregateRating',

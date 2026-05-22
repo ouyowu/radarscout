@@ -18,7 +18,10 @@ export interface Product {
   brand: string;
   category: string;
   summary: string;
+  price?: number;
   priceRange: string;
+  rating?: number;
+  reviewCount?: number;
   officialUrl: string;
   releaseYear?: number;
   ecosystems: string[];
