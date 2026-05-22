@@ -22,8 +22,7 @@ export function CookieConsent() {
     try {
       const stored = localStorage.getItem(CONSENT_KEY);
       if (stored === null) {
-        const timer = setTimeout(() => setVisible(true), 1000);
-        return () => clearTimeout(timer);
+        setVisible(true);
       }
     } catch {
       // localStorage unavailable — do nothing

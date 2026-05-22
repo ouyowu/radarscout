@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Star, TrendingUp } from 'lucide-react';
 import type { Product } from '@/types';
@@ -36,6 +34,8 @@ export function ProductCard({ product, showCTA = false, featured = false }: Prod
             <img
               src={product.imageUrl}
               alt={product.name}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             />
           )}

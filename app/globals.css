@@ -70,4 +70,12 @@ body {
 
 .animate-slide-up {
   animation: slideUp 0.5s ease-out;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none;
+  }
 }
