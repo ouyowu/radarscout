@@ -48,7 +48,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateProductSchema(product)),
+          __html: JSON.stringify(generateProductSchema({
+            ...product,
+            offerCount: product.affiliateLinks?.length || 1,
+          })),
         }}
       />
 

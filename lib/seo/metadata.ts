@@ -209,6 +209,17 @@ export function generateArticleSchema(article: {
   };
 }
 
+// Map symbolic price tier to approximate USD range for Schema.org AggregateOffer
+function priceRangeToNumbers(tier?: string): { lowPrice: number; highPrice: number } {
+  switch ((tier || '').replace(/[^$]/g, '').length) {
+    case 1: return { lowPrice: 30, highPrice: 99 };
+    case 2: return { lowPrice: 99, highPrice: 249 };
+    case 3: return { lowPrice: 249, highPrice: 499 };
+    case 4: return { lowPrice: 499, highPrice: 1200 };
+    default: return { lowPrice: 0, highPrice: 999 };
+  }
+}
+
 export function generateProductSchema(product: {
   name: string;
   brand: string;
@@ -217,7 +228,10 @@ export function generateProductSchema(product: {
   reviewCount?: number;
   priceRange?: string;
   imageUrl?: string;
+  offerCount?: number;
 }) {
+  const { lowPrice, highPrice } = priceRangeToNumbers(product.priceRange);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -231,8 +245,10 @@ export function generateProductSchema(product: {
     offers: {
       '@type': 'AggregateOffer',
       priceCurrency: 'USD',
+      lowPrice,
+      highPrice,
+      offerCount: product.offerCount ?? 1,
       availability: 'https://schema.org/InStock',
-      ...(product.priceRange && { description: product.priceRange }),
     },
     ...(product.rating && {
       aggregateRating: {
