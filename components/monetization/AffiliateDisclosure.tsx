@@ -1,5 +1,3 @@
-'use client';
-
 import { Info } from 'lucide-react';
 import { monetizationConfig } from '@/lib/monetization';
 

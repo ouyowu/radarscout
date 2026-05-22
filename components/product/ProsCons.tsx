@@ -1,5 +1,3 @@
-'use client';
-
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ProsConsProps {

@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Calendar, Clock } from 'lucide-react';
 import type { ArticleWithMeta } from '@/lib/data/articles';

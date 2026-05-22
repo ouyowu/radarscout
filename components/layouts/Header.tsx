@@ -1,97 +1,73 @@
-'use client';
-
 import Link from 'next/link';
-import { useState } from 'react';
-import { Menu, X, Radar, Search } from 'lucide-react';
+import { Menu, Radar, Search } from 'lucide-react';
 
 const navigation = [
-  {
-    label: 'Buying Guides',
-    href: '/buying-guides',
-  },
-  {
-    label: 'Reviews',
-    href: '/reviews',
-  },
-  {
-    label: 'Comparisons',
-    href: '/comparisons',
-  },
-  {
-    label: 'Guides',
-    href: '/guides',
-  },
-  {
-    label: 'Products',
-    href: '/products',
-  },
+  { label: 'Buying Guides', href: '/buying-guides' },
+  { label: 'Reviews', href: '/reviews' },
+  { label: 'Comparisons', href: '/comparisons' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Products', href: '/products' },
 ];
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <header className="sticky top-0 z-50 bg-slate-950 border-b border-slate-800 backdrop-blur-sm bg-opacity-95">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <Radar className="w-6 h-6 text-white animate-pulse" />
+    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 supports-[backdrop-filter]:bg-slate-950/80 supports-[backdrop-filter]:backdrop-blur-sm">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+              <Radar className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">
+            <span className="text-xl font-black tracking-tight text-white">
               Radar<span className="text-cyan-400">Scout</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden items-center gap-1 md:flex">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all duration-200"
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-300 transition-colors duration-200 hover:bg-slate-800/50 hover:text-white"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/search"
-              className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all duration-200 flex items-center gap-2"
+              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-slate-300 transition-colors duration-200 hover:bg-slate-800/50 hover:text-white"
             >
-              <Search className="w-4 h-4" />
+              <Search className="h-4 w-4" />
               Search
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all duration-200"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+          <details className="group md:hidden">
+            <summary className="list-none rounded-lg p-2 text-slate-300 transition-colors duration-200 hover:bg-slate-800/50 hover:text-white [&::-webkit-details-marker]:hidden">
+              <Menu className="h-6 w-6" />
+            </summary>
+            <div className="absolute inset-x-0 top-16 border-b border-slate-800 bg-slate-950 px-4 py-4 shadow-2xl">
+              <div className="mx-auto max-w-7xl space-y-1">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block rounded-lg px-4 py-3 text-base font-semibold text-slate-300 transition-colors duration-200 hover:bg-slate-800/50 hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link
+                  href="/search"
+                  className="flex items-center gap-2 rounded-lg px-4 py-3 text-base font-semibold text-slate-300 transition-colors duration-200 hover:bg-slate-800/50 hover:text-white"
+                >
+                  <Search className="h-5 w-5" />
+                  Search
+                </Link>
+              </div>
+            </div>
+          </details>
         </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all duration-200"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        )}
       </nav>
     </header>
   );

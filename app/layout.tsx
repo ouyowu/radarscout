@@ -3,8 +3,7 @@ import Script from 'next/script';
 import "./globals.css";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
-import { CookieConsent } from "@/components/shared/CookieConsent";
-import { GoogleAdSense } from "@/components/monetization/GoogleAdSense";
+import { DeferredClientFeatures } from "@/components/layouts/DeferredClientFeatures";
 import { generateWebSiteSchema, generateOrganizationSchema } from "@/lib/seo/metadata";
 import { monetizationConfig } from "@/lib/monetization";
 
@@ -97,8 +96,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <CookieConsent />
-        <GoogleAdSense publisherId={monetizationConfig.adsensePublisherId} />
+        <DeferredClientFeatures publisherId={monetizationConfig.adsensePublisherId} />
       </body>
     </html>
   );
