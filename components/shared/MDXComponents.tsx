@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AnchorHTMLAttributes, HTMLAttributes } from 'react';
+import { AnchorHTMLAttributes, HTMLAttributes, ImgHTMLAttributes } from 'react';
 
 // Custom components for MDX rendering
 export const MDXComponents = {
@@ -130,6 +130,19 @@ export const MDXComponents = {
   // Horizontal rule
   hr: () => (
     <hr className="border-slate-700 my-8" />
+  ),
+
+  // Images
+  img: ({ src, alt = '', ...props }: ImgHTMLAttributes<HTMLImageElement>) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      className="w-full h-auto rounded-xl border border-slate-800 my-8"
+      {...props}
+    />
   ),
   
   // Strong and emphasis

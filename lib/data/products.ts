@@ -3,6 +3,7 @@ import path from 'path';
 import type { Product } from '@/types';
 
 const productsDirectory = path.join(process.cwd(), 'content/products');
+const publicDirectory = path.join(process.cwd(), 'public');
 
 type RawProduct = Partial<Product> & {
   prosAndCons?: {
@@ -12,6 +13,13 @@ type RawProduct = Partial<Product> & {
 };
 
 function normalizeProduct(raw: RawProduct): Product {
+  const imageUrl =
+    typeof raw.imageUrl === 'string' && raw.imageUrl.startsWith('/')
+      ? fs.existsSync(path.join(publicDirectory, raw.imageUrl.replace(/^\//, '')))
+        ? raw.imageUrl
+        : undefined
+      : raw.imageUrl;
+
   return {
     slug: raw.slug || '',
     name: raw.name || '',
@@ -43,7 +51,7 @@ function normalizeProduct(raw: RawProduct): Product {
     affiliateLinks: Array.isArray(raw.affiliateLinks) ? raw.affiliateLinks : [],
     sources: Array.isArray(raw.sources) ? raw.sources : [],
     lastUpdated: raw.lastUpdated || '',
-    imageUrl: raw.imageUrl,
+    imageUrl,
   };
 }
 

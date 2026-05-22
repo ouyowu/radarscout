@@ -1,6 +1,5 @@
-'use client';
-
 import Link from 'next/link';
+import Image from 'next/image';
 import { Star, TrendingUp } from 'lucide-react';
 import type { Product } from '@/types';
 
@@ -33,10 +32,14 @@ export function ProductCard({ product, showCTA = false, featured = false }: Prod
             </div>
           </div>
           {product.imageUrl && (
-            <img
+            <Image
               src={product.imageUrl}
               alt={product.name}
-              className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              loading="lazy"
+              quality={68}
             />
           )}
         </div>
