@@ -2,7 +2,7 @@
 title: "Google Nest Doorbell (Battery) vs Ring Video Doorbell Pro 2: Which Smart Doorbell Wins in 2026?"
 description: "Detailed comparison of Google Nest Doorbell (Battery) and Ring Video Doorbell Pro 2. Find out which smart doorbell is the better choice for your needs."
 category: "Comparisons"
-publishedAt: "2026-05-19T10:58:51.720451"
+publishedAt: "2026-05-19"
 tags: ["Smart Doorbell", "Ring Video Doorbell Pro 2", "Google Nest Doorbell (Battery)", "comparison"]
 ---
 

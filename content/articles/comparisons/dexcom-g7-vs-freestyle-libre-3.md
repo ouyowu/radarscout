@@ -2,7 +2,7 @@
 title: "Dexcom G7 vs FreeStyle Libre 3: Which Glucose Monitor Wins in 2026?"
 description: "Detailed comparison of Dexcom G7 and FreeStyle Libre 3. Find out which glucose monitor is the better choice for your needs."
 category: "Comparisons"
-publishedAt: "2026-05-19T10:58:51.720674"
+publishedAt: "2026-05-19"
 tags: ["Glucose Monitor", "FreeStyle Libre 3", "Dexcom G7", "comparison"]
 ---
 

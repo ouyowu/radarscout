@@ -2,7 +2,7 @@
 title: "Oura Ring 4 vs Whoop 5.0: Which Smart Ring Wins in 2026?"
 description: "Detailed comparison of Oura Ring 4 and Whoop 5.0. Find out which smart ring is the better choice for your needs."
 category: "Comparisons"
-publishedAt: "2026-05-19T10:58:51.720104"
+publishedAt: "2026-05-19"
 tags: ["Smart Ring", "Whoop 5.0", "Oura Ring 4", "comparison"]
 ---
 

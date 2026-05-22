@@ -2,7 +2,7 @@
 title: "Philips Hue White and Color Starter Kit vs LIFX Color A19: Which Smart Lighting Wins in 2026?"
 description: "Detailed comparison of Philips Hue White and Color Starter Kit and LIFX Color A19. Find out which smart lighting is the better choice for your needs."
 category: "Comparisons"
-publishedAt: "2026-05-19T10:58:51.721220"
+publishedAt: "2026-05-19"
 tags: ["Smart Lighting", "LIFX Color A19", "Philips Hue White and Color Starter Kit", "comparison"]
 ---
 
