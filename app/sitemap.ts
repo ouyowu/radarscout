@@ -2,51 +2,78 @@ import type { MetadataRoute } from 'next';
 import { getAllArticles, getArticleCategories } from '@/lib/data/articles';
 import { getAllProducts } from '@/lib/data/products';
 
-const siteUrl = 'https://www.radarscout.io';
+const BASE_URL = 'https://www.radarscout.io';
+
+/** Normalise any date string to a valid ISO 8601 date (YYYY-MM-DD).
+ *  Google Sitemap validator rejects dates with microseconds (>3 decimal places)
+ *  and undefined/empty values. Falls back to today's date when invalid. */
+function toSitemapDate(value: string | Date | undefined): string {
+  if (!value) return new Date().toISOString().split('T')[0];
+  if (value instanceof Date) return value.toISOString().split('T')[0];
+  const datePart = value.split('T')[0];
+  const parsed = new Date(datePart);
+  if (isNaN(parsed.getTime())) return new Date().toISOString().split('T')[0];
+  return datePart;
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const now = new Date().toISOString();
 
-  const staticRoutes: MetadataRoute.Sitemap = [
-    '',
-    '/products',
-    '/search',
-    '/about',
-    '/about/affiliate-disclosure',
-  ].map((path) => ({
-    url: `${siteUrl}${path}`,
-    lastModified: now,
-    changeFrequency: path === '' ? 'daily' : 'weekly',
-    priority: path === '' ? 1 : 0.7,
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: BASE_URL,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'daily',
+      priority: 1.0,
+    },
+    {
+      url: `${BASE_URL}/products`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/about`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/about/affiliate-disclosure`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/search`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+  ];
+
+  const categoryPages: MetadataRoute.Sitemap = getArticleCategories().map((category) => ({
+    url: `${BASE_URL}/${category}`,
+    lastModified: toSitemapDate(now),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
   }));
 
-  const categoryRoutes: MetadataRoute.Sitemap = getArticleCategories().map(
-    (category) => ({
-      url: `${siteUrl}/${category}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    })
-  );
-
-  const articleRoutes: MetadataRoute.Sitemap = getAllArticles().map((article) => ({
-    url: `${siteUrl}/${article.category}/${article.slug}`,
-    lastModified: article.frontmatter.updatedAt || article.frontmatter.publishedAt,
-    changeFrequency: 'monthly',
+  const articles = getAllArticles();
+  const articlePages: MetadataRoute.Sitemap = articles.map((article) => ({
+    url: `${BASE_URL}/${article.category}/${article.slug}`,
+    lastModified: toSitemapDate(article.frontmatter.updatedAt || article.frontmatter.publishedAt),
+    changeFrequency: 'monthly' as const,
     priority: article.frontmatter.featured ? 0.9 : 0.75,
   }));
 
-  const productRoutes: MetadataRoute.Sitemap = getAllProducts().map((product) => ({
-    url: `${siteUrl}/products/${product.slug}`,
-    lastModified: product.lastUpdated || now.toISOString(),
-    changeFrequency: 'weekly',
+  const products = getAllProducts();
+  const productPages: MetadataRoute.Sitemap = products.map((product) => ({
+    url: `${BASE_URL}/products/${product.slug}`,
+    lastModified: toSitemapDate(product.lastUpdated),
+    changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
 
-  return [
-    ...staticRoutes,
-    ...categoryRoutes,
-    ...articleRoutes,
-    ...productRoutes,
-  ];
+  return [...staticPages, ...categoryPages, ...articlePages, ...productPages];
 }

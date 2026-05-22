@@ -1,5 +1,5 @@
 import { getArticlesByCategory, getAllArticles } from '@/lib/data/articles';
-import { generateSEO } from '@/lib/seo/metadata';
+import { generateSEO, generateBreadcrumbSchema, generateItemListSchema } from '@/lib/seo/metadata';
 import { ArticleCard } from '@/components/shared/ArticleCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
 import { notFound } from 'next/navigation';
@@ -64,6 +64,28 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="bg-slate-950 min-h-screen py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateBreadcrumbSchema([
+            { name: 'Home', url: '/' },
+            { name: info.title, url: `/${category}` },
+          ])),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateItemListSchema(
+            articles.map(a => ({
+              name: a.frontmatter.title,
+              url: `/${category}/${a.slug}`,
+              description: a.frontmatter.description,
+            })),
+            info.title,
+          )),
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <header className="mb-12">

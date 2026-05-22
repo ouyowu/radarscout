@@ -6,7 +6,7 @@
   "price": 69.99,
   "rating": 4.3,
   "imageUrl": "/images/products/amazon-aqm.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08W8KS8D3?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08W8KS8D3?tag=radarscout20-20",
   "summary": "Budget air quality monitor with essential sensors. Works with Alexa routines for automation.",
   "features": [
     "Tracks PM2.5, VOC, CO, humidity, temperature",

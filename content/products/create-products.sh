@@ -10,7 +10,7 @@ cat > aqara-motion-sensor-p2.json << 'EOF'
   "price": 19.99,
   "rating": 4.5,
   "imageUrl": "/images/products/aqara-motion-p2.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B0BXVK7RFZ?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B0BXVK7RFZ?tag=radarscout20-20",
   "summary": "Matter-certified motion sensor with 5-year battery life. Perfect for automatic lighting and home automation.",
   "features": [
     "Matter certified for universal compatibility",
@@ -59,7 +59,7 @@ cat > wyze-video-doorbell.json << 'EOF'
   "price": 34.99,
   "rating": 4.3,
   "imageUrl": "/images/products/wyze-doorbell.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08FHTK8VZ?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08FHTK8VZ?tag=radarscout20-20",
   "summary": "Budget video doorbell with local storage option and no required subscription fees.",
   "features": [
     "1080p HD video with HDR",
@@ -110,7 +110,7 @@ cat > amazon-smart-thermostat.json << 'EOF'
   "price": 79.99,
   "rating": 4.4,
   "imageUrl": "/images/products/amazon-thermostat.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08J4C8871?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08J4C8871?tag=radarscout20-20",
   "summary": "Most affordable quality smart thermostat. Works with Alexa and pays for itself in energy savings.",
   "features": [
     "Alexa built-in for voice control",
@@ -160,7 +160,7 @@ cat > google-nest-hub-2nd-gen.json << 'EOF'
   "price": 99.99,
   "rating": 4.7,
   "imageUrl": "/images/products/nest-hub-2.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B08KSLT8BV?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B08KSLT8BV?tag=radarscout20-20",
   "summary": "Smart display with sleep tracking and Thread border router. Central control panel for smart home.",
   "features": [
     "7-inch touchscreen display",

@@ -1,11 +1,8 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'RadarScout - Smart home, wearables, and health tech guides';
-export const size = {
-  width: 1200,
-  height: 630,
-};
+export const alt = 'RadarScout – Smart Home, Wearables & Health Tech';
+export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 export default function OpenGraphImage() {
@@ -13,73 +10,122 @@ export default function OpenGraphImage() {
     (
       <div
         style={{
-          height: '100%',
           width: '100%',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%)',
-          color: 'white',
-          padding: '64px',
-          fontFamily: 'Inter, Arial, sans-serif',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #0f172a 0%, #020617 60%, #0f172a 100%)',
+          fontFamily: 'sans-serif',
+          position: 'relative',
         }}
       >
+        {/* Grid background dots */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage:
+              'radial-gradient(circle, rgba(6,182,212,0.15) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+
+        {/* Logo row */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 20,
+            gap: '16px',
+            marginBottom: '32px',
           }}
         >
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 20,
-              background: 'linear-gradient(135deg, #22d3ee 0%, #3b82f6 60%, #9333ea 100%)',
+              width: '64px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+              borderRadius: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 32,
-              fontWeight: 800,
+              fontSize: '36px',
             }}
           >
-            R
+            ◎
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ fontSize: 42, fontWeight: 800 }}>RadarScout</div>
-            <div style={{ fontSize: 22, color: '#94a3b8' }}>
-              Smart home • wearables • health tech
-            </div>
-          </div>
+          <span style={{ fontSize: '42px', fontWeight: 900, color: '#ffffff' }}>
+            Radar<span style={{ color: '#22d3ee' }}>Scout</span>
+          </span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 980 }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '10px 18px',
-              borderRadius: 999,
-              background: 'rgba(34, 211, 238, 0.12)',
-              border: '1px solid rgba(34, 211, 238, 0.28)',
-              color: '#67e8f9',
-              fontSize: 24,
-              fontWeight: 700,
-            }}
-          >
-            Buying guides • reviews • comparisons
-          </div>
-          <div style={{ fontSize: 66, lineHeight: 1.05, fontWeight: 900 }}>
-            Find the right smart tech before you buy.
-          </div>
-          <div style={{ fontSize: 28, lineHeight: 1.4, color: '#cbd5e1' }}>
-            Expert product research, hands-on comparisons, and practical advice for your
-            home and health setup.
-          </div>
+        {/* Headline */}
+        <div
+          style={{
+            fontSize: '52px',
+            fontWeight: 900,
+            color: '#ffffff',
+            textAlign: 'center',
+            lineHeight: 1.2,
+            maxWidth: '900px',
+            marginBottom: '20px',
+          }}
+        >
+          Smart Home, Wearables &amp; Health Tech
+        </div>
+
+        {/* Subline */}
+        <div
+          style={{
+            fontSize: '24px',
+            color: '#94a3b8',
+            textAlign: 'center',
+            maxWidth: '700px',
+          }}
+        >
+          Expert buying guides, in-depth reviews &amp; product comparisons
+        </div>
+
+        {/* Pill tags */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: '40px',
+          }}
+        >
+          {['Smart Rings', 'Sleep Trackers', 'Smart Locks', 'Wearables'].map((tag) => (
+            <div
+              key={tag}
+              style={{
+                padding: '8px 20px',
+                background: 'rgba(6,182,212,0.1)',
+                border: '1px solid rgba(6,182,212,0.3)',
+                borderRadius: '999px',
+                color: '#22d3ee',
+                fontSize: '16px',
+                fontWeight: 600,
+              }}
+            >
+              {tag}
+            </div>
+          ))}
+        </div>
+
+        {/* Domain */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '32px',
+            color: '#475569',
+            fontSize: '18px',
+          }}
+        >
+          radarscout.io
         </div>
       </div>
     ),
-    size
+    { ...size },
   );
 }

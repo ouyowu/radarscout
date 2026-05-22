@@ -10,7 +10,7 @@ cat > garmin-venu-3.json << 'EOF'
   "price": 449.99,
   "rating": 4.6,
   "imageUrl": "/images/products/garmin-venu-3.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B0C62K5JFZ?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B0C62K5JFZ?tag=radarscout20-20",
   "summary": "Premium sports watch with comprehensive sleep tracking and 14-day battery life.",
   "features": [
     "14-day battery life",
@@ -61,7 +61,7 @@ cat > fitbit-charge-6.json << 'EOF'
   "price": 159.99,
   "rating": 4.4,
   "imageUrl": "/images/products/fitbit-charge-6.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B0CC5WKXD8?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B0CC5WKXD8?tag=radarscout20-20",
   "summary": "Best fitness tracker for Google ecosystem users. Heart rate accuracy improved 60% over Charge 5.",
   "features": [
     "60% more accurate heart rate tracking",
@@ -112,7 +112,7 @@ cat > samsung-galaxy-watch-6.json << 'EOF'
   "price": 299.99,
   "rating": 4.5,
   "imageUrl": "/images/products/samsung-watch-6.jpg",
-  "affiliateUrl": "https://www.amazon.com/dp/B0C79HXM44?tag=radarscout-20",
+  "affiliateUrl": "https://www.amazon.com/dp/B0C79HXM44?tag=radarscout20-20",
   "summary": "Best Android smartwatch with comprehensive health tracking and Wear OS ecosystem.",
   "features": [
     "Advanced sleep tracking with sleep coaching",

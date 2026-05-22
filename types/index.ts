@@ -48,6 +48,10 @@ export interface ArticleFrontmatter {
   author?: string;
   tags?: string[];
   featured?: boolean;
+  heroImage?: string;
+  heroImageAlt?: string;
+  keywords?: string[];
+  quickAnswer?: string;
 }
 
 export interface Article {

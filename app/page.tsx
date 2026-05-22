@@ -5,6 +5,7 @@ import { getFeaturedProducts } from '@/lib/data/products';
 import { ArticleCard } from '@/components/shared/ArticleCard';
 import { ProductCard } from '@/components/product/ProductCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
+import { NewsletterForm } from '@/components/shared/NewsletterForm';
 
 const homePageSchema = {
   '@context': 'https://schema.org',
@@ -246,19 +247,7 @@ export default function HomePage() {
           <p className="text-xl text-slate-300 mb-8">
             Get expert reviews and buying guides delivered to your inbox
           </p>
-          <form className="max-w-md mx-auto flex gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-6 py-4 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-            <button
-              type="submit"
-              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 hover:-translate-y-1"
-            >
-              Subscribe
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </section>
     </div>
