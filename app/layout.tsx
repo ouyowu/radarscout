@@ -78,10 +78,10 @@ export default function RootLayout({
             <Script
               id="ga4-script"
               async
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
             />
-            <Script id="ga4-config" strategy="afterInteractive">
+            <Script id="ga4-config" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -91,15 +91,6 @@ export default function RootLayout({
               `}
             </Script>
           </>
-        ) : null}
-        {adsensePublisherId ? (
-          <Script
-            id="adsense-script"
-            async
-            strategy="afterInteractive"
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`}
-          />
         ) : null}
         <Header />
         <main className="flex-1">
