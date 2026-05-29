@@ -2,13 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { CookieConsent } from '@/components/shared/CookieConsent';
-import { GoogleAdSense } from '@/components/monetization/GoogleAdSense';
 
-interface DeferredClientFeaturesProps {
-  publisherId: string;
-}
-
-export function DeferredClientFeatures({ publisherId }: DeferredClientFeaturesProps) {
+export function DeferredClientFeatures() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -21,7 +16,6 @@ export function DeferredClientFeatures({ publisherId }: DeferredClientFeaturesPr
   return (
     <>
       <CookieConsent />
-      <GoogleAdSense publisherId={publisherId} />
     </>
   );
 }

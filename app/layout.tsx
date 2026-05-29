@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 import { DeferredClientFeatures } from "@/components/layouts/DeferredClientFeatures";
+import { GoogleAdSense } from "@/components/monetization/GoogleAdSense";
 import { generateWebSiteSchema, generateOrganizationSchema } from "@/lib/seo/metadata";
 import { monetizationConfig } from "@/lib/monetization";
 
@@ -91,12 +92,13 @@ export default function RootLayout({
             </Script>
           </>
         ) : null}
+        <GoogleAdSense publisherId={monetizationConfig.adsensePublisherId} />
         <Header />
         <main className="flex-1">
           {children}
         </main>
         <Footer />
-        <DeferredClientFeatures publisherId={monetizationConfig.adsensePublisherId} />
+        <DeferredClientFeatures />
       </body>
     </html>
   );
