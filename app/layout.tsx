@@ -4,9 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 import { CookieConsent } from "@/components/shared/CookieConsent";
-import { GoogleAdSense } from "@/components/monetization/GoogleAdSense";
 import { generateWebSiteSchema, generateOrganizationSchema } from "@/lib/seo/metadata";
-import { monetizationConfig } from "@/lib/monetization";
 
 const defaultAdsensePublisherId = 'ca-pub-5538837787017019';
 const adsensePublisherId =
@@ -92,13 +90,22 @@ export default function RootLayout({
             </Script>
           </>
         ) : null}
+        {/* AdSense script loaded unconditionally so Googlebot can verify the site.
+            Actual ad rendering is gated by cookie consent inside each AdSlot. */}
+        {adsensePublisherId && (
+          <Script
+            id="adsense-script"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`}
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         <Header />
         <main className="flex-1">
           {children}
         </main>
         <Footer />
         <CookieConsent />
-        <GoogleAdSense publisherId={monetizationConfig.adsensePublisherId} />
       </body>
     </html>
   );
