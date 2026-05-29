@@ -1,0 +1,77 @@
+{
+  "slug": "amazon-echo-show-10",
+  "name": "Amazon Echo Show 10 (3rd Gen)",
+  "brand": "Amazon",
+  "category": "Smart Speaker",
+  "summary": "A 10.1-inch HD smart display with a motorized rotating base that automatically follows you around the room, functioning as a voice-controlled smart home hub, video calling station, and entertainment display.",
+  "priceRange": "$$$",
+  "officialUrl": "https://www.amazon.com/echo-show-10",
+  "releaseYear": 2024,
+  "ecosystems": ["Amazon Alexa"],
+  "connectivity": ["Wi-Fi", "Bluetooth", "Zigbee"],
+  "sensors": [
+    "Camera (13MP with motion tracking)",
+    "Microphone array (8-mic far-field)",
+    "Ambient light sensor",
+    "Ultrasound presence detection"
+  ],
+  "features": [
+    "Motion-tracking rotating display",
+    "10.1-inch HD touchscreen",
+    "Alexa built-in",
+    "Smart home hub (Zigbee, Matter, Thread)",
+    "Video calling (Alexa, Zoom)",
+    "Prime Video and Netflix streaming",
+    "Drop In and Announcement intercom",
+    "Built-in smart home dashboard",
+    "Privacy shutter for camera and mic off button",
+    "Do Not Disturb scheduling"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Wired (no battery)",
+  "pros": [
+    "Rotating display automatically tracks your movement for video calls",
+    "Excellent smart home hub with built-in Zigbee and Matter/Thread support",
+    "Large, bright 10.1-inch screen is ideal for recipes, video calls, and dashboards",
+    "Loud, room-filling stereo speakers with neodymium woofer",
+    "Camera privacy shutter and hardware mute button for security-conscious users"
+  ],
+  "cons": [
+    "Requires constant power — no battery option",
+    "Motion tracking can feel intrusive or unsettling for some users",
+    "Limited usefulness outside the Amazon ecosystem",
+    "Subscription services (Prime Video, Amazon Music) add cost for full value"
+  ],
+  "bestFor": [
+    "Central smart home hub for Alexa-based setups",
+    "Video calling in kitchens or living rooms",
+    "Households with Amazon Prime subscriptions",
+    "Security camera viewing and smart home dashboards"
+  ],
+  "notBestFor": [
+    "Google Home or Apple HomeKit users",
+    "Small spaces where a rotating display would be distracting",
+    "Budget-conscious buyers"
+  ],
+  "alternatives": [
+    "google-nest-hub-2nd-gen",
+    "amazon-echo-dot-5th-gen",
+    "aqara-hub-m2"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "https://www.amazon.com/s?k=Amazon+Echo+Show+10&tag=radarscout20-20",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://www.amazon.com/echo-show-10"
+    }
+  ],
+  "lastUpdated": "2026-05-29"
+}

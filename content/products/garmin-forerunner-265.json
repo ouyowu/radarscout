@@ -1,0 +1,86 @@
+{
+  "slug": "garmin-forerunner-265",
+  "name": "Garmin Forerunner 265",
+  "brand": "Garmin",
+  "category": "GPS Watch",
+  "summary": "A premium running GPS watch with a vivid AMOLED display, HRV Status, Training Readiness, and up to 15 days of battery life in smartwatch mode — designed for serious runners who don't want to compromise on training insights.",
+  "priceRange": "$$$",
+  "officialUrl": "https://www.garmin.com/en-US/p/886785",
+  "releaseYear": 2024,
+  "ecosystems": ["Garmin Connect", "iOS", "Android"],
+  "connectivity": ["Bluetooth", "ANT+", "Wi-Fi"],
+  "sensors": [
+    "Elevate v4 heart rate (optical)",
+    "Pulse oximeter (SpO2)",
+    "GPS/GNSS (GPS, GLONASS, Galileo, MSC)",
+    "Accelerometer",
+    "Altimeter (barometric)",
+    "Compass",
+    "Thermometer",
+    "Gyroscope"
+  ],
+  "features": [
+    "AMOLED always-on display",
+    "HRV Status (7-day HRV trend)",
+    "Training Readiness score",
+    "Training Load and Training Status",
+    "Daily Suggested Workouts (running and cycling)",
+    "VO2 Max and Race Predictor",
+    "Recovery Time advisor",
+    "Body Battery energy monitor",
+    "Sleep tracking with sleep score",
+    "Running dynamics (cadence, stride length, ground contact time)",
+    "Music storage (up to 500 songs)",
+    "Garmin Pay contactless payments",
+    "Incident detection and LiveTrack",
+    "Structured workout support",
+    "Advanced running metrics: Running Power, PacePro"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 15 days (smartwatch mode); up to 20 hours (GPS mode)",
+  "pros": [
+    "AMOLED display is significantly sharper and more readable than MIP displays on older Forerunners",
+    "HRV Status and Training Readiness give actionable recovery guidance",
+    "15-day battery life in smartwatch mode is exceptional for an AMOLED watch",
+    "Daily Suggested Workouts adapt to fitness and recovery in real time",
+    "ANT+ compatibility allows pairing with foot pods, cycling power meters, and chest straps"
+  ],
+  "cons": [
+    "No built-in maps or turn-by-turn navigation (step up to Forerunner 965 for that)",
+    "AMOLED display drains battery faster during GPS activities vs. MIP competitors",
+    "Garmin Connect app is feature-rich but has a steep learning curve",
+    "Lacks multi-band GPS of higher-end Garmin models"
+  ],
+  "bestFor": [
+    "Serious recreational and competitive runners",
+    "Triathletes and multisport athletes",
+    "Training load and periodization management",
+    "Runners who want long battery without sacrificing display quality"
+  ],
+  "notBestFor": [
+    "Hikers or adventure users who need topographic maps",
+    "Budget-conscious fitness trackers",
+    "Users primarily interested in smartwatch features over training metrics"
+  ],
+  "alternatives": [
+    "garmin-venu-3",
+    "coros-apex-2-pro",
+    "apple-watch-series"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "https://www.amazon.com/s?k=Garmin+Forerunner+265&tag=radarscout20-20",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://www.garmin.com/en-US/p/886785"
+    }
+  ],
+  "lastUpdated": "2026-05-29"
+}

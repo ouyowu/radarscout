@@ -1,0 +1,85 @@
+{
+  "slug": "withings-scanwatch-2",
+  "name": "Withings ScanWatch 2",
+  "brand": "Withings",
+  "category": "Smartwatch",
+  "summary": "A Swiss-made hybrid smartwatch combining analog watch design with medical-grade ECG, SpO2, overnight breathing disturbance monitoring, and up to 30 days of battery life — available in 38mm and 42mm.",
+  "priceRange": "$$$",
+  "officialUrl": "https://www.withings.com/us/en/scanwatch",
+  "releaseYear": 2024,
+  "ecosystems": ["iOS", "Android", "Withings Health Mate"],
+  "connectivity": ["Bluetooth 5.0"],
+  "sensors": [
+    "ECG (electrocardiogram, FDA-cleared)",
+    "Optical heart rate (PPG)",
+    "SpO2 (blood oxygen)",
+    "Skin temperature",
+    "Accelerometer",
+    "Altimeter"
+  ],
+  "features": [
+    "FDA-cleared ECG with AFib detection",
+    "Overnight SpO2 monitoring with breathing disturbance detection",
+    "Continuous heart rate monitoring",
+    "Sleep tracking (light, deep, REM cycles, sleep score)",
+    "Activity tracking (45+ sport modes)",
+    "Connected GPS (via smartphone)",
+    "VO2 Max estimate",
+    "Stress and HRV monitoring",
+    "Women's health and cycle tracking",
+    "Smartphone notifications (display only)",
+    "Hidden OLED display (on-demand)",
+    "Sapphire crystal glass",
+    "Analog watch hands",
+    "Health Mate app integration",
+    "Apple Health and Google Fit sync"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 30 days (watch mode); 20–25 days (full health tracking enabled)",
+  "pros": [
+    "Looks like a traditional dress watch — appropriate for professional environments",
+    "FDA-cleared ECG and overnight SpO2 for genuine medical-grade screening",
+    "30-day battery life eliminates daily charging anxiety",
+    "Works equally well on iOS and Android — no ecosystem lock-in",
+    "Sapphire crystal and stainless steel construction for long-term durability"
+  ],
+  "cons": [
+    "No standalone GPS — requires phone for route and pace tracking",
+    "No LTE or voice assistant support",
+    "Notification interaction limited to viewing only (no replies)",
+    "Thicker case (11mm) than a pure dress watch",
+    "Health+ subscription ($9.95/month) required for advanced trend insights"
+  ],
+  "bestFor": [
+    "Health-conscious professionals who want discreet medical monitoring",
+    "Frequent travelers who can't charge daily",
+    "ECG and sleep apnea screening at home",
+    "People who want a watch that transitions from office to gym"
+  ],
+  "notBestFor": [
+    "Dedicated runners and cyclists who need standalone GPS",
+    "Users who want smartwatch apps and voice assistant integration",
+    "Athletes requiring real-time workout coaching features"
+  ],
+  "alternatives": [
+    "oura-ring-4",
+    "fitbit-sense-2",
+    "garmin-venu-3"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "https://www.amazon.com/s?k=Withings+ScanWatch+2&tag=radarscout20-20",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://www.withings.com/us/en/scanwatch"
+    }
+  ],
+  "lastUpdated": "2026-05-29"
+}

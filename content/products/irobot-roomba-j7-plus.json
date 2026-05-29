@@ -1,0 +1,78 @@
+{
+  "slug": "irobot-roomba-j7-plus",
+  "name": "iRobot Roomba j7+",
+  "brand": "iRobot",
+  "category": "Robot Vacuum",
+  "summary": "A self-emptying robot vacuum with iRobot's PrecisionVision AI obstacle avoidance — trained to recognize and navigate around cords, socks, shoes, and pet waste — paired with a Clean Base that holds 60 days of debris.",
+  "priceRange": "$$$",
+  "officialUrl": "https://www.irobot.com/roomba-j7-plus",
+  "releaseYear": 2024,
+  "ecosystems": ["Amazon Alexa", "Google Home", "iRobot OS"],
+  "connectivity": ["Wi-Fi (2.4GHz)", "Bluetooth"],
+  "sensors": [
+    "PrecisionVision camera (AI obstacle detection)",
+    "Floor tracking sensor",
+    "Cliff sensors",
+    "Dirt Detection sensor",
+    "Optical and acoustic dirt detection"
+  ],
+  "features": [
+    "PrecisionVision AI obstacle avoidance (cords, socks, pet waste)",
+    "Clean Base Automatic Dirt Disposal (self-empties for up to 60 days)",
+    "Smart Mapping with 3D room mapping",
+    "Keep Out Zones and Clean Zones (app-defined)",
+    "Customizable cleaning preferences per room",
+    "Alexa and Google Assistant voice control",
+    "Automatic recharge and resume",
+    "Two rubber brush rolls (tangle-free for pet hair)",
+    "Scheduling and one-touch cleaning",
+    "iRobot OS software with ongoing feature updates",
+    "Pet Owner Official Promise (re-cleans or refunds if it fails to avoid pet waste)"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Up to 75 minutes per charge",
+  "pros": [
+    "PrecisionVision AI reliably avoids cables, pet waste, and small objects competitors miss",
+    "Self-emptying Clean Base means up to 60 days of hands-off operation",
+    "Smart Mapping accurately divides home into named rooms for targeted cleaning",
+    "Dual rubber brush rolls dramatically reduce hair tangles vs. bristle brushes",
+    "iRobot OS receives regular OTA updates with new obstacle recognition training"
+  ],
+  "cons": [
+    "Clean Base requires bag replacements (ongoing cost ~$10–$15 per bag)",
+    "75-minute battery is shorter than some competitors for large homes",
+    "Initial mapping run takes several sessions to fully learn the home",
+    "Premium price point compared to capable budget robot vacuums"
+  ],
+  "bestFor": [
+    "Pet owners concerned about waste avoidance",
+    "Households with charging cables and cluttered floors",
+    "People who want truly hands-off vacuuming for 1–2 months at a time",
+    "Smart home users with Alexa or Google Home setups"
+  ],
+  "notBestFor": [
+    "Very large homes over 2,000 sq ft (battery may not cover in one run)",
+    "Budget-conscious buyers — capable alternatives exist for under $300",
+    "Users who prefer self-contained units without a base station"
+  ],
+  "alternatives": [
+    "ecovacs-deebot-x2",
+    "amazon-smart-air-quality-monitor"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "https://www.amazon.com/s?k=iRobot+Roomba+j7+Plus&tag=radarscout20-20",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://www.irobot.com/roomba-j7-plus"
+    }
+  ],
+  "lastUpdated": "2026-05-29"
+}

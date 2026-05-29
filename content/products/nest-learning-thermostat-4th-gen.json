@@ -1,0 +1,81 @@
+{
+  "slug": "nest-learning-thermostat-4th-gen",
+  "name": "Google Nest Learning Thermostat (4th Gen)",
+  "brand": "Google",
+  "category": "Smart Thermostat",
+  "summary": "Google's flagship learning thermostat with a redesigned stainless steel face, auto-scheduling that learns your routine within a week, detailed energy history, and compatibility with most HVAC systems — independently verified to pay for itself in under three years through energy savings.",
+  "priceRange": "$$$",
+  "officialUrl": "https://store.google.com/us/product/nest_learning_thermostat",
+  "releaseYear": 2024,
+  "ecosystems": ["Google Home", "Amazon Alexa", "Apple HomeKit"],
+  "connectivity": ["Wi-Fi (2.4GHz/5GHz)", "Bluetooth"],
+  "sensors": [
+    "Temperature sensor",
+    "Humidity sensor",
+    "Activity / occupancy sensor (Farsight)",
+    "Ambient light sensor",
+    "Near-field activity detection"
+  ],
+  "features": [
+    "Auto-Schedule (learns your temperature preferences within 1 week)",
+    "Home/Away Assist (automatically adjusts when you leave or return)",
+    "Farsight display (shows time, temperature, or weather when you walk by)",
+    "Energy History and monthly energy reports",
+    "Rush Hour Rewards energy saving program support",
+    "Furnace Heads-Up maintenance alerts",
+    "Safety temperatures (auto-activates heat/cool to prevent pipe freeze or extreme heat)",
+    "Remote control via Google Home app",
+    "Works with most 24V HVAC systems",
+    "Compatibility Checker tool",
+    "Google Home and Alexa voice control",
+    "Apple HomeKit support",
+    "C-wire adapter included",
+    "Stainless steel display with color mirror finish"
+  ],
+  "subscriptionRequired": false,
+  "batteryLife": "Wired (draws power from HVAC system; no external power required)",
+  "pros": [
+    "Auto-Schedule genuinely learns and adapts — requires minimal manual programming",
+    "Average household saves 10–15% on heating and 15% on cooling (per Nest research)",
+    "Works with all three major voice ecosystems (Alexa, Google, HomeKit)",
+    "Energy History dashboard makes consumption trends visible and actionable",
+    "C-wire adapter in box means most homes can install without an electrician"
+  ],
+  "cons": [
+    "Requires compatible HVAC system — not compatible with all heat pump configurations (check Compatibility Checker)",
+    "Learning period means the first week may not reflect ideal preferences",
+    "Premium price vs. capable $80–$150 alternatives like Amazon Smart Thermostat",
+    "Some features require Google Home app, adding ecosystem dependency"
+  ],
+  "bestFor": [
+    "Homeowners looking to reduce heating and cooling bills",
+    "Households with irregular or variable schedules where manual scheduling is impractical",
+    "Smart home setups spanning multiple ecosystems",
+    "Users who want a premium, wall-mount aesthetic"
+  ],
+  "notBestFor": [
+    "Renters who cannot install permanent devices",
+    "Homes with incompatible HVAC systems (high-voltage, proprietary systems)",
+    "Budget-focused buyers who want basic scheduling only"
+  ],
+  "alternatives": [
+    "amazon-smart-thermostat",
+    "google-nest-hub-2nd-gen"
+  ],
+  "affiliateLinks": [
+    {
+      "label": "Check price on Amazon",
+      "merchant": "Amazon",
+      "region": "US",
+      "url": "https://www.amazon.com/s?k=Google+Nest+Learning+Thermostat+4th+Gen&tag=radarscout20-20",
+      "isAffiliate": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "Official product page",
+      "url": "https://store.google.com/us/product/nest_learning_thermostat"
+    }
+  ],
+  "lastUpdated": "2026-05-29"
+}
