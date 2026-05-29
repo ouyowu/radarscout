@@ -140,12 +140,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl font-black text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
             {article.frontmatter.title}
           </h1>
 
           {/* Description */}
-          <p className="text-xl text-slate-300 mb-6">
+          <p className="text-base sm:text-xl text-slate-300 mb-6">
             {article.frontmatter.description}
           </p>
 
@@ -190,13 +190,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-12">
           {/* Article content */}
           <div className="lg:col-span-2">
             {article.frontmatter.quickAnswer && (
               <QuickAnswerBox answer={article.frontmatter.quickAnswer} />
             )}
-            <article className="prose prose-invert prose-lg max-w-none">
+            <article className="prose prose-invert prose-base sm:prose-lg max-w-none overflow-x-hidden [&_table]:block [&_table]:overflow-x-auto [&_table]:w-full">
               <MDXRemote
                 source={article.content}
                 components={MDXComponents}

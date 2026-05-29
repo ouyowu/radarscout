@@ -27,7 +27,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
       {/* Content */}
       <div className="p-6 pt-2">
         <Link href={articleUrl}>
-          <h2 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors mb-3 line-clamp-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors mb-3 line-clamp-2">
             {article.frontmatter.title}
           </h2>
         </Link>

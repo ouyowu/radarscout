@@ -48,7 +48,7 @@ export function ProductCard({ product, showCTA = false, featured = false }: Prod
             {product.brand}
           </div>
           <Link href={`/products/${product.slug}`}>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+            <h3 className="text-base sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
               {product.name}
             </h3>
           </Link>

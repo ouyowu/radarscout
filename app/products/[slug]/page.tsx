@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-12">
             {/* Product Image */}
             <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden border border-slate-700">
               <div className="absolute inset-0 bg-grid-slate-700 opacity-20" />
@@ -75,11 +75,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {product.category}
               </div>
 
-              <h1 className="text-5xl font-black text-white mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4">
                 {product.name}
               </h1>
 
-              <p className="text-xl text-slate-300 mb-6">
+              <p className="text-base sm:text-xl text-slate-300 mb-6">
                 {product.summary}
               </p>
 
@@ -106,7 +106,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-12">
             {/* Key Specs */}

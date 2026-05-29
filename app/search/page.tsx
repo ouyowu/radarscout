@@ -68,8 +68,8 @@ export default function SearchPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Search header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-black text-white mb-6">Search</h1>
-          
+          <h1 className="text-3xl sm:text-5xl font-black text-white mb-6">Search</h1>
+
           {/* Search form */}
           <form onSubmit={handleSearch} className="max-w-2xl">
             <div className="relative">
@@ -77,8 +77,8 @@ export default function SearchPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search products, articles, and guides..."
-                className="w-full px-6 py-4 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-24"
+                placeholder="Search products, articles..."
+                className="w-full px-4 sm:px-6 py-4 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-20"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
                 {query && (

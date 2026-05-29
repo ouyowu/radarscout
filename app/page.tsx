@@ -54,7 +54,7 @@ export default function HomePage() {
               Smart Home • Wearables • Health Tech
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight animate-slide-up">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white mb-6 leading-tight animate-slide-up">
               Find the Perfect
               <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                 Smart Tech
@@ -169,7 +169,7 @@ export default function HomePage() {
             Browse by Category
           </h2>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 name: 'Buying Guides',

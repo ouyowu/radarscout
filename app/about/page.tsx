@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <div className="bg-slate-950 min-h-screen py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-5xl font-black text-white mb-6">
+        <h1 className="text-3xl sm:text-5xl font-black text-white mb-6">
           About RadarScout
         </h1>
 
