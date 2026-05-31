@@ -8,7 +8,7 @@ const heroImage =
 export async function generateMetadata(): Promise<Metadata> {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'RadarScout - Thailand Nightlife Intelligence',
+    title: 'RadarScout - Thailand Nightlife Intelligence [Updated May 31, 2026]',
     description:
       'Fresh Thailand nightlife questions, warnings, price checks, event chatter, and traveler signals from public communities.',
     alternates: { canonical: base },
@@ -69,35 +69,40 @@ export default async function LandingPage() {
 
   return (
     <main className="min-h-screen bg-[#0b0908] text-[#f7f1e8]">
-      <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10 bg-black/30 backdrop-blur">
-        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3" aria-label="RadarScout home">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#d6b35a]/50 bg-[#15100d] text-sm font-black text-[#d6b35a]">
-              RS
-            </span>
-            <span>
-              <span className="block text-sm font-black uppercase text-white">RadarScout</span>
-              <span className="block text-[11px] font-semibold uppercase text-[#d6b35a]">
-                Thailand Nightlife Intel
-              </span>
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-2 text-sm">
-            <a
-              href="https://thainight.co"
-              className="hidden min-h-11 items-center justify-center rounded-lg px-4 font-semibold text-[#f7f1e8]/80 hover:bg-white/10 hover:text-white sm:inline-flex"
-            >
-              ThaiNight
-            </a>
-            <Link
-              href={isLoggedIn ? '/dashboard/matches' : '/auth/register'}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#d6b35a] px-4 font-bold text-[#16100b] hover:bg-[#e8c970]"
-            >
-              {isLoggedIn ? 'Open desk' : 'View feed'}
+            <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10 bg-black/30 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-sm">🌙</div>
+            <span className="font-black text-sm">THAI<span className="text-amber-400">NIGHT</span></span>
+          </div>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="/" className="hover:text-zinc-400 transition-colors">
+              Home
+            </Link>
+            <Link href="/about-us" className="hover:text-zinc-400 transition-colors">
+              About Us
+            </Link>
+            <Link href="/contact" className="hover:text-zinc-400 transition-colors">
+              Contact
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-zinc-400 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-service" className="hover:text-zinc-400 transition-colors">
+              Terms of Service
             </Link>
           </div>
-        </nav>
+          <div className="flex items-center gap-2">
+            {/* Search placeholder - we'll rely on the layout one now */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Bangkok nightlife, rooftop bars, nightclubs, happy hour..."
+                className="w-64 rounded-md bg-zinc-800/60 border border-zinc-700/40 px-3 py-1.5 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              />
+            </div>
+          </div>
+        </div>
       </header>
 
       <section className="relative min-h-[84dvh] overflow-hidden">
