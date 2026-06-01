@@ -12,10 +12,11 @@ const footerLinks = {
     { label: 'Smart Rings', href: '/buying-guides/best-smart-rings' },
     { label: 'Sleep Trackers', href: '/buying-guides/best-sleep-trackers' },
     { label: 'Product Database', href: '/products' },
-    { label: 'Search', href: '/search' },
+    { label: 'Compare Products', href: '/comparisons' },
   ],
   company: [
     { label: 'About', href: '/about' },
+    { label: 'Editorial Policy', href: '/about/editorial-policy' },
     { label: 'Contact', href: '/about/contact' },
     { label: 'Affiliate Disclosure', href: '/about/affiliate-disclosure' },
     { label: 'Privacy Policy', href: '/about/privacy-policy' },

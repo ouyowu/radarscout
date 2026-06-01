@@ -33,10 +33,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
+      url: `${BASE_URL}/products`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/about/affiliate-disclosure`,
       lastModified: toSitemapDate(now),
       changeFrequency: 'yearly',
       priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/about/editorial-policy`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
   ];
 

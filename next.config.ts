@@ -10,11 +10,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/products',
-        destination: '/',
-        permanent: true,
-      },
-      {
         source: '/smart-home',
         destination: '/buying-guides/best-smart-home-devices-for-beginners',
         permanent: true,
