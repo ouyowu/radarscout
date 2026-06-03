@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calendar, ExternalLink, Check, X } from 'lucide-react';
 import { getProductBySlug, getRelatedProducts } from '@/lib/data/products';
 import { generateSEO, generateProductSchema } from '@/lib/seo/metadata';
@@ -9,6 +10,7 @@ import { ProductCard } from '@/components/product/ProductCard';
 import { AdSlot } from '@/components/monetization/AdSlot';
 import { AffiliateDisclosure } from '@/components/monetization/AffiliateDisclosure';
 import { getAllProducts } from '@/lib/data/products';
+import { ProductVisual } from '@/components/product/ProductVisual';
 
 export async function generateStaticParams() {
   return getAllProducts().map((product) => ({
@@ -63,12 +65,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div className="grid md:grid-cols-2 gap-12">
             {/* Product Image */}
             <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden border border-slate-700">
-              <div className="absolute inset-0 bg-grid-slate-700 opacity-20" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-9xl font-black text-slate-700 tracking-tighter">
-                  {product.brand.charAt(0)}
-                </div>
-              </div>
+              {product.imageUrl ? (
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <ProductVisual
+                  brand={product.brand}
+                  name={product.name}
+                  category={product.category}
+                />
+              )}
             </div>
 
             {/* Product Info */}

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Star, TrendingUp } from 'lucide-react';
 import type { Product } from '@/types';
+import { ProductVisual } from '@/components/product/ProductVisual';
 
 interface ProductCardProps {
   product: Product;
@@ -25,21 +26,22 @@ export function ProductCard({ product, showCTA = false, featured = false }: Prod
 
       <Link href={`/products/${product.slug}`} className="block">
         <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-slate-300 dark:bg-grid-slate-700 opacity-20" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-4xl font-black text-slate-300 dark:text-slate-700 tracking-tighter">
-              {product.brand.charAt(0)}
-            </div>
-          </div>
-          {product.imageUrl && (
+          {product.imageUrl ? (
             <Image
               src={product.imageUrl}
               alt={product.name}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="object-cover"
               loading="lazy"
               quality={68}
+            />
+          ) : (
+            <ProductVisual
+              brand={product.brand}
+              name={product.name}
+              category={product.category}
+              compact
             />
           )}
         </div>

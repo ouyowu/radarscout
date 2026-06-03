@@ -50,6 +50,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/about/privacy-policy`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/about/terms-of-service`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/about/contact`,
+      lastModified: toSitemapDate(now),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = getArticleCategories().map((category) => ({
