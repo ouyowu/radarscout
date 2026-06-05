@@ -1,10 +1,6 @@
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
 
-export async function SiteNav() {
-  const session = await auth()
-  const isLoggedIn = !!session?.user?.id
-
+export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -19,23 +15,15 @@ export async function SiteNav() {
             <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900 transition-colors">
               Pricing
             </Link>
-            {isLoggedIn ? (
-              <Link href="/dashboard" className="text-[0.9375rem] font-semibold text-orange-600 hover:text-orange-700 transition-colors">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Sign in
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="text-[0.9375rem] font-semibold bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
-                >
-                  Get started free
-                </Link>
-              </>
-            )}
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900 transition-colors">
+              Sign in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="text-[0.9375rem] font-semibold bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+            >
+              Get started free
+            </Link>
           </div>
 
           <label
@@ -54,23 +42,15 @@ export async function SiteNav() {
             <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-700 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px] flex items-center">
               Pricing
             </Link>
-            {isLoggedIn ? (
-              <Link href="/dashboard" className="text-[0.9375rem] font-semibold text-orange-600 px-3 py-2.5 rounded-lg hover:bg-orange-50 transition-colors min-h-[44px] flex items-center">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-700 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px] flex items-center">
-                  Sign in
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="mt-1 text-[0.9375rem] font-semibold bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg text-center transition-colors min-h-[44px] flex items-center justify-center"
-                >
-                  Get started free
-                </Link>
-              </>
-            )}
+            <Link href="/auth/login" className="text-[0.9375rem] font-medium text-gray-700 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px] flex items-center">
+              Sign in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="mt-1 text-[0.9375rem] font-semibold bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg text-center transition-colors min-h-[44px] flex items-center justify-center"
+            >
+              Get started free
+            </Link>
           </div>
         </div>
       </nav>
