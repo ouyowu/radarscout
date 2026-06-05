@@ -21,7 +21,7 @@ const routes = [
 ] as const
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
   const now = new Date()
 
   return routes.map(([path, changeFrequency, priority]) => ({

@@ -6,7 +6,7 @@ import { JsonLd } from '../_components/JsonLd'
 import { RelatedGuides } from '../_components/RelatedGuides'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
   return {
     title: 'Reddit Customer Discovery: Find Real Buyer Language | RadarScout',
     description:
@@ -52,7 +52,7 @@ const steps = [
 ]
 
 export default function RedditCustomerDiscoveryPage() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
   return (
     <div className="min-h-screen bg-white text-gray-900">

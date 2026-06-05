@@ -5,7 +5,7 @@ import { SiteFooter } from './_components/SiteFooter'
 import { JsonLd } from './_components/JsonLd'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
   return {
     title: 'RadarScout — Real-Time Reddit Monitoring for Leads and Mentions',
     description:
@@ -50,7 +50,7 @@ const faqs = [
 ]
 
 export default function LandingPage() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
   return (
     <div className="min-h-screen bg-white text-gray-900">

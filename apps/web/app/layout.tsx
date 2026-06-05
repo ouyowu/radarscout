@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import './globals.css'
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
+const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
   metadataBase: new URL(base),
