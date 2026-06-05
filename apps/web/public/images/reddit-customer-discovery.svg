@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="Reddit customer discovery workflow">
+  <rect width="1200" height="720" rx="36" fill="#f9fafb"/>
+  <circle cx="230" cy="360" r="150" fill="#ffedd5"/>
+  <circle cx="600" cy="360" r="150" fill="#fed7aa"/>
+  <circle cx="970" cy="360" r="150" fill="#fdba74"/>
+  <rect x="124" y="278" width="212" height="164" rx="28" fill="#ffffff" stroke="#fed7aa" stroke-width="2"/>
+  <rect x="494" y="278" width="212" height="164" rx="28" fill="#ffffff" stroke="#fb923c" stroke-width="2"/>
+  <rect x="864" y="278" width="212" height="164" rx="28" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+  <path d="M360 360h100" stroke="#f97316" stroke-width="10" stroke-linecap="round"/>
+  <path d="M730 360h100" stroke="#f97316" stroke-width="10" stroke-linecap="round"/>
+  <path d="M444 340l28 20-28 20" fill="none" stroke="#f97316" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M814 340l28 20-28 20" fill="none" stroke="#f97316" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="168" y="326" width="126" height="14" rx="7" fill="#ea580c"/>
+  <rect x="168" y="358" width="154" height="12" rx="6" fill="#fdba74"/>
+  <rect x="168" y="384" width="118" height="12" rx="6" fill="#fdba74"/>
+  <rect x="538" y="326" width="112" height="14" rx="7" fill="#ea580c"/>
+  <rect x="538" y="358" width="154" height="12" rx="6" fill="#fb923c"/>
+  <rect x="538" y="384" width="132" height="12" rx="6" fill="#fb923c"/>
+  <rect x="908" y="326" width="136" height="14" rx="7" fill="#ea580c"/>
+  <rect x="908" y="358" width="154" height="12" rx="6" fill="#fdba74"/>
+  <rect x="908" y="384" width="100" height="12" rx="6" fill="#fdba74"/>
+  <text x="156" y="520" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Keywords</text>
+  <text x="542" y="520" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Signals</text>
+  <text x="918" y="520" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Replies</text>
+</svg>

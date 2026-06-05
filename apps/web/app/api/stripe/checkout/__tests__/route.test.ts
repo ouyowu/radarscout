@@ -3,21 +3,23 @@ import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { auth } from '@/lib/auth'
 
-vi.mock('@/lib/auth', () => ({ auth: vi.fn() }))
-vi.mock('@/lib/stripe', () => ({
-  stripe: {
-    checkout: {
-      sessions: {
-        create: vi.fn(),
-      },
+const stripeMock = vi.hoisted(() => ({
+  checkout: {
+    sessions: {
+      create: vi.fn(),
     },
   },
 }))
 
-import { stripe } from '@/lib/stripe'
+vi.mock('@/lib/auth', () => ({ auth: vi.fn() }))
+vi.mock('@/lib/stripe', () => ({
+  getStripe: () => stripeMock,
+}))
+
+import { getStripe } from '@/lib/stripe'
 
 const mockAuth = auth as unknown as ReturnType<typeof vi.fn>
-const mockCreate = stripe.checkout.sessions.create as unknown as ReturnType<typeof vi.fn>
+const mockCreate = getStripe().checkout.sessions.create as unknown as ReturnType<typeof vi.fn>
 
 const session = { user: { id: 'user-1', email: 'test@example.com', plan: 'FREE' } }
 

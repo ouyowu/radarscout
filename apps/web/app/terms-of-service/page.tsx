@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
           <h2 className="mb-4 text-2xl font-bold">Governing Law</h2>
           <p className="text-black/70 leading-relaxed">
             These Terms of Service shall be governed by and construed in accordance
-            with the laws of Thailand, without regard to its conflict of law
+            with the laws applicable to RadarScout, without regard to conflict of law
             provisions.
           </p>
         </section>

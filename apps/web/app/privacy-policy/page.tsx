@@ -24,17 +24,17 @@ export default function PrivacyPolicyPage() {
         <section className="mb-8">
           <h2 className="mb-4 text-2xl font-bold">Information We Collect</h2>
           <p className="text-black/70 leading-relaxed">
-            We collect publicly available information from travel communities, forums, 
-            and social media platforms. We do not collect personal data unless 
-            voluntarily provided through our contact forms.
+            We process public Reddit content that matches customer-configured keywords. We also collect
+            account information you provide directly, such as your email address, billing status, and
+            saved monitoring settings.
           </p>
         </section>
         <section className="mb-8">
           <h2 className="mb-4 text-2xl font-bold">How We Use Your Information</h2>
           <p className="text-black/70 leading-relaxed">
             We use the information we collect to provide, maintain, and improve our
-            intelligence services, generate insights for ThaiNight, and communicate 
-            about service updates.
+            Reddit monitoring service, send alerts, manage billing, improve keyword matching, and
+            communicate about service updates.
           </p>
         </section>
         <section className="mb-8">

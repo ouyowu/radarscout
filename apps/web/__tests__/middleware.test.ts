@@ -12,8 +12,10 @@ import _middleware from '../middleware'
 const middleware = _middleware as unknown as (req: NextRequest) => Response | undefined
 
 function makeReq(pathname: string, authValue: unknown = null) {
-  const req = new NextRequest(`https://radarscout.io${pathname}`) as NextRequest & { auth: unknown }
-  req.auth = authValue
+  const req = new NextRequest(`https://radarscout.io${pathname}`)
+  if ((authValue as { user?: unknown } | null)?.user) {
+    req.cookies.set('authjs.session-token', 'test-session')
+  }
   return req
 }
 

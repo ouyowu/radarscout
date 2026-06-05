@@ -1,285 +1,248 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
-
-const heroImage =
-  'https://images.unsplash.com/photo-1681129813299-0dce89ccc6cf?auto=format&fit=crop&fm=jpg&q=80&w=2400'
+import { SiteNav } from './_components/SiteNav'
+import { SiteFooter } from './_components/SiteFooter'
+import { JsonLd } from './_components/JsonLd'
 
 export async function generateMetadata(): Promise<Metadata> {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
   return {
-    title: 'RadarScout - Thailand Nightlife Intelligence [Updated May 31, 2026]',
+    title: 'RadarScout — Real-Time Reddit Monitoring for Leads and Mentions',
     description:
-      'Fresh Thailand nightlife questions, warnings, price checks, event chatter, and traveler signals from public communities.',
+      'Get alerted when Reddit mentions your brand, competitors, or product category. RadarScout monitors Reddit, filters noisy matches, and helps teams reply faster.',
     alternates: { canonical: base },
     openGraph: {
-      title: 'Thailand nightlife intelligence for travelers',
+      title: 'RadarScout — Real-Time Reddit Monitoring',
       description:
-        'RadarScout watches public travel communities and turns noisy nightlife chatter into useful Thailand travel intelligence.',
+        'Monitor Reddit for brand mentions, competitor complaints, and high-intent buyer conversations.',
       type: 'website',
       url: base,
-      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Thailand nightlife intelligence' }],
+      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Reddit monitoring' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'RadarScout — Real-Time Reddit Monitoring',
+      description: 'Find Reddit leads, mentions, and competitor conversations before they go cold.',
+      images: [`${base}/og-image.png`],
     },
   }
 }
 
-const cities = [
-  { name: 'Bangkok', focus: 'Rooftops, clubs, tourist zones, late-entry fees', score: '92' },
-  { name: 'Pattaya', focus: 'Walking Street, price checks, solo traveler warnings', score: '88' },
-  { name: 'Phuket', focus: 'Bangla Road, beach clubs, event timing', score: '81' },
-  { name: 'Chiang Mai', focus: 'Live music, hidden bars, digital nomad meetups', score: '74' },
+const comparison = [
+  ['Free plan', 'Free', 'Free plan'],
+  ['AI filtering', 'No', 'Yes'],
+  ['Alert speed', 'Slow digests', 'Fast alerts'],
+  ['Slack webhook', 'No', 'Available on paid plans'],
 ]
 
-const signals = [
-  {
-    label: 'Warning',
-    city: 'Bangkok',
-    title: 'Late-entry fee reports around a large electronic event',
-    note: 'Useful for a short traveler warning and ticket-check advice.',
-    score: 8,
-  },
-  {
-    label: 'Question',
-    city: 'Pattaya',
-    title: 'Solo visitor asking which area feels safest after midnight',
-    note: 'Good reply opportunity and future safety FAQ material.',
-    score: 9,
-  },
-  {
-    label: 'Price check',
-    city: 'Phuket',
-    title: 'Travelers comparing current bar prices near Bangla Road',
-    note: 'Useful for ThaiNight price transparency content.',
-    score: 7,
-  },
+const steps = [
+  ['Add keywords', 'Track your brand, competitors, product category, and buyer pain points.'],
+  ['We monitor Reddit', 'RadarScout watches public Reddit conversations and filters noisy matches.'],
+  ['Get notified', 'Open the match, understand the context, and reply while the thread is still active.'],
 ]
 
-const standards = [
-  'Freshness',
-  'Traveler intent',
-  'Location clarity',
-  'Credibility',
-  'Safety value',
-  'Commercial potential',
+const faqs = [
+  ['Is RadarScout free?', 'Yes. The free plan includes 3 monitored keywords, so you can test real Reddit alerts before upgrading.'],
+  ['How fast are alerts?', 'RadarScout is built for fast monitoring. Most relevant matches appear quickly enough to reply before the thread goes stale.'],
+  ['Is it Reddit only?', 'The core product focuses on Reddit because it is where product comparisons, complaints, and buying questions happen publicly.'],
+  ['How is this different from F5Bot?', 'F5Bot is useful for basic free alerts. RadarScout adds product workflows around filtering, lead discovery, competitor monitoring, and reply speed.'],
+  ['Can I cancel anytime?', 'Yes. Paid plans are subscription-based and can be cancelled from billing when you no longer need monitoring.'],
 ]
 
-export default async function LandingPage() {
-  const session = await auth()
-  const isLoggedIn = !!session?.user?.id
+export default function LandingPage() {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://radarscout.io'
 
   return (
-    <main className="min-h-screen bg-[#0b0908] text-[#f7f1e8]">
-            <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10 bg-black/30 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-sm">🌙</div>
-            <span className="font-black text-sm">THAI<span className="text-amber-400">NIGHT</span></span>
-          </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className="hover:text-zinc-400 transition-colors">
-              Home
-            </Link>
-            <Link href="/about-us" className="hover:text-zinc-400 transition-colors">
-              About Us
-            </Link>
-            <Link href="/contact" className="hover:text-zinc-400 transition-colors">
-              Contact
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-zinc-400 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms-of-service" className="hover:text-zinc-400 transition-colors">
-              Terms of Service
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Search placeholder - we'll rely on the layout one now */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search Bangkok nightlife, rooftop bars, nightclubs, happy hour..."
-                className="w-64 rounded-md bg-zinc-800/60 border border-zinc-700/40 px-3 py-1.5 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <section className="relative min-h-[84dvh] overflow-hidden">
-        <img
-          src={heroImage}
-          alt="Bangkok neon street at night"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,7,6,0.96),rgba(8,7,6,0.72)_44%,rgba(8,7,6,0.18))]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b0908] to-transparent" />
-
-        <div className="relative z-10 mx-auto flex min-h-[84dvh] max-w-7xl items-end px-4 pb-12 pt-28 sm:px-6 lg:pb-16">
-          <div className="max-w-3xl">
-            <p className="mb-4 text-sm font-bold uppercase text-[#d6b35a]">
-              Public signals. Editor-grade nightlife intelligence.
+    <div className="min-h-screen bg-white text-gray-900">
+      <SiteNav />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'RadarScout',
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          url: base,
+          description:
+            'Real-time Reddit monitoring for brand mentions, competitor complaints, product alternatives, and high-intent buyer conversations.',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+            description: 'Free plan with 3 monitored keywords.',
+          },
+        }}
+      />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(([question, answer]) => ({
+            '@type': 'Question',
+            name: question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: answer,
+            },
+          })),
+        }}
+      />
+      <main>
+        <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1fr_0.92fr] lg:items-center">
+          <div>
+            <p className="mb-4 inline-flex rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-orange-600">
+              Reddit monitoring for teams
             </p>
-            <h1 className="text-5xl font-black leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-              Thailand Nightlife Intelligence
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+              Get notified when Reddit mentions you
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#f7f1e8]/78">
-              RadarScout reads public travel communities and separates useful nightlife signals from noise:
-              warnings, price checks, event questions, hidden gems, and solo-traveler concerns.
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600">
+              RadarScout monitors Reddit for brand mentions, competitor complaints, product
+              alternatives, and high-intent buying questions, then helps you respond before the
+              conversation goes cold.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="https://thainight.co"
-                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#d6b35a] px-5 py-3 text-sm font-black text-[#17110c] hover:bg-[#e8c970]"
-              >
-                Explore ThaiNight
-              </a>
-              <Link
-                href={isLoggedIn ? '/dashboard/matches' : '/auth/register'}
-                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/25 bg-white/8 px-5 py-3 text-sm font-bold text-white hover:bg-white/14"
-              >
-                {isLoggedIn ? 'Open intelligence desk' : 'Start a monitor'}
+              <Link href="/auth/register" className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600">
+                Start for free
+              </Link>
+              <Link href="/pricing" className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50">
+                See pricing
+              </Link>
+            </div>
+            <p className="mt-4 text-sm text-gray-400">3 keywords free forever. No credit card required.</p>
+          </div>
+
+          <div className="rounded-3xl border border-orange-100 bg-orange-50 p-4 shadow-sm">
+            <div className="rounded-2xl bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-orange-600">Live match</p>
+                  <p className="mt-1 text-sm text-gray-500">r/SaaS • just now</p>
+                </div>
+                <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
+                  9/10 intent
+                </span>
+              </div>
+              <div className="space-y-4 py-5">
+                <div>
+                  <p className="text-sm font-semibold text-gray-950">
+                    Looking for an F5Bot alternative with better filtering
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                    We get too many noisy alerts and miss the threads where people are actually
+                    comparing tools...
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Suggested action</p>
+                  <p className="mt-2 text-sm leading-6 text-gray-700">
+                    Reply with a short comparison, mention filtering only after answering their
+                    current workflow problem.
+                  </p>
+                </div>
+              </div>
+              <Link href="/demo" className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800">
+                View demo
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="border-y border-[#2a2119] bg-[#100c0a]">
-        <div className="mx-auto grid max-w-7xl gap-0 px-4 sm:px-6 md:grid-cols-4">
-          {[
-            ['Sources watched', 'Reddit, RSS, travel forums'],
-            ['Core cities', 'Bangkok, Pattaya, Phuket, Chiang Mai'],
-            ['Signal types', 'Warnings, prices, events, questions'],
-            ['Output layer', 'ThaiNight guides, maps, alerts'],
-          ].map(([label, value]) => (
-            <div key={label} className="border-[#2a2119] py-6 md:border-r md:last:border-r-0">
-              <p className="text-xs font-bold uppercase text-[#8d8173]">{label}</p>
-              <p className="mt-2 text-lg font-black text-[#f7f1e8]">{value}</p>
+        <section className="bg-gray-50 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="mb-8 text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-gray-950">Better than F5Bot for teams</h2>
+              <p className="mt-3 text-gray-600">F5Bot is a good free alert tool. RadarScout is built for business workflows.</p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-sm font-bold uppercase text-[#d6b35a]">Selected cities</p>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
-              A nightlife guide needs live local signals, not static blog posts.
-            </h2>
-            <p className="mt-5 text-base leading-8 text-[#b8ad9d]">
-              RadarScout is the listening layer behind ThaiNight. It finds what travelers are asking
-              today, then ThaiNight turns the best findings into guides, venue cards, maps, warnings,
-              offers, and newsletters.
-            </p>
+            <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white">
+              <table className="min-w-[640px] w-full text-left text-sm">
+                <thead className="bg-white text-gray-500">
+                  <tr>
+                    <th className="px-5 py-4 font-semibold">Feature</th>
+                    <th className="px-5 py-4 font-semibold">F5Bot</th>
+                    <th className="px-5 py-4 font-semibold text-orange-600">RadarScout</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {comparison.map(([feature, f5bot, us]) => (
+                    <tr key={feature}>
+                      <td className="px-5 py-4 font-medium text-gray-950">{feature}</td>
+                      <td className="px-5 py-4 text-gray-600">{f5bot}</td>
+                      <td className="px-5 py-4 font-medium text-gray-900">{us}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+        </section>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            {cities.map(city => (
-              <article key={city.name} className="rounded-lg border border-[#2a2119] bg-[#15100d] p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-black text-white">{city.name}</h3>
-                    <p className="mt-2 text-sm leading-6 text-[#a99b89]">{city.focus}</p>
-                  </div>
-                  <span className="rounded-lg border border-[#d6b35a]/35 bg-[#21180f] px-2.5 py-1 text-sm font-black text-[#d6b35a]">
-                    {city.score}
-                  </span>
-                </div>
+        <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-gray-950">How it works</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {steps.map(([title, body], index) => (
+              <article key={title} className="rounded-2xl border border-gray-200 p-5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-sm font-bold text-white">
+                  {index + 1}
+                </span>
+                <h3 className="mt-5 text-lg font-semibold text-gray-950">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600">{body}</p>
               </article>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-[#f5efe4] py-16 text-[#17110c] lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-            <div>
-              <p className="text-sm font-black uppercase text-[#9b1c1f]">Inspection standard</p>
-              <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-                Every signal is treated like a field note.
-              </h2>
-              <p className="mt-5 text-base leading-8 text-[#5d5144]">
-                The goal is not to publish everything. The goal is to identify which public posts are
-                worth replying to, turning into a guide, or saving as a warning for travelers.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {standards.map(standard => (
-                  <span key={standard} className="rounded-lg border border-[#ded3c3] bg-white px-3 py-1.5 text-sm font-bold text-[#4a4035]">
-                    {standard}
-                  </span>
-                ))}
+        <section className="bg-gray-50 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight text-gray-950">Latest guides</h2>
+                <p className="mt-3 text-gray-600">Practical articles for turning Reddit conversations into customers.</p>
               </div>
+              <Link href="/pricing" className="inline-flex min-h-[44px] items-center text-sm font-semibold text-orange-600 hover:text-orange-700">
+                See pricing
+              </Link>
             </div>
-
-            <div className="grid gap-4">
-              {signals.map(signal => (
-                <article key={signal.title} className="rounded-lg border border-[#ded3c3] bg-white p-5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-lg bg-[#9b1c1f] px-2.5 py-1 text-xs font-black uppercase text-white">
-                      {signal.label}
-                    </span>
-                    <span className="rounded-lg bg-[#eee5d7] px-2.5 py-1 text-xs font-bold uppercase text-[#665949]">
-                      {signal.city}
-                    </span>
-                    <span className="ml-auto rounded-lg border border-[#d6b35a]/50 bg-[#fff7df] px-2.5 py-1 text-xs font-black text-[#7a5a05]">
-                      {signal.score}/10
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-xl font-black">{signal.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[#665949]">{signal.note}</p>
-                </article>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {[
+                ['Reddit competitor monitoring', '/reddit-competitor-monitoring'],
+                ['Reddit customer discovery', '/reddit-customer-discovery'],
+                ['Reddit monitoring tool comparison', '/reddit-monitoring-tool'],
+              ].map(([title, href]) => (
+                <Link key={href} href={href} className="rounded-2xl border border-gray-200 bg-white p-5 transition-colors hover:border-orange-200 hover:bg-orange-50">
+                  <h3 className="text-lg font-semibold text-gray-950">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-gray-600">Read the guide →</p>
+                </Link>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
-        <div className="grid gap-4 lg:grid-cols-3">
-          {[
-            {
-              title: 'For travelers',
-              body: 'See what other visitors are asking before you choose a district, event, or venue.',
-            },
-            {
-              title: 'For ThaiNight',
-              body: 'Turn live signals into city guides, warnings, venue pages, newsletters, and paid travel products.',
-            },
-            {
-              title: 'For venues and partners',
-              body: 'Understand what tourists worry about: pricing, safety, queues, entry rules, and location clarity.',
-            },
-          ].map(item => (
-            <article key={item.title} className="rounded-lg border border-[#2a2119] bg-[#15100d] p-6">
-              <h3 className="text-xl font-black text-white">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#a99b89]">{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-[#2a2119] bg-[#0f0b09] py-14">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-bold uppercase text-[#d6b35a]">The loop</p>
-            <h2 className="mt-2 text-3xl font-black text-white">
-              RadarScout discovers. ThaiNight publishes.
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#a99b89]">
-              Keep RadarScout as the intelligence engine and make ThaiNight the public-facing travel brand.
-              That gives you SEO pages, useful content, partner value, and repeat visitors.
-            </p>
+        <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-gray-950">FAQ</h2>
+          <div className="mt-8 space-y-3">
+            {faqs.map(([question, answer]) => (
+              <details key={question} className="rounded-2xl border border-gray-200 p-5">
+                <summary className="cursor-pointer text-base font-semibold text-gray-950">{question}</summary>
+                <p className="mt-3 leading-7 text-gray-600">{answer}</p>
+              </details>
+            ))}
           </div>
-          <a
-            href="https://thainight.co"
-            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#d6b35a] px-5 py-3 text-sm font-black text-[#17110c] hover:bg-[#e8c970]"
-          >
-            Go to ThaiNight
-          </a>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        <section className="bg-orange-500 py-12 text-white">
+          <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Start monitoring Reddit in minutes</h2>
+              <p className="mt-2 text-orange-50">Track 3 keywords free and upgrade only when you need more coverage.</p>
+            </div>
+            <Link href="/auth/register" className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-orange-600 transition-colors hover:bg-orange-50">
+              Create free account
+            </Link>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
   )
 }
