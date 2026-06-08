@@ -24,7 +24,8 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https:",
               "connect-src 'self' https://api.stripe.com https://api.resend.com",
               "frame-src https://js.stripe.com",
