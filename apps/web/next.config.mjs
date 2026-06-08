@@ -2,6 +2,14 @@
 const nextConfig = {
   compress: true,
   poweredByHeader: false,
+  experimental: {
+    outputFileTracingIncludes: {
+      '/*': [
+        '../../node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/**',
+        '../../node_modules/.pnpm/@prisma+engines@*/node_modules/@prisma/engines/**',
+      ],
+    },
+  },
 
   async redirects() {
     return []
