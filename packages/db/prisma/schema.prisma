@@ -112,3 +112,65 @@ model Notification {
   matchCount  Int
   user        User     @relation(fields: [userId], references: [id])
 }
+
+model BokunSupplier {
+  id             String         @id @default(uuid())
+  bokunVendorId  String         @unique
+  title          String
+  status         String?
+  rawJson        Json           @default("{}")
+  lastSyncedAt   DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  products       BokunProduct[]
+
+  @@index([title])
+}
+
+model BokunProduct {
+  id                 String         @id @default(uuid())
+  bokunActivityId    String         @unique
+  supplierId         String?
+  title              String
+  description        String?
+  excerpt            String?
+  city               String?
+  location           String?
+  retailPrice        Decimal?       @db.Decimal(10, 2)
+  netSettlementPrice Decimal?       @db.Decimal(10, 2)
+  currency           String?
+  commissionPercent  Decimal?       @db.Decimal(5, 2)
+  active             Boolean        @default(true)
+  rawJson            Json           @default("{}")
+  lastSyncedAt       DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  supplier           BokunSupplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  bookingInquiries   BookingInquiry[]
+
+  @@index([supplierId])
+  @@index([city])
+  @@index([active])
+  @@index([title])
+}
+
+model BookingInquiry {
+  id              String       @id @default(uuid())
+  bokunProductId  String
+  travelDate      DateTime
+  adults          Int
+  children        Int          @default(0)
+  pickupArea      String
+  customerName    String
+  customerEmail   String
+  whatsapp        String?
+  notes           String?
+  status          String       @default("new")
+  createdAt       DateTime     @default(now())
+  product         BokunProduct @relation(fields: [bokunProductId], references: [id], onDelete: Restrict)
+
+  @@index([bokunProductId])
+  @@index([customerEmail])
+  @@index([status])
+  @@index([createdAt])
+}

@@ -75,11 +75,32 @@ describe('protected routes — require auth', () => {
 })
 
 describe('public routes — no auth required', () => {
-  for (const path of ['/', '/pricing', '/demo', '/f5bot-alternative',
-    '/reddit-keyword-monitor', '/reddit-mention-alerts',
-    '/reddit-lead-finder', '/reddit-monitoring-tool', '/api/health']) {
+  for (const path of ['/', '/api/health']) {
     it(`allows unauthenticated user to access ${path}`, () => {
       expect(middleware(makeReq(path, null))).toBeUndefined()
+    })
+  }
+})
+
+describe('stale SaaS marketing routes — redirected to travel homepage', () => {
+  for (const path of [
+    '/pricing',
+    '/demo',
+    '/use-cases',
+    '/f5bot-alternative',
+    '/gummysearch-alternative',
+    '/reddit-keyword-monitor',
+    '/reddit-mention-alerts',
+    '/reddit-lead-finder',
+    '/reddit-monitoring-tool',
+    '/social-listening-reddit',
+    '/reddit-competitor-monitoring',
+    '/reddit-customer-discovery',
+  ]) {
+    it(`redirects ${path} to /`, () => {
+      const res = middleware(makeReq(path, null))
+      expect(res?.status).toBe(308)
+      expect(res?.headers.get('location')).toBe('https://radarscout.io/')
     })
   }
 })

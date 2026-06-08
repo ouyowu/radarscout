@@ -42,7 +42,7 @@ export default function ContactPage() {
             </label>
             <textarea
               id="message"
-              rows="5"
+              rows={5}
               required
               className="w-full rounded-md border border-black/20 px-3 py-1.5 text-black placeholder-black/40 focus:outline-none focus:ring-2 focus:ring-amber-500"
             ></textarea>

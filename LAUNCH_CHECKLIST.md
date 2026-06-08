@@ -18,100 +18,73 @@
 | `NEXT_PUBLIC_BASE_URL` | Yes | Public URL of the deployed web app, no trailing slash — used for Stripe success/cancel URLs and sitemap |
 | `INTERNAL_API_SECRET` | Yes | Shared secret between crawler and web API. Generate: `openssl rand -hex 32` |
 | `REDIS_URL` | Yes | Redis connection string — used by BullMQ for the crawler job queue |
-
-### Crawler (`apps/crawler`)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `REDDIT_CLIENT_ID` | Yes | Reddit OAuth app client ID — from reddit.com/prefs/apps |
-| `REDDIT_CLIENT_SECRET` | Yes | Reddit OAuth app client secret |
-| `REDDIT_USER_AGENT` | Yes | Reddit API user agent string. Reddit TOS requires format: `<appname>/<version> by u/<yourusername>` |
-| `REDDIT_USERNAME` | No | Reddit account username — enables password grant for higher rate limits |
-| `REDDIT_PASSWORD` | No | Reddit account password — required if `REDDIT_USERNAME` is set |
-| `INTERNAL_API_URL` | Yes | Base URL of the Next.js web app (same value as `NEXT_PUBLIC_BASE_URL`) |
-| `INTERNAL_API_SECRET` | Yes | Must match the value set in the web app |
-| `REDIS_URL` | Yes | Same Redis instance as the web app |
+| `BOKUN_ACCESS_KEY` | Yes | Bókun API access key. Server-side only; never expose with `NEXT_PUBLIC_`. |
+| `BOKUN_SECRET_KEY` | Yes | Bókun API secret key used to sign requests. Server-side only; never commit it. |
+| `BOKUN_API_BASE_URL` | Yes | Bókun API base URL. Production: `https://api.bokun.io`; sandbox: `https://api.bokuntest.com`. |
+| `BOKUN_DEFAULT_CURRENCY` | Yes | Default display currency for Bókun searches, e.g. `USD`, `EUR`, or `THB`. |
 
 ---
 
 ## Manual Steps Before Going Live
 
-### 1. Reddit App Setup
-- Go to https://www.reddit.com/prefs/apps
-- Click **Create app** → choose type **script**
-- Set redirect URI to `http://localhost:8080` (unused but required)
-- Copy the **client ID** (under the app name) and **client secret**
-- Set `REDDIT_USER_AGENT` — Reddit bans clients with generic user agents
+### 1. Vercel Project Setup
+- Link the monorepo to a Vercel project.
+- Use the root `vercel.json`:
+  - Install command: `pnpm install`
+  - Build command: `pnpm --filter @reddit-monitor/web build`
+  - Output directory: `apps/web/.next`
+- Add `radarscout.io` and `www.radarscout.io` in Vercel Domains.
+- Point DNS to Vercel and wait for SSL to become valid.
 
 ### 2. Database — Production Migration
 ```bash
 # Run against your production DATABASE_URL
 pnpm --filter @reddit-monitor/db exec prisma migrate deploy
 ```
-- Verify tables: `User`, `Keyword`, `Match`, `Notification`
+- Verify tables for the travel MVP: `BokunSupplier`, `BokunProduct`, `BookingInquiry`
 - **Never** run `prisma migrate dev` in production
 
-### 3. Stripe Setup
-1. In the Stripe Dashboard, create two Products:
-   - **Pro** → add a recurring price of $19/month → copy the `price_...` ID → `STRIPE_PRO_PRICE_ID`
-   - **Team** → add a recurring price of $49/month → copy the `price_...` ID → `STRIPE_TEAM_PRICE_ID`
-2. Create a Webhook endpoint:
-   - Endpoint URL: `https://yourdomain.com/api/stripe/webhook`
-   - Events to listen for:
-     - `checkout.session.completed`
-     - `customer.subscription.deleted`
-     - `invoice.payment_failed`
-   - Copy the signing secret (`whsec_...`) → `STRIPE_WEBHOOK_SECRET`
-3. Test locally before going live:
-   ```bash
-   stripe listen --forward-to localhost:3000/api/stripe/webhook
-   stripe trigger checkout.session.completed
-   ```
-
-### 4. Resend Email Setup
+### 3. Resend Email Setup
 - Add and verify your sending domain in the Resend dashboard (DNS TXT/CNAME records)
 - Create an API key with **Sending access** permission
-- Set `RESEND_FROM_EMAIL` to an address on the verified domain (e.g. `alerts@yourdomain.com`)
-- Test by triggering a match and confirming the email arrives
+- Set `RESEND_FROM_EMAIL` to an address on the verified domain (e.g. `hello@radarscout.io`)
+- Test by submitting a booking inquiry and confirming the notification path works
 
-### 5. Redis
-- Provision a Redis instance (Upstash, Redis Cloud, or self-hosted)
-- Both the web app and crawler must point to **the same Redis instance**
-- Verify connectivity: `redis-cli -u "$REDIS_URL" ping` → should return `PONG`
+### 4. Bókun Setup
+- In Bókun, create a booking channel for RadarScout.
+- Create an API key with the minimum permissions needed for product search, availability, and checkout.
+- Store `BOKUN_ACCESS_KEY` and `BOKUN_SECRET_KEY` in Vercel Environment Variables, not in frontend code.
+- Use sandbox first if available: `BOKUN_API_BASE_URL=https://api.bokuntest.com`.
+- Smoke test the server API:
+  ```bash
+  curl -X POST http://localhost:3000/api/bokun/search \
+    -H 'Content-Type: application/json' \
+    -d '{"query":"Chiang Mai ethical elephant","currency":"USD","commissionPercent":20}'
+  ```
 
-### 6. Crawler Deployment
-- The crawler is a **long-running Node.js process**, not a serverless function
-- Deploy separately from the web app (Railway, Fly.io, a VPS, etc.)
-- Start command: `pnpm --filter @reddit-monitor/crawler start`
-- Ensure it can reach both `INTERNAL_API_URL` and `REDIS_URL`
-- Monitor logs for `[engine]` and `[webhook]` prefixes
+### 5. Bókun Product Sync
+- Set `INTERNAL_API_SECRET` in Vercel.
+- Call the internal sync endpoint after deploy:
+  ```bash
+  curl -X POST https://www.radarscout.io/api/internal/bokun/sync \
+    -H "x-internal-secret: $INTERNAL_API_SECRET"
+  ```
+- Confirm active products appear from:
+  ```bash
+  curl https://www.radarscout.io/api/bokun/products?take=6
+  ```
 
-### 7. Pre-Launch Smoke Test
-- [ ] Register a new account at `/auth/register`
-- [ ] Add a keyword at `/dashboard`
-- [ ] Manually trigger a test match via the crawler; verify email received within 60s
-- [ ] Test Stripe checkout with test card `4242 4242 4242 4242`
-- [ ] Verify webhook updates user plan (check DB: `SELECT plan FROM "User" WHERE email = '...'`)
-- [ ] Test subscription cancellation in Stripe test mode; verify plan reverts to FREE
-- [ ] Check `/sitemap.xml` returns valid XML with 4 URLs
+### 6. Pre-Launch Smoke Test
+- [ ] Load `https://www.radarscout.io` and confirm 200
+- [ ] Submit a homepage travel prompt and confirm product cards render
+- [ ] Test mobile widths: 375px, 768px, 1280px — no horizontal scroll
+- [ ] Test `/api/bokun/search` with sandbox or production Bókun credentials
+- [ ] Test `/api/bokun/products?take=6`
+- [ ] Submit a booking inquiry from a product card or form
+- [ ] Confirm the inquiry is stored in `BookingInquiry`
+- [ ] Check `/sitemap.xml` returns valid XML for the travel site
 - [ ] Check `/robots.txt` returns expected content
-- [ ] Load landing page at 375px, 768px, and 1280px — no horizontal scroll
 
-### 8. Fix `.env.example` Before Committing
-The current `.env.example` has **stale Supabase variables** (no longer used) and is missing two variables added in Sprints 4–5. Update manually:
-
-**Remove:**
-```
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-```
-
-**Add:**
-```
-# Stripe — Team plan price ID (added Sprint 5)
-STRIPE_TEAM_PRICE_ID=price_...
-
-# Public base URL — used for Stripe success/cancel URLs and sitemap (added Sprint 5)
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-```
+### 7. Optional Later Integrations
+- Stripe checkout is still in the codebase from the previous SaaS version. Do not enable paid subscription checkout until the travel offer and checkout flow are finalized.
+- The Reddit crawler is still in the monorepo from the previous product. It is not required for the Thailand travel MVP launch.

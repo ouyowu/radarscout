@@ -37,6 +37,16 @@ vi.mock('@reddit-monitor/db', async (importOriginal) => {
         create: vi.fn(),
         deleteMany: vi.fn(),
       },
+      bokunSupplier: {
+        upsert: vi.fn(),
+      },
+      bokunProduct: {
+        findUnique: vi.fn(),
+        upsert: vi.fn(),
+      },
+      bookingInquiry: {
+        create: vi.fn(),
+      },
     },
   }
 })

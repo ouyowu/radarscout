@@ -33,3 +33,4 @@ packages/db/node_modules/.prisma/
 
 # pnpm
 .pnpm-debug.log
+.vercel
