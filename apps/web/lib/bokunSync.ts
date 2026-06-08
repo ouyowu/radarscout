@@ -7,6 +7,7 @@ type SyncBokunCatalogParams = {
   lang?: string
   commissionPercent?: number
   pageSize?: number
+  maxPages?: number
 }
 
 type SupplierSnapshot = {
@@ -137,9 +138,10 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
   const failures: Array<{ query: string; status: number }> = []
   const queries = normalizeQueries(params.queries)
   const pageSize = params.pageSize ?? 100
+  const maxPages = params.maxPages ?? 1
 
   for (const query of queries) {
-    for (let page = 1; page <= 100; page += 1) {
+    for (let page = 1; page <= maxPages; page += 1) {
       const result = await fetchActiveBokunActivities({
         query,
         currency: params.currency,
@@ -233,6 +235,7 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
 
   return {
     queries,
+    maxPages,
     fetchedUniqueProducts: seen.size,
     suppliersUpserted,
     productsUpserted,

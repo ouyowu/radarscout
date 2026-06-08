@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     ? payload.commissionPercent
     : undefined
   const pageSize = typeof payload.pageSize === 'number' ? payload.pageSize : undefined
+  const maxPages = typeof payload.maxPages === 'number' ? payload.maxPages : undefined
 
   if (commissionPercent !== undefined && (commissionPercent < 0 || commissionPercent > 80)) {
     return NextResponse.json({ error: 'commissionPercent must be between 0 and 80' }, { status: 400 })
@@ -40,6 +41,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'pageSize must be between 1 and 500' }, { status: 400 })
   }
 
+  if (maxPages !== undefined && (maxPages < 1 || maxPages > 20)) {
+    return NextResponse.json({ error: 'maxPages must be between 1 and 20' }, { status: 400 })
+  }
+
   try {
     const result = await syncBokunCatalog({
       queries,
@@ -47,6 +52,7 @@ export async function POST(request: NextRequest) {
       lang,
       commissionPercent,
       pageSize,
+      maxPages,
     })
 
     return NextResponse.json({ ok: true, ...result })
