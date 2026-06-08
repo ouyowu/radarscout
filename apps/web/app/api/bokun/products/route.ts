@@ -54,57 +54,65 @@ export async function GET(request: NextRequest) {
   const includeInactive = searchParams.get('includeInactive') === 'true'
   const take = parseTake(searchParams.get('take'))
 
-  const products = await db.bokunProduct.findMany({
-    where: {
-      ...(includeInactive ? {} : { active: true }),
-      ...(city ? { city: { equals: city, mode: 'insensitive' } } : {}),
-      ...(query
-        ? {
-            OR: [
-              { title: { contains: query, mode: 'insensitive' } },
-              { excerpt: { contains: query, mode: 'insensitive' } },
-              { description: { contains: query, mode: 'insensitive' } },
-              { location: { contains: query, mode: 'insensitive' } },
-            ],
-          }
-        : {}),
-    },
-    orderBy: [{ city: 'asc' }, { title: 'asc' }],
-    take,
-    select: {
-      id: true,
-      bokunActivityId: true,
-      title: true,
-      excerpt: true,
-      city: true,
-      location: true,
-      retailPrice: true,
-      netSettlementPrice: true,
-      currency: true,
-      commissionPercent: true,
-      active: true,
-      lastSyncedAt: true,
-      rawJson: true,
-      supplier: {
-        select: {
-          bokunVendorId: true,
-          title: true,
-          status: true,
+  try {
+    const products = await db.bokunProduct.findMany({
+      where: {
+        ...(includeInactive ? {} : { active: true }),
+        ...(city ? { city: { equals: city, mode: 'insensitive' } } : {}),
+        ...(query
+          ? {
+              OR: [
+                { title: { contains: query, mode: 'insensitive' } },
+                { excerpt: { contains: query, mode: 'insensitive' } },
+                { description: { contains: query, mode: 'insensitive' } },
+                { location: { contains: query, mode: 'insensitive' } },
+              ],
+            }
+          : {}),
+      },
+      orderBy: [{ city: 'asc' }, { title: 'asc' }],
+      take,
+      select: {
+        id: true,
+        bokunActivityId: true,
+        title: true,
+        excerpt: true,
+        city: true,
+        location: true,
+        retailPrice: true,
+        netSettlementPrice: true,
+        currency: true,
+        commissionPercent: true,
+        active: true,
+        lastSyncedAt: true,
+        rawJson: true,
+        supplier: {
+          select: {
+            bokunVendorId: true,
+            title: true,
+            status: true,
+          },
         },
       },
-    },
-  })
+    })
 
-  return NextResponse.json({
-    count: products.length,
-    products: products.map(product => ({
-      ...product,
-      retailPrice: product.retailPrice?.toString() ?? null,
-      netSettlementPrice: product.netSettlementPrice?.toString() ?? null,
-      commissionPercent: product.commissionPercent?.toString() ?? null,
-      imageUrl: findImageUrl(product.rawJson),
-      summary: stripHtml(readString(asRecord(product.rawJson).summary)) ?? product.excerpt,
-      rawJson: undefined,
-    })),
-  })
+    return NextResponse.json({
+      count: products.length,
+      products: products.map(product => ({
+        ...product,
+        retailPrice: product.retailPrice?.toString() ?? null,
+        netSettlementPrice: product.netSettlementPrice?.toString() ?? null,
+        commissionPercent: product.commissionPercent?.toString() ?? null,
+        imageUrl: findImageUrl(product.rawJson),
+        summary: stripHtml(readString(asRecord(product.rawJson).summary)) ?? product.excerpt,
+        rawJson: undefined,
+      })),
+    })
+  } catch {
+    return NextResponse.json({
+      count: 0,
+      products: [],
+      warning: 'Product catalog is not connected yet.',
+    })
+  }
 }
