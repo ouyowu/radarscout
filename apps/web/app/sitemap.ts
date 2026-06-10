@@ -4,6 +4,7 @@ import { worldCupHostCities, worldCupHostCountries } from '@/lib/world-cup-2026'
 
 const routes = [
   ['', 'weekly', 1.0],
+  ['/ai-trip-planner', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],
   ['/terms-of-service', 'yearly', 0.3],

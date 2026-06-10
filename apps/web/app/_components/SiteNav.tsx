@@ -12,6 +12,9 @@ export function SiteNav() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-6">
+            <Link href="/ai-trip-planner" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900 transition-colors">
+              AI Planner
+            </Link>
             <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-600 hover:text-gray-900 transition-colors">
               Pricing
             </Link>
@@ -39,6 +42,9 @@ export function SiteNav() {
 
         <div className="hidden peer-checked:block lg:hidden border-t border-gray-100 pb-4">
           <div className="flex flex-col pt-3 gap-1">
+            <Link href="/ai-trip-planner" className="text-[0.9375rem] font-medium text-gray-700 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px] flex items-center">
+              AI Planner
+            </Link>
             <Link href="/pricing" className="text-[0.9375rem] font-medium text-gray-700 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px] flex items-center">
               Pricing
             </Link>

@@ -59,18 +59,18 @@ export default function LandingPage() {
           </nav>
 
           <a
-            href="#planner"
+            href="/ai-trip-planner"
             className="hidden min-h-[44px] items-center bg-black px-5 text-xs font-black uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#ff9933] hover:text-black md:inline-flex"
           >
-            Start
+            AI Planner
           </a>
 
           <a
-            href="#planner"
+            href="/ai-trip-planner"
             className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-black text-lg font-black md:hidden"
-            aria-label="Open trip planner"
+            aria-label="Open AI trip planner"
           >
-            ≡
+            AI
           </a>
         </header>
 
