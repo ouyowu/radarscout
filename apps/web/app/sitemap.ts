@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { globalDestinations } from '@/lib/global-destinations'
+import { itineraries } from '@/lib/itineraries'
 import { worldCupHostCities, worldCupHostCountries } from '@/lib/world-cup-2026'
 
 const routes = [
@@ -61,5 +62,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ]
 
-  return [...staticRoutes, ...destinationRoutes, ...worldCupRoutes]
+  const itineraryRoutes: MetadataRoute.Sitemap = itineraries.map(itinerary => ({
+    url: `${base}/itineraries/${itinerary.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: itinerary.hasLiveInventory ? 0.75 : 0.5,
+  }))
+
+  return [...staticRoutes, ...destinationRoutes, ...worldCupRoutes, ...itineraryRoutes]
 }
