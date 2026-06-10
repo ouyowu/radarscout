@@ -31,6 +31,17 @@ export type BokunActiveActivitiesResult =
       status: number
       body: unknown
     }
+export type BokunActivityDetailResult =
+  | {
+      ok: true
+      status: number
+      body: unknown
+    }
+  | {
+      ok: false
+      status: number
+      body: unknown
+    }
 
 function getBokunConfig(): BokunConfig {
   const accessKey = process.env.BOKUN_ACCESS_KEY
@@ -262,4 +273,17 @@ export async function fetchActiveBokunActivities(params: {
     page: params.page,
     pageSize: params.pageSize,
   })
+}
+
+export async function fetchBokunActivityDetails(params: {
+  activityId: string
+  currency?: string
+  lang?: string
+}): Promise<BokunActivityDetailResult> {
+  const currency = params.currency ?? process.env.BOKUN_DEFAULT_CURRENCY ?? 'USD'
+  const lang = params.lang ?? 'EN'
+  const searchParams = new URLSearchParams({ lang, currency })
+  const pathWithQuery = `/activity.json/${encodeURIComponent(params.activityId)}?${searchParams.toString()}`
+
+  return bokunRequest(pathWithQuery)
 }
