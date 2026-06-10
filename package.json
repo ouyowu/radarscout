@@ -15,7 +15,8 @@
     "ai:checks": "bash scripts/run-checks.sh",
     "docker:down": "docker-compose down",
     "ai:phase-review": "pnpm ai:prepare-hermes-review && cat .ai/hermes-review-prompt.md",
-    "ai:prepare-hermes-review": "node scripts/prepare-hermes-review.js"
+    "ai:prepare-hermes-review": "node scripts/prepare-hermes-review.js",
+    "bokun:booking:payload": "node scripts/bokun-booking-payload-builder.js"
   },
   "engines": {
     "node": ">=20",
