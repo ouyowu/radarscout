@@ -1,186 +1,216 @@
 import type { Metadata } from 'next'
-import { ThailandTourChat } from './ThailandTourChat'
+import Link from 'next/link'
+import { AdventureHero } from './_components/AdventureHero'
+import { DestinationCapsuleCard } from './_components/DestinationCapsuleCard'
+import { DmcTrustBar } from './_components/DmcTrustBar'
+import { EditorialBanner } from './_components/EditorialBanner'
+import { ExperienceCategoryGrid } from './_components/ExperienceCategoryGrid'
+import { FAQAccordion } from './_components/FAQAccordion'
+import { PartnerInventoryNotice } from './_components/PartnerInventoryNotice'
+import { SupplierPartnerCTA } from './_components/SupplierPartnerCTA'
+import { WarmNewsletterFooter } from './_components/WarmNewsletterFooter'
+import { globalDestinations } from '@/lib/global-destinations'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'RadarScout.io — Thailand Day Tour AI Concierge',
+  title: 'RadarScout | AI-powered Destination DMC Portal',
   description:
-    'Tell RadarScout what kind of Thailand day tour or custom route you want, then get matched itineraries, direct-rate pricing, and simple booking guidance.',
+    'Plan smarter private trips and discover curated day tours, transfers, food tours, cultural experiences, and custom itineraries from signed Bókun supplier partners in selected top travel destinations.',
   alternates: { canonical: base },
   openGraph: {
-    title: 'RadarScout.io — Thailand Day Tour AI Concierge',
+    title: 'RadarScout | AI-powered Destination DMC Portal',
     description:
-      'A simple AI travel concierge for Thailand day tours, private routes, hotel-area advice, and direct-rate price comparison.',
+      'AI-powered destination planning for curated day tours, private trips, local experiences, transfers, and custom itineraries powered by signed supplier partners.',
     type: 'website',
     url: base,
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'RadarScout.io — Thailand Day Tour AI Concierge',
-    description: 'Ask for Thailand tours like a chat, then compare direct-rate prices.',
-  },
 }
 
-const cityLinks = ['Bangkok', 'Chiang Mai', 'Phuket', 'Krabi', 'Koh Samui', 'Pattaya']
+const featuredDestinations = [
+  globalDestinations.find(destination => destination.slug === 'thailand'),
+  globalDestinations.find(destination => destination.slug === 'japan'),
+  globalDestinations.find(destination => destination.slug === 'france'),
+  globalDestinations.find(destination => destination.slug === 'austria'),
+  globalDestinations.find(destination => destination.slug === 'united-states'),
+].filter((destination): destination is NonNullable<typeof destination> => Boolean(destination))
 
-const steps = [
-  ['01', 'Tell us your trip', 'City, dates, travelers, hotel style, budget, pace, and what you want to avoid.'],
-  ['02', 'We match real tours', 'The demo reads synced supplier products when available and compares them against public-market estimates.'],
-  ['03', 'Book in 2 minutes', 'Pick the tour, confirm date, travelers, pickup area, and let the concierge finish availability.'],
+const trustItems = [
+  { label: 'Live inventory', value: 'Thailand partner tours' },
+  { label: 'Supplier boundary', value: 'Signed Bókun partners only' },
+  { label: 'Planning engine', value: 'AI itinerary matching' },
+  { label: 'Expansion model', value: 'Selected destinations, city by city' },
+]
+
+const categories = [
+  {
+    title: 'Curated day tours',
+    description: 'Focused local experiences for travelers who want quality over endless low-value listings.',
+    label: 'Core product',
+  },
+  {
+    title: 'Private trips',
+    description: 'Flexible routes, private guides, and driver-led days for travelers who need timing control.',
+    label: 'Custom fit',
+  },
+  {
+    title: 'Transfers',
+    description: 'Airport, hotel, stadium, and city-to-city movement when timing matters as much as the tour.',
+    label: 'Logistics',
+  },
+  {
+    title: 'Food and culture',
+    description: 'Food walks, cultural workshops, heritage routes, and local activities matched to trip style.',
+    label: 'Local depth',
+  },
+]
+
+const howItWorks = [
+  {
+    title: 'Tell RadarScout your route',
+    body: 'Share destination, days, pace, travel style, group needs, and private customization preferences.',
+  },
+  {
+    title: 'Compare realistic experience fits',
+    body: 'The planning layer compares destination fit, time value, experience type, transfer needs, and itinerary flow.',
+  },
+  {
+    title: 'Book only trusted partner inventory',
+    body: 'Bookable products appear only when they are supplied by signed Bókun supplier partners who can operate the experience.',
+  },
+]
+
+const faqItems = [
+  {
+    question: 'Is RadarScout a marketplace with every country available now?',
+    answer:
+      'No. RadarScout focuses on selected high-demand travel destinations. Thailand is currently the first live inventory destination, and more destinations are added as supplier agreements and product connections are completed.',
+  },
+  {
+    question: 'Where do bookable products come from?',
+    answer:
+      'Bookable products come from signed Bókun supplier partners who can directly operate and fulfill the experience. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the bookable catalog.',
+  },
+  {
+    question: 'What does the AI planning engine compare?',
+    answer:
+      'It helps compare experiences by destination, travel style, time value, itinerary fit, private customization needs, and available partner inventory.',
+  },
+  {
+    question: 'Can I use RadarScout before a destination has live inventory?',
+    answer:
+      'Yes, planning pages can help structure routes and ideas. Destinations without signed supplier inventory are marked as planning-only or partner tours coming soon.',
+  },
 ]
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#fcfaee] text-black">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Mansalva&family=Montserrat:wght@400;600;700;800;900&family=Palanquin+Dark:wght@500;600;700&display=swap');
-        .adventure-font { font-family: 'Palanquin Dark', 'Montserrat', sans-serif; }
-        .travel-body { font-family: 'Montserrat', Arial, sans-serif; }
-        .script-font { font-family: 'Mansalva', cursive; }
-      `}</style>
+    <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+      <AdventureHero
+        title="AI-powered Destination DMC Portal for Curated Day Tours"
+        subtitle="Plan private trips, compare local experiences, and discover curated day tours, transfers, food tours, and custom itineraries from signed Bókun supplier partners in selected top travel destinations."
+        actions={[
+          { label: 'Start planning with AI', href: '/ai-trip-planner' },
+          { label: 'Explore live tours', href: '/tours', variant: 'secondary' },
+        ]}
+        trustNote="Thailand is currently RadarScout's first live inventory destination. Other destinations remain planning-only while trusted local Bókun supplier partners are onboarded."
+      />
 
-      <div className="travel-body">
-        <header className="mx-auto flex min-h-20 w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <a href="#top" className="min-h-[44px] content-center text-lg font-black uppercase tracking-[0.18em] text-black">
-            Radar<span className="text-[#ff7900]">Scout</span>
-          </a>
+      <DmcTrustBar items={trustItems} />
 
-          <nav aria-label="Primary navigation" className="hidden items-center gap-8 text-xs font-black uppercase tracking-[0.18em] md:flex">
-            <a href="#how" className="min-h-[44px] content-center hover:text-[#ff7900]">
-              How it works
-            </a>
-            <a href="#tours" className="min-h-[44px] content-center hover:text-[#ff7900]">
-              Day tours
-            </a>
-            <a href="mailto:hello@radarscout.io" className="min-h-[44px] content-center hover:text-[#ff7900]">
-              Contact
-            </a>
-          </nav>
-
-          <a
-            href="#planner"
-            className="hidden min-h-[44px] items-center bg-black px-5 text-xs font-black uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#ff9933] hover:text-black md:inline-flex"
-          >
-            Start
-          </a>
-
-          <a
-            href="#planner"
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center border border-black text-lg font-black md:hidden"
-            aria-label="Open trip planner"
-          >
-            ≡
-          </a>
-        </header>
-
-        <section id="top" className="relative border-y border-black bg-[#f1e3d5]">
-          <div className="absolute inset-x-0 top-0 h-4 bg-[repeating-linear-gradient(90deg,#000_0,#000_14px,#ff9933_14px,#ff9933_28px)]" />
-          <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-14 pt-16 sm:px-6 md:pb-20 md:pt-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-8">
-            <div>
-              <p className="script-font text-3xl text-[#007c8a] sm:text-4xl">Thailand, planned like a conversation</p>
-              <h1 className="adventure-font mt-4 max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.04em] text-black sm:text-6xl lg:text-7xl">
-                Get your Thailand day tour plan in one prompt.
-              </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-[#3f372f] sm:text-lg">
-                Ask like you would ask Gemini or Claude. Tell us the cities, days, hotel style, travel pace,
-                and budget. RadarScout turns that into matched tours, hotel-area advice, and price proof that
-                shows why booking direct can beat Viator-style marketplace prices.
+      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-3">
+          {howItWorks.map((item, index) => (
+            <article key={item.title} className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                Step {index + 1}
               </p>
-              <div className="mt-8 flex flex-wrap gap-2">
-                {cityLinks.map(city => (
-                  <a
-                    key={city}
-                    href="#planner"
-                    className="min-h-[44px] border border-black bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.12em] transition-colors hover:bg-[#ff9933]"
-                  >
-                    {city}
-                  </a>
-                ))}
-              </div>
+              <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+                {item.title}
+              </h2>
+              <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-[var(--color-bg-secondary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                Featured destinations
+              </p>
+              <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
+                Selected top travel destinations, not worldwide noise.
+              </h2>
             </div>
-
-            <div className="border-2 border-black bg-[#fcfaee] p-4 shadow-[14px_14px_0_#007c8a] sm:p-6">
-              <div className="aspect-[4/3] border border-black bg-[linear-gradient(135deg,#007c8a,#fcfaee_48%,#ff9933)] p-5">
-                <div className="flex h-full flex-col justify-between bg-white/80 p-5 backdrop-blur-sm">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007c8a]">AI price scout</p>
-                  <div>
-                    <p className="adventure-font text-4xl font-black leading-none text-black sm:text-5xl">Phuket 3 days</p>
-                    <p className="adventure-font text-4xl font-black leading-none text-black sm:text-5xl">Chiang Mai 4 days</p>
-                    <p className="mt-4 max-w-sm text-sm leading-7 text-[#3f372f]">
-                      Multi-city route matched. Day tours ranked. Pickup zones simplified. Direct prices surfaced.
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    {[
-                      ['295', 'products'],
-                      ['3', 'suppliers'],
-                      ['2 min', 'reserve'],
-                    ].map(([value, label]) => (
-                      <div key={label} className="border border-black bg-[#fcfaee] p-3">
-                        <p className="text-xl font-black">{value}</p>
-                        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#5f5549]">{label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="planner" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div className="mx-auto mb-8 max-w-3xl text-center">
-            <p className="script-font text-3xl text-[#ff7900]">Ask once. Compare clearly.</p>
-            <h2 className="adventure-font mt-2 text-4xl font-black leading-tight tracking-[-0.03em] sm:text-5xl">
-              One simple box for all Thailand day-tour needs.
-            </h2>
-          </div>
-          <ThailandTourChat />
-        </section>
-
-        <section id="how" className="border-y border-black bg-white">
-          <div className="mx-auto grid max-w-7xl gap-5 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
-            {steps.map(([number, title, body]) => (
-              <article key={title} className="border border-black bg-[#fcfaee] p-5">
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-[#ff7900]">{number}</p>
-                <h2 className="adventure-font mt-4 text-3xl font-black leading-tight">{title}</h2>
-                <p className="mt-4 text-sm leading-7 text-[#5f5549]">{body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="tours" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div className="max-w-3xl">
-            <p className="script-font text-3xl text-[#007c8a]">Start with these ideas</p>
-            <h2 className="adventure-font mt-2 text-4xl font-black leading-tight tracking-[-0.03em] sm:text-5xl">
-              Six boutique Thailand day tours appear above as live cards.
-            </h2>
-            <p className="mt-5 text-base leading-8 text-[#3f372f]">
-              The cards are deliberately simple: destination, supplier, short reason to book, public-market estimate,
-              and your offer. That keeps the customer path short enough to choose and reserve in about two minutes.
+            <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+              RadarScout does not try to list every destination. We focus on high-demand travel countries where trusted local supplier partners can directly operate and fulfill the experience.
             </p>
           </div>
-        </section>
 
-        <footer className="border-t border-black bg-black px-4 py-8 text-white sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-5 text-xs font-black uppercase tracking-[0.16em] md:flex-row md:items-center md:justify-between">
-            <p>RadarScout.io — Thailand day tour AI concierge</p>
-            <div className="flex flex-wrap gap-5">
-              <a href="#planner" className="min-h-[44px] content-center hover:text-[#ff9933]">
-                Plan trip
-              </a>
-              <a href="#tours" className="min-h-[44px] content-center hover:text-[#ff9933]">
-                Tours
-              </a>
-              <a href="mailto:hello@radarscout.io" className="min-h-[44px] content-center hover:text-[#ff9933]">
-                Contact
-              </a>
-            </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {featuredDestinations.map(destination => (
+              <DestinationCapsuleCard
+                key={destination.slug}
+                name={destination.name}
+                href={`/destinations/${destination.slug}`}
+                status={destination.hasLiveInventory ? 'live' : 'coming-soon'}
+                region={destination.region}
+                summary={destination.shortDescription}
+                highlights={destination.popularTourTypes.slice(0, 4)}
+              />
+            ))}
           </div>
-        </footer>
-      </div>
+
+          <div className="mt-8">
+            <Link
+              href="/destinations"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-bg-dark)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
+            >
+              View destination portal
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <ExperienceCategoryGrid
+        title="Day tours, private trips, transfers, food, culture, and tailor-made itineraries."
+        categories={categories}
+      />
+
+      <EditorialBanner
+        label="Thailand live inventory"
+        title="Thailand is RadarScout's first live partner-tour destination."
+        body="Explore current Bókun partner inventory for Thailand while RadarScout expands signed supplier coverage into more selected high-demand destinations."
+        href="/tours"
+        ctaLabel="Explore Thailand tours"
+      />
+
+      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <PartnerInventoryNotice status="planning-only" currentDestination="non-Thailand destinations" />
+          <div className="rounded-[2rem] bg-white p-6 shadow-lg">
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-ai-feature)]">AI planning use cases</p>
+            <ul className="mt-5 grid gap-3 text-sm font-bold leading-7 text-[var(--color-text-secondary)] sm:grid-cols-2">
+              <li>Plan 7 days in Thailand</li>
+              <li>Compare private day tours</li>
+              <li>Build an Austria + Germany + France route</li>
+              <li>Prepare a World Cup 2026 travel plan</li>
+              <li>Find food, culture, transfers, and local activities</li>
+              <li>Match routes to realistic daily timing</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <SupplierPartnerCTA />
+      <FAQAccordion items={faqItems} title="RadarScout travel planning FAQ" />
+      <WarmNewsletterFooter
+        title="Follow RadarScout's destination rollout."
+        body="For now, email us for supplier partnerships, destination planning requests, and private tour questions. No automated newsletter backend is connected here."
+      />
     </main>
   )
 }
