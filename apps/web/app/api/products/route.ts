@@ -23,17 +23,31 @@ type ProductMeta = {
   count: number
   destination: string
   tagSupported: false
+  filters: {
+    destination: string
+    city: string | null
+    hasPrice: boolean | null
+    hasImage: boolean | null
+  }
 }
 
-function meta(count: number, destination: string): ProductMeta {
+type ProductFilters = {
+  destination: string
+  city: string | null
+  hasPrice: boolean | null
+  hasImage: boolean | null
+}
+
+function meta(count: number, filters: ProductFilters): ProductMeta {
   return {
     source: PRODUCT_SOURCE,
     inventoryScope: INVENTORY_SCOPE,
     bookingEnabled: false,
     availabilityEnabled: false,
     count,
-    destination,
+    destination: filters.destination,
     tagSupported: false,
+    filters,
   }
 }
 
@@ -50,6 +64,26 @@ function normalizeDestination(value: string | null): string {
   const destination = value?.trim().toLowerCase()
 
   return destination || 'thailand'
+}
+
+function normalizeCity(value: string | null): string | null {
+  const city = value
+    ?.trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, '-')
+
+  if (!city) return null
+
+  return THAILAND_CITIES.find(thailandCity =>
+    thailandCity.toLowerCase().replace(/\s+/g, '-') === city,
+  ) ?? null
+}
+
+function parseBooleanFilter(value: string | null): boolean | null {
+  if (value === 'true') return true
+  if (value === 'false') return false
+
+  return null
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -99,23 +133,37 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const take = parseTake(searchParams.get('take'))
   const destination = normalizeDestination(searchParams.get('destination'))
+  const city = normalizeCity(searchParams.get('city'))
+  const hasPrice = parseBooleanFilter(searchParams.get('hasPrice'))
+  const hasImage = parseBooleanFilter(searchParams.get('hasImage'))
+  const filters = { destination, city, hasPrice, hasImage }
 
   if (destination !== 'thailand') {
     return NextResponse.json({
       products: [],
-      meta: meta(0, destination),
+      meta: meta(0, filters),
+    })
+  }
+
+  if (searchParams.get('city') && !city) {
+    return NextResponse.json({
+      products: [],
+      meta: meta(0, filters),
     })
   }
 
   try {
+    const candidateTake = hasImage === null ? take : Math.min(take * 3, 100)
     const products = await db.bokunProduct.findMany({
       where: {
         active: true,
         supplierId: { not: null },
-        city: { in: THAILAND_CITIES },
+        city: city ?? { in: THAILAND_CITIES },
+        ...(hasPrice === true ? { retailPrice: { not: null } } : {}),
+        ...(hasPrice === false ? { retailPrice: null } : {}),
       },
       orderBy: [{ city: 'asc' }, { title: 'asc' }],
-      take,
+      take: candidateTake,
       select: {
         id: true,
         title: true,
@@ -128,25 +176,37 @@ export async function GET(request: NextRequest) {
         rawJson: true,
       },
     })
+    const filteredProducts = products
+      .map(product => ({
+        product,
+        imageUrl: findImageUrl(product.rawJson),
+      }))
+      .filter(({ imageUrl }) => {
+        if (hasImage === true) return Boolean(imageUrl)
+        if (hasImage === false) return !imageUrl
+
+        return true
+      })
+      .slice(0, take)
 
     return NextResponse.json({
-      products: products.map(product => ({
+      products: filteredProducts.map(({ product, imageUrl }) => ({
         id: product.id,
         title: product.title,
         destination: product.city ?? product.location ?? 'Thailand',
         summary: productSummary(product.rawJson, product.excerpt, product.description),
-        imageUrl: findImageUrl(product.rawJson),
+        imageUrl,
         retailPrice: product.retailPrice?.toString() ?? null,
         currency: product.currency,
         tags: [],
         detailHref: `/tours/${encodeURIComponent(product.id)}`,
       })),
-      meta: meta(products.length, destination),
+      meta: meta(filteredProducts.length, filters),
     })
   } catch {
     return NextResponse.json({
       products: [],
-      meta: meta(0, destination),
+      meta: meta(0, filters),
       error: 'PRODUCTS_UNAVAILABLE',
     })
   }
