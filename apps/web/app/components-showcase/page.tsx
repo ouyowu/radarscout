@@ -154,7 +154,12 @@ export default function ComponentsShowcasePage() {
 
       <SupplierPartnerCTA />
       <WarmNewsletterFooter />
-      <StickyMobileCTA label="Back home" href="/" secondaryLabel="Partners" secondaryHref="/partners" />
+      <StickyMobileCTA
+        label="Back home"
+        href="/"
+        secondaryLabel="Email supplier partnership"
+        secondaryHref="mailto:hello@radarscout.io?subject=B%C3%B3kun%20Supplier%20Partnership%20Inquiry"
+      />
     </main>
   )
 }
