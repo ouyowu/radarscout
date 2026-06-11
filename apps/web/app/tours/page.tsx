@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import { AdventureHero } from '../_components/AdventureHero'
 import { DmcTrustBar } from '../_components/DmcTrustBar'
@@ -9,6 +10,8 @@ import { PartnerInventoryNotice } from '../_components/PartnerInventoryNotice'
 import { SupplierPartnerCTA } from '../_components/SupplierPartnerCTA'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Thailand Tours Marketplace Preview | RadarScout',
@@ -57,23 +60,29 @@ const categories = [
   },
 ]
 
-const previewCollections = [
-  {
-    title: 'Thailand supplier inventory',
-    body:
-      'RadarScout is preparing live Thailand partner inventory for discovery and comparison. Product cards will use real Bókun supplier data only.',
-  },
-  {
-    title: 'Private trip matching',
-    body:
-      'Use the AI planner to compare trip pace, transfer needs, private customization, and experience fit before choosing tours.',
-  },
-  {
-    title: 'Partner tours coming soon',
-    body:
-      'Japan, France, and other selected destinations remain planning-only until signed supplier product connections are completed.',
-  },
-]
+type ProductDisplay = {
+  id: string | number
+  title: string
+  destination?: string | null
+  summary?: string | null
+  imageUrl?: string | null
+  retailPrice?: string | null
+  currency?: string | null
+  tags?: string[]
+  detailHref: string
+}
+
+type ProductsResponse = {
+  products: ProductDisplay[]
+  meta?: {
+    source: 'signed-bokun-supplier-products'
+    inventoryScope: 'thailand-first'
+    bookingEnabled: false
+    availabilityEnabled: false
+    count: number
+  }
+  error?: string
+}
 
 const faqItems = [
   {
@@ -98,7 +107,99 @@ const faqItems = [
   },
 ]
 
-export default function ToursMarketplacePreviewPage() {
+function requestOrigin() {
+  const headerStore = headers()
+  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
+  const protocol = headerStore.get('x-forwarded-proto') ?? (host?.includes('localhost') ? 'http' : 'https')
+
+  if (host) return `${protocol}://${host}`
+
+  return process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+}
+
+async function fetchThailandProducts(): Promise<ProductsResponse> {
+  try {
+    const response = await fetch(`${requestOrigin()}/api/products?destination=thailand&take=12`, {
+      cache: 'no-store',
+    })
+
+    if (!response.ok) {
+      return {
+        products: [],
+        error: 'PRODUCTS_UNAVAILABLE',
+      }
+    }
+
+    return await response.json() as ProductsResponse
+  } catch {
+    return {
+      products: [],
+      error: 'PRODUCTS_UNAVAILABLE',
+    }
+  }
+}
+
+function formatPrice(product: ProductDisplay) {
+  if (!product.retailPrice) return 'Contact for partner rate'
+  if (!product.currency) return product.retailPrice
+
+  return `${product.currency} ${product.retailPrice}`
+}
+
+function ProductCard({ product }: { product: ProductDisplay }) {
+  return (
+    <article className="overflow-hidden rounded-[2rem] border border-[var(--color-border-light)] bg-white shadow-lg">
+      <div className="flex h-56 items-center justify-center bg-[var(--color-accent-orange-pale)]">
+        {product.imageUrl ? (
+          <img src={product.imageUrl} alt={product.title} className="h-full w-full object-cover" />
+        ) : (
+          <div className="px-6 text-center">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+              Supplier image pending
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[var(--color-text-secondary)]">
+              Image will appear only when supplied by partner product data.
+            </p>
+          </div>
+        )}
+      </div>
+      <div className="p-6">
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-full bg-[var(--color-accent-orange-pale)] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-accent-orange-dark)]">
+            Thailand
+          </span>
+          {product.destination ? (
+            <span className="rounded-full bg-[var(--color-bg-muted)] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)]">
+              {product.destination}
+            </span>
+          ) : null}
+        </div>
+        <h3 className="mt-4 font-[var(--font-heading)] text-3xl font-black leading-tight tracking-[-0.035em]">
+          {product.title}
+        </h3>
+        <p className="mt-3 min-h-[4.5rem] text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+          {product.summary ?? 'Partner product details are being normalized from signed Bókun supplier data.'}
+        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm font-black uppercase tracking-[0.1em] text-[var(--color-live-inventory)]">
+            {formatPrice(product)}
+          </p>
+          <Link
+            href={product.detailHref}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-5 text-xs font-black uppercase tracking-[0.1em] text-white"
+          >
+            View preview details
+          </Link>
+        </div>
+      </div>
+    </article>
+  )
+}
+
+export default async function ToursMarketplacePreviewPage() {
+  const productResponse = await fetchThailandProducts()
+  const products = productResponse.products
+
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
@@ -142,30 +243,41 @@ export default function ToursMarketplacePreviewPage() {
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
-                Marketplace preview
+                Live Thailand products
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-                Collection previews without invented product listings.
+                Real partner product cards, no invented listings.
               </h2>
             </div>
             <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              Product-level cards will be shown only from real signed Bókun supplier partner inventory. This preview explains the marketplace structure without inventing tour names, prices, ratings, reviews, or supplier identities.
+              These cards are loaded from RadarScout&apos;s read-only product API and display only active Thailand products from signed Bókun supplier partner data. Booking and payment are not enabled on this preview page.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {previewCollections.map(collection => (
-              <article key={collection.title} className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                  Example collection
+          {products.length > 0 ? (
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {products.map(product => (
+                <ProductCard key={String(product.id)} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 shadow-lg">
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                Partner inventory coming online
+              </p>
+              <h3 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+                Thailand supplier products are being prepared for display.
+              </h3>
+              <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                The product API returned no display-ready rows right now. RadarScout will show real signed Bókun supplier products here when active partner inventory is available, without creating placeholder products, prices, ratings, reviews, or supplier names.
+              </p>
+              {productResponse.error ? (
+                <p className="mt-4 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-coming-soon)]">
+                  Safe fallback: product feed unavailable
                 </p>
-                <h3 className="mt-3 font-[var(--font-heading)] text-3xl font-black leading-tight tracking-[-0.035em]">
-                  {collection.title}
-                </h3>
-                <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">{collection.body}</p>
-              </article>
-            ))}
-          </div>
+              ) : null}
+            </div>
+          )}
         </div>
       </section>
 
