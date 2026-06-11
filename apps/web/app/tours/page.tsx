@@ -553,18 +553,21 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
           </Link>
 
           <a
-            href="mailto:hello@radarscout.io?subject=B%C3%B3kun%20Supplier%20Partnership%20Inquiry"
+            href="mailto:ouyowu@gmail.com?subject=RadarScout%20Supplier%20Partnership"
             className="rounded-[2rem] border border-[var(--color-border-light)] bg-[var(--color-bg-dark)] p-6 text-white shadow-lg transition hover:-translate-y-1"
           >
             <p className="text-sm font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
               Supplier CTA
             </p>
             <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-              Email RadarScout about supplier partnership
+              Supplier partners wanted
             </h2>
             <p className="mt-4 text-sm font-semibold leading-7 text-white/72">
-              We are onboarding trusted local Bókun supplier partners for selected high-demand destinations.
+              For Thailand tour, transfer, and activity operators using Bókun or able to connect via Bókun. Email RadarScout to discuss supplier rates, commission terms, and marketplace connection details.
             </p>
+            <span className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-xs font-black uppercase tracking-[0.1em] text-white">
+              Email RadarScout
+            </span>
           </a>
         </div>
       </section>
