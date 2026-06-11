@@ -173,6 +173,43 @@ function buildProductsQuery(filters: FilterState) {
   return params.toString()
 }
 
+function cityLabel(city: string | null) {
+  if (city === 'chiang-mai') return 'Chiang Mai'
+  if (city === 'bangkok') return 'Bangkok'
+  if (city === 'phuket') return 'Phuket'
+
+  return null
+}
+
+function priceLabel(hasPrice: FilterState['hasPrice']) {
+  if (hasPrice === 'true') return 'Has price'
+  if (hasPrice === 'false') return 'Partner rate'
+
+  return null
+}
+
+function imageLabel(hasImage: FilterState['hasImage']) {
+  if (hasImage === 'true') return 'Has image'
+  if (hasImage === 'false') return 'Needs image'
+
+  return null
+}
+
+function activeFilterLabels(filters: FilterState) {
+  return [
+    cityLabel(filters.city),
+    priceLabel(filters.hasPrice),
+    imageLabel(filters.hasImage),
+  ].filter((label): label is string => Boolean(label))
+}
+
+function resultCountLabel(count: number) {
+  if (count === 0) return 'No products shown'
+  if (count === 1) return '1 product shown'
+
+  return `${count} products shown`
+}
+
 async function fetchThailandProducts(filters: FilterState): Promise<ProductsResponse> {
   try {
     const response = await fetch(`${requestOrigin()}/api/products?${buildProductsQuery(filters)}`, {
@@ -298,6 +335,11 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
   const productResponse = await fetchThailandProducts(filters)
   const products = productResponse.products
   const hasActiveFilters = Boolean(filters.city || filters.hasPrice || filters.hasImage)
+  const filterLabels = activeFilterLabels(filters)
+  const filterSummary = filterLabels.length > 0
+    ? `Showing Thailand supplier products filtered by ${filterLabels.join(' · ')}`
+    : 'Showing all Thailand supplier products'
+  const currentResultCount = resultCountLabel(products.length)
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
@@ -354,6 +396,24 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
           </div>
 
           <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-5 shadow-lg">
+            <div className="mb-6 grid gap-3 border-b border-[var(--color-border-light)] pb-5 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                  Browse filters
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                  Filter display-only supplier products. Booking and payment remain disabled.
+                </p>
+              </div>
+              <div className="rounded-2xl bg-[var(--color-bg-secondary)] px-4 py-3 text-left lg:text-right">
+                <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                  Current view
+                </p>
+                <p className="mt-1 text-sm font-black text-[var(--color-text-primary)]">
+                  {currentResultCount}
+                </p>
+              </div>
+            </div>
             <div className="grid gap-5 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
               <FilterGroup title="City">
                 <FilterChip
@@ -421,6 +481,11 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
                 Clear filters
               </Link>
             </div>
+            <div className="mt-5 rounded-[1.5rem] bg-[var(--color-accent-orange-pale)] px-5 py-4">
+              <p className="text-sm font-black text-[var(--color-accent-orange-dark)]">
+                {filterSummary}
+              </p>
+            </div>
           </div>
 
           {products.length > 0 ? (
@@ -436,12 +501,12 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
               </p>
               <h3 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
                 {hasActiveFilters
-                  ? 'Try clearing filters to see more active supplier products.'
+                  ? 'No active supplier products match these filters yet.'
                   : 'Thailand supplier products are being prepared for display.'}
               </h3>
               <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
                 {hasActiveFilters
-                  ? 'There are no active signed supplier products matching the current city, price, and image filters. RadarScout does not add placeholder products to fill filtered results.'
+                  ? 'Try clearing filters or choosing another Thailand city. RadarScout does not add placeholder products to fill filtered results.'
                   : 'The product API returned no display-ready rows right now. RadarScout will show real signed Bókun supplier products here when active partner inventory is available, without creating placeholder products, prices, ratings, reviews, or supplier names.'}
               </p>
               {hasActiveFilters ? (
