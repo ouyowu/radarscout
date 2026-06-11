@@ -1,105 +1,151 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { AdventureHero } from '../_components/AdventureHero'
+import { DestinationCapsuleCard } from '../_components/DestinationCapsuleCard'
+import { DmcTrustBar } from '../_components/DmcTrustBar'
+import { FAQAccordion } from '../_components/FAQAccordion'
+import { PartnerInventoryNotice } from '../_components/PartnerInventoryNotice'
+import { SupplierPartnerCTA } from '../_components/SupplierPartnerCTA'
 import { globalDestinations } from '@/lib/global-destinations'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'Global Travel Destinations | RadarScout AI Day Tour Planner',
+  title: 'Destination Portal | RadarScout AI DMC Planning',
   description:
-    'Explore RadarScout destination guides for global travel cities. Thailand has live Bókun partner tours; more countries are being onboarded city by city.',
+    'Explore selected top travel destinations for AI-powered private trip planning. Thailand has live signed Bókun supplier inventory; other destinations are partner tours coming soon.',
   alternates: { canonical: `${base}/destinations` },
 }
 
+const liveDestinations = globalDestinations.filter(destination => destination.hasLiveInventory)
+const comingSoonDestinations = globalDestinations.filter(destination => !destination.hasLiveInventory)
+
+const trustItems = [
+  { label: 'Live now', value: 'Thailand' },
+  { label: 'Planning pages', value: `${comingSoonDestinations.length} destinations` },
+  { label: 'Bookable products', value: 'Signed Bókun partners only' },
+  { label: 'Portal focus', value: 'Selected travel countries' },
+]
+
+const faqItems = [
+  {
+    question: 'Why do some destinations say partner tours coming soon?',
+    answer:
+      'Those destinations are planning pages while RadarScout onboards signed local Bókun supplier partners. They are not presented as live bookable product pages.',
+  },
+  {
+    question: 'Which destination has live inventory now?',
+    answer:
+      'Thailand is currently RadarScout’s first live inventory destination. Other destinations will show bookable tours only after supplier agreements and product connections are completed.',
+  },
+  {
+    question: 'Do destination pages include external affiliate products?',
+    answer:
+      'No. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the bookable catalog.',
+  },
+  {
+    question: 'Can suppliers apply for a destination that is coming soon?',
+    answer:
+      'Yes. Local tour operators and Bókun supplier partners can contact RadarScout to discuss onboarding for day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
+  },
+]
+
 export default function DestinationsPage() {
-  const liveCount = globalDestinations.filter(destination => destination.hasLiveInventory).length
-  const worldCupCount = globalDestinations.filter(destination => destination.worldCup2026Relevant).length
-
   return (
-    <main className="min-h-screen bg-[#f7f5ef] text-[#101820]">
-      <header className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-lg font-black tracking-[-0.03em]">
-          Radar<span className="text-[#0f766e]">Scout</span>
-        </Link>
-        <Link href="/tours" className="min-h-[44px] bg-[#101820] px-5 py-3 text-sm font-black uppercase tracking-[0.1em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]">
-          Live tours
-        </Link>
-      </header>
+    <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+      <AdventureHero
+        eyebrow="Destination DMC portal"
+        title="Selected travel destinations, planned city by city."
+        subtitle="Explore RadarScout destination pages for AI itinerary planning, private trip design, and curated partner-tour readiness across high-demand travel countries."
+        actions={[
+          { label: 'View Thailand tours', href: '/tours' },
+          { label: 'Start AI planner', href: '/ai-trip-planner', variant: 'secondary' },
+        ]}
+        trustNote="Thailand is live now. Other destinations are planning-only while signed local Bókun supplier partners are onboarded."
+      />
 
-      <section className="relative overflow-hidden bg-[#f1eadc] px-4 py-16 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,rgba(16,24,32,0.08)_1px,transparent_0)] [background-size:24px_24px]" />
-        <div className="relative mx-auto max-w-7xl">
-          <p className="text-3xl font-black text-[#101820] [font-family:cursive]">Global destination desk</p>
-          <h1 className="mt-4 max-w-5xl text-5xl font-black leading-[0.95] tracking-[-0.045em] sm:text-7xl">
-            Popular travel countries, planned city by city.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg font-semibold leading-8 text-[#5a5147]">
-            RadarScout is expanding from Thailand into global travel destinations. Bookable tours only appear when they come from signed Bókun supplier partners.
-          </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <div className="bg-white p-5 shadow-[0_10px_0_rgba(16,24,32,0.06)]">
-              <p className="text-4xl font-black">{globalDestinations.length}</p>
-              <p className="mt-2 text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">Countries planned</p>
+      <DmcTrustBar items={trustItems} />
+
+      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+              Live vs coming soon
+            </p>
+            <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
+              Clear inventory status before travelers click.
+            </h2>
+            <p className="mt-4 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+              Bookable products appear only when RadarScout has signed supplier partner inventory. Planning-only destinations are useful for route ideas, but they do not pretend to have available tours.
+            </p>
+          </div>
+          <PartnerInventoryNotice status="planning-only" currentDestination="destinations outside Thailand" />
+        </div>
+      </section>
+
+      <section className="bg-[var(--color-bg-secondary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
+                Live inventory
+              </p>
+              <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+                First signed supplier destination.
+              </h2>
             </div>
-            <div className="bg-white p-5 shadow-[0_10px_0_rgba(16,24,32,0.06)]">
-              <p className="text-4xl font-black">{liveCount}</p>
-              <p className="mt-2 text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">Live inventory country</p>
-            </div>
-            <div className="bg-white p-5 shadow-[0_10px_0_rgba(16,24,32,0.06)]">
-              <p className="text-4xl font-black">{worldCupCount}</p>
-              <p className="mt-2 text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">World Cup focus countries</p>
-            </div>
+            <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              Thailand is the first live inventory destination in the portal. These pages link into the existing tours surface instead of creating fake products.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {liveDestinations.map(destination => (
+              <DestinationCapsuleCard
+                key={destination.slug}
+                name={destination.name}
+                href={`/destinations/${destination.slug}`}
+                status="live"
+                region={destination.region}
+                summary={destination.shortDescription}
+                highlights={destination.popularTourTypes}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {globalDestinations.map(destination => (
-            <Link
-              key={destination.slug}
-              href={`/destinations/${destination.slug}`}
-              className="group flex min-h-[360px] flex-col justify-between overflow-hidden bg-[#fffdf7] p-6 shadow-[0_14px_34px_rgba(16,24,32,0.10)] transition hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(16,24,32,0.16)]"
-            >
-              <div>
-                <div className="flex flex-wrap gap-2">
-                  {destination.hasLiveInventory ? (
-                    <span className="bg-[#0f766e] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-white">
-                      Live partner tours available
-                    </span>
-                  ) : (
-                    <span className="bg-[#101820] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-white">
-                      Partner tours coming soon
-                    </span>
-                  )}
-                  {destination.worldCup2026Relevant ? (
-                    <span className="bg-[#f59a3d] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-white">
-                      World Cup 2026 travel focus
-                    </span>
-                  ) : null}
-                </div>
-                <p className="mt-6 text-sm font-black uppercase tracking-[0.14em] text-[#0f766e]">{destination.region}</p>
-                <h2 className="mt-3 font-serif text-4xl font-black leading-none tracking-[-0.035em] group-hover:text-[#0f766e]">
-                  {destination.name}
-                </h2>
-                <p className="mt-4 line-clamp-4 text-sm font-semibold leading-7 text-[#5a6670]">
-                  {destination.shortDescription}
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-[#7b8790]">Top cities</p>
-                <p className="mt-2 text-sm font-bold leading-6 text-[#101820]">
-                  {destination.topCities.slice(0, 4).join(' / ')}
-                </p>
-                <span className="mt-5 inline-flex min-h-[44px] items-center bg-[#101820] px-5 text-sm font-black uppercase tracking-[0.08em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]">
-                  View destination
-                </span>
-              </div>
-            </Link>
-          ))}
+      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-coming-soon)]">
+                Partner onboarding
+              </p>
+              <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+                Planning guides for selected high-demand destinations.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              These pages are intentionally marked as partner tours coming soon. They support SEO and trip planning while supplier agreements are completed.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {comingSoonDestinations.map(destination => (
+              <DestinationCapsuleCard
+                key={destination.slug}
+                name={destination.name}
+                href={`/destinations/${destination.slug}`}
+                status="coming-soon"
+                region={destination.region}
+                summary={destination.shortDescription}
+                highlights={destination.popularTourTypes}
+              />
+            ))}
+          </div>
         </div>
       </section>
+
+      <SupplierPartnerCTA />
+      <FAQAccordion items={faqItems} title="Destination portal FAQ" />
     </main>
   )
 }
