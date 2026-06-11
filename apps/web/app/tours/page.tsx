@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 import { AdventureHero } from '../_components/AdventureHero'
@@ -84,6 +85,20 @@ type ProductsResponse = {
   error?: string
 }
 
+type ToursPageProps = {
+  searchParams?: {
+    city?: string
+    hasPrice?: string
+    hasImage?: string
+  }
+}
+
+type FilterState = {
+  city: string | null
+  hasPrice: 'true' | 'false' | null
+  hasImage: 'true' | 'false' | null
+}
+
 const faqItems = [
   {
     question: 'Can I book tours from every destination on this page?',
@@ -117,9 +132,50 @@ function requestOrigin() {
   return process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
 }
 
-async function fetchThailandProducts(): Promise<ProductsResponse> {
+function normalizeFilterValue(value: string | undefined, allowedValues: string[]): string | null {
+  if (!value) return null
+
+  return allowedValues.includes(value) ? value : null
+}
+
+function readFilters(searchParams?: ToursPageProps['searchParams']): FilterState {
+  return {
+    city: normalizeFilterValue(searchParams?.city, ['chiang-mai', 'bangkok', 'phuket']),
+    hasPrice: normalizeFilterValue(searchParams?.hasPrice, ['true', 'false']) as FilterState['hasPrice'],
+    hasImage: normalizeFilterValue(searchParams?.hasImage, ['true', 'false']) as FilterState['hasImage'],
+  }
+}
+
+function buildToursHref(nextFilters: Partial<FilterState>) {
+  const params = new URLSearchParams()
+  const city = nextFilters.city ?? null
+  const hasPrice = nextFilters.hasPrice ?? null
+  const hasImage = nextFilters.hasImage ?? null
+
+  if (city) params.set('city', city)
+  if (hasPrice) params.set('hasPrice', hasPrice)
+  if (hasImage) params.set('hasImage', hasImage)
+
+  const query = params.toString()
+  return query ? `/tours?${query}` : '/tours'
+}
+
+function buildProductsQuery(filters: FilterState) {
+  const params = new URLSearchParams({
+    destination: 'thailand',
+    take: '12',
+  })
+
+  if (filters.city) params.set('city', filters.city)
+  if (filters.hasPrice) params.set('hasPrice', filters.hasPrice)
+  if (filters.hasImage) params.set('hasImage', filters.hasImage)
+
+  return params.toString()
+}
+
+async function fetchThailandProducts(filters: FilterState): Promise<ProductsResponse> {
   try {
-    const response = await fetch(`${requestOrigin()}/api/products?destination=thailand&take=12`, {
+    const response = await fetch(`${requestOrigin()}/api/products?${buildProductsQuery(filters)}`, {
       cache: 'no-store',
     })
 
@@ -137,6 +193,47 @@ async function fetchThailandProducts(): Promise<ProductsResponse> {
       error: 'PRODUCTS_UNAVAILABLE',
     }
   }
+}
+
+function FilterChip({
+  href,
+  label,
+  active,
+}: {
+  href: string
+  label: string
+  active: boolean
+}) {
+  return (
+    <Link
+      href={href}
+      className={[
+        'inline-flex min-h-[40px] items-center rounded-full border px-4 text-xs font-black uppercase tracking-[0.1em] transition',
+        active
+          ? 'border-[var(--color-accent-orange)] bg-[var(--color-accent-orange)] text-white'
+          : 'border-[var(--color-border-light)] bg-white text-[var(--color-text-secondary)] hover:text-[var(--color-accent-orange-dark)]',
+      ].join(' ')}
+    >
+      {label}
+    </Link>
+  )
+}
+
+function FilterGroup({
+  title,
+  children,
+}: {
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <div>
+      <p className="mb-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+        {title}
+      </p>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </div>
+  )
 }
 
 function formatPrice(product: ProductDisplay) {
@@ -196,9 +293,11 @@ function ProductCard({ product }: { product: ProductDisplay }) {
   )
 }
 
-export default async function ToursMarketplacePreviewPage() {
-  const productResponse = await fetchThailandProducts()
+export default async function ToursMarketplacePreviewPage({ searchParams }: ToursPageProps) {
+  const filters = readFilters(searchParams)
+  const productResponse = await fetchThailandProducts(filters)
   const products = productResponse.products
+  const hasActiveFilters = Boolean(filters.city || filters.hasPrice || filters.hasImage)
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
@@ -254,6 +353,76 @@ export default async function ToursMarketplacePreviewPage() {
             </p>
           </div>
 
+          <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-5 shadow-lg">
+            <div className="grid gap-5 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+              <FilterGroup title="City">
+                <FilterChip
+                  href={buildToursHref({ ...filters, city: null })}
+                  label="All"
+                  active={!filters.city}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, city: 'chiang-mai' })}
+                  label="Chiang Mai"
+                  active={filters.city === 'chiang-mai'}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, city: 'bangkok' })}
+                  label="Bangkok"
+                  active={filters.city === 'bangkok'}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, city: 'phuket' })}
+                  label="Phuket"
+                  active={filters.city === 'phuket'}
+                />
+              </FilterGroup>
+
+              <FilterGroup title="Price">
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasPrice: null })}
+                  label="All prices"
+                  active={!filters.hasPrice}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasPrice: 'true' })}
+                  label="Has price"
+                  active={filters.hasPrice === 'true'}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasPrice: 'false' })}
+                  label="Partner rate"
+                  active={filters.hasPrice === 'false'}
+                />
+              </FilterGroup>
+
+              <FilterGroup title="Image">
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasImage: null })}
+                  label="All images"
+                  active={!filters.hasImage}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasImage: 'true' })}
+                  label="Has image"
+                  active={filters.hasImage === 'true'}
+                />
+                <FilterChip
+                  href={buildToursHref({ ...filters, hasImage: 'false' })}
+                  label="Needs image"
+                  active={filters.hasImage === 'false'}
+                />
+              </FilterGroup>
+
+              <Link
+                href="/tours"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[var(--color-border-medium)] bg-[var(--color-bg-secondary)] px-5 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]"
+              >
+                Clear filters
+              </Link>
+            </div>
+          </div>
+
           {products.length > 0 ? (
             <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {products.map(product => (
@@ -263,14 +432,26 @@ export default async function ToursMarketplacePreviewPage() {
           ) : (
             <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 shadow-lg">
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                Partner inventory coming online
+                {hasActiveFilters ? 'No products match these filters' : 'Partner inventory coming online'}
               </p>
               <h3 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-                Thailand supplier products are being prepared for display.
+                {hasActiveFilters
+                  ? 'Try clearing filters to see more active supplier products.'
+                  : 'Thailand supplier products are being prepared for display.'}
               </h3>
               <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-                The product API returned no display-ready rows right now. RadarScout will show real signed Bókun supplier products here when active partner inventory is available, without creating placeholder products, prices, ratings, reviews, or supplier names.
+                {hasActiveFilters
+                  ? 'There are no active signed supplier products matching the current city, price, and image filters. RadarScout does not add placeholder products to fill filtered results.'
+                  : 'The product API returned no display-ready rows right now. RadarScout will show real signed Bókun supplier products here when active partner inventory is available, without creating placeholder products, prices, ratings, reviews, or supplier names.'}
               </p>
+              {hasActiveFilters ? (
+                <Link
+                  href="/tours"
+                  className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-xs font-black uppercase tracking-[0.1em] text-white"
+                >
+                  Clear filters
+                </Link>
+              ) : null}
               {productResponse.error ? (
                 <p className="mt-4 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-coming-soon)]">
                   Safe fallback: product feed unavailable
