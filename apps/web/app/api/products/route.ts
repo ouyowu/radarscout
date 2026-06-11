@@ -21,6 +21,7 @@ type ProductMeta = {
   bookingEnabled: false
   availabilityEnabled: false
   count: number
+  resultCount: number
   destination: string
   tagSupported: false
   filters: {
@@ -28,6 +29,7 @@ type ProductMeta = {
     city: string | null
     hasPrice: boolean | null
     hasImage: boolean | null
+    applied: ProductFilters
   }
 }
 
@@ -45,9 +47,13 @@ function meta(count: number, filters: ProductFilters): ProductMeta {
     bookingEnabled: false,
     availabilityEnabled: false,
     count,
+    resultCount: count,
     destination: filters.destination,
     tagSupported: false,
-    filters,
+    filters: {
+      ...filters,
+      applied: filters,
+    },
   }
 }
 
