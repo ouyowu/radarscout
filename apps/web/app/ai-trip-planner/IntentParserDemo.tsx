@@ -53,6 +53,7 @@ export function IntentParserDemo() {
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
   const [confirmed, setConfirmed] = useState<{
     destination: string | null
+    durationDays: number | null
     duration: string | null
     interests: string[]
     language: string
@@ -94,12 +95,17 @@ export function IntentParserDemo() {
 
     setConfirmed({
       destination: result.intent.destination,
+      durationDays: result.intent.durationDays,
       duration,
       interests: result.intent.interests,
       language: result.intent.language,
       confirmedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     })
   }
+
+  const placeholderDayCount = confirmed?.durationDays
+    ? Math.min(confirmed.durationDays, 7)
+    : 0
 
   return (
     <div className="mt-10 max-w-5xl border border-[#ded7ca] bg-white p-4 shadow-[0_18px_0_rgba(16,24,32,0.08)] sm:p-6">
@@ -242,6 +248,53 @@ export function IntentParserDemo() {
             </div>
           </section>
         </div>
+
+        {confirmed?.durationDays ? (
+          <section className="mt-5 border border-[#ded7ca] bg-white p-5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#a35c09]">
+                  Placeholder only
+                </p>
+                <h3 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
+                  Itinerary planning shell
+                </h3>
+              </div>
+              <p className="text-sm font-semibold text-[#5a6670]">
+                This preview only shows placeholder day slots after local intent confirmation.
+              </p>
+            </div>
+
+            <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
+              Experience slots will appear here after itinerary generation is implemented. No products, suppliers, prices, availability, or booking links are loaded.
+            </p>
+
+            {confirmed.durationDays > 7 ? (
+              <p className="mt-3 text-sm font-semibold leading-6 text-[#a35c09]">
+                Only the first 7 placeholder days are shown in this preview.
+              </p>
+            ) : null}
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: placeholderDayCount }, (_, index) => (
+                <article key={index} className="border border-[#e8dfd2] bg-[#fffdf7] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#a35c09]">
+                    Day {index + 1} placeholder
+                  </p>
+                  <h4 className="mt-2 text-lg font-black text-[#101820]">
+                    Planning slot placeholder
+                  </h4>
+                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                    Experience slots will appear here after itinerary generation is implemented.
+                  </p>
+                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                    No products, suppliers, prices, availability, or booking links are loaded.
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <details className="mt-5 border border-[#e8dfd2] bg-white p-4">
           <summary className="cursor-pointer text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">
