@@ -286,6 +286,18 @@ export function IntentParserDemo() {
                 <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
                   Until then, this section only reserves generic planning space for future itinerary output.
                 </p>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    disabled
+                    className="inline-flex min-h-[52px] items-center justify-center border border-[#c7beb1] bg-[#f7f3ea] px-6 text-sm font-black uppercase tracking-[0.12em] text-[#9a9084] disabled:cursor-not-allowed"
+                  >
+                    Generate itinerary — coming later
+                  </button>
+                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                    This button is disabled until a safe itinerary generator is implemented.
+                  </p>
+                </div>
               </section>
 
               <section className="border border-[#e8dfd2] bg-[#fffdf7] p-4">
