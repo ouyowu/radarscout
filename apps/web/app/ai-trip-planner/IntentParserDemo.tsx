@@ -3,6 +3,15 @@
 import { FormEvent, useMemo, useState } from 'react'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
+import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
+import {
+  CapabilityStatusPanel,
+  LocalConfirmationPanel,
+  MissingFieldsWarnings,
+  RawJsonDetails,
+  type ConfirmedIntent,
+} from './IntentParserPanels'
+import { TripIntentSummary } from './TripIntentSummary'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const examplePrompts = [
@@ -12,53 +21,10 @@ const examplePrompts = [
   'I want to book and pay for Dubai tomorrow',
 ]
 
-function formatValue(value: string | number | null): string {
-  if (value === null || value === '') return 'Not detected'
-  return String(value)
-}
-
-function formatList(values: string[]): string {
-  return values.length > 0 ? values.join(', ') : 'None detected'
-}
-
-function SummaryItem({ label, value }: { label: string; value: string | number | null }) {
-  return (
-    <div className="border border-[#e8dfd2] bg-white p-4">
-      <dt className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">{label}</dt>
-      <dd className="mt-2 text-sm font-black leading-6 text-[#101820]">{formatValue(value)}</dd>
-    </div>
-  )
-}
-
-function SummaryList({ label, values }: { label: string; values: string[] }) {
-  return (
-    <div className="border border-[#e8dfd2] bg-white p-4">
-      <dt className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">{label}</dt>
-      <dd className="mt-2 text-sm font-black leading-6 text-[#101820]">{formatList(values)}</dd>
-    </div>
-  )
-}
-
-function CapabilityStatus({ label, enabled }: { label: string; enabled: boolean }) {
-  return (
-    <div className="flex items-center justify-between gap-3 border border-[#d8eadf] bg-[#f0fbf5] px-4 py-3 text-sm font-black text-[#0f5132]">
-      <span>{label}</span>
-      <span>{enabled ? 'true' : 'false'}</span>
-    </div>
-  )
-}
-
 export function IntentParserDemo() {
   const [prompt, setPrompt] = useState(defaultPrompt)
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
-  const [confirmed, setConfirmed] = useState<{
-    destination: string | null
-    durationDays: number | null
-    duration: string | null
-    interests: string[]
-    language: string
-    confirmedAt: string
-  } | null>(null)
+  const [confirmed, setConfirmed] = useState<ConfirmedIntent | null>(null)
 
   const parsedJson = useMemo(() => JSON.stringify(result, null, 2), [result])
 
@@ -179,171 +145,41 @@ export function IntentParserDemo() {
           </p>
         </div>
 
-        <dl className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          <SummaryItem label="Destination" value={result.intent.destination} />
-          <SummaryItem label="Duration" value={duration} />
-          <SummaryList label="Interests" values={result.intent.interests} />
-          <SummaryList label="Avoid" values={result.intent.avoid} />
-          <SummaryList label="Travel style exclusions" values={result.intent.excludedStyles} />
-          <SummaryItem label="Pace" value={result.intent.pace} />
-          <SummaryItem label="Budget" value={result.intent.budget} />
-          <SummaryItem label="Traveler / group" value={traveler || null} />
-          <SummaryList label="Food preferences" values={result.intent.foodPreferences} />
-          <SummaryItem label="Language" value={result.intent.language} />
-          <SummaryItem label="Confidence" value={result.intent.confidence} />
-        </dl>
+        <TripIntentSummary
+          destination={result.intent.destination}
+          duration={duration}
+          interests={result.intent.interests}
+          avoid={result.intent.avoid}
+          excludedStyles={result.intent.excludedStyles}
+          pace={result.intent.pace}
+          budget={result.intent.budget}
+          traveler={traveler || null}
+          foodPreferences={result.intent.foodPreferences}
+          language={result.intent.language}
+          confidence={result.intent.confidence}
+        />
 
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          <section className="border border-[#cfe8df] bg-white p-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
-              Local confirmation
-            </h3>
-            {confirmed ? (
-              <div className="mt-3 space-y-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                <p className="font-black text-[#0f5132]">Trip intent confirmed locally</p>
-                <p>Destination: <span className="font-black text-[#101820]">{formatValue(confirmed.destination)}</span></p>
-                <p>Duration: <span className="font-black text-[#101820]">{formatValue(confirmed.duration)}</span></p>
-                <p>Interests: <span className="font-black text-[#101820]">{formatList(confirmed.interests)}</span></p>
-                <p>Language: <span className="font-black text-[#101820]">{confirmed.language}</span></p>
-                <p>Local status: <span className="font-black text-[#101820]">Confirmed in this browser session at {confirmed.confirmedAt}</span></p>
-              </div>
-            ) : (
-              <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                Nothing has been confirmed yet. Parse a prompt, then confirm the detected destination and duration in local UI only.
-              </p>
-            )}
-          </section>
-
-          <section className="border border-[#f3d6aa] bg-[#fff8e8] p-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#a35c09]">
-              Missing fields / warnings
-            </h3>
-            {hasMissingFields || hasWarnings ? (
-              <div className="mt-3 space-y-3 text-sm font-semibold leading-6 text-[#6b5d4d]">
-                {hasMissingFields ? (
-                  <p>Missing fields: <span className="font-black text-[#101820]">{result.missingFields.join(', ')}</span></p>
-                ) : null}
-                {hasWarnings ? (
-                  <p>Warnings: <span className="font-black text-[#101820]">{result.warnings.join(', ')}</span></p>
-                ) : null}
-              </div>
-            ) : (
-              <p className="mt-3 text-sm font-semibold leading-6 text-[#6b5d4d]">
-                No missing required fields or parser warnings detected.
-              </p>
-            )}
-          </section>
-
-          <section className="border border-[#d8eadf] bg-white p-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
-              Capability status
-            </h3>
-            <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-              Disabled means this preview is not searching products, checking availability, showing prices, or creating bookings.
-            </p>
-            <div className="mt-4 grid gap-3">
-              <CapabilityStatus label="bookingEnabled" enabled={result.bookingEnabled} />
-              <CapabilityStatus label="productRetrievalEnabled" enabled={result.productRetrievalEnabled} />
-              <CapabilityStatus label="availabilityEnabled" enabled={result.availabilityEnabled} />
-            </div>
-          </section>
+          <LocalConfirmationPanel confirmed={confirmed} />
+          <MissingFieldsWarnings
+            missingFields={result.missingFields}
+            warnings={result.warnings}
+          />
+          <CapabilityStatusPanel
+            bookingEnabled={result.bookingEnabled}
+            productRetrievalEnabled={result.productRetrievalEnabled}
+            availabilityEnabled={result.availabilityEnabled}
+          />
         </div>
 
         {confirmed?.durationDays ? (
-          <section className="mt-5 border border-[#ded7ca] bg-white p-5">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#a35c09]">
-                  Placeholder only
-                </p>
-                <h3 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
-                  Itinerary planning shell
-                </h3>
-              </div>
-              <p className="text-sm font-semibold text-[#5a6670]">
-                Placeholder days are based only on the confirmed duration.
-              </p>
-            </div>
-
-            <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-              This is a planning shell, not a generated itinerary. No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
-            </p>
-
-            {confirmed.durationDays > 7 ? (
-              <p className="mt-3 text-sm font-semibold leading-6 text-[#a35c09]">
-                Only the first 7 placeholder days are shown in this preview.
-              </p>
-            ) : null}
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              <section className="border border-[#d8eadf] bg-[#f5fbf7] p-4">
-                <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
-                  What happens next
-                </h4>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                  Next step later: connect a safe itinerary generator after intent confirmation.
-                </p>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                  Until then, this section only reserves generic planning space for future itinerary output.
-                </p>
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    disabled
-                    className="inline-flex min-h-[52px] items-center justify-center border border-[#c7beb1] bg-[#f7f3ea] px-6 text-sm font-black uppercase tracking-[0.12em] text-[#9a9084] disabled:cursor-not-allowed"
-                  >
-                    Generate itinerary — coming later
-                  </button>
-                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                    This button is disabled until a safe itinerary generator is implemented.
-                  </p>
-                </div>
-              </section>
-
-              <section className="border border-[#e8dfd2] bg-[#fffdf7] p-4">
-                <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#a35c09]">
-                  Not yet connected
-                </h4>
-                <div className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670]">
-                  <p>Product search: <span className="font-black text-[#101820]">not connected</span></p>
-                  <p>Supplier data: <span className="font-black text-[#101820]">not connected</span></p>
-                  <p>Availability: <span className="font-black text-[#101820]">not connected</span></p>
-                  <p>Pricing: <span className="font-black text-[#101820]">not connected</span></p>
-                  <p>Checkout: <span className="font-black text-[#101820]">not connected</span></p>
-                  <p>Booking: <span className="font-black text-[#101820]">not connected</span></p>
-                </div>
-              </section>
-            </div>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length: placeholderDayCount }, (_, index) => (
-                <article key={index} className="border border-[#e8dfd2] bg-[#fffdf7] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#a35c09]">
-                    Day {index + 1} placeholder
-                  </p>
-                  <h4 className="mt-2 text-lg font-black text-[#101820]">
-                    Planning slot placeholder
-                  </h4>
-                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                    Experience slots will appear here after itinerary generation is implemented.
-                  </p>
-                  <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                    No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
-                  </p>
-                </article>
-              ))}
-            </div>
-          </section>
+          <ItineraryPlaceholderShell
+            durationDays={confirmed.durationDays}
+            placeholderDayCount={placeholderDayCount}
+          />
         ) : null}
 
-        <details className="mt-5 border border-[#e8dfd2] bg-white p-4">
-          <summary className="cursor-pointer text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">
-            Raw structured JSON
-          </summary>
-          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap text-xs font-semibold leading-6 text-[#101820]">
-            {parsedJson}
-          </pre>
-        </details>
+        <RawJsonDetails parsedJson={parsedJson} />
       </section>
     </div>
   )
