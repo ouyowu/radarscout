@@ -261,12 +261,12 @@ export function IntentParserDemo() {
                 </h3>
               </div>
               <p className="text-sm font-semibold text-[#5a6670]">
-                This preview only shows placeholder day slots after local intent confirmation.
+                Placeholder days are based only on the confirmed duration.
               </p>
             </div>
 
             <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-              Experience slots will appear here after itinerary generation is implemented. No products, suppliers, prices, availability, or booking links are loaded.
+              This is a planning shell, not a generated itinerary. No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
             </p>
 
             {confirmed.durationDays > 7 ? (
@@ -274,6 +274,34 @@ export function IntentParserDemo() {
                 Only the first 7 placeholder days are shown in this preview.
               </p>
             ) : null}
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+              <section className="border border-[#d8eadf] bg-[#f5fbf7] p-4">
+                <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
+                  What happens next
+                </h4>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                  Next step later: connect a safe itinerary generator after intent confirmation.
+                </p>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                  Until then, this section only reserves generic planning space for future itinerary output.
+                </p>
+              </section>
+
+              <section className="border border-[#e8dfd2] bg-[#fffdf7] p-4">
+                <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#a35c09]">
+                  Not yet connected
+                </h4>
+                <div className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670]">
+                  <p>Product search: <span className="font-black text-[#101820]">not connected</span></p>
+                  <p>Supplier data: <span className="font-black text-[#101820]">not connected</span></p>
+                  <p>Availability: <span className="font-black text-[#101820]">not connected</span></p>
+                  <p>Pricing: <span className="font-black text-[#101820]">not connected</span></p>
+                  <p>Checkout: <span className="font-black text-[#101820]">not connected</span></p>
+                  <p>Booking: <span className="font-black text-[#101820]">not connected</span></p>
+                </div>
+              </section>
+            </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: placeholderDayCount }, (_, index) => (
@@ -288,7 +316,7 @@ export function IntentParserDemo() {
                     Experience slots will appear here after itinerary generation is implemented.
                   </p>
                   <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                    No products, suppliers, prices, availability, or booking links are loaded.
+                    No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
                   </p>
                 </article>
               ))}
