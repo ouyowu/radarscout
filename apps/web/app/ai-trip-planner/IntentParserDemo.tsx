@@ -51,17 +51,31 @@ function CapabilityStatus({ label, enabled }: { label: string; enabled: boolean 
 export function IntentParserDemo() {
   const [prompt, setPrompt] = useState(defaultPrompt)
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
+  const [confirmed, setConfirmed] = useState<{
+    destination: string | null
+    duration: string | null
+    interests: string[]
+    language: string
+    confirmedAt: string
+  } | null>(null)
 
   const parsedJson = useMemo(() => JSON.stringify(result, null, 2), [result])
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setConfirmed(null)
     setResult(parseTripIntent(prompt))
   }
 
   function useExamplePrompt(examplePrompt: string) {
     setPrompt(examplePrompt)
+    setConfirmed(null)
     setResult(parseTripIntent(examplePrompt))
+  }
+
+  function handlePromptChange(nextPrompt: string) {
+    setPrompt(nextPrompt)
+    setConfirmed(null)
   }
 
   const hasMissingFields = result.missingFields.length > 0
@@ -73,6 +87,19 @@ export function IntentParserDemo() {
     result.intent.travelerType !== 'unspecified' ? result.intent.travelerType : null,
     result.intent.groupSize ? `group of ${result.intent.groupSize}` : null,
   ].filter(Boolean).join(' · ')
+  const canConfirm = !hasMissingFields
+
+  function handleConfirmIntent() {
+    if (!canConfirm) return
+
+    setConfirmed({
+      destination: result.intent.destination,
+      duration,
+      interests: result.intent.interests,
+      language: result.intent.language,
+      confirmedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    })
+  }
 
   return (
     <div className="mt-10 max-w-5xl border border-[#ded7ca] bg-white p-4 shadow-[0_18px_0_rgba(16,24,32,0.08)] sm:p-6">
@@ -84,7 +111,7 @@ export function IntentParserDemo() {
           id="trip-idea"
           rows={4}
           value={prompt}
-          onChange={event => setPrompt(event.target.value)}
+          onChange={event => handlePromptChange(event.target.value)}
           placeholder="Chiang Mai 3 days food temples elephants, less crowded"
           className="mt-3 min-h-[140px] w-full resize-none border border-[#ded7ca] bg-[#fffdf7] px-4 py-4 text-base font-semibold leading-7 text-[#101820] outline-none focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20"
         />
@@ -104,13 +131,31 @@ export function IntentParserDemo() {
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">
             This preview only understands your travel intent locally. It does not search tours, check availability, show prices, or create bookings.
           </p>
-          <button
-            type="submit"
-            className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]"
-          >
-            Parse trip intent
-          </button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="submit"
+              className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]"
+            >
+              Parse trip intent
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmIntent}
+              disabled={!canConfirm}
+              className="inline-flex min-h-[52px] items-center justify-center border border-[#0f766e] px-6 text-sm font-black uppercase tracking-[0.12em] text-[#0f766e] disabled:cursor-not-allowed disabled:border-[#c7beb1] disabled:text-[#9a9084]"
+            >
+              Confirm trip intent
+            </button>
+          </div>
         </div>
+        <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, search tours, check availability, show prices, or create bookings.
+        </p>
+        {!canConfirm ? (
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
+            Destination and duration are required before this local confirmation can be saved.
+          </p>
+        ) : null}
       </form>
 
       <section className="mt-6 border border-[#d8eadf] bg-[#f5fbf7] p-5">
@@ -143,6 +188,26 @@ export function IntentParserDemo() {
         </dl>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <section className="border border-[#cfe8df] bg-white p-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
+              Local confirmation
+            </h3>
+            {confirmed ? (
+              <div className="mt-3 space-y-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                <p className="font-black text-[#0f5132]">Trip intent confirmed locally</p>
+                <p>Destination: <span className="font-black text-[#101820]">{formatValue(confirmed.destination)}</span></p>
+                <p>Duration: <span className="font-black text-[#101820]">{formatValue(confirmed.duration)}</span></p>
+                <p>Interests: <span className="font-black text-[#101820]">{formatList(confirmed.interests)}</span></p>
+                <p>Language: <span className="font-black text-[#101820]">{confirmed.language}</span></p>
+                <p>Local status: <span className="font-black text-[#101820]">Confirmed in this browser session at {confirmed.confirmedAt}</span></p>
+              </div>
+            ) : (
+              <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
+                Nothing has been confirmed yet. Parse a prompt, then confirm the detected destination and duration in local UI only.
+              </p>
+            )}
+          </section>
+
           <section className="border border-[#f3d6aa] bg-[#fff8e8] p-4">
             <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#a35c09]">
               Missing fields / warnings
