@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { IntentParserDemo } from './IntentParserDemo'
 
 export const metadata: Metadata = {
   title: 'AI Trip Planner | RadarScout',
@@ -60,30 +61,7 @@ export default function AiTripPlannerPage() {
             Skip endless tour lists. RadarScout helps turn a loose travel idea into a personalized plan with real local experiences, trusted operators, partner-direct value, and a secure booking handoff.
           </p>
 
-          <div className="mt-10 max-w-4xl border border-[#ded7ca] bg-white p-4 shadow-[0_18px_0_rgba(16,24,32,0.08)] sm:p-6">
-            <label htmlFor="trip-idea" className="text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">
-              Start with one sentence
-            </label>
-            <textarea
-              id="trip-idea"
-              disabled
-              rows={4}
-              placeholder="Chiang Mai, 3 days, temples, ethical elephant care, local food, relaxed pace"
-              className="mt-3 min-h-[140px] w-full resize-none border border-[#ded7ca] bg-[#fffdf7] px-4 py-4 text-base font-semibold leading-7 text-[#101820] outline-none disabled:cursor-not-allowed disabled:text-[#746b61]"
-            />
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold leading-6 text-[#5a6670]">
-                Demo preview — interactive planning is coming soon.
-              </p>
-              <button
-                type="button"
-                disabled
-                className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white opacity-60 [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]"
-              >
-                Coming soon
-              </button>
-            </div>
-          </div>
+          <IntentParserDemo />
         </div>
       </section>
 
