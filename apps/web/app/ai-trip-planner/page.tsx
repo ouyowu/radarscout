@@ -5,7 +5,7 @@ import { IntentParserDemo } from './IntentParserDemo'
 export const metadata: Metadata = {
   title: 'AI Trip Planner | RadarScout',
   description:
-    'Turn a trip idea into a bookable itinerary with real local experiences, trusted operators, partner-direct value, and a secure booking handoff.',
+    'Preview how RadarScout understands your travel intent locally before itinerary generation, supplier matching, availability, or booking are connected.',
 }
 
 const examplePrompts = [
@@ -16,52 +16,93 @@ const examplePrompts = [
 ]
 
 const steps = [
-  ['1', 'Describe your trip', 'Share destination, dates, pace, interests, and travel style in plain language.'],
-  ['2', 'Shape the route', 'RadarScout turns the idea into a practical day-by-day itinerary draft.'],
-  ['3', 'Match experiences', 'The plan highlights real local experiences from trusted operators when available.'],
-  ['4', 'Review the handoff', 'Bookable items use a secure booking handoff rather than a self-built checkout flow.'],
+  ['1', 'Tell us your travel idea', 'Share destination, timing, pace, interests, and travel style in plain language.'],
+  ['2', 'Understand intent locally', 'RadarScout parses the prompt on the page and keeps the preview self-contained.'],
+  ['3', 'Itinerary later', 'Itinerary generation and booking connections are coming later, after the safe demo flow.'],
 ]
 
 const trustCards = [
-  ['Real local experiences', 'Plan around operators and activities that can support the trip you actually want.'],
-  ['Trusted operators', 'Prioritize local experience providers and clear operating boundaries over anonymous inventory.'],
-  ['Partner-direct value', 'Surface planning paths where direct local value can be clearer for travelers and operators.'],
-  ['Secure booking handoff', 'Booking, payment, and confirmation stay with the booking partner when a product is ready.'],
+  ['AI trip planning preview', 'Preview a trip planner flow before supplier matching, booking, or pricing connections go live.'],
+  ['Understand your travel intent locally', 'The prompt is parsed on the page so you can see the structured intent immediately.'],
+  ['No fake prices', 'The preview never invents prices, availability, or booking links.'],
+  ['No fake booking links', 'Supplier, availability, pricing, checkout, payment, and booking integrations are not connected yet.'],
 ]
 
 const itineraryPreview = [
   {
     day: 'Day 1',
     title: 'Arrival rhythm and local orientation',
-    body: 'Start with a gentle route, hotel-area timing, and a local introduction that fits your arrival window.',
+    body: 'Start with a gentle route, arrival timing, and a light introduction that fits your trip pace.',
   },
   {
     day: 'Day 2',
     title: 'Culture, food, and neighborhood discovery',
-    body: 'Balance landmark context with local food stops and quieter neighborhoods based on your travel style.',
+    body: 'Balance landmark context with food stops and quieter neighborhoods based on your travel style.',
   },
   {
     day: 'Day 3',
     title: 'Experience match and optional rest buffer',
-    body: 'Add one matched local experience, then keep space for weather, pickup timing, and personal pace.',
+    body: 'Leave room for weather, timing, and personal pace while the future itinerary engine stays off.',
   },
 ]
 
 export default function AiTripPlannerPage() {
   return (
     <main className="min-h-screen bg-[#f7f5ef] text-[#101820]">
-      <section className="relative overflow-hidden bg-[#f1eadc] px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <section className="relative overflow-hidden bg-[#f1eadc] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,rgba(16,24,32,0.08)_1px,transparent_0)] [background-size:24px_24px]" />
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-sm font-black uppercase tracking-[0.16em] text-[#0f766e]">AI travel planner</p>
-          <h1 className="mt-5 max-w-5xl text-5xl font-black leading-[0.95] tracking-[-0.045em] sm:text-7xl">
-            Tell us your trip idea. RadarScout builds your bookable itinerary.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg font-semibold leading-8 text-[#5a5147]">
-            Skip endless tour lists. RadarScout helps turn a loose travel idea into a personalized plan with real local experiences, trusted operators, partner-direct value, and a secure booking handoff.
-          </p>
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            <div>
+              <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-[#d8cebf] bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#0f766e]">
+                <span>AI trip planning preview</span>
+                <span className="text-[#a77b36]">Local intent parsing only</span>
+              </div>
+              <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+                Turn a rough trip idea into a clear planning preview.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-[#5a5147]">
+                RadarScout understands your travel intent locally, then shows a safe preview of the trip structure. Itinerary generation, supplier matching, pricing, and booking connections are not connected yet.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white opacity-80 disabled:cursor-not-allowed"
+                >
+                  Join waitlist
+                </button>
+                <p className="max-w-xl text-sm font-semibold leading-7 text-[#5a6670]">
+                  No fake prices, no fake availability, and no fake booking links. The demo stays local until a safe future connection exists.
+                </p>
+              </div>
+            </div>
 
-          <IntentParserDemo />
+            <div className="rounded-[2rem] border border-[#d9cfbf] bg-white/85 p-4 shadow-[0_24px_0_rgba(16,24,32,0.05)] backdrop-blur">
+              <div className="rounded-[1.5rem] bg-[#101820] px-5 py-4 text-white">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8dd8ca]">Preview mode</p>
+                <h2 className="mt-2 text-2xl font-black leading-tight">
+                  Understand your travel intent locally
+                </h2>
+                <p className="mt-3 text-sm font-semibold leading-7 text-white/76">
+                  The page below keeps the existing parser demo, confirmation state, placeholder shell, and disabled CTA intact.
+                </p>
+              </div>
+              <div className="mt-4 rounded-[1.5rem] border border-[#ebe0cf] bg-[#fffaf0] px-5 py-4">
+                <p className="text-sm font-black uppercase tracking-[0.14em] text-[#a35c09]">Safety</p>
+                <ul className="mt-3 space-y-2 text-sm font-semibold leading-7 text-[#5a6670]">
+                  <li>No fake prices</li>
+                  <li>No fake availability</li>
+                  <li>No fake booking links</li>
+                  <li>Supplier, availability, pricing, checkout, payment, and booking integrations are not connected yet</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-[2rem] border border-[#d8cebf] bg-white/70 p-4 shadow-[0_20px_0_rgba(16,24,32,0.04)] sm:p-5">
+            <IntentParserDemo />
+          </div>
         </div>
       </section>
 
@@ -94,7 +135,7 @@ export default function AiTripPlannerPage() {
       <section className="bg-[#101820] px-4 py-14 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.14em] text-[#8dd8ca]">How it works</p>
-          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {steps.map(([step, title, body]) => (
               <article key={title} className="border border-white/12 bg-white/[0.06] p-5">
                 <div className="flex h-12 w-12 items-center justify-center bg-[#f59a3d] text-lg font-black text-[#101820] [clip-path:polygon(10%_0,100%_12%,90%_100%,0_88%)]">
@@ -129,7 +170,7 @@ export default function AiTripPlannerPage() {
                 A preview of the itinerary format.
               </h2>
               <p className="mt-5 text-base font-semibold leading-8 text-[#6b5d4d]">
-                The live planner will only recommend bookable items when real local experiences are ready through trusted operators. If no fit is available, the itinerary should stay informational instead of inventing a product.
+                The live planner stays informational until safe itinerary and booking connections are ready. If no fit is available, the preview should stay informative instead of inventing a product.
               </p>
             </div>
 
