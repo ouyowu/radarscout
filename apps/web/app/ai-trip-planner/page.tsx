@@ -74,6 +74,7 @@ export default function AiTripPlannerPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,124,72,0.28),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_28%)]" />
         <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:42px_42px]" />
 
+
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
@@ -95,7 +96,7 @@ export default function AiTripPlannerPage() {
                   Try the AI Search Preview
                 </a>
                 <Link
-                  href="/destinations/thailand"
+                  href="#planner-demo"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-white/10"
                 >
                   Thailand live destination
@@ -147,12 +148,14 @@ export default function AiTripPlannerPage() {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
       <section className="bg-[#fbf8f3] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
+
           <div className="max-w-3xl">
             <span className="inline-flex rounded-full bg-[#1E2D59] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
               Why this is different
@@ -172,6 +175,7 @@ export default function AiTripPlannerPage() {
                 <p className="mt-4 text-sm leading-7 text-[#6b7280]">{item.body}</p>
               </article>
             ))}
+
           </div>
         </div>
       </section>
@@ -289,7 +293,7 @@ export default function AiTripPlannerPage() {
               Try the AI Search Preview
             </a>
             <Link
-              href="/destinations/thailand"
+              href="#planner-demo"
               className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#d9cab4] bg-white px-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#1E2D59] transition hover:bg-[#fcfaf6]"
             >
               Explore Thailand ideas
