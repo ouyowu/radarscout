@@ -10,6 +10,19 @@ type SyncBokunCatalogParams = {
   maxPages?: number
 }
 
+export type SyncBokunCatalogResult = {
+  queries: string[]
+  maxPages: number
+  fetchedUniqueProducts: number
+  suppliersUpserted: number
+  productsUpserted: number
+  skippedProducts: number
+  failures: Array<{ query: string; status: number }>
+  startedAt: string
+  syncedAt: string
+  finishedAt: string
+}
+
 type SupplierSnapshot = {
   bokunVendorId: string
   title: string
@@ -133,12 +146,23 @@ function normalizeQueries(queries?: string[]): string[] {
   return Array.from(new Set(cleaned))
 }
 
-export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
+export function isBokunCatalogConfigured(): boolean {
+  return Boolean(
+    process.env.BOKUN_ACCESS_KEY &&
+    process.env.BOKUN_SECRET_KEY &&
+    process.env.BOKUN_API_BASE_URL,
+  )
+}
+
+export async function syncBokunCatalog(
+  params: SyncBokunCatalogParams = {},
+): Promise<SyncBokunCatalogResult> {
   const seen = new Map<string, BokunSearchResult>()
   const failures: Array<{ query: string; status: number }> = []
   const queries = normalizeQueries(params.queries)
   const pageSize = params.pageSize ?? 100
   const maxPages = params.maxPages ?? 1
+  const startedAt = new Date()
 
   for (const query of queries) {
     for (let page = 1; page <= maxPages; page += 1) {
@@ -233,13 +257,18 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
     productsUpserted += 1
   }
 
+  const finishedAt = new Date()
+
   return {
     queries,
     maxPages,
     fetchedUniqueProducts: seen.size,
     suppliersUpserted,
     productsUpserted,
+    skippedProducts: Math.max(seen.size - productsUpserted, 0),
     failures,
+    startedAt: startedAt.toISOString(),
     syncedAt: syncedAt.toISOString(),
+    finishedAt: finishedAt.toISOString(),
   }
 }
