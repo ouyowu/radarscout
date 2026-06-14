@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bokunCatalog'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,20 +41,8 @@ type ProductFilters = {
   hasImage: boolean | null
 }
 
-type ProductRecord = {
-  id: string
-  title: string
-  description: string | null
-  excerpt: string | null
-  city: string | null
-  location: string | null
-  retailPrice: { toString(): string } | null
-  currency: string | null
-  rawJson: unknown
-}
-
 type ProductWithImage = {
-  product: ProductRecord
+  product: BokunCatalogRecord
   imageUrl: string | null
 }
 
@@ -109,49 +98,6 @@ function parseBooleanFilter(value: string | null): boolean | null {
   return null
 }
 
-function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === 'object' ? value as Record<string, unknown> : {}
-}
-
-function readString(value: unknown): string | null {
-  return typeof value === 'string' && value.trim() ? value.trim() : null
-}
-
-function stripHtml(value: string | null): string | null {
-  if (!value) return null
-
-  return value
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function findImageUrl(rawJson: unknown): string | null {
-  const raw = asRecord(rawJson)
-  const keyPhoto = asRecord(raw.keyPhoto)
-  const derived = Array.isArray(keyPhoto.derived) ? keyPhoto.derived : []
-  const large = derived
-    .map(asRecord)
-    .find(image => readString(image.name) === 'large')
-  const preview = derived
-    .map(asRecord)
-    .find(image => readString(image.name) === 'preview')
-
-  return readString(large?.url) ??
-    readString(large?.cleanUrl) ??
-    readString(preview?.url) ??
-    readString(preview?.cleanUrl) ??
-    readString(keyPhoto.originalUrl)
-}
-
-function productSummary(rawJson: unknown, excerpt: string | null, description: string | null): string | null {
-  const raw = asRecord(rawJson)
-
-  return stripHtml(readString(raw.summary)) ??
-    stripHtml(excerpt) ??
-    stripHtml(description)
-}
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const take = parseTake(searchParams.get('take'))
@@ -197,12 +143,18 @@ export async function GET(request: NextRequest) {
         retailPrice: true,
         currency: true,
         rawJson: true,
+        lastSyncedAt: true,
+        supplier: {
+          select: {
+            title: true,
+          },
+        },
       },
-    }) as ProductRecord[]
+    }) as BokunCatalogRecord[]
     const filteredProducts = products
       .map(product => ({
         product,
-        imageUrl: findImageUrl(product.rawJson),
+        imageUrl: toReadOnlyBokunCatalogProduct(product).imageUrl,
       }))
       .filter(({ imageUrl }: ProductWithImage) => {
         if (hasImage === true) return Boolean(imageUrl)
@@ -214,15 +166,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       products: filteredProducts.map(({ product, imageUrl }: ProductWithImage) => ({
-        id: product.id,
-        title: product.title,
-        destination: product.city ?? product.location ?? 'Thailand',
-        summary: productSummary(product.rawJson, product.excerpt, product.description),
+        ...toReadOnlyBokunCatalogProduct(product),
         imageUrl,
-        retailPrice: product.retailPrice?.toString() ?? null,
-        currency: product.currency,
         tags: [],
-        detailHref: `/tours/${encodeURIComponent(product.id)}`,
       })),
       meta: meta(filteredProducts.length, filters),
     })
