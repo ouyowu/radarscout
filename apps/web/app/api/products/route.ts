@@ -40,6 +40,23 @@ type ProductFilters = {
   hasImage: boolean | null
 }
 
+type ProductRecord = {
+  id: string
+  title: string
+  description: string | null
+  excerpt: string | null
+  city: string | null
+  location: string | null
+  retailPrice: { toString(): string } | null
+  currency: string | null
+  rawJson: unknown
+}
+
+type ProductWithImage = {
+  product: ProductRecord
+  imageUrl: string | null
+}
+
 function meta(count: number, filters: ProductFilters): ProductMeta {
   return {
     source: PRODUCT_SOURCE,
@@ -181,13 +198,13 @@ export async function GET(request: NextRequest) {
         currency: true,
         rawJson: true,
       },
-    })
+    }) as ProductRecord[]
     const filteredProducts = products
       .map(product => ({
         product,
         imageUrl: findImageUrl(product.rawJson),
       }))
-      .filter(({ imageUrl }) => {
+      .filter(({ imageUrl }: ProductWithImage) => {
         if (hasImage === true) return Boolean(imageUrl)
         if (hasImage === false) return !imageUrl
 
@@ -196,7 +213,7 @@ export async function GET(request: NextRequest) {
       .slice(0, take)
 
     return NextResponse.json({
-      products: filteredProducts.map(({ product, imageUrl }) => ({
+      products: filteredProducts.map(({ product, imageUrl }: ProductWithImage) => ({
         id: product.id,
         title: product.title,
         destination: product.city ?? product.location ?? 'Thailand',
