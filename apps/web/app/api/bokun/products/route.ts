@@ -3,6 +3,29 @@ import { db } from '@reddit-monitor/db'
 
 export const dynamic = 'force-dynamic'
 
+type CatalogSupplier = {
+  bokunVendorId: string
+  title: string
+  status: string | null
+} | null
+
+type CatalogProduct = {
+  id: string
+  bokunActivityId: string
+  title: string
+  excerpt: string | null
+  city: string | null
+  location: string | null
+  retailPrice: { toString(): string } | null
+  netSettlementPrice: { toString(): string } | null
+  currency: string | null
+  commissionPercent: { toString(): string } | null
+  active: boolean
+  lastSyncedAt: Date | null
+  rawJson: unknown
+  supplier: CatalogSupplier
+}
+
 function parseTake(value: string | null): number {
   if (!value) return 50
 
@@ -94,7 +117,7 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-    })
+    }) as CatalogProduct[]
 
     return NextResponse.json({
       count: products.length,

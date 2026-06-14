@@ -1,4 +1,4 @@
-import { Prisma, db } from '@reddit-monitor/db'
+import { db } from '@reddit-monitor/db'
 import { BokunSearchResult, fetchActiveBokunActivities } from '@/lib/bokun'
 
 type SyncBokunCatalogParams = {
@@ -14,7 +14,7 @@ type SupplierSnapshot = {
   bokunVendorId: string
   title: string
   status: string | null
-  rawJson: Prisma.InputJsonValue
+  rawJson: unknown
 }
 
 const DEFAULT_SYNC_QUERIES = [
@@ -122,7 +122,7 @@ function extractSupplier(item: BokunSearchResult): SupplierSnapshot | null {
       readString(raw.contractStatus) ??
       readString(raw.status) ??
       readString(supplierRecord?.status),
-    rawJson: (supplierRecord ?? raw) as Prisma.InputJsonValue,
+    rawJson: supplierRecord ?? raw,
   }
 }
 
@@ -176,14 +176,14 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
           update: {
             title: supplier.title,
             status: supplier.status,
-            rawJson: supplier.rawJson,
+            rawJson: supplier.rawJson as never,
             lastSyncedAt: syncedAt,
           },
           create: {
             bokunVendorId: supplier.bokunVendorId,
             title: supplier.title,
             status: supplier.status,
-            rawJson: supplier.rawJson,
+            rawJson: supplier.rawJson as never,
             lastSyncedAt: syncedAt,
           },
           select: { id: true },
@@ -209,7 +209,7 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
         currency: retail.currency ?? net.currency,
         commissionPercent: readNumber(item.commissionPercent)?.toString() ?? null,
         active: true,
-        rawJson: item.raw as Prisma.InputJsonValue,
+        rawJson: item.raw as never,
         lastSyncedAt: syncedAt,
       },
       create: {
@@ -225,7 +225,7 @@ export async function syncBokunCatalog(params: SyncBokunCatalogParams = {}) {
         currency: retail.currency ?? net.currency,
         commissionPercent: readNumber(item.commissionPercent)?.toString() ?? null,
         active: true,
-        rawJson: item.raw as Prisma.InputJsonValue,
+        rawJson: item.raw as never,
         lastSyncedAt: syncedAt,
       },
     })
