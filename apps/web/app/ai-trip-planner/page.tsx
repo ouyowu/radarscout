@@ -51,9 +51,9 @@ export default function AiTripPlannerPage() {
             <a href="#planner-demo" className="inline-flex min-h-[52px] items-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]">
               Start planning
             </a>
-            <Link href="/destinations/thailand" className="inline-flex min-h-[52px] items-center border border-[#d8d1c4] bg-white px-6 text-sm font-black uppercase tracking-[0.1em] text-[#101820]">
+            <a href="#planner-demo" className="inline-flex min-h-[52px] items-center border border-[#d8d1c4] bg-white px-6 text-sm font-black uppercase tracking-[0.1em] text-[#101820]">
               Thailand live inventory
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -91,14 +91,20 @@ export default function AiTripPlannerPage() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               ['All destinations', '/destinations'],
-              ['Thailand live partner tours', '/destinations/thailand'],
+              ['Thailand live partner tours', '#planner-demo'],
               ['World Cup 2026 guides', '/world-cup-2026'],
               ['Browse live tours', '/tours'],
-            ].map(([label, href]) => (
-              <Link key={href} href={href} className="flex min-h-[72px] items-center border border-white/12 bg-white/[0.06] px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:text-[#8dd8ca]">
-                {label}
-              </Link>
-            ))}
+            ].map(([label, href]) =>
+              href.startsWith('#') ? (
+                <a key={href} href={href} className="flex min-h-[72px] items-center border border-white/12 bg-white/[0.06] px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:text-[#8dd8ca]">
+                  {label}
+                </a>
+              ) : (
+                <Link key={href} href={href} className="flex min-h-[72px] items-center border border-white/12 bg-white/[0.06] px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:text-[#8dd8ca]">
+                  {label}
+                </Link>
+              ),
+            )}
           </div>
         </div>
       </section>
