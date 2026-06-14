@@ -23,7 +23,7 @@ export type ReadOnlyBokunCatalogProduct = {
   title: string
   excerpt: string | null
   summary: string | null
-  destination: string
+  destination: string | null
   location: string | null
   imageUrl: string | null
   currency: string | null
@@ -88,7 +88,7 @@ export function toReadOnlyBokunCatalogProduct(product: BokunCatalogRecord): Read
     title: product.title,
     excerpt: product.excerpt,
     summary: productSummary(product.rawJson, product.excerpt, product.description),
-    destination: product.city ?? product.location ?? 'Thailand',
+    destination: product.city ?? product.location,
     location: product.location,
     imageUrl: findImageUrl(product.rawJson),
     currency: product.currency,
