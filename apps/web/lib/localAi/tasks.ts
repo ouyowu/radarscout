@@ -25,7 +25,7 @@ const SHARED_SAFETY_RULES = [
   'If information is missing, return null or "unknown".',
   'Never claim something is bookable unless explicitly provided by real stored data.',
   'Never output secrets.',
-  'Never output raw Bókun payloads unless explicitly requested for server-side debugging.',
+  'Never output raw Bókun payloads.',
 ]
 
 function errorResult(error: LocalAiError): LocalAiTaskErrorResult {

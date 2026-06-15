@@ -40,7 +40,7 @@ describe('local AI task helpers', () => {
     expect(prompt).toContain('Do not invent suppliers.')
     expect(prompt).toContain('Do not invent ratings.')
     expect(prompt).toContain('Never output secrets.')
-    expect(prompt).toContain('Never output raw Bókun payloads unless explicitly requested for server-side debugging.')
+    expect(prompt).toContain('Never output raw Bókun payloads.')
   })
 
   it('parses strict JSON output from the local model', async () => {
