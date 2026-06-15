@@ -147,12 +147,28 @@ model BokunProduct {
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
   supplier           BokunSupplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  enrichment         BokunProductEnrichment?
   bookingInquiries   BookingInquiry[]
 
   @@index([supplierId])
   @@index([city])
   @@index([active])
   @@index([title])
+}
+
+model BokunProductEnrichment {
+  id             String       @id @default(cuid())
+  productId      String       @unique
+  cleanedTitle   String?
+  shortSummary   String?
+  suggestedTags  Json?
+  seoTitle       String?
+  seoDescription String?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  product        BokunProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model BookingInquiry {
