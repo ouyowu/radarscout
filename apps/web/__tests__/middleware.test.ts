@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.mock('@/lib/auth', () => ({
@@ -80,6 +80,68 @@ describe('public routes — no auth required', () => {
       expect(middleware(makeReq(path, null))).toBeUndefined()
     })
   }
+})
+
+describe('/internal/ routes — Basic Auth required', () => {
+  const INTERNAL_SECRET = 'test-internal-secret'
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  function makeInternalReq(pathname: string, authHeader?: string) {
+    return new NextRequest(`https://radarscout.io${pathname}`, {
+      headers: authHeader ? { authorization: authHeader } : {},
+    })
+  }
+
+  function basicAuthHeader(password: string, username = 'internal') {
+    return `Basic ${btoa(`${username}:${password}`)}`
+  }
+
+  it('returns 401 when INTERNAL_ENRICHMENT_REVIEW_SECRET is not set', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', '')
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment'))
+    expect(res?.status).toBe(401)
+    expect(res?.headers.get('www-authenticate')).toBe('Basic realm="Internal Console"')
+  })
+
+  it('returns 401 when no Authorization header is provided', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment'))
+    expect(res?.status).toBe(401)
+    expect(res?.headers.get('www-authenticate')).toBe('Basic realm="Internal Console"')
+  })
+
+  it('returns 401 when the password is wrong', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment', basicAuthHeader('wrong-password')))
+    expect(res?.status).toBe(401)
+  })
+
+  it('returns 401 when Authorization header is not Basic scheme', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment', 'Bearer some-token'))
+    expect(res?.status).toBe(401)
+  })
+
+  it('passes through when correct password is provided (any username)', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment', basicAuthHeader(INTERNAL_SECRET)))
+    expect(res?.status).not.toBe(401)
+  })
+
+  it('passes through for any username as long as password matches', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/internal/reviewed-enrichment', basicAuthHeader(INTERNAL_SECRET, 'anyone')))
+    expect(res?.status).not.toBe(401)
+  })
+
+  it('does not apply Basic Auth to non-/internal/ paths', () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', INTERNAL_SECRET)
+    const res = middleware(makeInternalReq('/tours'))
+    expect(res?.status).not.toBe(401)
+  })
 })
 
 describe('stale SaaS marketing routes — redirected to travel homepage', () => {
