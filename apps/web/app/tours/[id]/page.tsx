@@ -24,6 +24,12 @@ type ProductFacts = {
   cancellationPolicy?: string | null
 }
 
+type ReviewedEnrichment = {
+  cleanedTitle: string | null
+  shortSummary: string | null
+  suggestedTags: string[]
+}
+
 type ProductDetail = {
   id: string
   title: string
@@ -37,6 +43,7 @@ type ProductDetail = {
   currency?: string | null
   detailHref: string
   facts?: ProductFacts | null
+  reviewedEnrichment?: ReviewedEnrichment | null
 }
 
 type ProductDetailResponse = {
@@ -117,6 +124,18 @@ function factRows(facts?: ProductFacts | null) {
       : null,
     facts.cancellationPolicy ? { label: 'Cancellation policy', value: facts.cancellationPolicy } : null,
   ].filter((item): item is { label: string; value: string } => Boolean(item))
+}
+
+function displayTitle(product: ProductDetail): string {
+  return product.reviewedEnrichment?.cleanedTitle ?? product.title
+}
+
+function displaySummary(product: ProductDetail): string {
+  return (
+    product.reviewedEnrichment?.shortSummary ??
+    product.summary ??
+    'A display-only RadarScout product detail page for Thailand live inventory from signed Bókun supplier partners.'
+  )
 }
 
 const trustItems = [
@@ -214,9 +233,9 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
       </section>
 
       <AdventureHero
-        eyebrow="Signed Bókun supplier product"
-        title={product.title}
-        subtitle={product.summary ?? 'A display-only RadarScout product detail page for Thailand live inventory from signed Bókun supplier partners.'}
+        eyebrow={product.reviewedEnrichment ? 'Curated experience' : 'Signed Bókun supplier product'}
+        title={displayTitle(product)}
+        subtitle={displaySummary(product)}
         actions={[
           { label: 'Back to tours', href: '/tours' },
           { label: 'Plan Thailand trip', href: '/destinations/thailand', variant: 'secondary' },
@@ -247,8 +266,20 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
                 {productLocation(product)}
               </p>
               <h1 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-                {product.title}
+                {displayTitle(product)}
               </h1>
+              {product.reviewedEnrichment?.suggestedTags && product.reviewedEnrichment.suggestedTags.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {product.reviewedEnrichment.suggestedTags.map(tag => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center rounded-full bg-[var(--color-accent-orange-pale)] px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-[var(--color-accent-orange-dark)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
                 {product.description ?? product.summary ?? 'Partner description is not available yet. RadarScout does not create placeholder descriptions for real supplier products.'}
               </p>
