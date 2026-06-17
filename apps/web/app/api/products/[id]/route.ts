@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { getReviewedEnrichmentByProductId } from '@/lib/reviewedEnrichmentReader'
 
 export const dynamic = 'force-dynamic'
 
@@ -140,6 +141,8 @@ export async function GET(
       }, { status: 404 })
     }
 
+    const reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
+
     return NextResponse.json({
       product: {
         id: product.id,
@@ -154,6 +157,7 @@ export async function GET(
         currency: product.currency,
         detailHref: `/tours/${encodeURIComponent(product.id)}`,
         facts: productFacts(product.rawJson),
+        reviewedEnrichment,
       },
       meta: meta(),
     })
