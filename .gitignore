@@ -34,3 +34,9 @@ packages/db/node_modules/.prisma/
 # pnpm
 .pnpm-debug.log
 .vercel
+
+# Local agent planning notes
+.ai/
+
+# Database backups — never commit, may contain credentials
+*.sql
