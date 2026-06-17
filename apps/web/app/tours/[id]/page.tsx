@@ -134,7 +134,7 @@ function displaySummary(product: ProductDetail): string {
   return (
     product.reviewedEnrichment?.shortSummary ??
     product.summary ??
-    'A display-only RadarScout product detail page for Thailand live inventory from signed Bókun supplier partners.'
+    'A display-only RadarScout product detail page for Thailand experiences from trusted local partners.'
   )
 }
 
@@ -233,7 +233,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
       </section>
 
       <AdventureHero
-        eyebrow={product.reviewedEnrichment ? 'Curated experience' : 'Signed Bókun supplier product'}
+        eyebrow={product.reviewedEnrichment ? 'Curated experience' : 'Trusted local experience'}
         title={displayTitle(product)}
         subtitle={displaySummary(product)}
         actions={[
