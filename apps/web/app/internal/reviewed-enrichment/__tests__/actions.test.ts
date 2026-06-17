@@ -194,4 +194,53 @@ describe('saveEnrichment server action', () => {
       expect(bodyStr).not.toContain(`"${key}"`)
     }
   })
+
+  describe('suggestedTags server-side enforcement', () => {
+    it('returns too_many_tags when 9 unique tags are submitted', async () => {
+      const nineTags = 'Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9'
+      const result = await saveEnrichment(null, makeFormData(validFields({ suggestedTags: nineTags })))
+
+      expect(result).toEqual({ ok: false, error: 'too_many_tags', fields: ['suggestedTags'] })
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    it('does not call the write endpoint when tag count exceeds 8', async () => {
+      const tenTags = 'A, B, C, D, E, F, G, H, I, J'
+      await saveEnrichment(null, makeFormData(validFields({ suggestedTags: tenTags })))
+
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    it('allows exactly 8 tags and forwards them to the write endpoint', async () => {
+      const eightTags = 'Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8'
+      await saveEnrichment(null, makeFormData(validFields({ suggestedTags: eightTags })))
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      const [, options] = fetchMock.mock.calls[0]
+      const body = JSON.parse(options.body)
+      expect(body.suggestedTags).toHaveLength(8)
+      expect(body.suggestedTags).toEqual(['Tag1', 'Tag2', 'Tag3', 'Tag4', 'Tag5', 'Tag6', 'Tag7', 'Tag8'])
+    })
+
+    it('deduplicates case-insensitive tags before counting', async () => {
+      // "Elephants" and "elephants" are duplicates — should collapse to 1, well under limit
+      const tagsWithDupes = 'Elephants, elephants, ELEPHANTS, Nature'
+      await saveEnrichment(null, makeFormData(validFields({ suggestedTags: tagsWithDupes })))
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      const [, options] = fetchMock.mock.calls[0]
+      const body = JSON.parse(options.body)
+      expect(body.suggestedTags).toEqual(['Elephants', 'Nature'])
+    })
+
+    it('filters blank tags before counting, so 8 non-blank + blanks does not trigger too_many_tags', async () => {
+      const tagsWithBlanks = 'Tag1, , Tag2, , Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, , '
+      await saveEnrichment(null, makeFormData(validFields({ suggestedTags: tagsWithBlanks })))
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      const [, options] = fetchMock.mock.calls[0]
+      const body = JSON.parse(options.body)
+      expect(body.suggestedTags).toHaveLength(8)
+    })
+  })
 })

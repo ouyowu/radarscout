@@ -29,9 +29,20 @@ export async function saveEnrichment(
   if (!productId) return { ok: false, error: 'invalid_product_id' }
 
   const tagsRaw = formData.get('suggestedTags')?.toString() ?? ''
+  const seen = new Set<string>()
   const suggestedTags = tagsRaw.length > 0
-    ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean)
+    ? tagsRaw.split(',').map(t => t.trim()).filter(t => {
+        if (!t) return false
+        const key = t.toLowerCase()
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+      })
     : []
+
+  if (suggestedTags.length > 8) {
+    return { ok: false, error: 'too_many_tags', fields: ['suggestedTags'] }
+  }
 
   // reviewedAt intentionally omitted — write endpoint defaults to new Date() when absent
   const payload = {
