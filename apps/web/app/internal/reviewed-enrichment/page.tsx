@@ -1,6 +1,7 @@
 import 'server-only'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
+import { EditForm } from './EditForm'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 type PageProps = {
-  searchParams: { productId?: string }
+  searchParams: { productId?: string; saved?: string }
 }
 
 type ProductRow = {
@@ -189,6 +190,7 @@ function LookupForm({ defaultValue }: { defaultValue?: string }) {
 export default async function InternalEnrichmentConsolePage({ searchParams }: PageProps) {
   const isConfigured = Boolean(process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET)
   const productId = searchParams.productId?.trim() ?? ''
+  const justSaved = searchParams.saved === '1'
 
   let result: InspectResult | null = null
 
@@ -226,6 +228,12 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
 
             {result && result.ok && (
               <div className="space-y-4">
+                {justSaved && (
+                  <div className="rounded border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-800">
+                    Enrichment saved.
+                  </div>
+                )}
+
                 <ProductPanel product={result.product} />
 
                 {result.reviewedEnrichment ? (
@@ -235,6 +243,11 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                     No reviewed enrichment yet for this product.
                   </div>
                 )}
+
+                <EditForm
+                  productId={result.product.id}
+                  enrichment={result.reviewedEnrichment}
+                />
               </div>
             )}
           </>
