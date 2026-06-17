@@ -1,6 +1,30 @@
 import { NextResponse } from 'next/server'
 
 const PROTECTED = ['/monitors', '/billing', '/dashboard']
+const INTERNAL_PREFIX = '/internal/'
+
+function checkInternalBasicAuth(
+  req: { headers: { get: (name: string) => string | null } },
+): boolean {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+  if (!secret) return false
+
+  const authHeader = req.headers.get('authorization') ?? ''
+  if (!authHeader.startsWith('Basic ')) return false
+
+  let decoded: string
+  try {
+    decoded = atob(authHeader.slice(6))
+  } catch {
+    return false
+  }
+
+  // Format is "username:password" — only the password is validated
+  const colonIndex = decoded.indexOf(':')
+  if (colonIndex === -1) return false
+
+  return decoded.slice(colonIndex + 1) === secret
+}
 const STALE_MARKETING_PATHS = new Set([
   '/demo',
   '/use-cases',
@@ -25,6 +49,16 @@ const SESSION_COOKIE_NAMES = [
 export default function middleware(req: Request & { nextUrl: URL; cookies: { get: (name: string) => { value: string } | undefined } }) {
   const { pathname } = req.nextUrl
   const isAuthed = SESSION_COOKIE_NAMES.some((name) => Boolean(req.cookies.get(name)?.value))
+
+  if (pathname.startsWith(INTERNAL_PREFIX)) {
+    if (!checkInternalBasicAuth(req)) {
+      return new NextResponse('Unauthorized', {
+        status: 401,
+        headers: { 'WWW-Authenticate': 'Basic realm="Internal Console"' },
+      })
+    }
+    return NextResponse.next()
+  }
 
   if (STALE_MARKETING_PATHS.has(pathname)) {
     return NextResponse.redirect(new URL('/', req.url), 308)
