@@ -1,10 +1,9 @@
 'use server'
 
 import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export type SaveState =
-  | { ok: true }
+  | { ok: true; redirectTo: string }
   | { ok: false; error: string; fields?: string[] }
   | null
 
@@ -103,11 +102,6 @@ export async function saveEnrichment(
     return { ok: false, error: 'save_unavailable' }
   }
 
-  const contextParams = new URLSearchParams()
-  if (q) contextParams.set('q', q)
-  if (city) contextParams.set('city', city)
-  if (status) contextParams.set('status', status)
-
   const useNextId = nextProductIdRaw && isSafeProductId(nextProductIdRaw)
   const redirectId = useNextId ? nextProductIdRaw : productId
   const redirectParams = new URLSearchParams({ productId: redirectId })
@@ -116,7 +110,7 @@ export async function saveEnrichment(
   if (status) redirectParams.set('status', status)
   if (!useNextId) redirectParams.set('saved', '1')
 
-  redirect(`/internal/reviewed-enrichment?${redirectParams.toString()}`)
+  return { ok: true, redirectTo: `/internal/reviewed-enrichment?${redirectParams.toString()}` }
 }
 
 export async function generateCandidate(productId: string): Promise<CandidateResult> {
