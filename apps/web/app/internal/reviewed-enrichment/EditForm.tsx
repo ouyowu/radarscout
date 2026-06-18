@@ -20,10 +20,18 @@ type PrefillValues = {
   seoDescription?: string | null
 }
 
+type SearchContext = {
+  q: string
+  city: string
+  status: string
+}
+
 type Props = {
   productId: string
   enrichment: ReviewedEnrichment | null
   prefillValues?: PrefillValues | null
+  nextProductId?: string | null
+  searchContext?: SearchContext
 }
 
 const FIELD_CLASSES =
@@ -45,7 +53,7 @@ function SubmitButton() {
   )
 }
 
-export function EditForm({ productId, enrichment, prefillValues }: Props) {
+export function EditForm({ productId, enrichment, prefillValues, nextProductId, searchContext }: Props) {
   const [state, formAction] = useFormState<SaveState, FormData>(saveEnrichment, null)
 
   return (
@@ -56,6 +64,18 @@ export function EditForm({ productId, enrichment, prefillValues }: Props) {
 
       <form action={formAction} className="space-y-3 p-4">
         <input type="hidden" name="productId" value={productId} />
+        {nextProductId && (
+          <input type="hidden" name="nextProductId" value={nextProductId} />
+        )}
+        {searchContext?.q && (
+          <input type="hidden" name="q" value={searchContext.q} />
+        )}
+        {searchContext?.city && (
+          <input type="hidden" name="city" value={searchContext.city} />
+        )}
+        {searchContext?.status && (
+          <input type="hidden" name="status" value={searchContext.status} />
+        )}
 
         {prefillValues && (
           <div className="rounded border border-purple-200 bg-purple-50 px-3 py-2 text-xs text-purple-800">
