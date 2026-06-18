@@ -3,38 +3,15 @@
 import { useState, useTransition } from 'react'
 import { generateCandidate, type CandidateDraft } from './actions'
 
-type SearchCtx = {
-  q: string
-  city: string
-  status: string
-}
-
 type Props = {
   productId: string
-  searchCtx: SearchCtx
-}
-
-function buildUseDraftUrl(
-  productId: string,
-  draft: CandidateDraft,
-  searchCtx: SearchCtx,
-): string {
-  const params = new URLSearchParams({ productId })
-  if (searchCtx.q) params.set('q', searchCtx.q)
-  if (searchCtx.city) params.set('city', searchCtx.city)
-  if (searchCtx.status && searchCtx.status !== 'all') params.set('status', searchCtx.status)
-  if (draft.cleanedTitle) params.set('draftCt', draft.cleanedTitle)
-  if (draft.shortSummary) params.set('draftSs', draft.shortSummary)
-  if (draft.suggestedTags.length > 0) params.set('draftTags', draft.suggestedTags.join(','))
-  if (draft.seoTitle) params.set('draftSeoT', draft.seoTitle)
-  if (draft.seoDescription) params.set('draftSeoD', draft.seoDescription)
-  return `/internal/reviewed-enrichment?${params.toString()}`
+  onUseDraft: (draft: CandidateDraft) => void
 }
 
 const FIELD_LABEL = 'w-36 shrink-0 text-xs font-semibold text-gray-500'
 const FIELD_VALUE = 'text-sm text-gray-900'
 
-export function CandidateSection({ productId, searchCtx }: Props) {
+export function CandidateSection({ productId, onUseDraft }: Props) {
   const [draft, setDraft] = useState<CandidateDraft | null>(null)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -51,8 +28,6 @@ export function CandidateSection({ productId, searchCtx }: Props) {
       }
     })
   }
-
-  const useDraftUrl = draft ? buildUseDraftUrl(productId, draft, searchCtx) : null
 
   return (
     <div className="overflow-hidden rounded border border-purple-200 bg-purple-50">
@@ -112,14 +87,13 @@ export function CandidateSection({ productId, searchCtx }: Props) {
               )}
             </div>
 
-            {useDraftUrl && (
-              <a
-                href={useDraftUrl}
-                className="inline-block rounded border border-purple-300 bg-white px-4 py-1.5 text-sm font-semibold text-purple-800 hover:bg-purple-50"
-              >
-                Use this draft →
-              </a>
-            )}
+            <button
+              type="button"
+              onClick={() => onUseDraft(draft)}
+              className="rounded border border-purple-300 bg-white px-4 py-1.5 text-sm font-semibold text-purple-800 hover:bg-purple-50"
+            >
+              Use this draft →
+            </button>
           </div>
         )}
       </div>

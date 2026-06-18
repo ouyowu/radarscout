@@ -223,6 +223,21 @@ describe('generateCandidate server action', () => {
     }
   })
 
+  // --- Draft stays in memory, never in URL params ---
+
+  it('result contains only in-memory data — no URL query param keys', async () => {
+    const result = await generateCandidate('product_abc')
+    const serialized = JSON.stringify(result)
+    // These URL param keys must never appear in the action's output
+    const urlParamKeys = ['draftCt', 'draftSs', 'draftTags', 'draftSeoT', 'draftSeoD']
+    for (const key of urlParamKeys) {
+      expect(serialized).not.toContain(key)
+    }
+    // No href or query string characters introduced by the action
+    expect(serialized).not.toContain('?draft')
+    expect(serialized).not.toContain('href')
+  })
+
   // --- No auto-save ---
 
   it('does not call the reviewed write endpoint (no auto-save)', async () => {

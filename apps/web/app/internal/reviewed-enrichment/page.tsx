@@ -1,8 +1,7 @@
 import 'server-only'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { EditForm } from './EditForm'
-import { CandidateSection } from './CandidateSection'
+import { InspectEditor } from './InspectEditor'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -18,12 +17,6 @@ type PageProps = {
     q?: string
     city?: string
     status?: string
-    // AI draft prefill params (set by CandidateSection "Use this draft" link)
-    draftCt?: string
-    draftSs?: string
-    draftTags?: string
-    draftSeoT?: string
-    draftSeoD?: string
   }
 }
 
@@ -427,23 +420,6 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
   const city = searchParams.city?.trim() ?? ''
   const status = searchParams.status?.trim() ?? ''
 
-  // AI draft prefill values from URL params (set by CandidateSection "Use this draft" link)
-  const draftCt = searchParams.draftCt?.trim() || null
-  const draftSs = searchParams.draftSs?.trim() || null
-  const draftTagsRaw = searchParams.draftTags?.trim() || null
-  const draftSeoT = searchParams.draftSeoT?.trim() || null
-  const draftSeoD = searchParams.draftSeoD?.trim() || null
-  const hasDraft = Boolean(draftCt || draftSs || draftTagsRaw || draftSeoT || draftSeoD)
-  const prefillValues = hasDraft
-    ? {
-        cleanedTitle: draftCt,
-        shortSummary: draftSs,
-        suggestedTags: draftTagsRaw ? draftTagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [],
-        seoTitle: draftSeoT,
-        seoDescription: draftSeoD,
-      }
-    : null
-
   let inspectResult: InspectResult | null = null
   let searchResult: SearchResult | null = null
 
@@ -519,15 +495,9 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   </div>
                 )}
 
-                <CandidateSection
-                  productId={inspectResult.product.id}
-                  searchCtx={searchContext}
-                />
-
-                <EditForm
+                <InspectEditor
                   productId={inspectResult.product.id}
                   enrichment={inspectResult.reviewedEnrichment}
-                  prefillValues={prefillValues}
                 />
               </div>
             )}
