@@ -12,9 +12,18 @@ type ReviewedEnrichment = {
   reviewedBy: string | null
 }
 
+type PrefillValues = {
+  cleanedTitle?: string | null
+  shortSummary?: string | null
+  suggestedTags?: string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+}
+
 type Props = {
   productId: string
   enrichment: ReviewedEnrichment | null
+  prefillValues?: PrefillValues | null
 }
 
 const FIELD_CLASSES =
@@ -36,7 +45,7 @@ function SubmitButton() {
   )
 }
 
-export function EditForm({ productId, enrichment }: Props) {
+export function EditForm({ productId, enrichment, prefillValues }: Props) {
   const [state, formAction] = useFormState<SaveState, FormData>(saveEnrichment, null)
 
   return (
@@ -47,6 +56,12 @@ export function EditForm({ productId, enrichment }: Props) {
 
       <form action={formAction} className="space-y-3 p-4">
         <input type="hidden" name="productId" value={productId} />
+
+        {prefillValues && (
+          <div className="rounded border border-purple-200 bg-purple-50 px-3 py-2 text-xs text-purple-800">
+            Pre-filled from AI draft — review all fields before saving.
+          </div>
+        )}
 
         {state && !state.ok && (
           <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -66,7 +81,7 @@ export function EditForm({ productId, enrichment }: Props) {
               id="ef-cleanedTitle"
               name="cleanedTitle"
               type="text"
-              defaultValue={enrichment?.cleanedTitle ?? ''}
+              defaultValue={prefillValues?.cleanedTitle ?? enrichment?.cleanedTitle ?? ''}
               maxLength={120}
               className={FIELD_CLASSES}
             />
@@ -80,7 +95,7 @@ export function EditForm({ productId, enrichment }: Props) {
               id="ef-seoTitle"
               name="seoTitle"
               type="text"
-              defaultValue={enrichment?.seoTitle ?? ''}
+              defaultValue={prefillValues?.seoTitle ?? enrichment?.seoTitle ?? ''}
               maxLength={70}
               className={FIELD_CLASSES}
             />
@@ -95,7 +110,7 @@ export function EditForm({ productId, enrichment }: Props) {
             id="ef-shortSummary"
             name="shortSummary"
             rows={3}
-            defaultValue={enrichment?.shortSummary ?? ''}
+            defaultValue={prefillValues?.shortSummary ?? enrichment?.shortSummary ?? ''}
             maxLength={280}
             className={`${FIELD_CLASSES} resize-y`}
           />
@@ -109,7 +124,7 @@ export function EditForm({ productId, enrichment }: Props) {
             id="ef-seoDescription"
             name="seoDescription"
             rows={2}
-            defaultValue={enrichment?.seoDescription ?? ''}
+            defaultValue={prefillValues?.seoDescription ?? enrichment?.seoDescription ?? ''}
             maxLength={180}
             className={`${FIELD_CLASSES} resize-y`}
           />
@@ -124,7 +139,11 @@ export function EditForm({ productId, enrichment }: Props) {
             id="ef-suggestedTags"
             name="suggestedTags"
             type="text"
-            defaultValue={enrichment?.suggestedTags.join(', ') ?? ''}
+            defaultValue={
+              prefillValues?.suggestedTags != null
+                ? prefillValues.suggestedTags.join(', ')
+                : (enrichment?.suggestedTags.join(', ') ?? '')
+            }
             className={FIELD_CLASSES}
           />
         </div>
