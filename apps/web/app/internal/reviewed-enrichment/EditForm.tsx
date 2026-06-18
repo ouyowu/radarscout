@@ -40,6 +40,14 @@ const FIELD_CLASSES =
 
 const LABEL_CLASSES = 'block text-xs font-semibold text-gray-500'
 
+function buildSkipHref(nextProductId: string, searchContext?: SearchContext): string {
+  const params = new URLSearchParams({ productId: nextProductId })
+  if (searchContext?.q) params.set('q', searchContext.q)
+  if (searchContext?.city) params.set('city', searchContext.city)
+  if (searchContext?.status && searchContext.status !== 'all') params.set('status', searchContext.status)
+  return `/internal/reviewed-enrichment?${params.toString()}`
+}
+
 function SubmitButton() {
   const { pending } = useFormStatus()
 
@@ -204,7 +212,17 @@ export function EditForm({ productId, enrichment, prefillValues, nextProductId, 
           reviewedAt is set automatically on save. productId: <code className="font-mono">{productId}</code>
         </p>
 
-        <SubmitButton />
+        <div className="flex items-center gap-4">
+          <SubmitButton />
+          {nextProductId && (
+            <a
+              href={buildSkipHref(nextProductId, searchContext)}
+              className="text-sm text-gray-500 underline hover:text-gray-800"
+            >
+              Skip →
+            </a>
+          )}
+        </div>
       </form>
     </div>
   )
