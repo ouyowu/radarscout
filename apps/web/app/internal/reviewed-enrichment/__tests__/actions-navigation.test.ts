@@ -221,4 +221,53 @@ describe('saveEnrichment — navigation and search context redirect', () => {
     expect(result?.ok).toBe(true)
     if (result?.ok) expect(result.redirectTo).not.toContain(SECRET)
   })
+
+  // --- prevSaved — notice for next-product redirects ---
+
+  it('includes prevSaved=<currentProductId> in redirectTo when nextProductId is valid', async () => {
+    const result = await saveEnrichment(
+      null,
+      makeFormData(validFields({ nextProductId: 'product_next' })),
+    )
+
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).toContain('prevSaved=product_abc')
+  })
+
+  it('includes prevSavedTitle in redirectTo when cleanedTitle is set and nextProductId is valid', async () => {
+    const result = await saveEnrichment(
+      null,
+      makeFormData(validFields({ nextProductId: 'product_next', cleanedTitle: 'Elephant Sanctuary Chiang Mai' })),
+    )
+
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('prevSaved=product_abc')
+      const params = new URL('http://localhost' + result.redirectTo).searchParams
+      expect(params.get('prevSavedTitle')).toBe('Elephant Sanctuary Chiang Mai')
+    }
+  })
+
+  it('does not include prevSaved when redirecting to the same product with saved=1', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields()))
+
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).not.toContain('prevSaved')
+      expect(result.redirectTo).toContain('saved=1')
+    }
+  })
+
+  it('does not include prevSavedTitle when cleanedTitle is blank and nextProductId is valid', async () => {
+    const result = await saveEnrichment(
+      null,
+      makeFormData(validFields({ nextProductId: 'product_next', cleanedTitle: '' })),
+    )
+
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('prevSaved=product_abc')
+      expect(result.redirectTo).not.toContain('prevSavedTitle')
+    }
+  })
 })

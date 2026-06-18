@@ -14,6 +14,8 @@ type PageProps = {
   searchParams: {
     productId?: string
     saved?: string
+    prevSaved?: string
+    prevSavedTitle?: string
     q?: string
     city?: string
     status?: string
@@ -577,6 +579,12 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
   const isConfigured = Boolean(process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET)
   const productId = searchParams.productId?.trim() ?? ''
   const justSaved = searchParams.saved === '1'
+  const prevSaved = /^[a-zA-Z0-9_-]{1,100}$/.test(searchParams.prevSaved ?? '')
+    ? (searchParams.prevSaved ?? null)
+    : null
+  const prevSavedTitle = typeof searchParams.prevSavedTitle === 'string' && searchParams.prevSavedTitle.length > 0
+    ? searchParams.prevSavedTitle.slice(0, 120)
+    : null
   const q = searchParams.q?.trim() ?? ''
   const city = searchParams.city?.trim() ?? ''
   const status = searchParams.status?.trim() ?? ''
@@ -652,9 +660,18 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
 
             {inspectResult && inspectResult.ok && (
               <div className="space-y-4">
+                {prevSaved && (
+                  <div className="rounded border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+                    ✓ Previously saved:{' '}
+                    <span className="font-semibold">
+                      {prevSavedTitle ?? prevSaved}
+                    </span>
+                  </div>
+                )}
+
                 {justSaved && (
                   <div className="rounded border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-800">
-                    Enrichment saved.
+                    Saved: {inspectResult.product.title}
                   </div>
                 )}
 

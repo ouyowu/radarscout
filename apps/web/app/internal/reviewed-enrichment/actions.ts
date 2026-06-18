@@ -108,7 +108,13 @@ export async function saveEnrichment(
   if (q) redirectParams.set('q', q)
   if (city) redirectParams.set('city', city)
   if (status) redirectParams.set('status', status)
-  if (!useNextId) redirectParams.set('saved', '1')
+  if (!useNextId) {
+    redirectParams.set('saved', '1')
+  } else {
+    redirectParams.set('prevSaved', productId)
+    const cleanedTitle = formData.get('cleanedTitle')?.toString().trim() ?? ''
+    if (cleanedTitle) redirectParams.set('prevSavedTitle', cleanedTitle)
+  }
 
   return { ok: true, redirectTo: `/internal/reviewed-enrichment?${redirectParams.toString()}` }
 }
