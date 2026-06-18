@@ -8,6 +8,10 @@ export type SaveState =
   | { ok: false; error: string; fields?: string[] }
   | null
 
+function isSafeProductId(id: string): boolean {
+  return /^[a-zA-Z0-9_-]{1,100}$/.test(id)
+}
+
 export type CandidateDraft = {
   cleanedTitle: string | null
   shortSummary: string | null
@@ -67,6 +71,11 @@ export async function saveEnrichment(
     reviewedBy: formData.get('reviewedBy')?.toString() || undefined,
   }
 
+  const nextProductIdRaw = formData.get('nextProductId')?.toString().trim() ?? ''
+  const q = formData.get('q')?.toString().trim() ?? ''
+  const city = formData.get('city')?.toString().trim() ?? ''
+  const status = formData.get('status')?.toString().trim() ?? ''
+
   try {
     const response = await fetch(
       `${getOrigin()}/api/internal/product-enrichment/reviewed`,
@@ -94,9 +103,20 @@ export async function saveEnrichment(
     return { ok: false, error: 'save_unavailable' }
   }
 
-  redirect(
-    `/internal/reviewed-enrichment?productId=${encodeURIComponent(productId)}&saved=1`,
-  )
+  const contextParams = new URLSearchParams()
+  if (q) contextParams.set('q', q)
+  if (city) contextParams.set('city', city)
+  if (status) contextParams.set('status', status)
+
+  const useNextId = nextProductIdRaw && isSafeProductId(nextProductIdRaw)
+  const redirectId = useNextId ? nextProductIdRaw : productId
+  const redirectParams = new URLSearchParams({ productId: redirectId })
+  if (q) redirectParams.set('q', q)
+  if (city) redirectParams.set('city', city)
+  if (status) redirectParams.set('status', status)
+  if (!useNextId) redirectParams.set('saved', '1')
+
+  redirect(`/internal/reviewed-enrichment?${redirectParams.toString()}`)
 }
 
 export async function generateCandidate(productId: string): Promise<CandidateResult> {

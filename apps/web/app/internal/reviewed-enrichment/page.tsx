@@ -96,6 +96,15 @@ type CoverageResult =
   | { ok: true; coverage: CoverageData }
   | { ok: false; error: string }
 
+type NavigationSuccess = {
+  ok: true
+  previousMissingProductId: string | null
+  nextMissingProductId: string | null
+  backHref: string
+}
+
+type NavigationResult = NavigationSuccess | { ok: false; error: string }
+
 const THAILAND_CITIES = [
   'Ayutthaya',
   'Bangkok',
@@ -133,6 +142,31 @@ async function fetchInspect(productId: string): Promise<InspectResult> {
     return await response.json() as InspectResult
   } catch {
     return { ok: false, error: 'inspect_unavailable' }
+  }
+}
+
+async function fetchNavigation(
+  productId: string,
+  params: { q?: string; city?: string; status?: string },
+): Promise<NavigationResult> {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+  if (!secret) return { ok: false, error: 'navigation_not_configured' }
+
+  try {
+    const url = new URL(`${getOrigin()}/api/internal/product-enrichment/navigation`)
+    url.searchParams.set('productId', productId)
+    if (params.q) url.searchParams.set('q', params.q)
+    if (params.city) url.searchParams.set('city', params.city)
+    if (params.status) url.searchParams.set('status', params.status)
+
+    const response = await fetch(url.toString(), {
+      cache: 'no-store',
+      headers: { 'x-internal-enrichment-review-secret': secret },
+    })
+
+    return await response.json() as NavigationResult
+  } catch {
+    return { ok: false, error: 'navigation_unavailable' }
   }
 }
 
@@ -550,10 +584,14 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
   let inspectResult: InspectResult | null = null
   let searchResult: SearchResult | null = null
   let coverageResult: CoverageResult | null = null
+  let navigationResult: NavigationResult | null = null
 
   if (isConfigured) {
     if (productId) {
-      inspectResult = await fetchInspect(productId)
+      ;[inspectResult, navigationResult] = await Promise.all([
+        fetchInspect(productId),
+        fetchNavigation(productId, { q, city, status }),
+      ])
     }
     ;[searchResult, coverageResult] = await Promise.all([
       fetchProductSearch({ q, city, status: status || 'all' }),
@@ -633,6 +671,8 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                 <InspectEditor
                   productId={inspectResult.product.id}
                   enrichment={inspectResult.reviewedEnrichment}
+                  navigation={navigationResult?.ok ? (navigationResult as NavigationSuccess) : null}
+                  searchContext={searchContext}
                 />
               </div>
             )}
