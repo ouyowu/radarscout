@@ -125,12 +125,16 @@ describe('saveEnrichment server action', () => {
     expect(body.suggestedTags).toEqual([])
   })
 
-  it('redirects to the product page with saved=1 on success', async () => {
-    await saveEnrichment(null, makeFormData(validFields()))
+  it('returns ok:true with redirectTo containing productId and saved=1 on success', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields()))
 
-    expect(redirectMock).toHaveBeenCalledWith(
-      '/internal/reviewed-enrichment?productId=product_abc&saved=1',
-    )
+    expect(result).not.toBeNull()
+    expect(result!.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_abc')
+      expect(result.redirectTo).toContain('saved=1')
+    }
+    expect(redirectMock).not.toHaveBeenCalled()
   })
 
   it('returns the error from the write endpoint on validation failure', async () => {

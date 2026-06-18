@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
 import { saveEnrichment, type SaveState } from './actions'
 
@@ -56,6 +57,15 @@ function SubmitButton() {
 export function EditForm({ productId, enrichment, prefillValues, nextProductId, searchContext }: Props) {
   const [state, formAction] = useFormState<SaveState, FormData>(saveEnrichment, null)
 
+  useEffect(() => {
+    if (state?.ok && state.redirectTo) {
+      const timer = setTimeout(() => {
+        window.location.href = state.redirectTo
+      }, 900)
+      return () => clearTimeout(timer)
+    }
+  }, [state])
+
   return (
     <div className="overflow-hidden rounded border border-blue-200 bg-blue-50">
       <div className="border-b border-blue-200 bg-blue-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-blue-800">
@@ -80,6 +90,12 @@ export function EditForm({ productId, enrichment, prefillValues, nextProductId, 
         {prefillValues && (
           <div className="rounded border border-purple-200 bg-purple-50 px-3 py-2 text-xs text-purple-800">
             Pre-filled from AI draft — review all fields before saving.
+          </div>
+        )}
+
+        {state?.ok && (
+          <div className="rounded border border-green-200 bg-green-50 px-3 py-2 text-sm font-semibold text-green-800">
+            Enrichment saved. Redirecting…
           </div>
         )}
 

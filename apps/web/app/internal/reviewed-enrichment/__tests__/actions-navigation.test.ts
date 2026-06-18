@@ -61,153 +61,164 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
   // --- Default redirect (no nextProductId) ---
 
-  it('redirects to current product with saved=1 when no nextProductId is provided', async () => {
-    await saveEnrichment(null, makeFormData(validFields()))
+  it('returns redirectTo with current product and saved=1 when no nextProductId is provided', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields()))
 
-    expect(redirectMock).toHaveBeenCalledWith(
-      expect.stringContaining('productId=product_abc'),
-    )
-    expect(redirectMock).toHaveBeenCalledWith(
-      expect.stringContaining('saved=1'),
-    )
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_abc')
+      expect(result.redirectTo).toContain('saved=1')
+    }
+    expect(redirectMock).not.toHaveBeenCalled()
   })
 
-  it('preserves q in redirect when q is in formData', async () => {
-    await saveEnrichment(null, makeFormData(validFields({ q: 'elephant' })))
+  it('preserves q in redirectTo when q is in formData', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields({ q: 'elephant' })))
 
-    expect(redirectMock).toHaveBeenCalledWith(
-      expect.stringContaining('q=elephant'),
-    )
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).toContain('q=elephant')
   })
 
-  it('preserves city in redirect when city is in formData', async () => {
-    await saveEnrichment(null, makeFormData(validFields({ city: 'Phuket' })))
+  it('preserves city in redirectTo when city is in formData', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields({ city: 'Phuket' })))
 
-    expect(redirectMock).toHaveBeenCalledWith(
-      expect.stringContaining('city=Phuket'),
-    )
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).toContain('city=Phuket')
   })
 
-  it('preserves status in redirect when status is in formData', async () => {
-    await saveEnrichment(null, makeFormData(validFields({ status: 'missing' })))
+  it('preserves status in redirectTo when status is in formData', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields({ status: 'missing' })))
 
-    expect(redirectMock).toHaveBeenCalledWith(
-      expect.stringContaining('status=missing'),
-    )
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).toContain('status=missing')
   })
 
-  it('preserves all search context fields in redirect when provided', async () => {
-    await saveEnrichment(
+  it('preserves all search context fields in redirectTo when provided', async () => {
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ q: 'elephant', city: 'Phuket', status: 'missing' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('q=elephant')
-    expect(redirectUrl).toContain('city=Phuket')
-    expect(redirectUrl).toContain('status=missing')
-    expect(redirectUrl).toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('q=elephant')
+      expect(result.redirectTo).toContain('city=Phuket')
+      expect(result.redirectTo).toContain('status=missing')
+      expect(result.redirectTo).toContain('saved=1')
+    }
   })
 
   // --- Redirect with nextProductId ---
 
   it('redirects to nextProductId when valid nextProductId is provided', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product_next' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_next')
-    expect(redirectUrl).not.toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_next')
+      expect(result.redirectTo).not.toContain('saved=1')
+    }
   })
 
   it('does not include saved=1 when redirecting to nextProductId', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product_next' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).not.toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).not.toContain('saved=1')
   })
 
   it('preserves search context when redirecting to nextProductId', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product_next', city: 'Phuket', status: 'missing' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_next')
-    expect(redirectUrl).toContain('city=Phuket')
-    expect(redirectUrl).toContain('status=missing')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_next')
+      expect(result.redirectTo).toContain('city=Phuket')
+      expect(result.redirectTo).toContain('status=missing')
+    }
   })
 
   // --- nextProductId safety validation ---
 
   it('falls back to current product when nextProductId contains a slash', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: '../etc/passwd' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_abc')
-    expect(redirectUrl).toContain('saved=1')
-    expect(redirectUrl).not.toContain('passwd')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_abc')
+      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).not.toContain('passwd')
+    }
   })
 
   it('falls back to current product when nextProductId contains a space', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product bad id' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_abc')
-    expect(redirectUrl).toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_abc')
+      expect(result.redirectTo).toContain('saved=1')
+    }
   })
 
   it('falls back to current product when nextProductId is empty string', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: '' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_abc')
-    expect(redirectUrl).toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain('productId=product_abc')
+      expect(result.redirectTo).toContain('saved=1')
+    }
   })
 
   it('accepts valid UUID-style nextProductId', async () => {
     const uuid = 'abc123-def456-789ghi'
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: uuid })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain(`productId=${uuid}`)
-    expect(redirectUrl).not.toContain('saved=1')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) {
+      expect(result.redirectTo).toContain(`productId=${uuid}`)
+      expect(result.redirectTo).not.toContain('saved=1')
+    }
   })
 
   it('accepts nextProductId with underscores and hyphens', async () => {
-    await saveEnrichment(
+    const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product_next-001' })),
     )
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).toContain('productId=product_next-001')
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).toContain('productId=product_next-001')
   })
 
-  // --- Does not expose secret in redirect URL ---
+  // --- Does not expose secret in redirectTo ---
 
-  it('does not include INTERNAL_ENRICHMENT_REVIEW_SECRET in redirect URL', async () => {
-    await saveEnrichment(null, makeFormData(validFields({ nextProductId: 'product_next' })))
+  it('does not include INTERNAL_ENRICHMENT_REVIEW_SECRET in redirectTo', async () => {
+    const result = await saveEnrichment(null, makeFormData(validFields({ nextProductId: 'product_next' })))
 
-    const redirectUrl: string = redirectMock.mock.calls[0][0]
-    expect(redirectUrl).not.toContain(SECRET)
+    expect(result?.ok).toBe(true)
+    if (result?.ok) expect(result.redirectTo).not.toContain(SECRET)
   })
 })
