@@ -11,7 +11,13 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 type PageProps = {
-  searchParams: { productId?: string; saved?: string }
+  searchParams: {
+    productId?: string
+    saved?: string
+    q?: string
+    city?: string
+    status?: string
+  }
 }
 
 type ProductRow = {
@@ -46,6 +52,40 @@ type InspectError = {
 
 type InspectResult = InspectSuccess | InspectError
 
+type SearchProductRow = {
+  id: string
+  title: string
+  city: string | null
+  location: string | null
+  retailPrice: string | null
+  currency: string | null
+  reviewedStatus: 'reviewed' | 'missing'
+  cleanedTitle: string | null
+  reviewedAt: string | null
+}
+
+type SearchSuccess = {
+  ok: true
+  products: SearchProductRow[]
+}
+
+type SearchError = {
+  ok: false
+  error: string
+}
+
+type SearchResult = SearchSuccess | SearchError
+
+const THAILAND_CITIES = [
+  'Ayutthaya',
+  'Bangkok',
+  'Chiang Mai',
+  'Koh Samui',
+  'Krabi',
+  'Pattaya',
+  'Phuket',
+]
+
 function getOrigin(): string {
   const headerStore = headers()
   const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
@@ -73,6 +113,34 @@ async function fetchInspect(productId: string): Promise<InspectResult> {
     return await response.json() as InspectResult
   } catch {
     return { ok: false, error: 'inspect_unavailable' }
+  }
+}
+
+async function fetchProductSearch(params: {
+  q?: string
+  city?: string
+  status?: string
+}): Promise<SearchResult> {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+
+  if (!secret) {
+    return { ok: false, error: 'search_not_configured' }
+  }
+
+  try {
+    const url = new URL(`${getOrigin()}/api/internal/product-enrichment/search`)
+    if (params.q) url.searchParams.set('q', params.q)
+    if (params.city) url.searchParams.set('city', params.city)
+    if (params.status) url.searchParams.set('status', params.status)
+
+    const response = await fetch(url.toString(), {
+      cache: 'no-store',
+      headers: { 'x-internal-enrichment-review-secret': secret },
+    })
+
+    return await response.json() as SearchResult
+  } catch {
+    return { ok: false, error: 'search_unavailable' }
   }
 }
 
@@ -187,20 +255,186 @@ function LookupForm({ defaultValue }: { defaultValue?: string }) {
   )
 }
 
+function SearchForm({
+  q,
+  city,
+  status,
+}: {
+  q: string
+  city: string
+  status: string
+}) {
+  return (
+    <form method="GET" className="space-y-2">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          name="q"
+          defaultValue={q}
+          placeholder="Keyword (optional)"
+          className="flex-1 rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-gray-500 focus:outline-none"
+        />
+        <select
+          name="city"
+          defaultValue={city}
+          className="rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-gray-500 focus:outline-none"
+        >
+          <option value="">All cities</option>
+          {THAILAND_CITIES.map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <select
+          name="status"
+          defaultValue={status || 'all'}
+          className="rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-gray-500 focus:outline-none"
+        >
+          <option value="all">All statuses</option>
+          <option value="missing">Missing</option>
+          <option value="reviewed">Reviewed</option>
+        </select>
+        <button
+          type="submit"
+          className="rounded bg-gray-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-gray-700"
+        >
+          Search
+        </button>
+      </div>
+    </form>
+  )
+}
+
+function ProductListRow({
+  row,
+  searchContext,
+}: {
+  row: SearchProductRow
+  searchContext: { q: string; city: string; status: string }
+}) {
+  const inspectUrl = (() => {
+    const params = new URLSearchParams({ productId: row.id })
+    if (searchContext.q) params.set('q', searchContext.q)
+    if (searchContext.city) params.set('city', searchContext.city)
+    if (searchContext.status) params.set('status', searchContext.status)
+    return `/internal/reviewed-enrichment?${params.toString()}`
+  })()
+
+  const priceDisplay = row.retailPrice
+    ? `${row.currency ?? ''} ${row.retailPrice}`.trim()
+    : null
+
+  return (
+    <tr className="border-t border-gray-100 hover:bg-gray-50">
+      <td className="px-3 py-2 font-mono text-xs text-gray-500">{row.id}</td>
+      <td className="px-3 py-2 text-sm text-gray-900">{row.title}</td>
+      <td className="px-3 py-2 text-sm text-gray-600">{row.city ?? '—'}</td>
+      <td className="px-3 py-2 text-xs text-gray-500">{row.location ?? '—'}</td>
+      <td className="px-3 py-2 text-xs text-gray-500">{priceDisplay ?? '—'}</td>
+      <td className="px-3 py-2">
+        {row.reviewedStatus === 'reviewed' ? (
+          <span className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">
+            Reviewed
+          </span>
+        ) : (
+          <span className="inline-block rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-800">
+            Missing
+          </span>
+        )}
+      </td>
+      <td className="px-3 py-2 text-xs text-gray-500">
+        {row.reviewedStatus === 'reviewed' ? (
+          <div>
+            {row.cleanedTitle && (
+              <div className="font-medium text-gray-700">{row.cleanedTitle}</div>
+            )}
+            {row.reviewedAt && (
+              <div className="text-gray-400">{row.reviewedAt.slice(0, 10)}</div>
+            )}
+          </div>
+        ) : (
+          <span className="italic text-gray-400">—</span>
+        )}
+      </td>
+      <td className="px-3 py-2">
+        <a
+          href={inspectUrl}
+          className="rounded bg-gray-800 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-700"
+        >
+          Inspect
+        </a>
+      </td>
+    </tr>
+  )
+}
+
+function ProductList({
+  products,
+  searchContext,
+}: {
+  products: SearchProductRow[]
+  searchContext: { q: string; city: string; status: string }
+}) {
+  if (products.length === 0) {
+    return (
+      <div className="rounded border border-gray-200 bg-white p-4 text-sm text-gray-500">
+        No products found matching the current filters.
+      </div>
+    )
+  }
+
+  return (
+    <div className="overflow-hidden rounded border border-gray-200 bg-white">
+      <div className="border-b border-gray-200 bg-gray-50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-600">
+        Products ({products.length})
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-xs font-semibold text-gray-400">
+              <th className="px-3 py-2">ID</th>
+              <th className="px-3 py-2">Title</th>
+              <th className="px-3 py-2">City</th>
+              <th className="px-3 py-2">Location</th>
+              <th className="px-3 py-2">Price</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Reviewed data</th>
+              <th className="px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map(row => (
+              <ProductListRow key={row.id} row={row} searchContext={searchContext} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 export default async function InternalEnrichmentConsolePage({ searchParams }: PageProps) {
   const isConfigured = Boolean(process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET)
   const productId = searchParams.productId?.trim() ?? ''
   const justSaved = searchParams.saved === '1'
+  const q = searchParams.q?.trim() ?? ''
+  const city = searchParams.city?.trim() ?? ''
+  const status = searchParams.status?.trim() ?? ''
 
-  let result: InspectResult | null = null
+  let inspectResult: InspectResult | null = null
+  let searchResult: SearchResult | null = null
 
-  if (isConfigured && productId) {
-    result = await fetchInspect(productId)
+  if (isConfigured) {
+    if (productId) {
+      inspectResult = await fetchInspect(productId)
+    }
+    searchResult = await fetchProductSearch({ q, city, status: status || 'all' })
   }
+
+  const searchContext = { q, city, status: status || 'all' }
 
   return (
     <main className="min-h-screen bg-gray-100 p-6 font-sans text-gray-900">
-      <div className="mx-auto max-w-2xl space-y-5">
+      <div className="mx-auto max-w-5xl space-y-5">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Internal console</p>
           <h1 className="mt-1 text-xl font-bold">Reviewed enrichment inspector</h1>
@@ -214,19 +448,36 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
           <NotConfigured />
         ) : (
           <>
-            <LookupForm defaultValue={productId || undefined} />
+            <SearchForm q={q} city={city} status={status || 'all'} />
 
-            {result && !result.ok && result.error === 'product_not_found' && productId && (
-              <ProductNotFound productId={productId} />
+            {searchResult && searchResult.ok && (
+              <ProductList products={searchResult.products} searchContext={searchContext} />
             )}
 
-            {result && !result.ok && result.error !== 'product_not_found' && (
+            {searchResult && !searchResult.ok && (
               <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                Error: {result.error}
+                Search error: {searchResult.error}
               </div>
             )}
 
-            {result && result.ok && (
+            <div className="border-t border-gray-200 pt-4">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Inspect by product ID
+              </p>
+              <LookupForm defaultValue={productId || undefined} />
+            </div>
+
+            {inspectResult && !inspectResult.ok && inspectResult.error === 'product_not_found' && productId && (
+              <ProductNotFound productId={productId} />
+            )}
+
+            {inspectResult && !inspectResult.ok && inspectResult.error !== 'product_not_found' && (
+              <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                Error: {inspectResult.error}
+              </div>
+            )}
+
+            {inspectResult && inspectResult.ok && (
               <div className="space-y-4">
                 {justSaved && (
                   <div className="rounded border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-800">
@@ -234,10 +485,10 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   </div>
                 )}
 
-                <ProductPanel product={result.product} />
+                <ProductPanel product={inspectResult.product} />
 
-                {result.reviewedEnrichment ? (
-                  <EnrichmentPanel enrichment={result.reviewedEnrichment} />
+                {inspectResult.reviewedEnrichment ? (
+                  <EnrichmentPanel enrichment={inspectResult.reviewedEnrichment} />
                 ) : (
                   <div className="rounded border border-gray-200 bg-white p-4 text-sm text-gray-500">
                     No reviewed enrichment yet for this product.
@@ -245,8 +496,8 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                 )}
 
                 <EditForm
-                  productId={result.product.id}
-                  enrichment={result.reviewedEnrichment}
+                  productId={inspectResult.product.id}
+                  enrichment={inspectResult.reviewedEnrichment}
                 />
               </div>
             )}
