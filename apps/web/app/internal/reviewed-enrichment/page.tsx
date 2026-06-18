@@ -76,6 +76,26 @@ type SearchError = {
 
 type SearchResult = SearchSuccess | SearchError
 
+type CoverageCity = {
+  city: string
+  total: number
+  reviewed: number
+  missing: number
+  pct: number
+}
+
+type CoverageData = {
+  total: number
+  reviewed: number
+  missing: number
+  pct: number
+  cities: CoverageCity[]
+}
+
+type CoverageResult =
+  | { ok: true; coverage: CoverageData }
+  | { ok: false; error: string }
+
 const THAILAND_CITIES = [
   'Ayutthaya',
   'Bangkok',
@@ -113,6 +133,22 @@ async function fetchInspect(productId: string): Promise<InspectResult> {
     return await response.json() as InspectResult
   } catch {
     return { ok: false, error: 'inspect_unavailable' }
+  }
+}
+
+async function fetchCoverage(): Promise<CoverageResult> {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+  if (!secret) return { ok: false, error: 'coverage_not_configured' }
+
+  try {
+    const url = `${getOrigin()}/api/internal/product-enrichment/coverage`
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers: { 'x-internal-enrichment-review-secret': secret },
+    })
+    return await response.json() as CoverageResult
+  } catch {
+    return { ok: false, error: 'coverage_unavailable' }
   }
 }
 
@@ -229,6 +265,97 @@ function ProductPanel({ product }: { product: ProductRow }) {
             </span>
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+function CoverageDashboard({ coverage }: { coverage: CoverageData }) {
+  return (
+    <div className="overflow-hidden rounded border border-gray-200 bg-white">
+      <div className="border-b border-gray-200 bg-gray-50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-600">
+        Coverage dashboard
+      </div>
+      <div className="space-y-4 p-4">
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { label: 'Total', value: coverage.total, color: 'gray' },
+            { label: 'Reviewed', value: coverage.reviewed, color: 'green' },
+            { label: 'Missing', value: coverage.missing, color: 'yellow' },
+            { label: 'Complete', value: `${coverage.pct}%`, color: coverage.pct >= 80 ? 'green' : 'yellow' },
+          ].map(({ label, value, color }) => (
+            <div
+              key={label}
+              className={`rounded border px-4 py-3 text-center ${
+                color === 'green'
+                  ? 'border-green-200 bg-green-50'
+                  : color === 'yellow'
+                  ? 'border-yellow-200 bg-yellow-50'
+                  : 'border-gray-200 bg-gray-50'
+              }`}
+            >
+              <div className={`text-2xl font-bold ${
+                color === 'green' ? 'text-green-800' : color === 'yellow' ? 'text-yellow-800' : 'text-gray-800'
+              }`}>{value}</div>
+              <div className="mt-0.5 text-xs font-semibold uppercase tracking-wider text-gray-500">{label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <a
+            href="?status=missing"
+            className="rounded border border-yellow-300 bg-yellow-50 px-3 py-1.5 text-xs font-semibold text-yellow-800 hover:bg-yellow-100"
+          >
+            View all missing
+          </a>
+          <a
+            href="?status=reviewed"
+            className="rounded border border-green-300 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-800 hover:bg-green-100"
+          >
+            View all reviewed
+          </a>
+        </div>
+
+        <div className="overflow-hidden rounded border border-gray-200">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-500">
+                <th className="px-3 py-2">City</th>
+                <th className="px-3 py-2 text-right">Total</th>
+                <th className="px-3 py-2 text-right">Reviewed</th>
+                <th className="px-3 py-2 text-right">Missing</th>
+                <th className="px-3 py-2 text-right">%</th>
+                <th className="px-3 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {coverage.cities.map(row => (
+                <tr key={row.city} className="border-t border-gray-100 hover:bg-gray-50">
+                  <td className="px-3 py-2 font-medium text-gray-900">{row.city}</td>
+                  <td className="px-3 py-2 text-right text-gray-600">{row.total}</td>
+                  <td className="px-3 py-2 text-right text-green-700">{row.reviewed}</td>
+                  <td className="px-3 py-2 text-right text-yellow-700">{row.missing}</td>
+                  <td className="px-3 py-2 text-right">
+                    <span className={`font-semibold ${row.pct >= 80 ? 'text-green-700' : row.pct > 0 ? 'text-yellow-700' : 'text-gray-400'}`}>
+                      {row.pct}%
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    {row.missing > 0 && (
+                      <a
+                        href={`?city=${encodeURIComponent(row.city)}&status=missing`}
+                        className="text-xs text-gray-500 underline hover:text-gray-800"
+                      >
+                        View missing
+                      </a>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
@@ -422,12 +549,16 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
 
   let inspectResult: InspectResult | null = null
   let searchResult: SearchResult | null = null
+  let coverageResult: CoverageResult | null = null
 
   if (isConfigured) {
     if (productId) {
       inspectResult = await fetchInspect(productId)
     }
-    searchResult = await fetchProductSearch({ q, city, status: status || 'all' })
+    ;[searchResult, coverageResult] = await Promise.all([
+      fetchProductSearch({ q, city, status: status || 'all' }),
+      fetchCoverage(),
+    ])
   }
 
   const searchContext = { q, city, status: status || 'all' }
@@ -448,6 +579,10 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
           <NotConfigured />
         ) : (
           <>
+            {coverageResult && coverageResult.ok && (
+              <CoverageDashboard coverage={coverageResult.coverage} />
+            )}
+
             <SearchForm q={q} city={city} status={status || 'all'} />
 
             {searchResult && searchResult.ok && (
