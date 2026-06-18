@@ -1,7 +1,7 @@
 import 'server-only'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { EditForm } from './EditForm'
+import { InspectEditor } from './InspectEditor'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -495,7 +495,7 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   </div>
                 )}
 
-                <EditForm
+                <InspectEditor
                   productId={inspectResult.product.id}
                   enrichment={inspectResult.reviewedEnrichment}
                 />
