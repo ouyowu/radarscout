@@ -14,6 +14,11 @@ type OpenWebuiConfig = {
   provider: 'openwebui'
 }
 
+type CloudflareAccessConfig = {
+  clientId: string
+  clientSecret: string
+}
+
 type OpenWebuiSuccessResponse = {
   choices?: Array<{
     message?: {
@@ -43,10 +48,25 @@ function readConfig(): OpenWebuiConfig | null {
   }
 }
 
-function buildHeaders(apiKey: string | null): HeadersInit {
+function readCloudflareAccessConfig(): CloudflareAccessConfig | null | 'partial' {
+  const clientId = process.env.CLOUDFLARE_ACCESS_CLIENT_ID?.trim() || null
+  const clientSecret = process.env.CLOUDFLARE_ACCESS_CLIENT_SECRET?.trim() || null
+
+  if (clientId && clientSecret) return { clientId, clientSecret }
+  if (!clientId && !clientSecret) return null
+  return 'partial'
+}
+
+function buildHeaders(apiKey: string | null, cfAccess: CloudflareAccessConfig | null): HeadersInit {
   return {
     'Content-Type': 'application/json',
     ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+    ...(cfAccess
+      ? {
+          'CF-Access-Client-Id': cfAccess.clientId,
+          'CF-Access-Client-Secret': cfAccess.clientSecret,
+        }
+      : {}),
   }
 }
 
@@ -83,13 +103,19 @@ export async function callOpenWebuiChat(
     return { ok: false, error: 'local_ai_not_configured' }
   }
 
+  const cfAccess = readCloudflareAccessConfig()
+
+  if (cfAccess === 'partial') {
+    return { ok: false, error: 'cloudflare_access_not_configured' }
+  }
+
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS)
 
   try {
     const response = await fetch(`${config.baseUrl}/api/chat/completions`, {
       method: 'POST',
-      headers: buildHeaders(config.apiKey),
+      headers: buildHeaders(config.apiKey, cfAccess),
       signal: controller.signal,
       body: JSON.stringify({
         model: config.model,
