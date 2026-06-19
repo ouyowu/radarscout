@@ -6,6 +6,7 @@ export type LocalAiError =
   | 'local_ai_not_configured'
   | 'local_ai_request_failed'
   | 'local_ai_invalid_response'
+  | 'cloudflare_access_not_configured'
 
 export type LocalAiTaskName =
   | 'cleanProductText'
