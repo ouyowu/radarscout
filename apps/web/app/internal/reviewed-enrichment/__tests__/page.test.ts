@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest'
 // It constructs the GET link used for Skip — no server action, no DB write.
 import { buildSkipHref } from '../EditForm'
 
+import { detectSourceMismatch, detectDraftMismatch } from '../qualityWarnings'
+
 describe('buildSkipHref — Skip link construction', () => {
   it('returns a URL with productId set to the next product', () => {
     const href = buildSkipHref('product_next')
@@ -134,5 +136,141 @@ describe('savedFrom redirect format', () => {
     expect(url.searchParams.has('saved')).toBe(false)
     expect(href).not.toContain('rawJson')
     expect(href).not.toContain('secret')
+  })
+})
+
+// ── Quality warning guardrails ─────────────────────────────────────────────
+
+describe('detectSourceMismatch', () => {
+  it('shows warning when source city is Phuket but title mentions Singapore', () => {
+    const warnings = detectSourceMismatch('Phuket', '6-Hours Private Singapore Customized Tour With Driver')
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('Phuket')
+    expect(warnings[0]).toContain('Singapore')
+  })
+
+  it('shows no warning when source city and title both mention Phuket', () => {
+    const warnings = detectSourceMismatch('Phuket', 'Half-day Phuket city tour')
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('shows no warning when source city is not a Thai destination', () => {
+    const warnings = detectSourceMismatch('Singapore', 'Singapore city tour')
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('shows no warning when city is null', () => {
+    const warnings = detectSourceMismatch(null, 'Singapore city tour')
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('shows no warning when title is null', () => {
+    const warnings = detectSourceMismatch('Phuket', null)
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('detects mismatch in location field when title is safe', () => {
+    const warnings = detectSourceMismatch('Bangkok', 'City tour', 'Kuala Lumpur area')
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('Bangkok')
+    expect(warnings[0]).toContain('Kuala Lumpur')
+  })
+
+  it('detects multiple suspicious terms in one title', () => {
+    const warnings = detectSourceMismatch('Chiang Mai', 'Tour visiting Bali and Jakarta')
+    expect(warnings).toHaveLength(2)
+  })
+
+  it('is case-insensitive for suspicious terms', () => {
+    const warnings = detectSourceMismatch('Phuket', 'Private tour in SINGAPORE')
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('Singapore')
+  })
+
+  it('detects all Thai city names as valid Thai destinations', () => {
+    const thaiCities = ['Bangkok', 'Phuket', 'Chiang Mai', 'Pattaya', 'Krabi', 'Koh Samui', 'Thailand']
+    for (const thaiCity of thaiCities) {
+      const warnings = detectSourceMismatch(thaiCity, 'Private Singapore tour')
+      expect(warnings.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('warning text does not contain rawJson or secrets', () => {
+    const warnings = detectSourceMismatch('Phuket', 'Singapore tour')
+    const serialized = JSON.stringify(warnings)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('secret')
+    expect(serialized).not.toContain('aiRaw')
+  })
+})
+
+describe('detectDraftMismatch', () => {
+  it('shows warning when AI draft cleanedTitle mentions Singapore while city is Phuket', () => {
+    const warnings = detectDraftMismatch('Phuket', { cleanedTitle: 'Private Singapore City Tour' })
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('destination')
+  })
+
+  it('shows no warning when AI draft cleanedTitle mentions Phuket while city is Phuket', () => {
+    const warnings = detectDraftMismatch('Phuket', { cleanedTitle: 'Best Phuket Beach Experience' })
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('detects mismatch in shortSummary', () => {
+    const warnings = detectDraftMismatch('Bangkok', {
+      cleanedTitle: 'City tour',
+      shortSummary: 'An experience in Kuala Lumpur.',
+    })
+    expect(warnings).toHaveLength(1)
+  })
+
+  it('detects mismatch in seoTitle', () => {
+    const warnings = detectDraftMismatch('Krabi', {
+      seoTitle: 'Best Tokyo Day Tour',
+    })
+    expect(warnings).toHaveLength(1)
+  })
+
+  it('detects mismatch in seoDescription', () => {
+    const warnings = detectDraftMismatch('Koh Samui', {
+      seoDescription: 'Explore Bali with a local guide.',
+    })
+    expect(warnings).toHaveLength(1)
+  })
+
+  it('shows no warning when city is not a Thai destination', () => {
+    const warnings = detectDraftMismatch('Singapore', { cleanedTitle: 'Singapore city tour' })
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('shows no warning when city is null', () => {
+    const warnings = detectDraftMismatch(null, { cleanedTitle: 'Singapore city tour' })
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('shows no warning when all draft fields are null', () => {
+    const warnings = detectDraftMismatch('Phuket', {
+      cleanedTitle: null,
+      shortSummary: null,
+      seoTitle: null,
+      seoDescription: null,
+    })
+    expect(warnings).toHaveLength(0)
+  })
+
+  it('returns at most one warning even when multiple suspicious terms appear', () => {
+    const warnings = detectDraftMismatch('Phuket', {
+      cleanedTitle: 'Bali and Jakarta Tour',
+      shortSummary: 'Explore Singapore and Tokyo.',
+    })
+    expect(warnings).toHaveLength(1)
+  })
+
+  it('warning text does not contain rawJson or secrets', () => {
+    const warnings = detectDraftMismatch('Phuket', { cleanedTitle: 'Singapore tour' })
+    const serialized = JSON.stringify(warnings)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('secret')
+    expect(serialized).not.toContain('aiRaw')
   })
 })

@@ -31,6 +31,7 @@ type Props = {
   enrichment: ReviewedEnrichment | null
   navigation: NavigationData | null
   searchContext: SearchContext
+  city?: string | null
 }
 
 function buildNavUrl(productId: string, searchContext: SearchContext): string {
@@ -93,7 +94,7 @@ function NavigationBar({
   )
 }
 
-export function InspectEditor({ productId, enrichment, navigation, searchContext }: Props) {
+export function InspectEditor({ productId, enrichment, navigation, searchContext, city }: Props) {
   const [selectedDraft, setSelectedDraft] = useState<CandidateDraft | null>(null)
   const [formKey, setFormKey] = useState(0)
 
@@ -107,7 +108,7 @@ export function InspectEditor({ productId, enrichment, navigation, searchContext
       {navigation && (
         <NavigationBar navigation={navigation} searchContext={searchContext} />
       )}
-      <CandidateSection productId={productId} onUseDraft={handleUseDraft} />
+      <CandidateSection productId={productId} onUseDraft={handleUseDraft} city={city} />
       <EditForm
         key={formKey}
         productId={productId}
