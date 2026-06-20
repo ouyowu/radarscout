@@ -149,11 +149,25 @@ model BokunProduct {
   supplier           BokunSupplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
   enrichment         BokunProductEnrichment?
   bookingInquiries   BookingInquiry[]
+  issueFlag          ProductIssueFlag?
 
   @@index([supplierId])
   @@index([city])
   @@index([active])
   @@index([title])
+}
+
+model ProductIssueFlag {
+  id          String       @id @default(cuid())
+  productId   String       @unique
+  reason      String
+  note        String?
+  flaggedBy   String
+  flaggedAt   DateTime     @default(now())
+  resolvedAt  DateTime?
+  product     BokunProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 model BokunProductEnrichment {

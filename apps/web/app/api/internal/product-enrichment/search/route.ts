@@ -29,6 +29,7 @@ export type SearchProductRow = {
   reviewedStatus: 'reviewed' | 'missing'
   cleanedTitle: string | null
   reviewedAt: string | null
+  isFlagged: boolean
 }
 
 const PRODUCT_SELECT = {
@@ -40,6 +41,9 @@ const PRODUCT_SELECT = {
   currency: true,
   enrichment: {
     select: { cleanedTitle: true, reviewedAt: true },
+  },
+  issueFlag: {
+    select: { id: true },
   },
 } as const
 
@@ -60,7 +64,7 @@ export async function GET(request: NextRequest) {
   const cityParam = params.get('city')?.trim() ?? ''
   const status = params.get('status')?.trim() ?? 'all'
 
-  if (!['all', 'missing', 'reviewed'].includes(status)) {
+  if (!['all', 'missing', 'reviewed', 'flagged'].includes(status)) {
     return NextResponse.json({ ok: false, error: 'invalid_status' }, { status: 400 })
   }
 
@@ -82,6 +86,7 @@ export async function GET(request: NextRequest) {
       retailPrice: { toString(): string } | null
       currency: string | null
       enrichment: { cleanedTitle: string | null; reviewedAt: Date | null } | null
+      issueFlag: { id: string } | null
     }>
 
     if (status === 'missing') {
@@ -94,6 +99,13 @@ export async function GET(request: NextRequest) {
     } else if (status === 'reviewed') {
       rows = await db.bokunProduct.findMany({
         where: { ...baseWhere, enrichment: { isNot: null } },
+        select: PRODUCT_SELECT,
+        orderBy: { title: 'asc' },
+        take: 25,
+      })
+    } else if (status === 'flagged') {
+      rows = await db.bokunProduct.findMany({
+        where: { ...baseWhere, issueFlag: { isNot: null } },
         select: PRODUCT_SELECT,
         orderBy: { title: 'asc' },
         take: 25,
@@ -129,6 +141,7 @@ export async function GET(request: NextRequest) {
       reviewedStatus: row.enrichment ? 'reviewed' : 'missing',
       cleanedTitle: row.enrichment?.cleanedTitle ?? null,
       reviewedAt: row.enrichment?.reviewedAt?.toISOString() ?? null,
+      isFlagged: row.issueFlag !== null,
     }))
 
     return NextResponse.json({ ok: true, products })

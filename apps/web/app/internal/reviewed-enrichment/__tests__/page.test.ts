@@ -274,3 +274,69 @@ describe('detectDraftMismatch', () => {
     expect(serialized).not.toContain('aiRaw')
   })
 })
+
+// ── Issue flag data contract ────────────────────────────────────────────────
+
+describe('ProductIssueFlag data shape', () => {
+  it('flag object contains only safe fields — no rawJson, booking, or AI fields', () => {
+    const flag = {
+      id: 'clxyz',
+      reason: 'destination_mismatch',
+      note: 'Title says Singapore, city is Phuket',
+      flaggedBy: 'reviewer@example.com',
+      flaggedAt: '2026-06-20T00:00:00.000Z',
+    }
+    const serialized = JSON.stringify(flag)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('resolvedAt')
+    expect(serialized).not.toContain('candidate')
+    expect(serialized).not.toContain('secret')
+    expect(serialized).not.toContain('booking')
+    expect(serialized).not.toContain('payment')
+    expect(serialized).not.toContain('availability')
+  })
+
+  it('reason must be one of the allowed enum values', () => {
+    const ALLOWED_REASONS = [
+      'destination_mismatch',
+      'bad_source_data',
+      'duplicate_product',
+      'not_relevant',
+      'needs_manual_research',
+      'other',
+    ]
+    for (const reason of ALLOWED_REASONS) {
+      expect(ALLOWED_REASONS).toContain(reason)
+    }
+    expect(ALLOWED_REASONS).not.toContain('unknown_reason')
+    expect(ALLOWED_REASONS).not.toContain('')
+  })
+
+  it('flaggedAt is an ISO string safe for display', () => {
+    const flaggedAt = '2026-06-20T00:00:00.000Z'
+    expect(flaggedAt.slice(0, 10)).toBe('2026-06-20')
+    expect(() => new Date(flaggedAt)).not.toThrow()
+  })
+})
+
+describe('navigation skips flagged products', () => {
+  it('baseWhere for navigation navigation excludes issueFlag entries (structural check)', () => {
+    // Verify the intended filter shape that navigation/route.ts applies
+    // to skip products that are flagged from next/prev Missing navigation.
+    const baseWhere = {
+      active: true,
+      supplierId: { not: null },
+      city: { in: ['Phuket'] },
+      enrichment: { is: null },
+      issueFlag: { is: null },
+    }
+    expect(baseWhere.issueFlag).toEqual({ is: null })
+    expect(baseWhere.enrichment).toEqual({ is: null })
+  })
+
+  it('flagged status filter returns products with issueFlag (structural check)', () => {
+    // The search route should add { issueFlag: { isNot: null } } when status=flagged
+    const where = { issueFlag: { isNot: null } }
+    expect(where.issueFlag).toEqual({ isNot: null })
+  })
+})

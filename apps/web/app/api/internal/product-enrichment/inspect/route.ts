@@ -62,7 +62,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ok: false, error: 'product_not_found' }, { status: 404 })
     }
 
-    const reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
+    const [reviewedEnrichment, issueFlag] = await Promise.all([
+      getReviewedEnrichmentByProductId(product.id),
+      db.productIssueFlag.findUnique({ where: { productId: product.id } }),
+    ])
 
     return NextResponse.json({
       ok: true,
@@ -75,6 +78,15 @@ export async function GET(request: NextRequest) {
         currency: product.currency,
       },
       reviewedEnrichment,
+      issueFlag: issueFlag
+        ? {
+            id: issueFlag.id,
+            reason: issueFlag.reason,
+            note: issueFlag.note,
+            flaggedBy: issueFlag.flaggedBy,
+            flaggedAt: issueFlag.flaggedAt.toISOString(),
+          }
+        : null,
     })
   } catch {
     return NextResponse.json(
