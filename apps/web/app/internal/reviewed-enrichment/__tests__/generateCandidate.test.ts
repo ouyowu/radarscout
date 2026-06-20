@@ -118,7 +118,7 @@ describe('generateCandidate server action', () => {
 
   // --- Local AI unavailable ---
 
-  it('returns candidate_failed when local AI is not configured', async () => {
+  it('preserves local_ai_not_configured from the candidate error field', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
@@ -137,6 +137,114 @@ describe('generateCandidate server action', () => {
     const result = await generateCandidate('product_abc')
 
     expect(result).toEqual({ ok: false, error: 'local_ai_not_configured' })
+  })
+
+  it('preserves local_ai_invalid_response from the candidate error field', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc', error: 'local_ai_invalid_response', warnings: [] },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc')
+
+    expect(result).toEqual({ ok: false, error: 'local_ai_invalid_response' })
+  })
+
+  it('preserves openwebui_bad_response from the candidate error field', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc', error: 'openwebui_bad_response', warnings: [] },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc')
+
+    expect(result).toEqual({ ok: false, error: 'openwebui_bad_response' })
+  })
+
+  it('preserves openwebui_model_not_found from the candidate error field', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc', error: 'openwebui_model_not_found', warnings: [] },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc')
+
+    expect(result).toEqual({ ok: false, error: 'openwebui_model_not_found' })
+  })
+
+  it('falls back to candidate_failed when candidate error field is absent', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc' },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc')
+
+    expect(result).toEqual({ ok: false, error: 'candidate_failed' })
+  })
+
+  it('falls back to candidate_failed when candidate error field is an unknown string', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc', error: 'some_model_invented_error' },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc')
+
+    expect(result).toEqual({ ok: false, error: 'candidate_failed' })
+  })
+
+  it('does not expose raw AI output, prompts, or secrets in any error response', async () => {
+    const errorCases = [
+      'local_ai_invalid_response',
+      'openwebui_timeout',
+      'openwebui_bad_response',
+    ]
+    for (const error of errorCases) {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          productId: 'product_abc',
+          candidate: { ok: false, productId: 'product_abc', error, warnings: [] },
+        }),
+      })
+
+      const result = await generateCandidate('product_abc')
+      const serialized = JSON.stringify(result)
+
+      expect(serialized).not.toContain(AI_PREVIEW_SECRET)
+      expect(serialized).not.toContain(ENRICHMENT_SECRET)
+      expect(serialized).not.toContain('aiRawResponse')
+      expect(serialized).not.toContain('rawJson')
+      vi.clearAllMocks()
+    }
   })
 
   it('returns preview_unavailable when fetch throws a network error', async () => {

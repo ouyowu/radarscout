@@ -119,6 +119,19 @@ export async function saveEnrichment(
   return { ok: true, redirectTo: `/internal/reviewed-enrichment?${redirectParams.toString()}` }
 }
 
+const ALLOWED_CANDIDATE_ERRORS = new Set<string>([
+  'local_ai_not_configured',
+  'local_ai_request_failed',
+  'local_ai_invalid_response',
+  'cloudflare_access_not_configured',
+  'cloudflare_access_forbidden',
+  'openwebui_unauthorized',
+  'openwebui_not_found',
+  'openwebui_model_not_found',
+  'openwebui_timeout',
+  'openwebui_bad_response',
+])
+
 export async function generateCandidate(productId: string): Promise<CandidateResult> {
   const enrichmentSecret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
   if (!enrichmentSecret) return { ok: false, error: 'not_configured' }
@@ -169,7 +182,11 @@ export async function generateCandidate(productId: string): Promise<CandidateRes
     if (!candidate) return { ok: false, error: 'preview_unavailable' }
 
     if (!candidate.ok) {
-      return { ok: false, error: candidate.error ?? 'candidate_failed' }
+      const safeError =
+        typeof candidate.error === 'string' && ALLOWED_CANDIDATE_ERRORS.has(candidate.error)
+          ? candidate.error
+          : 'candidate_failed'
+      return { ok: false, error: safeError }
     }
 
     return {

@@ -209,6 +209,75 @@ describe('POST /api/internal/product-enrichment/preview', () => {
     })
   })
 
+  it('passes through local_ai_invalid_response from candidate failure', async () => {
+    mockFindUnique.mockResolvedValue(PRODUCT)
+    mockGenerateProductEnrichmentCandidates.mockResolvedValue({
+      ok: false,
+      productId: 'product_123',
+      error: 'local_ai_invalid_response',
+      warnings: [],
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.candidate.ok).toBe(false)
+    expect(body.candidate.error).toBe('local_ai_invalid_response')
+  })
+
+  it('passes through openwebui_bad_response from candidate failure', async () => {
+    mockFindUnique.mockResolvedValue(PRODUCT)
+    mockGenerateProductEnrichmentCandidates.mockResolvedValue({
+      ok: false,
+      productId: 'product_123',
+      error: 'openwebui_bad_response',
+      warnings: [],
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.candidate.ok).toBe(false)
+    expect(body.candidate.error).toBe('openwebui_bad_response')
+  })
+
+  it('passes through openwebui_model_not_found from candidate failure', async () => {
+    mockFindUnique.mockResolvedValue(PRODUCT)
+    mockGenerateProductEnrichmentCandidates.mockResolvedValue({
+      ok: false,
+      productId: 'product_123',
+      error: 'openwebui_model_not_found',
+      warnings: [],
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.candidate.ok).toBe(false)
+    expect(body.candidate.error).toBe('openwebui_model_not_found')
+  })
+
+  it('does not expose raw AI output or secrets in candidate error responses', async () => {
+    mockFindUnique.mockResolvedValue(PRODUCT)
+    mockGenerateProductEnrichmentCandidates.mockResolvedValue({
+      ok: false,
+      productId: 'product_123',
+      error: 'openwebui_timeout',
+      warnings: [],
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const serialized = JSON.stringify(await response.json())
+
+    expect(serialized).not.toContain('preview-secret')
+    expect(serialized).not.toContain('aiRawResponse')
+    expect(serialized).not.toContain('aiPrompt')
+    expect(serialized).not.toContain('rawJson')
+  })
+
   it('does not return rawJson or forbidden generated fields', async () => {
     mockFindUnique.mockResolvedValue(PRODUCT)
     mockGenerateProductEnrichmentCandidates.mockResolvedValue({
