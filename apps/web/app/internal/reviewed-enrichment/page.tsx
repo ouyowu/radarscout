@@ -2,6 +2,7 @@ import 'server-only'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { InspectEditor } from './InspectEditor'
+import { ReviewChecklistPanel } from './ReviewChecklistPanel'
 import { detectSourceMismatch } from './qualityWarnings'
 import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
@@ -744,6 +745,8 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                     No reviewed enrichment yet for this product.
                   </div>
                 )}
+
+                <ReviewChecklistPanel hasWarnings={sourceWarnings.length > 0} />
 
                 <InspectEditor
                   productId={inspectResult.product.id}

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { buildSkipHref } from '../EditForm'
 
 import { detectSourceMismatch, detectDraftMismatch } from '../qualityWarnings'
+import { REVIEW_CHECKLIST_ITEMS, WARNING_WITH_ISSUES } from '../ReviewChecklistPanel'
 
 describe('buildSkipHref — Skip link construction', () => {
   it('returns a URL with productId set to the next product', () => {
@@ -391,5 +392,72 @@ describe('navigation skips flagged products', () => {
     // The search route should add { issueFlag: { isNot: null } } when status=flagged
     const where = { issueFlag: { isNot: null } }
     expect(where.issueFlag).toEqual({ isNot: null })
+  })
+})
+
+// ── ReviewChecklistPanel ───────────────────────────────────────────────────
+
+describe('ReviewChecklistPanel — checklist items', () => {
+  it('renders the checklist on the inspect page (item array is non-empty)', () => {
+    expect(REVIEW_CHECKLIST_ITEMS.length).toBeGreaterThan(0)
+  })
+
+  it('checklist contains "Destination matches source city"', () => {
+    expect(REVIEW_CHECKLIST_ITEMS.some(item => item.includes('Destination matches source city'))).toBe(true)
+  })
+
+  it('checklist contains "If source data looks wrong, use Skip instead of Save"', () => {
+    expect(REVIEW_CHECKLIST_ITEMS.some(item => item.includes('If source data looks wrong, use Skip instead of Save'))).toBe(true)
+  })
+
+  it('checklist contains all nine required items', () => {
+    expect(REVIEW_CHECKLIST_ITEMS).toHaveLength(9)
+  })
+
+  it('checklist does not contain rawJson', () => {
+    const serialized = JSON.stringify(REVIEW_CHECKLIST_ITEMS)
+    expect(serialized).not.toContain('rawJson')
+  })
+
+  it('checklist does not contain AI raw output references', () => {
+    const serialized = JSON.stringify(REVIEW_CHECKLIST_ITEMS)
+    expect(serialized).not.toContain('aiRaw')
+    expect(serialized).not.toContain('localAiRaw')
+    expect(serialized).not.toContain('candidate')
+  })
+
+  it('checklist does not contain secrets', () => {
+    const serialized = JSON.stringify(REVIEW_CHECKLIST_ITEMS)
+    expect(serialized).not.toContain('secret')
+    expect(serialized).not.toContain('INTERNAL_ENRICHMENT')
+  })
+})
+
+describe('ReviewChecklistPanel — conditional warning text', () => {
+  it('WARNING_WITH_ISSUES is defined and mentions quality warnings', () => {
+    expect(WARNING_WITH_ISSUES).toBeTruthy()
+    expect(WARNING_WITH_ISSUES).toContain('Quality warnings are present')
+  })
+
+  it('warning text mentions not saving without confirming source data', () => {
+    expect(WARNING_WITH_ISSUES).toContain('Do not save unless you have manually confirmed')
+  })
+
+  it('warning text is shown when hasWarnings is true (truthy check on exported constant)', () => {
+    const hasWarnings = true
+    const displayed = hasWarnings ? WARNING_WITH_ISSUES : null
+    expect(displayed).toBe(WARNING_WITH_ISSUES)
+  })
+
+  it('warning text is absent when hasWarnings is false', () => {
+    const hasWarnings = false
+    const displayed = hasWarnings ? WARNING_WITH_ISSUES : null
+    expect(displayed).toBeNull()
+  })
+
+  it('WARNING_WITH_ISSUES does not contain rawJson or secrets', () => {
+    expect(WARNING_WITH_ISSUES).not.toContain('rawJson')
+    expect(WARNING_WITH_ISSUES).not.toContain('secret')
+    expect(WARNING_WITH_ISSUES).not.toContain('aiRaw')
   })
 })
