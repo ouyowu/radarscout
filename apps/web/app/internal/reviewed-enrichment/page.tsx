@@ -14,6 +14,7 @@ type PageProps = {
   searchParams: {
     productId?: string
     saved?: string
+    savedFrom?: string
     prevSaved?: string
     prevSavedTitle?: string
     q?: string
@@ -579,6 +580,9 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
   const isConfigured = Boolean(process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET)
   const productId = searchParams.productId?.trim() ?? ''
   const justSaved = searchParams.saved === '1'
+  const savedFrom = /^[a-zA-Z0-9_-]{1,100}$/.test(searchParams.savedFrom ?? '')
+    ? (searchParams.savedFrom ?? null)
+    : null
   const prevSaved = /^[a-zA-Z0-9_-]{1,100}$/.test(searchParams.prevSaved ?? '')
     ? (searchParams.prevSaved ?? null)
     : null
@@ -627,6 +631,12 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
           <>
             {coverageResult && coverageResult.ok && (
               <CoverageDashboard coverage={coverageResult.coverage} />
+            )}
+
+            {!productId && savedFrom && (
+              <div className="rounded border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-800">
+                ✓ Enrichment saved. No more missing products in this filter.
+              </div>
             )}
 
             <SearchForm q={q} city={city} status={status || 'all'} />

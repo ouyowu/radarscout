@@ -40,7 +40,7 @@ const FIELD_CLASSES =
 
 const LABEL_CLASSES = 'block text-xs font-semibold text-gray-500'
 
-function buildSkipHref(nextProductId: string, searchContext?: SearchContext): string {
+export function buildSkipHref(nextProductId: string, searchContext?: SearchContext): string {
   const params = new URLSearchParams({ productId: nextProductId })
   if (searchContext?.q) params.set('q', searchContext.q)
   if (searchContext?.city) params.set('city', searchContext.city)
@@ -103,7 +103,9 @@ export function EditForm({ productId, enrichment, prefillValues, nextProductId, 
 
         {state?.ok && (
           <div className="rounded border border-green-200 bg-green-50 px-3 py-2 text-sm font-semibold text-green-800">
-            Enrichment saved. Redirecting…
+            {nextProductId
+              ? 'Enrichment saved. Loading next missing product…'
+              : 'Enrichment saved. No more missing products in this filter.'}
           </div>
         )}
 

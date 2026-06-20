@@ -61,13 +61,14 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
   // --- Default redirect (no nextProductId) ---
 
-  it('returns redirectTo with current product and saved=1 when no nextProductId is provided', async () => {
+  it('returns redirectTo pointing to the list with savedFrom when no nextProductId is provided', async () => {
     const result = await saveEnrichment(null, makeFormData(validFields()))
 
     expect(result?.ok).toBe(true)
     if (result?.ok) {
-      expect(result.redirectTo).toContain('productId=product_abc')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('productId=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
     expect(redirectMock).not.toHaveBeenCalled()
   })
@@ -104,7 +105,8 @@ describe('saveEnrichment — navigation and search context redirect', () => {
       expect(result.redirectTo).toContain('q=elephant')
       expect(result.redirectTo).toContain('city=Phuket')
       expect(result.redirectTo).toContain('status=missing')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
   })
 
@@ -149,7 +151,7 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
   // --- nextProductId safety validation ---
 
-  it('falls back to current product when nextProductId contains a slash', async () => {
+  it('falls back to list redirect when nextProductId contains a slash', async () => {
     const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: '../etc/passwd' })),
@@ -157,13 +159,14 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
     expect(result?.ok).toBe(true)
     if (result?.ok) {
-      expect(result.redirectTo).toContain('productId=product_abc')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('productId=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
       expect(result.redirectTo).not.toContain('passwd')
     }
   })
 
-  it('falls back to current product when nextProductId contains a space', async () => {
+  it('falls back to list redirect when nextProductId contains a space', async () => {
     const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: 'product bad id' })),
@@ -171,12 +174,13 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
     expect(result?.ok).toBe(true)
     if (result?.ok) {
-      expect(result.redirectTo).toContain('productId=product_abc')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('productId=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
   })
 
-  it('falls back to current product when nextProductId is empty string', async () => {
+  it('falls back to list redirect when nextProductId is empty string', async () => {
     const result = await saveEnrichment(
       null,
       makeFormData(validFields({ nextProductId: '' })),
@@ -184,8 +188,9 @@ describe('saveEnrichment — navigation and search context redirect', () => {
 
     expect(result?.ok).toBe(true)
     if (result?.ok) {
-      expect(result.redirectTo).toContain('productId=product_abc')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('productId=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
   })
 
@@ -248,13 +253,14 @@ describe('saveEnrichment — navigation and search context redirect', () => {
     }
   })
 
-  it('does not include prevSaved when redirecting to the same product with saved=1', async () => {
+  it('does not include prevSaved in the list redirect when there is no nextProductId', async () => {
     const result = await saveEnrichment(null, makeFormData(validFields()))
 
     expect(result?.ok).toBe(true)
     if (result?.ok) {
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
       expect(result.redirectTo).not.toContain('prevSaved')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
   })
 
