@@ -103,20 +103,24 @@ export async function saveEnrichment(
   }
 
   const useNextId = nextProductIdRaw && isSafeProductId(nextProductIdRaw)
-  const redirectId = useNextId ? nextProductIdRaw : productId
-  const redirectParams = new URLSearchParams({ productId: redirectId })
-  if (q) redirectParams.set('q', q)
-  if (city) redirectParams.set('city', city)
-  if (status) redirectParams.set('status', status)
-  if (!useNextId) {
-    redirectParams.set('saved', '1')
-  } else {
+
+  if (useNextId) {
+    const redirectParams = new URLSearchParams({ productId: nextProductIdRaw! })
+    if (q) redirectParams.set('q', q)
+    if (city) redirectParams.set('city', city)
+    if (status) redirectParams.set('status', status)
     redirectParams.set('prevSaved', productId)
     const cleanedTitle = formData.get('cleanedTitle')?.toString().trim() ?? ''
     if (cleanedTitle) redirectParams.set('prevSavedTitle', cleanedTitle)
+    return { ok: true, redirectTo: `/internal/reviewed-enrichment?${redirectParams.toString()}` }
   }
 
-  return { ok: true, redirectTo: `/internal/reviewed-enrichment?${redirectParams.toString()}` }
+  // No next Missing product — return to list with a success notice
+  const listParams = new URLSearchParams({ savedFrom: productId })
+  if (q) listParams.set('q', q)
+  if (city) listParams.set('city', city)
+  if (status) listParams.set('status', status)
+  return { ok: true, redirectTo: `/internal/reviewed-enrichment?${listParams.toString()}` }
 }
 
 const ALLOWED_CANDIDATE_ERRORS = new Set<string>([

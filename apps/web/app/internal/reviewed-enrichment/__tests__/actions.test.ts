@@ -125,14 +125,15 @@ describe('saveEnrichment server action', () => {
     expect(body.suggestedTags).toEqual([])
   })
 
-  it('returns ok:true with redirectTo containing productId and saved=1 on success', async () => {
+  it('returns ok:true with redirectTo pointing to list with savedFrom on success', async () => {
     const result = await saveEnrichment(null, makeFormData(validFields()))
 
     expect(result).not.toBeNull()
     expect(result!.ok).toBe(true)
     if (result?.ok) {
-      expect(result.redirectTo).toContain('productId=product_abc')
-      expect(result.redirectTo).toContain('saved=1')
+      expect(result.redirectTo).toContain('savedFrom=product_abc')
+      expect(result.redirectTo).not.toContain('productId=product_abc')
+      expect(result.redirectTo).not.toContain('saved=1')
     }
     expect(redirectMock).not.toHaveBeenCalled()
   })
