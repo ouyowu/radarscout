@@ -91,14 +91,14 @@ export async function GET(request: NextRequest) {
 
     if (status === 'missing') {
       rows = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { is: null } },
+        where: { ...baseWhere, enrichment: { is: null }, issueFlag: { is: null } },
         select: PRODUCT_SELECT,
         orderBy: { title: 'asc' },
         take: 25,
       })
     } else if (status === 'reviewed') {
       rows = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { isNot: null } },
+        where: { ...baseWhere, enrichment: { isNot: null }, issueFlag: { is: null } },
         select: PRODUCT_SELECT,
         orderBy: { title: 'asc' },
         take: 25,
@@ -111,9 +111,9 @@ export async function GET(request: NextRequest) {
         take: 25,
       })
     } else {
-      // status=all: missing enrichment first, then reviewed, max 25 total
+      // status=all: missing enrichment first, then reviewed, max 25 total; both exclude flagged
       const missing = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { is: null } },
+        where: { ...baseWhere, enrichment: { is: null }, issueFlag: { is: null } },
         select: PRODUCT_SELECT,
         orderBy: { title: 'asc' },
         take: 25,
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       const reviewed =
         remaining > 0
           ? await db.bokunProduct.findMany({
-              where: { ...baseWhere, enrichment: { isNot: null } },
+              where: { ...baseWhere, enrichment: { isNot: null }, issueFlag: { is: null } },
               select: PRODUCT_SELECT,
               orderBy: { title: 'asc' },
               take: remaining,

@@ -319,6 +319,59 @@ describe('ProductIssueFlag data shape', () => {
   })
 })
 
+describe('inspect response includes issueFlag (internal only)', () => {
+  it('inspect success shape includes issueFlag field', () => {
+    type InspectSuccess = {
+      ok: true
+      product: { id: string; title: string; city: string | null }
+      reviewedEnrichment: unknown | null
+      issueFlag: {
+        id: string
+        reason: string
+        note: string | null
+        flaggedBy: string
+        flaggedAt: string
+      } | null
+    }
+
+    const sample: InspectSuccess = {
+      ok: true,
+      product: { id: 'prod-1', title: 'Phuket Tour', city: 'Phuket' },
+      reviewedEnrichment: null,
+      issueFlag: {
+        id: 'flag-1',
+        reason: 'destination_mismatch',
+        note: 'Title says Singapore',
+        flaggedBy: 'reviewer@example.com',
+        flaggedAt: '2026-06-20T00:00:00.000Z',
+      },
+    }
+
+    expect(sample.issueFlag).not.toBeNull()
+    expect(sample.issueFlag?.reason).toBe('destination_mismatch')
+    const serialized = JSON.stringify(sample)
+    expect(serialized).not.toContain('resolvedAt')
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('secret')
+  })
+
+  it('inspect issueFlag can be null when product is not flagged', () => {
+    type InspectSuccess = {
+      ok: true
+      product: { id: string }
+      reviewedEnrichment: null
+      issueFlag: null
+    }
+    const sample: InspectSuccess = {
+      ok: true,
+      product: { id: 'prod-2' },
+      reviewedEnrichment: null,
+      issueFlag: null,
+    }
+    expect(sample.issueFlag).toBeNull()
+  })
+})
+
 describe('navigation skips flagged products', () => {
   it('baseWhere for navigation navigation excludes issueFlag entries (structural check)', () => {
     // Verify the intended filter shape that navigation/route.ts applies
