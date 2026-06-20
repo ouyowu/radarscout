@@ -153,6 +153,7 @@ export async function draftProductEnrichment(input: {
   location: string | null
 }): Promise<DraftProductEnrichmentResult> {
   const outputShape = `{
+  "ok": true,
   "cleanedTitle": "human-readable title — string or null, max 120 chars",
   "shortSummary": "1-sentence experience description — string or null, max 280 chars",
   "suggestedTags": ["3 to 8 short topic tags — never empty if any input is usable"],

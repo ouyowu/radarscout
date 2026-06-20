@@ -41,6 +41,32 @@ describe('generateProductEnrichmentCandidates', () => {
     vi.clearAllMocks()
   })
 
+  it('returns local_ai_invalid_response when draftProductEnrichment returns ok:false without error field', async () => {
+    mockDraftProductEnrichment.mockResolvedValue({ ok: false })
+
+    const result = await generateProductEnrichmentCandidates(BASE_INPUT)
+
+    expect(result).toEqual({
+      ok: false,
+      productId: 'prod_123',
+      error: 'local_ai_invalid_response',
+      warnings: [],
+    })
+  })
+
+  it('returns local_ai_invalid_response when draftProductEnrichment returns ok:false with unknown error string', async () => {
+    mockDraftProductEnrichment.mockResolvedValue({ ok: false, error: 'some_model_invented_error', warnings: [] })
+
+    const result = await generateProductEnrichmentCandidates(BASE_INPUT)
+
+    expect(result).toEqual({
+      ok: false,
+      productId: 'prod_123',
+      error: 'local_ai_invalid_response',
+      warnings: [],
+    })
+  })
+
   it('returns local_ai_not_configured when local AI is not configured', async () => {
     mockDraftProductEnrichment.mockResolvedValue({
       ok: false,

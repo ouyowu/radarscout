@@ -3,6 +3,25 @@ import 'server-only'
 import { draftProductEnrichment } from './tasks'
 import type { DraftProductEnrichmentResult, LocalAiError } from './types'
 
+const SAFE_AI_ERRORS = new Set<string>([
+  'local_ai_not_configured',
+  'local_ai_request_failed',
+  'local_ai_invalid_response',
+  'cloudflare_access_not_configured',
+  'cloudflare_access_forbidden',
+  'openwebui_unauthorized',
+  'openwebui_not_found',
+  'openwebui_model_not_found',
+  'openwebui_timeout',
+  'openwebui_bad_response',
+])
+
+function toSafeError(code: unknown): LocalAiError {
+  return typeof code === 'string' && SAFE_AI_ERRORS.has(code)
+    ? (code as LocalAiError)
+    : 'local_ai_invalid_response'
+}
+
 const MAX_TITLE_LENGTH = 120
 const MAX_SUMMARY_LENGTH = 280
 const MAX_SEO_TITLE_LENGTH = 70
@@ -155,8 +174,8 @@ export async function generateProductEnrichmentCandidates(
     return {
       ok: false,
       productId: input.id,
-      error: enrichment.error,
-      warnings: enrichment.warnings,
+      error: toSafeError((enrichment as { error?: unknown }).error),
+      warnings: [],
     }
   }
 
