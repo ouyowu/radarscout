@@ -1,16 +1,7 @@
 import 'server-only'
 
-import {
-  cleanProductText,
-  draftSeoSnippet,
-  suggestProductTags,
-} from './tasks'
-import type {
-  CleanProductTextResult,
-  DraftSeoSnippetResult,
-  LocalAiError,
-  SuggestProductTagsResult,
-} from './types'
+import { draftProductEnrichment } from './tasks'
+import type { DraftProductEnrichmentResult, LocalAiError } from './types'
 
 const MAX_TITLE_LENGTH = 120
 const MAX_SUMMARY_LENGTH = 280
@@ -61,21 +52,9 @@ export type ProductEnrichmentCandidate =
       warnings: string[]
     }
 
-function isCleanProductTextSuccess(
-  result: CleanProductTextResult,
-): result is Extract<CleanProductTextResult, { ok: true }> {
-  return result.ok
-}
-
-function isSuggestProductTagsSuccess(
-  result: SuggestProductTagsResult,
-): result is Extract<SuggestProductTagsResult, { ok: true }> {
-  return result.ok
-}
-
-function isDraftSeoSnippetSuccess(
-  result: DraftSeoSnippetResult,
-): result is Extract<DraftSeoSnippetResult, { ok: true }> {
+function isDraftProductEnrichmentSuccess(
+  result: DraftProductEnrichmentResult,
+): result is Extract<DraftProductEnrichmentResult, { ok: true }> {
   return result.ok
 }
 
@@ -142,90 +121,81 @@ function mergeMissingFacts(...missingGroups: string[][]): string[] {
   return normalizeStringArray(missingGroups.flat())
 }
 
+// Builds a conservative summary fallback from source fields only — never invents facts.
+function buildSummaryFallback(input: ProductEnrichmentInput): string | null {
+  const title = input.title?.trim()
+  if (!title) return null
+  const place = (input.destination ?? input.location)?.trim()
+  return place ? `${title} in ${place}.` : `${title}.`
+}
+
+// Builds a conservative SEO description fallback from source fields only.
+function buildSeoDescriptionFallback(input: ProductEnrichmentInput): string | null {
+  const title = input.title?.trim()
+  if (!title) return null
+  const place = (input.destination ?? input.location)?.trim()
+  return place ? `${title} — an experience in ${place}.` : `${title}.`
+}
+
 export async function generateProductEnrichmentCandidates(
   input: ProductEnrichmentInput,
 ): Promise<ProductEnrichmentCandidate> {
+  // supplierName is deliberately excluded — never passed to AI
   const safeInput = {
-    productId: input.id,
     title: input.title,
     description: input.description,
     excerpt: input.excerpt,
     destination: input.destination,
     location: input.location,
-    supplierName: input.supplierName,
   }
 
-  const [cleaned, tags, seo] = await Promise.all([
-    cleanProductText({
-      title: safeInput.title,
-      description: safeInput.description,
-      excerpt: safeInput.excerpt,
-    }),
-    suggestProductTags({
-      title: safeInput.title,
-      description: safeInput.description ?? safeInput.excerpt,
-      existingTags: [],
-    }),
-    draftSeoSnippet({
-      title: safeInput.title,
-      description: safeInput.description ?? safeInput.excerpt,
-      destination: safeInput.destination,
-    }),
-  ])
+  const enrichment = await draftProductEnrichment(safeInput)
 
-  if (!isCleanProductTextSuccess(cleaned)) {
+  if (!isDraftProductEnrichmentSuccess(enrichment)) {
     return {
       ok: false,
-      productId: safeInput.productId,
-      error: cleaned.error,
-      warnings: cleaned.warnings,
+      productId: input.id,
+      error: enrichment.error,
+      warnings: enrichment.warnings,
     }
   }
 
-  if (!isSuggestProductTagsSuccess(tags)) {
-    return {
-      ok: false,
-      productId: safeInput.productId,
-      error: tags.error,
-      warnings: mergeWarnings(cleaned.warnings, tags.warnings),
-    }
-  }
-
-  if (!isDraftSeoSnippetSuccess(seo)) {
-    return {
-      ok: false,
-      productId: safeInput.productId,
-      error: seo.error,
-      warnings: mergeWarnings(cleaned.warnings, tags.warnings, seo.warnings),
-    }
-  }
-
-  const forbiddenKeys = [
-    ...findForbiddenKeys(cleaned),
-    ...findForbiddenKeys(tags),
-    ...findForbiddenKeys(seo),
-  ]
-
+  const forbiddenKeys = findForbiddenKeys(enrichment)
   const warnings = mergeWarnings(
-    cleaned.warnings,
-    tags.warnings,
-    seo.warnings,
-    forbiddenKeys.length > 0 ? [`forbidden generated fields ignored: ${normalizeStringArray(forbiddenKeys).join(', ')}`] : [],
+    enrichment.warnings,
+    forbiddenKeys.length > 0
+      ? [`forbidden generated fields ignored: ${normalizeStringArray(forbiddenKeys).join(', ')}`]
+      : [],
   )
+
+  let shortSummary = clamp(enrichment.shortSummary, MAX_SUMMARY_LENGTH)
+  let seoDescription = clamp(enrichment.seoDescription, MAX_SEO_DESCRIPTION_LENGTH)
+
+  if (!shortSummary) {
+    const fallback = buildSummaryFallback(input)
+    if (fallback) {
+      shortSummary = clamp(fallback, MAX_SUMMARY_LENGTH)
+      warnings.push('summary_fallback_used')
+    }
+  }
+
+  if (!seoDescription) {
+    const fallback = buildSeoDescriptionFallback(input)
+    if (fallback) {
+      seoDescription = clamp(fallback, MAX_SEO_DESCRIPTION_LENGTH)
+      warnings.push('seo_description_fallback_used')
+    }
+  }
 
   return {
     ok: true,
-    productId: safeInput.productId,
-    cleanedTitle: clamp(cleaned.title, MAX_TITLE_LENGTH),
-    shortSummary: clamp(cleaned.summary, MAX_SUMMARY_LENGTH),
-    suggestedTags: normalizeTags(tags.tags),
-    seoTitle: clamp(seo.title, MAX_SEO_TITLE_LENGTH),
-    seoDescription: clamp(seo.metaDescription, MAX_SEO_DESCRIPTION_LENGTH),
-    missingFacts: mergeMissingFacts(
-      cleaned.missingFacts,
-      tags.missingFacts,
-      seo.missingFacts,
-    ),
+    productId: input.id,
+    cleanedTitle: clamp(enrichment.cleanedTitle, MAX_TITLE_LENGTH),
+    shortSummary,
+    suggestedTags: normalizeTags(enrichment.suggestedTags),
+    seoTitle: clamp(enrichment.seoTitle, MAX_SEO_TITLE_LENGTH),
+    seoDescription,
+    missingFacts: mergeMissingFacts(enrichment.missingFacts),
     warnings,
   }
 }

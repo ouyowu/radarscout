@@ -4,6 +4,7 @@ import { callOpenWebuiChat } from './openWebuiClient'
 import {
   CleanProductTextResult,
   DraftCodexTaskResult,
+  DraftProductEnrichmentResult,
   DraftSeoSnippetResult,
   LocalAiError,
   LocalAiTaskBaseResult,
@@ -141,6 +142,39 @@ export async function summarizeProjectDocument(input: {
     'summarizeProjectDocument',
     input,
     '{"ok":true,"summary":string|null,"keyPoints":string[],"missingFacts":string[],"warnings":string[]}',
+  )
+}
+
+export async function draftProductEnrichment(input: {
+  title: string | null
+  description: string | null
+  excerpt: string | null
+  destination: string | null
+  location: string | null
+}): Promise<DraftProductEnrichmentResult> {
+  const outputShape = `{
+  "cleanedTitle": "human-readable title — string or null, max 120 chars",
+  "shortSummary": "1-sentence experience description — string or null, max 280 chars",
+  "suggestedTags": ["3 to 8 short topic tags — never empty if any input is usable"],
+  "seoTitle": "search-optimised page title — string or null, max 70 chars",
+  "seoDescription": "meta description — string or null, max 180 chars",
+  "missingFacts": ["facts that would improve the content"],
+  "warnings": ["concerns about input quality or gaps"]
+}
+
+Field rules:
+- cleanedTitle: max 120 chars. Only null if title field is completely absent.
+- shortSummary: max 280 chars, exactly 1 sentence. Only null if no usable input exists at all.
+- suggestedTags: return 3-8 tags as a JSON array. Never return an empty array if any title or description is present.
+- seoTitle: max 70 chars. Only null if title field is completely absent.
+- seoDescription: max 180 chars. Only null if no usable input exists at all.
+- Prefer concise factual wording over null. Use null only when genuinely impossible.
+- When using null, add a warning entry explaining which field is missing and why.`
+
+  return runJsonTask<Extract<DraftProductEnrichmentResult, { ok: true }>>(
+    'draftProductEnrichment',
+    input,
+    outputShape,
   )
 }
 

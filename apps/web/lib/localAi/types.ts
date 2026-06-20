@@ -21,6 +21,7 @@ export type LocalAiTaskName =
   | 'draftSeoSnippet'
   | 'summarizeProjectDocument'
   | 'draftCodexTask'
+  | 'draftProductEnrichment'
 
 export type LocalAiTaskBaseResult = {
   ok: boolean
@@ -89,6 +90,19 @@ export type DraftCodexTaskResult =
       missingFacts: string[]
       warnings: string[]
     })
+  | LocalAiTaskErrorResult
+
+export type DraftProductEnrichmentResult =
+  | {
+      ok: true
+      cleanedTitle: string | null
+      shortSummary: string | null
+      suggestedTags: string[]
+      seoTitle: string | null
+      seoDescription: string | null
+      missingFacts: string[]
+      warnings: string[]
+    }
   | LocalAiTaskErrorResult
 
 export type OpenWebuiResponseFormat = 'json_object' | 'text'
