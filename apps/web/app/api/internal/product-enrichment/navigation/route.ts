@@ -74,6 +74,7 @@ export async function GET(request: NextRequest) {
       supplierId: { not: null as string | null },
       city: { in: cityFilter ? [cityFilter] : THAILAND_CITIES },
       enrichment: { is: null },
+      issueFlag: { is: null },
       ...(q ? { title: { contains: q, mode: 'insensitive' as const } } : {}),
     }
 

@@ -223,4 +223,17 @@ describe('GET /api/products/[id]', () => {
     expect(body.product).toBeNull()
     expect(body.error).toBe('PRODUCT_DETAIL_UNAVAILABLE')
   })
+
+  it('does not expose issueFlag in the public product response', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const serialized = JSON.stringify(await response.json())
+
+    expect(serialized).not.toContain('issueFlag')
+    expect(serialized).not.toContain('flaggedBy')
+    expect(serialized).not.toContain('flaggedAt')
+    expect(serialized).not.toContain('resolvedAt')
+  })
 })

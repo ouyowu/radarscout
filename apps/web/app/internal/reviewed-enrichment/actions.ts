@@ -208,3 +208,99 @@ export async function generateCandidate(productId: string): Promise<CandidateRes
     return { ok: false, error: 'preview_unavailable' }
   }
 }
+
+const ISSUE_REASONS = new Set([
+  'destination_mismatch',
+  'bad_source_data',
+  'duplicate_product',
+  'not_relevant',
+  'needs_manual_research',
+  'other',
+])
+
+export type FlagState =
+  | { ok: true }
+  | { ok: false; error: string }
+  | null
+
+export async function flagProduct(
+  _prevState: FlagState,
+  formData: FormData,
+): Promise<FlagState> {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+  if (!secret) return { ok: false, error: 'not_configured' }
+
+  const productId = formData.get('productId')?.toString().trim() ?? ''
+  if (!productId || !/^[a-zA-Z0-9_-]{1,100}$/.test(productId)) {
+    return { ok: false, error: 'invalid_product_id' }
+  }
+
+  const reason = formData.get('reason')?.toString().trim() ?? ''
+  if (!ISSUE_REASONS.has(reason)) {
+    return { ok: false, error: 'invalid_reason' }
+  }
+
+  const flaggedBy = formData.get('flaggedBy')?.toString().trim() ?? ''
+  if (!flaggedBy || flaggedBy.length > 100) {
+    return { ok: false, error: 'invalid_flagged_by' }
+  }
+
+  const noteRaw = formData.get('note')?.toString().trim() ?? ''
+  const note = noteRaw.length > 0 ? noteRaw.slice(0, 500) : ''
+
+  try {
+    const body: Record<string, string> = { productId, reason, flaggedBy }
+    if (note) body.note = note
+
+    const response = await fetch(
+      `${getOrigin()}/api/internal/product-enrichment/flag`,
+      {
+        method: 'POST',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-internal-enrichment-review-secret': secret,
+        },
+        body: JSON.stringify(body),
+      },
+    )
+    const data = await response.json() as { ok: boolean; error?: string }
+    if (!response.ok || !data.ok) return { ok: false, error: data.error ?? 'flag_failed' }
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'flag_unavailable' }
+  }
+}
+
+export async function clearProductFlag(
+  _prevState: FlagState,
+  formData: FormData,
+): Promise<FlagState> {
+  const secret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
+  if (!secret) return { ok: false, error: 'not_configured' }
+
+  const productId = formData.get('productId')?.toString().trim() ?? ''
+  if (!productId || !/^[a-zA-Z0-9_-]{1,100}$/.test(productId)) {
+    return { ok: false, error: 'invalid_product_id' }
+  }
+
+  try {
+    const response = await fetch(
+      `${getOrigin()}/api/internal/product-enrichment/flag`,
+      {
+        method: 'DELETE',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-internal-enrichment-review-secret': secret,
+        },
+        body: JSON.stringify({ productId }),
+      },
+    )
+    const data = await response.json() as { ok: boolean; error?: string }
+    if (!response.ok || !data.ok) return { ok: false, error: data.error ?? 'clear_failed' }
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'clear_unavailable' }
+  }
+}

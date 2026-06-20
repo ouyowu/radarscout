@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CandidateSection } from './CandidateSection'
 import { EditForm } from './EditForm'
+import { IssueFlagPanel } from './IssueFlagPanel'
 import type { CandidateDraft } from './actions'
 
 type ReviewedEnrichment = {
@@ -26,12 +27,21 @@ type SearchContext = {
   status: string
 }
 
+type IssueFlagData = {
+  id: string
+  reason: string
+  note: string | null
+  flaggedBy: string
+  flaggedAt: string
+}
+
 type Props = {
   productId: string
   enrichment: ReviewedEnrichment | null
   navigation: NavigationData | null
   searchContext: SearchContext
   city?: string | null
+  issueFlag?: IssueFlagData | null
 }
 
 function buildNavUrl(productId: string, searchContext: SearchContext): string {
@@ -94,7 +104,7 @@ function NavigationBar({
   )
 }
 
-export function InspectEditor({ productId, enrichment, navigation, searchContext, city }: Props) {
+export function InspectEditor({ productId, enrichment, navigation, searchContext, city, issueFlag }: Props) {
   const [selectedDraft, setSelectedDraft] = useState<CandidateDraft | null>(null)
   const [formKey, setFormKey] = useState(0)
 
@@ -109,6 +119,7 @@ export function InspectEditor({ productId, enrichment, navigation, searchContext
         <NavigationBar navigation={navigation} searchContext={searchContext} />
       )}
       <CandidateSection productId={productId} onUseDraft={handleUseDraft} city={city} />
+      <IssueFlagPanel productId={productId} issueFlag={issueFlag ?? null} />
       <EditForm
         key={formKey}
         productId={productId}

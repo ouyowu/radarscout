@@ -43,10 +43,19 @@ type ReviewedEnrichment = {
   reviewedAt: string | null
 }
 
+type IssueFlag = {
+  id: string
+  reason: string
+  note: string | null
+  flaggedBy: string
+  flaggedAt: string
+}
+
 type InspectSuccess = {
   ok: true
   product: ProductRow
   reviewedEnrichment: ReviewedEnrichment | null
+  issueFlag: IssueFlag | null
 }
 
 type InspectError = {
@@ -66,6 +75,7 @@ type SearchProductRow = {
   reviewedStatus: 'reviewed' | 'missing'
   cleanedTitle: string | null
   reviewedAt: string | null
+  isFlagged: boolean
 }
 
 type SearchSuccess = {
@@ -474,6 +484,7 @@ function SearchForm({
           <option value="all">All statuses</option>
           <option value="missing">Missing</option>
           <option value="reviewed">Reviewed</option>
+          <option value="flagged">Flagged</option>
         </select>
         <button
           type="submit"
@@ -513,15 +524,22 @@ function ProductListRow({
       <td className="px-3 py-2 text-xs text-gray-500">{row.location ?? '—'}</td>
       <td className="px-3 py-2 text-xs text-gray-500">{priceDisplay ?? '—'}</td>
       <td className="px-3 py-2">
-        {row.reviewedStatus === 'reviewed' ? (
-          <span className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">
-            Reviewed
-          </span>
-        ) : (
-          <span className="inline-block rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-800">
-            Missing
-          </span>
-        )}
+        <div className="flex flex-wrap gap-1">
+          {row.reviewedStatus === 'reviewed' ? (
+            <span className="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">
+              Reviewed
+            </span>
+          ) : (
+            <span className="inline-block rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-800">
+              Missing
+            </span>
+          )}
+          {row.isFlagged && (
+            <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800">
+              Flagged
+            </span>
+          )}
+        </div>
       </td>
       <td className="px-3 py-2 text-xs text-gray-500">
         {row.reviewedStatus === 'reviewed' ? (
@@ -732,6 +750,7 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   navigation={navigationResult?.ok ? (navigationResult as NavigationSuccess) : null}
                   searchContext={searchContext}
                   city={inspectResult.product.city}
+                  issueFlag={inspectResult.issueFlag}
                 />
               </div>
             )}

@@ -48,6 +48,7 @@ function makeProductRow(overrides: Record<string, unknown> = {}) {
     retailPrice: { toString: () => '49.00' },
     currency: 'USD',
     enrichment: null,
+    issueFlag: null,
     ...overrides,
   }
 }
@@ -264,6 +265,7 @@ describe('GET /api/internal/product-enrichment/search', () => {
     expect(dbMock.bokunProduct.findMany).toHaveBeenCalledOnce()
     const callWhere = dbMock.bokunProduct.findMany.mock.calls[0][0].where
     expect(callWhere.enrichment).toEqual({ is: null })
+    expect(callWhere.issueFlag).toEqual({ is: null })
   })
 
   it('filters by existing enrichment when status=reviewed', async () => {
@@ -277,6 +279,7 @@ describe('GET /api/internal/product-enrichment/search', () => {
     expect(dbMock.bokunProduct.findMany).toHaveBeenCalledOnce()
     const callWhere = dbMock.bokunProduct.findMany.mock.calls[0][0].where
     expect(callWhere.enrichment).toEqual({ isNot: null })
+    expect(callWhere.issueFlag).toEqual({ is: null })
   })
 
   it('makes two DB calls for status=all to get missing-first ordering', async () => {
@@ -290,7 +293,41 @@ describe('GET /api/internal/product-enrichment/search', () => {
       c => c[0].where,
     )
     expect(firstWhere.enrichment).toEqual({ is: null })
+    expect(firstWhere.issueFlag).toEqual({ is: null })
     expect(secondWhere.enrichment).toEqual({ isNot: null })
+    expect(secondWhere.issueFlag).toEqual({ is: null })
+  })
+
+  it('filters by issueFlag: { isNot: null } when status=flagged', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findMany.mockResolvedValue([makeProductRow({ issueFlag: { id: 'flag-1' } })])
+
+    await GET(makeRequest({ status: 'flagged' }, VALID_SECRET))
+
+    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledOnce()
+    const callWhere = dbMock.bokunProduct.findMany.mock.calls[0][0].where
+    expect(callWhere.issueFlag).toEqual({ isNot: null })
+    expect(callWhere).not.toHaveProperty('enrichment')
+  })
+
+  it('returns isFlagged:true for products with an issueFlag', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findMany.mockResolvedValue([makeProductRow({ issueFlag: { id: 'flag-1' } })])
+
+    const response = await GET(makeRequest({ status: 'flagged' }, VALID_SECRET))
+    const body = await response.json()
+
+    expect(body.products[0].isFlagged).toBe(true)
+  })
+
+  it('returns isFlagged:false for products with no issueFlag', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findMany.mockResolvedValue([makeProductRow({ issueFlag: null })])
+
+    const response = await GET(makeRequest({ status: 'missing' }, VALID_SECRET))
+    const body = await response.json()
+
+    expect(body.products[0].isFlagged).toBe(false)
   })
 
   it('puts missing products before reviewed products in status=all response', async () => {
