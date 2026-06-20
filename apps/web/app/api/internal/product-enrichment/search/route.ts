@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,7 +33,7 @@ export type SearchProductRow = {
   isFlagged: boolean
 }
 
-const PRODUCT_SELECT = {
+const PRODUCT_SELECT_BASE = {
   id: true,
   title: true,
   city: true,
@@ -42,6 +43,10 @@ const PRODUCT_SELECT = {
   enrichment: {
     select: { cleanedTitle: true, reviewedAt: true },
   },
+} as const
+
+const PRODUCT_SELECT_WITH_FLAG = {
+  ...PRODUCT_SELECT_BASE,
   issueFlag: {
     select: { id: true },
   },
@@ -64,6 +69,12 @@ export async function GET(request: NextRequest) {
   const cityParam = params.get('city')?.trim() ?? ''
   const status = params.get('status')?.trim() ?? 'all'
 
+  const flagsEnabled = isIssueFlagsEnabled()
+
+  if (!flagsEnabled && status === 'flagged') {
+    return NextResponse.json({ ok: true, products: [] })
+  }
+
   if (!['all', 'missing', 'reviewed', 'flagged'].includes(status)) {
     return NextResponse.json({ ok: false, error: 'invalid_status' }, { status: 400 })
   }
@@ -77,6 +88,8 @@ export async function GET(request: NextRequest) {
     ...(q ? { title: { contains: q, mode: 'insensitive' as const } } : {}),
   }
 
+  const productSelect = flagsEnabled ? PRODUCT_SELECT_WITH_FLAG : PRODUCT_SELECT_BASE
+
   try {
     let rows: Array<{
       id: string
@@ -86,44 +99,63 @@ export async function GET(request: NextRequest) {
       retailPrice: { toString(): string } | null
       currency: string | null
       enrichment: { cleanedTitle: string | null; reviewedAt: Date | null } | null
-      issueFlag: { id: string } | null
+      issueFlag?: { id: string } | null
     }>
 
     if (status === 'missing') {
       rows = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { is: null }, issueFlag: { is: null } },
-        select: PRODUCT_SELECT,
+        where: {
+          ...baseWhere,
+          enrichment: { is: null },
+          ...(flagsEnabled ? { issueFlag: { is: null } } : {}),
+        },
+        select: productSelect,
         orderBy: { title: 'asc' },
         take: 25,
       })
     } else if (status === 'reviewed') {
       rows = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { isNot: null }, issueFlag: { is: null } },
-        select: PRODUCT_SELECT,
+        where: {
+          ...baseWhere,
+          enrichment: { isNot: null },
+          ...(flagsEnabled ? { issueFlag: { is: null } } : {}),
+        },
+        select: productSelect,
         orderBy: { title: 'asc' },
         take: 25,
       })
     } else if (status === 'flagged') {
+      // flagsEnabled is guaranteed true here (early return above handles disabled case)
       rows = await db.bokunProduct.findMany({
         where: { ...baseWhere, issueFlag: { isNot: null } },
-        select: PRODUCT_SELECT,
+        select: productSelect,
         orderBy: { title: 'asc' },
         take: 25,
       })
     } else {
-      // status=all: missing enrichment first, then reviewed, max 25 total; both exclude flagged
+      // status=all: missing enrichment first, then reviewed, max 25 total
+      const missingWhere = {
+        ...baseWhere,
+        enrichment: { is: null },
+        ...(flagsEnabled ? { issueFlag: { is: null } } : {}),
+      }
       const missing = await db.bokunProduct.findMany({
-        where: { ...baseWhere, enrichment: { is: null }, issueFlag: { is: null } },
-        select: PRODUCT_SELECT,
+        where: missingWhere,
+        select: productSelect,
         orderBy: { title: 'asc' },
         take: 25,
       })
       const remaining = 25 - missing.length
+      const reviewedWhere = {
+        ...baseWhere,
+        enrichment: { isNot: null },
+        ...(flagsEnabled ? { issueFlag: { is: null } } : {}),
+      }
       const reviewed =
         remaining > 0
           ? await db.bokunProduct.findMany({
-              where: { ...baseWhere, enrichment: { isNot: null }, issueFlag: { is: null } },
-              select: PRODUCT_SELECT,
+              where: reviewedWhere,
+              select: productSelect,
               orderBy: { title: 'asc' },
               take: remaining,
             })
@@ -141,7 +173,7 @@ export async function GET(request: NextRequest) {
       reviewedStatus: row.enrichment ? 'reviewed' : 'missing',
       cleanedTitle: row.enrichment?.cleanedTitle ?? null,
       reviewedAt: row.enrichment?.reviewedAt?.toISOString() ?? null,
-      isFlagged: row.issueFlag !== null,
+      isFlagged: flagsEnabled ? row.issueFlag !== null : false,
     }))
 
     return NextResponse.json({ ok: true, products })

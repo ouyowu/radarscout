@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
 export const dynamic = 'force-dynamic'
 
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest) {
       supplierId: { not: null as string | null },
       city: { in: cityFilter ? [cityFilter] : THAILAND_CITIES },
       enrichment: { is: null },
-      issueFlag: { is: null },
+      ...(isIssueFlagsEnabled() ? { issueFlag: { is: null } } : {}),
       ...(q ? { title: { contains: q, mode: 'insensitive' as const } } : {}),
     }
 

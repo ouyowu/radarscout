@@ -12,6 +12,12 @@ vi.mock('@reddit-monitor/db', () => ({
   db: dbMock,
 }))
 
+const featureFlagsMock = vi.hoisted(() => ({
+  isIssueFlagsEnabled: vi.fn(),
+}))
+
+vi.mock('@/lib/featureFlags', () => featureFlagsMock)
+
 import { POST, DELETE } from '../route'
 
 const VALID_SECRET = 'test-enrichment-secret'
@@ -39,10 +45,57 @@ function makeDeleteRequest(body: unknown, secret?: string) {
   })
 }
 
-describe('POST /api/internal/product-enrichment/flag', () => {
+describe('POST /api/internal/product-enrichment/flag — disabled mode (default)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(false)
+  })
+
+  it('returns 503 with issue_flags_disabled when PRODUCT_ISSUE_FLAGS_ENABLED is not set', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    const response = await POST(makePostRequest({ productId: VALID_PRODUCT_ID, reason: 'other', flaggedBy: 'test@test.com' }, VALID_SECRET))
+    expect(response.status).toBe(503)
+    const data = await response.json()
+    expect(data.ok).toBe(false)
+    expect(data.error).toBe('issue_flags_disabled')
+  })
+
+  it('does not call db.productIssueFlag when disabled', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    await POST(makePostRequest({ productId: VALID_PRODUCT_ID, reason: 'other', flaggedBy: 'test@test.com' }, VALID_SECRET))
+    expect(dbMock.productIssueFlag.upsert).not.toHaveBeenCalled()
+  })
+})
+
+describe('DELETE /api/internal/product-enrichment/flag — disabled mode (default)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(false)
+  })
+
+  it('returns 503 with issue_flags_disabled when PRODUCT_ISSUE_FLAGS_ENABLED is not set', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    const response = await DELETE(makeDeleteRequest({ productId: VALID_PRODUCT_ID }, VALID_SECRET))
+    expect(response.status).toBe(503)
+    const data = await response.json()
+    expect(data.ok).toBe(false)
+    expect(data.error).toBe('issue_flags_disabled')
+  })
+
+  it('does not call db.productIssueFlag when disabled', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    await DELETE(makeDeleteRequest({ productId: VALID_PRODUCT_ID }, VALID_SECRET))
+    expect(dbMock.productIssueFlag.delete).not.toHaveBeenCalled()
+  })
+})
+
+describe('POST /api/internal/product-enrichment/flag — enabled mode', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(true)
     dbMock.productIssueFlag.upsert.mockResolvedValue({ id: 'flag-1', productId: VALID_PRODUCT_ID })
   })
 
@@ -152,10 +205,11 @@ describe('POST /api/internal/product-enrichment/flag', () => {
   })
 })
 
-describe('DELETE /api/internal/product-enrichment/flag', () => {
+describe('DELETE /api/internal/product-enrichment/flag — enabled mode', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(true)
     dbMock.productIssueFlag.delete.mockResolvedValue({ id: 'flag-1' })
   })
 

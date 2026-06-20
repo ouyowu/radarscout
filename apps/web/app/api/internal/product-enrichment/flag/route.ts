@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,6 +24,10 @@ function isAuthorized(request: NextRequest): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  if (!isIssueFlagsEnabled()) {
+    return NextResponse.json({ ok: false, error: 'issue_flags_disabled' }, { status: 503 })
+  }
+
   if (!process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET) {
     return NextResponse.json({ ok: false, error: 'flag_not_configured' }, { status: 503 })
   }
@@ -88,6 +93,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (!isIssueFlagsEnabled()) {
+    return NextResponse.json({ ok: false, error: 'issue_flags_disabled' }, { status: 503 })
+  }
+
   if (!process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET) {
     return NextResponse.json({ ok: false, error: 'flag_not_configured' }, { status: 503 })
   }
