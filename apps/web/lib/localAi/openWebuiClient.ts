@@ -131,10 +131,21 @@ export async function callOpenWebuiChat(
     })
 
     if (!response.ok) {
+      const status = response.status
+      if (status === 403) return { ok: false, error: 'cloudflare_access_forbidden' }
+      if (status === 401) return { ok: false, error: 'openwebui_unauthorized' }
+      if (status === 404) return { ok: false, error: 'openwebui_not_found' }
+      if (status === 422) return { ok: false, error: 'openwebui_model_not_found' }
       return { ok: false, error: 'local_ai_request_failed' }
     }
 
-    const payload = await response.json()
+    let payload: unknown
+    try {
+      payload = await response.json()
+    } catch {
+      return { ok: false, error: 'openwebui_bad_response' }
+    }
+
     const content = extractContent(payload)
 
     if (!content) {
@@ -142,7 +153,10 @@ export async function callOpenWebuiChat(
     }
 
     return { ok: true, content }
-  } catch {
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return { ok: false, error: 'openwebui_timeout' }
+    }
     return { ok: false, error: 'local_ai_request_failed' }
   } finally {
     clearTimeout(timeout)

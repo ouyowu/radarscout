@@ -155,6 +155,113 @@ describe('callOpenWebuiChat — Cloudflare Access Service Token', () => {
   })
 })
 
+describe('callOpenWebuiChat — diagnostic error categories', () => {
+  beforeEach(() => {
+    vi.stubEnv('LOCAL_AI_PROVIDER', BASE_ENV.LOCAL_AI_PROVIDER)
+    vi.stubEnv('OPENWEBUI_BASE_URL', BASE_ENV.OPENWEBUI_BASE_URL)
+    vi.stubEnv('OPENWEBUI_MODEL', BASE_ENV.OPENWEBUI_MODEL)
+    vi.stubEnv('OPENWEBUI_API_KEY', BASE_ENV.OPENWEBUI_API_KEY)
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.clearAllMocks()
+  })
+
+  function makeErrorResponse(status: number) {
+    return { ok: false, status, json: async () => ({}) }
+  }
+
+  // ── HTTP status mapping ───────────────────────────────────────────────────
+
+  it('returns cloudflare_access_forbidden on HTTP 403', async () => {
+    fetchMock.mockResolvedValue(makeErrorResponse(403))
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'cloudflare_access_forbidden' })
+  })
+
+  it('returns openwebui_unauthorized on HTTP 401', async () => {
+    fetchMock.mockResolvedValue(makeErrorResponse(401))
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'openwebui_unauthorized' })
+  })
+
+  it('returns openwebui_not_found on HTTP 404', async () => {
+    fetchMock.mockResolvedValue(makeErrorResponse(404))
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'openwebui_not_found' })
+  })
+
+  it('returns openwebui_model_not_found on HTTP 422', async () => {
+    fetchMock.mockResolvedValue(makeErrorResponse(422))
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'openwebui_model_not_found' })
+  })
+
+  it('returns local_ai_request_failed for other non-2xx (e.g. 500)', async () => {
+    fetchMock.mockResolvedValue(makeErrorResponse(500))
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'local_ai_request_failed' })
+  })
+
+  // ── Timeout ───────────────────────────────────────────────────────────────
+
+  it('returns openwebui_timeout on AbortError', async () => {
+    const abortError = Object.assign(new Error('The operation was aborted'), { name: 'AbortError' })
+    fetchMock.mockRejectedValue(abortError)
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'openwebui_timeout' })
+  })
+
+  // ── Non-JSON / bad response ───────────────────────────────────────────────
+
+  it('returns openwebui_bad_response when response is non-JSON', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => { throw new SyntaxError('Unexpected token') },
+    })
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'openwebui_bad_response' })
+  })
+
+  it('returns local_ai_invalid_response when choices/message content is missing', async () => {
+    fetchMock.mockResolvedValue({ ok: true, json: async () => ({ choices: [] }) })
+    const result = await callOpenWebuiChat({ systemPrompt: 'sys', userPrompt: 'user' })
+    expect(result).toEqual({ ok: false, error: 'local_ai_invalid_response' })
+  })
+
+  // ── No secrets in error responses ────────────────────────────────────────
+
+  it('does not include secrets or prompts in any error response', async () => {
+    const cases = [
+      makeErrorResponse(403),
+      makeErrorResponse(401),
+      makeErrorResponse(404),
+      makeErrorResponse(422),
+      makeErrorResponse(500),
+    ]
+    for (const mock of cases) {
+      fetchMock.mockResolvedValue(mock)
+      const result = await callOpenWebuiChat({ systemPrompt: 'secret-sys', userPrompt: 'secret-user' })
+      const serialized = JSON.stringify(result)
+      expect(serialized).not.toContain('test-api-key')
+      expect(serialized).not.toContain('secret-sys')
+      expect(serialized).not.toContain('secret-user')
+      vi.clearAllMocks()
+    }
+  })
+
+  it('does not include secrets in timeout error response', async () => {
+    const abortError = Object.assign(new Error('aborted'), { name: 'AbortError' })
+    fetchMock.mockRejectedValue(abortError)
+    const result = await callOpenWebuiChat({ systemPrompt: 'secret-sys', userPrompt: 'secret-user' })
+    const serialized = JSON.stringify(result)
+    expect(serialized).not.toContain('test-api-key')
+    expect(serialized).not.toContain('secret-sys')
+    expect(serialized).not.toContain('secret-user')
+  })
+})
+
 describe('isLocalAiConfigured', () => {
   afterEach(() => {
     vi.unstubAllEnvs()
