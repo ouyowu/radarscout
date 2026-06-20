@@ -434,6 +434,12 @@ describe('ReviewChecklistPanel — checklist items', () => {
 })
 
 describe('ReviewChecklistPanel — conditional warning text', () => {
+  it('WARNING_WITH_ISSUES is the exact required copy', () => {
+    expect(WARNING_WITH_ISSUES).toBe(
+      'Quality warnings are present. Do not save unless you have manually confirmed the source data is correct.',
+    )
+  })
+
   it('WARNING_WITH_ISSUES is defined and mentions quality warnings', () => {
     expect(WARNING_WITH_ISSUES).toBeTruthy()
     expect(WARNING_WITH_ISSUES).toContain('Quality warnings are present')
