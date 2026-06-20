@@ -7,6 +7,12 @@ export type LocalAiError =
   | 'local_ai_request_failed'
   | 'local_ai_invalid_response'
   | 'cloudflare_access_not_configured'
+  | 'cloudflare_access_forbidden'
+  | 'openwebui_unauthorized'
+  | 'openwebui_not_found'
+  | 'openwebui_model_not_found'
+  | 'openwebui_timeout'
+  | 'openwebui_bad_response'
 
 export type LocalAiTaskName =
   | 'cleanProductText'
