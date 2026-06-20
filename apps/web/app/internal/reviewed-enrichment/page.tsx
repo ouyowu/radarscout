@@ -2,6 +2,7 @@ import 'server-only'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { InspectEditor } from './InspectEditor'
+import { detectSourceMismatch } from './qualityWarnings'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -215,6 +216,23 @@ async function fetchProductSearch(params: {
   } catch {
     return { ok: false, error: 'search_unavailable' }
   }
+}
+
+function QualityWarningPanel({ warnings }: { warnings: string[] }) {
+  return (
+    <div className="overflow-hidden rounded border border-orange-200 bg-orange-50">
+      <div className="border-b border-orange-200 bg-orange-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-orange-800">
+        Quality warnings
+      </div>
+      <ul className="divide-y divide-orange-100">
+        {warnings.map((warning, i) => (
+          <li key={i} className="px-4 py-2 text-sm text-orange-800">
+            ⚠ {warning}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 function NotConfigured() {
@@ -613,6 +631,15 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
 
   const searchContext = { q, city, status: status || 'all' }
 
+  const sourceWarnings =
+    inspectResult?.ok === true
+      ? detectSourceMismatch(
+          inspectResult.product.city,
+          inspectResult.product.title,
+          inspectResult.product.location,
+        )
+      : []
+
   return (
     <main className="min-h-screen bg-gray-100 p-6 font-sans text-gray-900">
       <div className="mx-auto max-w-5xl space-y-5">
@@ -687,6 +714,10 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
 
                 <ProductPanel product={inspectResult.product} />
 
+                {sourceWarnings.length > 0 && (
+                  <QualityWarningPanel warnings={sourceWarnings} />
+                )}
+
                 {inspectResult.reviewedEnrichment ? (
                   <EnrichmentPanel enrichment={inspectResult.reviewedEnrichment} />
                 ) : (
@@ -700,6 +731,7 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   enrichment={inspectResult.reviewedEnrichment}
                   navigation={navigationResult?.ok ? (navigationResult as NavigationSuccess) : null}
                   searchContext={searchContext}
+                  city={inspectResult.product.city}
                 />
               </div>
             )}

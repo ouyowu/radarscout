@@ -2,27 +2,32 @@
 
 import { useState, useTransition } from 'react'
 import { generateCandidate, type CandidateDraft } from './actions'
+import { detectDraftMismatch } from './qualityWarnings'
 
 type Props = {
   productId: string
   onUseDraft: (draft: CandidateDraft) => void
+  city?: string | null
 }
 
 const FIELD_LABEL = 'w-36 shrink-0 text-xs font-semibold text-gray-500'
 const FIELD_VALUE = 'text-sm text-gray-900'
 
-export function CandidateSection({ productId, onUseDraft }: Props) {
+export function CandidateSection({ productId, onUseDraft, city }: Props) {
   const [draft, setDraft] = useState<CandidateDraft | null>(null)
+  const [draftWarnings, setDraftWarnings] = useState<string[]>([])
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleGenerate() {
     setDraft(null)
+    setDraftWarnings([])
     setErrorMsg(null)
     startTransition(async () => {
       const result = await generateCandidate(productId)
       if (result.ok) {
         setDraft(result.draft)
+        setDraftWarnings(detectDraftMismatch(city ?? null, result.draft))
       } else {
         setErrorMsg(result.error)
       }
@@ -86,6 +91,14 @@ export function CandidateSection({ productId, onUseDraft }: Props) {
                 </div>
               )}
             </div>
+
+            {draftWarnings.length > 0 && (
+              <div className="rounded border border-orange-200 bg-orange-50 px-3 py-2 text-sm text-orange-800">
+                {draftWarnings.map((w, i) => (
+                  <div key={i}>⚠ {w}</div>
+                ))}
+              </div>
+            )}
 
             <button
               type="button"
