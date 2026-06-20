@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { getReviewedEnrichmentByProductId } from '@/lib/reviewedEnrichmentReader'
+import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,10 +63,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ok: false, error: 'product_not_found' }, { status: 404 })
     }
 
-    const [reviewedEnrichment, issueFlag] = await Promise.all([
-      getReviewedEnrichmentByProductId(product.id),
-      db.productIssueFlag.findUnique({ where: { productId: product.id } }),
-    ])
+    let reviewedEnrichment: Awaited<ReturnType<typeof getReviewedEnrichmentByProductId>>
+    let issueFlag: { id: string; reason: string; note: string | null; flaggedBy: string; flaggedAt: Date } | null = null
+
+    if (isIssueFlagsEnabled()) {
+      ;[reviewedEnrichment, issueFlag] = await Promise.all([
+        getReviewedEnrichmentByProductId(product.id),
+        db.productIssueFlag.findUnique({ where: { productId: product.id } }),
+      ])
+    } else {
+      reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
+    }
 
     return NextResponse.json({
       ok: true,

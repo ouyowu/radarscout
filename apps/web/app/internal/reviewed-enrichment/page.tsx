@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { InspectEditor } from './InspectEditor'
 import { detectSourceMismatch } from './qualityWarnings'
+import { isIssueFlagsEnabled } from '@/lib/featureFlags'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -751,6 +752,7 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   searchContext={searchContext}
                   city={inspectResult.product.city}
                   issueFlag={inspectResult.issueFlag}
+                  issueFlagsEnabled={isIssueFlagsEnabled()}
                 />
               </div>
             )}

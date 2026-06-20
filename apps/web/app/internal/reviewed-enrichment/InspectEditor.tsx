@@ -42,6 +42,7 @@ type Props = {
   searchContext: SearchContext
   city?: string | null
   issueFlag?: IssueFlagData | null
+  issueFlagsEnabled?: boolean
 }
 
 function buildNavUrl(productId: string, searchContext: SearchContext): string {
@@ -104,7 +105,7 @@ function NavigationBar({
   )
 }
 
-export function InspectEditor({ productId, enrichment, navigation, searchContext, city, issueFlag }: Props) {
+export function InspectEditor({ productId, enrichment, navigation, searchContext, city, issueFlag, issueFlagsEnabled }: Props) {
   const [selectedDraft, setSelectedDraft] = useState<CandidateDraft | null>(null)
   const [formKey, setFormKey] = useState(0)
 
@@ -119,7 +120,7 @@ export function InspectEditor({ productId, enrichment, navigation, searchContext
         <NavigationBar navigation={navigation} searchContext={searchContext} />
       )}
       <CandidateSection productId={productId} onUseDraft={handleUseDraft} city={city} />
-      <IssueFlagPanel productId={productId} issueFlag={issueFlag ?? null} />
+      {issueFlagsEnabled && <IssueFlagPanel productId={productId} issueFlag={issueFlag ?? null} />}
       <EditForm
         key={formKey}
         productId={productId}

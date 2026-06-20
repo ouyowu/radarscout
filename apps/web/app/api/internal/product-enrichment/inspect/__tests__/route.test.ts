@@ -7,6 +7,9 @@ const dbMock = vi.hoisted(() => ({
   bokunProduct: {
     findFirst: vi.fn(),
   },
+  productIssueFlag: {
+    findUnique: vi.fn(),
+  },
 }))
 
 vi.mock('@reddit-monitor/db', () => ({
@@ -18,6 +21,12 @@ const enrichmentMock = vi.hoisted(() => ({
 }))
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
+
+const featureFlagsMock = vi.hoisted(() => ({
+  isIssueFlagsEnabled: vi.fn(),
+}))
+
+vi.mock('@/lib/featureFlags', () => featureFlagsMock)
 
 import { GET } from '../route'
 
@@ -76,17 +85,29 @@ function makeEnrichment() {
   }
 }
 
-describe('GET /api/internal/product-enrichment/inspect', () => {
+function makeIssueFlag() {
+  return {
+    id: 'flag-1',
+    reason: 'destination_mismatch',
+    note: 'Title mentions Singapore',
+    flaggedBy: 'reviewer@example.com',
+    flaggedAt: new Date('2026-06-18T10:00:00.000Z'),
+  }
+}
+
+// ---- DISABLED MODE (default) ----
+
+describe('GET /api/internal/product-enrichment/inspect — disabled mode (default)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(false)
   })
 
   it('returns 503 when INTERNAL_ENRICHMENT_REVIEW_SECRET is not configured', async () => {
     vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', '')
     const response = await GET(makeRequest('product_abc', VALID_SECRET))
     const body = await response.json()
-
     expect(response.status).toBe(503)
     expect(body.ok).toBe(false)
     expect(body.error).toBe('inspect_not_configured')
@@ -96,7 +117,101 @@ describe('GET /api/internal/product-enrichment/inspect', () => {
     vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
     const response = await GET(makeRequest('product_abc'))
     const body = await response.json()
+    expect(response.status).toBe(401)
+    expect(body.ok).toBe(false)
+    expect(body.error).toBe('unauthorized')
+  })
 
+  it('returns issueFlag:null without querying productIssueFlag', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.ok).toBe(true)
+    expect(body.issueFlag).toBeNull()
+    expect(dbMock.productIssueFlag.findUnique).not.toHaveBeenCalled()
+  })
+
+  it('returns product with reviewedEnrichment null when no enrichment exists', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.ok).toBe(true)
+    expect(body.product.id).toBe('product_abc')
+    expect(body.reviewedEnrichment).toBeNull()
+    expect(body.issueFlag).toBeNull()
+  })
+
+  it('returns product with reviewedEnrichment populated when enrichment exists', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.ok).toBe(true)
+    expect(body.reviewedEnrichment.cleanedTitle).toBe('Ethical Elephant Sanctuary Chiang Mai')
+    expect(body.issueFlag).toBeNull()
+  })
+
+  it('does not call productIssueFlag.findUnique when disabled', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+
+    await GET(makeRequest('product_abc', VALID_SECRET))
+
+    expect(dbMock.productIssueFlag.findUnique).not.toHaveBeenCalled()
+  })
+
+  it('does not expose forbidden fields in the response', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const serialized = JSON.stringify(await response.json())
+
+    for (const key of FORBIDDEN_FIELDS) {
+      expect(serialized).not.toContain(`"${key}"`)
+    }
+  })
+})
+
+// ---- ENABLED MODE (PRODUCT_ISSUE_FLAGS_ENABLED=true) ----
+
+describe('GET /api/internal/product-enrichment/inspect — enabled mode', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.unstubAllEnvs()
+    featureFlagsMock.isIssueFlagsEnabled.mockReturnValue(true)
+    dbMock.productIssueFlag.findUnique.mockResolvedValue(null)
+  })
+
+  it('returns 503 when INTERNAL_ENRICHMENT_REVIEW_SECRET is not configured', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', '')
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+    expect(response.status).toBe(503)
+    expect(body.ok).toBe(false)
+    expect(body.error).toBe('inspect_not_configured')
+  })
+
+  it('returns 401 when secret header is missing', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    const response = await GET(makeRequest('product_abc'))
+    const body = await response.json()
     expect(response.status).toBe(401)
     expect(body.ok).toBe(false)
     expect(body.error).toBe('unauthorized')
@@ -106,7 +221,6 @@ describe('GET /api/internal/product-enrichment/inspect', () => {
     vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
     const response = await GET(makeRequest('product_abc', 'wrong-secret'))
     const body = await response.json()
-
     expect(response.status).toBe(401)
     expect(body.ok).toBe(false)
     expect(body.error).toBe('unauthorized')
@@ -116,7 +230,6 @@ describe('GET /api/internal/product-enrichment/inspect', () => {
     vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
     const response = await GET(makeRequest(undefined, VALID_SECRET))
     const body = await response.json()
-
     expect(response.status).toBe(400)
     expect(body.ok).toBe(false)
     expect(body.error).toBe('productId_required')
@@ -125,10 +238,8 @@ describe('GET /api/internal/product-enrichment/inspect', () => {
   it('returns 404 when product is not found', async () => {
     vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
     dbMock.bokunProduct.findFirst.mockResolvedValue(null)
-
     const response = await GET(makeRequest('missing_id', VALID_SECRET))
     const body = await response.json()
-
     expect(response.status).toBe(404)
     expect(body.ok).toBe(false)
     expect(body.error).toBe('product_not_found')
@@ -167,6 +278,46 @@ describe('GET /api/internal/product-enrichment/inspect', () => {
     expect(body.reviewedEnrichment.seoDescription).toBe('Visit rescued elephants ethically in Chiang Mai.')
     expect(body.reviewedEnrichment.reviewedBy).toBe('editor@radarscout.com')
     expect(body.reviewedEnrichment.reviewedAt).toBe('2026-06-15T12:00:00.000Z')
+  })
+
+  it('returns issueFlag null when no flag exists', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    dbMock.productIssueFlag.findUnique.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+
+    expect(body.issueFlag).toBeNull()
+  })
+
+  it('returns issueFlag data when flag exists', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    dbMock.productIssueFlag.findUnique.mockResolvedValue(makeIssueFlag())
+
+    const response = await GET(makeRequest('product_abc', VALID_SECRET))
+    const body = await response.json()
+
+    expect(body.issueFlag).not.toBeNull()
+    expect(body.issueFlag.id).toBe('flag-1')
+    expect(body.issueFlag.reason).toBe('destination_mismatch')
+    expect(body.issueFlag.flaggedBy).toBe('reviewer@example.com')
+    expect(body.issueFlag.flaggedAt).toBe('2026-06-18T10:00:00.000Z')
+  })
+
+  it('calls productIssueFlag.findUnique when enabled', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', VALID_SECRET)
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    await GET(makeRequest('product_abc', VALID_SECRET))
+
+    expect(dbMock.productIssueFlag.findUnique).toHaveBeenCalledWith({
+      where: { productId: 'product_abc' },
+    })
   })
 
   it('does not expose forbidden fields in the response', async () => {
