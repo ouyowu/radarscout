@@ -69,9 +69,20 @@ export type ThailandEligibilityInput = {
   description?: string | null
 }
 
+function normalizeForMatching(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function matchTerms(text: string, terms: readonly string[]): string[] {
-  const lower = text.toLowerCase()
-  return terms.filter(term => lower.includes(term.toLowerCase()))
+  const padded = ' ' + normalizeForMatching(text) + ' '
+  return terms.filter(term => {
+    const normalizedTerm = normalizeForMatching(term)
+    return padded.includes(' ' + normalizedTerm + ' ')
+  })
 }
 
 export function evaluateThailandProductEligibility(

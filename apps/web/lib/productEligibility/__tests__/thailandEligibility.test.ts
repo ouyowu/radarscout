@@ -160,14 +160,16 @@ describe('evaluateThailandProductEligibility', () => {
     expect(result.foreignSignals).toHaveLength(0) // no false positive
   })
 
-  it('does not false-positive on "Malaysia" matching partial strings', () => {
-    // "Malaysian" contains "malaysia" → this is expected behavior (not a false positive)
+  it('does not false-positive on "Malaysian" matching "Malaysia" (boundary-aware)', () => {
+    // With boundary-aware matching, "Malaysian" is a different token from "Malaysia".
+    // The product is eligible because city=Phuket is a Thailand signal.
     const result = evaluateThailandProductEligibility({
       city: 'Phuket',
       title: 'A tour by Malaysian visitors',
     })
-    // "malaysian" contains "malaysia" → foreign signal detected → blocked is correct behavior
-    expect(result.eligible).toBe(false)
+    expect(result.eligible).toBe(true)
+    expect(result.foreignSignals).toHaveLength(0)
+    expect(result.thailandSignals).toContain('Phuket')
   })
 
   // Reasons are safe and do not include raw source payloads
@@ -212,5 +214,99 @@ describe('evaluateThailandProductEligibility', () => {
     })
     expect(result.eligible).toBe(false)
     expect(result.reasons[0]).toContain('does not clearly identify a Thailand destination')
+  })
+})
+
+// ── Boundary-aware matching — false-positive prevention ───────────────────────
+
+describe('evaluateThailandProductEligibility — boundary-aware matching', () => {
+  it('"Chrome browser tour tools" does not trigger Rome', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Chrome browser tour tools',
+    })
+    expect(result.foreignSignals).not.toContain('Rome')
+  })
+
+  it('"strategy workshop" does not trigger Trat', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'strategy workshop',
+    })
+    expect(result.thailandSignals).not.toContain('Trat')
+  })
+
+  it('"Bali tour" triggers Bali as a foreign signal', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Bali tour',
+    })
+    expect(result.foreignSignals).toContain('Bali')
+    expect(result.eligible).toBe(false)
+  })
+
+  it('"Rome city tour" triggers Rome as a foreign signal', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Rome city tour',
+    })
+    expect(result.foreignSignals).toContain('Rome')
+    expect(result.eligible).toBe(false)
+  })
+
+  it('"Thai cooking class in Bangkok" is Thailand eligible', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai cooking class in Bangkok',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.foreignSignals).toHaveLength(0)
+    expect(result.thailandSignals.some(s => s === 'Thai' || s === 'Bangkok')).toBe(true)
+  })
+
+  it('"Thailand private tour" is Thailand eligible', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thailand private tour',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Thailand')
+  })
+
+  it('"PHUKET ISLAND TOUR" is Thailand eligible (case-insensitive)', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'PHUKET ISLAND TOUR',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Phuket')
+  })
+
+  it('punctuation "Singapore—private tour" still triggers Singapore', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Singapore—private tour',
+    })
+    expect(result.foreignSignals).toContain('Singapore')
+    expect(result.eligible).toBe(false)
+  })
+
+  it('"Koh-Samui island tour" is recognized after normalization', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Koh-Samui island tour',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Koh Samui')
+  })
+
+  it('mixed Thailand and foreign signals remain blocked', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Phuket and Singapore combined tour',
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.foreignSignals).toContain('Singapore')
+    expect(result.thailandSignals).toContain('Phuket')
   })
 })
