@@ -1,0 +1,66 @@
+import 'server-only'
+import { assertAllProductsThailandEligible } from './assertAllProductsThailandEligible'
+import { isThailandCompatibleDestination } from './destinationIntent'
+import type { AiProductCandidate } from './listAiEligibleThailandProducts'
+
+export type AiProductContextItem = {
+  id: string
+  title: string
+  city: string | null
+  summary: string | null
+  tags: string[]
+  detailHref: string
+  retailPrice: string | null
+  currency: string | null
+}
+
+export type AiProductContextResult =
+  | { status: 'ok'; items: AiProductContextItem[] }
+  | { status: 'no_match' }
+
+export type ModelFn = (items: AiProductContextItem[]) => Promise<unknown>
+
+export type BuildAiProductContextOptions = {
+  destination?: string | null
+  modelFn?: ModelFn
+}
+
+function serializeCandidate(candidate: AiProductCandidate): AiProductContextItem {
+  return {
+    id: candidate.id,
+    title: candidate.cleanedTitle ?? candidate.title,
+    city: candidate.city,
+    summary: candidate.summary,
+    tags: candidate.suggestedTags,
+    detailHref: candidate.detailHref,
+    retailPrice: candidate.retailPrice,
+    currency: candidate.currency,
+  }
+}
+
+export async function buildAiProductContext(
+  candidates: AiProductCandidate[],
+  options: BuildAiProductContextOptions = {},
+): Promise<AiProductContextResult> {
+  if (options.destination !== undefined) {
+    if (!isThailandCompatibleDestination(options.destination)) {
+      return { status: 'no_match' }
+    }
+  }
+
+  // Throws in dev/test if any ineligible candidate reaches this point.
+  // Filters silently in production.
+  const eligible = assertAllProductsThailandEligible(candidates)
+
+  if (eligible.length === 0) {
+    return { status: 'no_match' }
+  }
+
+  const items = eligible.map(serializeCandidate)
+
+  if (options.modelFn) {
+    await options.modelFn(items)
+  }
+
+  return { status: 'ok', items }
+}
