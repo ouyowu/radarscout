@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { CandidateSection } from './CandidateSection'
 import { EditForm } from './EditForm'
 import { IssueFlagPanel } from './IssueFlagPanel'
-import type { CandidateDraft } from './actions'
+import type { CandidateDraft, ThailandEligibilityResult } from './actions'
 
 type ReviewedEnrichment = {
   cleanedTitle: string | null
@@ -41,6 +41,7 @@ type Props = {
   navigation: NavigationData | null
   searchContext: SearchContext
   city?: string | null
+  eligibility?: ThailandEligibilityResult | null
   issueFlag?: IssueFlagData | null
   issueFlagsEnabled?: boolean
 }
@@ -105,7 +106,7 @@ function NavigationBar({
   )
 }
 
-export function InspectEditor({ productId, enrichment, navigation, searchContext, city, issueFlag, issueFlagsEnabled }: Props) {
+export function InspectEditor({ productId, enrichment, navigation, searchContext, city, eligibility, issueFlag, issueFlagsEnabled }: Props) {
   const [selectedDraft, setSelectedDraft] = useState<CandidateDraft | null>(null)
   const [formKey, setFormKey] = useState(0)
 
@@ -119,7 +120,7 @@ export function InspectEditor({ productId, enrichment, navigation, searchContext
       {navigation && (
         <NavigationBar navigation={navigation} searchContext={searchContext} />
       )}
-      <CandidateSection productId={productId} onUseDraft={handleUseDraft} city={city} />
+      <CandidateSection productId={productId} onUseDraft={handleUseDraft} city={city} eligibility={eligibility} />
       {issueFlagsEnabled && <IssueFlagPanel productId={productId} issueFlag={issueFlag ?? null} />}
       <EditForm
         key={formKey}

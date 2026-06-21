@@ -319,7 +319,18 @@ Stop and report instead of guessing if:
 - route would expose raw JSON or AI candidates
 - task requires broader changes than allowed
 
-## 13. Current Recommended Next Step
+## 13. RadarScout Thailand Product Scope
+
+RadarScout is a Thailand-only travel product platform. This rule applies to all enrichment, indexing, SEO pages, AI recommendations, and booking handoff.
+
+- Only Thailand travel products are eligible for enrichment, indexing, SEO pages, AI recommendations, and booking handoff.
+- Explicit non-Thailand products must be excluded from AI draft generation.
+- Destination-mismatched products (e.g., city=Phuket, title=Singapore tour) must not be repaired or rewritten by AI.
+- Reviewers should use Skip for mismatched products and investigate the source data before attempting enrichment.
+- The eligibility helper is at `apps/web/lib/productEligibility/thailandEligibility.ts`.
+- Both the `generateCandidate` server action and the preview API route enforce the guardrail independently.
+
+## 14. Current Recommended Next Step
 
 The current recommended next execution step is:
 

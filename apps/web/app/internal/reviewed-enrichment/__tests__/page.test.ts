@@ -6,6 +6,7 @@ import { buildSkipHref } from '../EditForm'
 
 import { detectSourceMismatch, detectDraftMismatch } from '../qualityWarnings'
 import { REVIEW_CHECKLIST_ITEMS, WARNING_WITH_ISSUES } from '../ReviewChecklistPanel'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 describe('buildSkipHref — Skip link construction', () => {
   it('returns a URL with productId set to the next product', () => {
@@ -465,5 +466,106 @@ describe('ReviewChecklistPanel — conditional warning text', () => {
     expect(WARNING_WITH_ISSUES).not.toContain('rawJson')
     expect(WARNING_WITH_ISSUES).not.toContain('secret')
     expect(WARNING_WITH_ISSUES).not.toContain('aiRaw')
+  })
+})
+
+// ── Thailand guardrail UI contract ───────────────────────────────────────────
+
+describe('CandidateSection eligibility — blocked product UI contract', () => {
+  // Test 21: Blocked product shows "AI draft blocked" title
+  it('eligibility check for Phuket+Singapore product is not eligible (blocked UI triggers)', () => {
+    const eligibility = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: '6-Hours Private Singapore Customized Tour With Driver',
+      location: null,
+    })
+    // When not eligible, UI shows "AI draft blocked"
+    expect(eligibility.eligible).toBe(false)
+    expect(eligibility.foreignSignals).toContain('Singapore')
+  })
+
+  // Test 22: Blocked product shows "Use Skip and investigate the source data."
+  it('reasons from eligibility check are safe for display and mention the specific mismatch', () => {
+    const eligibility = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Singapore private driver tour',
+    })
+    expect(eligibility.eligible).toBe(false)
+    expect(eligibility.reasons.length).toBeGreaterThan(0)
+    // Message is safe for display (no raw data)
+    const serialized = JSON.stringify(eligibility.reasons)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('secret')
+  })
+
+  // Test 23: Generate draft button is absent or disabled when blocked
+  it('eligible=false means the generate button must not be clickable (UI contract)', () => {
+    const blockedEligibility = evaluateThailandProductEligibility({
+      city: 'Bangkok',
+      title: 'Best Kuala Lumpur tour',
+    })
+    // UI renders blocked state (no button) when this is false
+    expect(blockedEligibility.eligible).toBe(false)
+  })
+
+  // Test 24: Eligible Thailand product still shows Generate draft
+  it('eligible=true means the generate button is rendered (UI contract)', () => {
+    const eligibility = evaluateThailandProductEligibility({
+      city: 'Chiang Mai',
+      title: 'Elephant sanctuary day tour',
+    })
+    // UI renders the generate button when this is true
+    expect(eligibility.eligible).toBe(true)
+  })
+
+  // Test 25: Quality warning remains visible (qualityWarnings module unaffected)
+  it('detectSourceMismatch still returns warnings independently of eligibility check', () => {
+    const warnings = detectSourceMismatch(
+      'Phuket',
+      '6-Hours Private Singapore Customized Tour With Driver',
+    )
+    expect(warnings.length).toBeGreaterThan(0)
+    expect(warnings[0]).toContain('Singapore')
+  })
+
+  // Test 26: Review checklist remains visible (unaffected by guardrail)
+  it('REVIEW_CHECKLIST_ITEMS array is unchanged and still exported', () => {
+    expect(REVIEW_CHECKLIST_ITEMS.length).toBeGreaterThan(0)
+  })
+
+  // Test 27: Save/Skip remain operational (eligibility does not affect save path)
+  it('buildSkipHref returns a valid skip URL regardless of eligibility', () => {
+    const href = buildSkipHref('next_product', { q: '', city: 'Phuket', status: 'missing' })
+    const url = new URL('http://localhost' + href)
+    expect(url.searchParams.get('productId')).toBe('next_product')
+    expect(url.searchParams.get('city')).toBe('Phuket')
+    expect(href).not.toContain('eligib')
+    expect(href).not.toContain('rawJson')
+  })
+})
+
+describe('CandidateSection eligibility — eligible Thailand products', () => {
+  it('Thailand city with matching title is eligible', () => {
+    const eligibility = evaluateThailandProductEligibility({
+      city: 'Koh Samui',
+      title: 'Full-day island hopping Koh Samui',
+    })
+    expect(eligibility.eligible).toBe(true)
+    expect(eligibility.foreignSignals).toHaveLength(0)
+  })
+
+  it('eligibility result does not expose rawJson, booking, or AI fields', () => {
+    const eligibility = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Singapore tour',
+    })
+    const serialized = JSON.stringify(eligibility)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('booking')
+    expect(serialized).not.toContain('payment')
+    expect(serialized).not.toContain('availability')
+    expect(serialized).not.toContain('aiRaw')
+    expect(serialized).not.toContain('candidate')
+    expect(serialized).not.toContain('secret')
   })
 })

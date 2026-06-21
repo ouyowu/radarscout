@@ -1,30 +1,34 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { generateCandidate, type CandidateDraft } from './actions'
+import { generateCandidate, type CandidateDraft, type ThailandEligibilityResult } from './actions'
 import { detectDraftMismatch } from './qualityWarnings'
 
 type Props = {
   productId: string
   onUseDraft: (draft: CandidateDraft) => void
   city?: string | null
+  eligibility?: ThailandEligibilityResult | null
 }
 
 const FIELD_LABEL = 'w-36 shrink-0 text-xs font-semibold text-gray-500'
 const FIELD_VALUE = 'text-sm text-gray-900'
 
-export function CandidateSection({ productId, onUseDraft, city }: Props) {
+export function CandidateSection({ productId, onUseDraft, city, eligibility }: Props) {
   const [draft, setDraft] = useState<CandidateDraft | null>(null)
   const [draftWarnings, setDraftWarnings] = useState<string[]>([])
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
+  const isBlocked = eligibility != null && !eligibility.eligible
+
   function handleGenerate() {
+    if (isBlocked) return
     setDraft(null)
     setDraftWarnings([])
     setErrorMsg(null)
     startTransition(async () => {
-      const result = await generateCandidate(productId)
+      const result = await generateCandidate(productId, eligibility ?? undefined)
       if (result.ok) {
         setDraft(result.draft)
         setDraftWarnings(detectDraftMismatch(city ?? null, result.draft))
@@ -44,14 +48,33 @@ export function CandidateSection({ productId, onUseDraft, city }: Props) {
           AI-generated draft only. Not saved. Review carefully before using.
         </p>
 
-        <button
-          type="button"
-          onClick={handleGenerate}
-          disabled={isPending}
-          className="rounded bg-purple-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
-        >
-          {isPending ? 'Generating…' : draft ? 'Re-generate draft' : 'Generate draft'}
-        </button>
+        {isBlocked ? (
+          <div
+            className="rounded border border-red-300 bg-red-50 p-4 space-y-2"
+            data-testid="ai-draft-blocked"
+          >
+            <p className="text-sm font-bold text-red-800">AI draft blocked</p>
+            <p className="text-sm text-red-700">
+              This source product does not appear to be a valid Thailand experience or contains a
+              destination mismatch. Do not use AI to rewrite it into a different product. Use Skip
+              and investigate the source data.
+            </p>
+            {eligibility.reasons.map((reason, i) => (
+              <p key={i} className="text-xs text-red-600">
+                {reason}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={isPending}
+            className="rounded bg-purple-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
+          >
+            {isPending ? 'Generating…' : draft ? 'Re-generate draft' : 'Generate draft'}
+          </button>
+        )}
 
         {errorMsg && (
           <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
