@@ -365,3 +365,152 @@ describe('generateCandidate server action', () => {
     expect(url).toContain('/api/internal/product-enrichment/preview')
   })
 })
+
+// ── Thailand guardrail enforcement ────────────────────────────────────────────
+
+describe('generateCandidate — Thailand eligibility guardrail', () => {
+  beforeEach(() => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', ENRICHMENT_SECRET)
+    vi.stubEnv('INTERNAL_AI_PREVIEW_SECRET', AI_PREVIEW_SECRET)
+    fetchMock.mockResolvedValue(makeSuccessResponse())
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.clearAllMocks()
+  })
+
+  // Test 15: Blocked product returns source_product_not_thailand_eligible
+  it('returns source_product_not_thailand_eligible when eligibility says not eligible', async () => {
+    const result = await generateCandidate('product_abc', {
+      eligible: false,
+      reasons: ['Source city is Phuket, but title mentions Singapore.'],
+      thailandSignals: ['Phuket'],
+      foreignSignals: ['Singapore'],
+      hasDestinationMismatch: true,
+    })
+
+    expect(result).toEqual({ ok: false, error: 'source_product_not_thailand_eligible' })
+  })
+
+  // Test 16: Blocked product does not call draftProductEnrichment (verified via no fetch call)
+  it('does not call preview API (and thus draftProductEnrichment) when product is blocked', async () => {
+    await generateCandidate('product_abc', {
+      eligible: false,
+      reasons: ['Source city is Bangkok, but title mentions Kuala Lumpur.'],
+      thailandSignals: ['Bangkok'],
+      foreignSignals: ['Kuala Lumpur'],
+      hasDestinationMismatch: true,
+    })
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  // Test 17: Blocked product does not call Open WebUI/local AI client
+  it('does not call Open WebUI or local AI when product is blocked', async () => {
+    await generateCandidate('product_abc', {
+      eligible: false,
+      reasons: ['Source data explicitly mentions non-Thailand destination: Japan.'],
+      thailandSignals: [],
+      foreignSignals: ['Japan'],
+      hasDestinationMismatch: false,
+    })
+
+    // No fetch call means no request reaches the preview route and thus no AI call
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  // Test 18: Eligible Thailand product still generates candidate normally
+  it('calls preview API and returns draft for eligible Thailand product', async () => {
+    const result = await generateCandidate('product_abc', {
+      eligible: true,
+      reasons: [],
+      thailandSignals: ['Chiang Mai'],
+      foreignSignals: [],
+      hasDestinationMismatch: false,
+    })
+
+    expect(fetchMock).toHaveBeenCalledOnce()
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.draft.cleanedTitle).toBe('Ethical Elephant Sanctuary')
+    }
+  })
+
+  // Test 19: Existing provider error propagation remains unchanged for eligible products
+  it('propagates openwebui_timeout for eligible product when AI fails', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        productId: 'product_abc',
+        candidate: { ok: false, productId: 'product_abc', error: 'openwebui_timeout', warnings: [] },
+      }),
+    })
+
+    const result = await generateCandidate('product_abc', {
+      eligible: true,
+      reasons: [],
+      thailandSignals: ['Bangkok'],
+      foreignSignals: [],
+      hasDestinationMismatch: false,
+    })
+
+    expect(result).toEqual({ ok: false, error: 'openwebui_timeout' })
+  })
+
+  // Test 20: Existing authentication/secret checks remain unchanged
+  it('returns not_configured when INTERNAL_ENRICHMENT_REVIEW_SECRET is missing even for eligible product', async () => {
+    vi.stubEnv('INTERNAL_ENRICHMENT_REVIEW_SECRET', '')
+
+    const result = await generateCandidate('product_abc', {
+      eligible: true,
+      reasons: [],
+      thailandSignals: ['Phuket'],
+      foreignSignals: [],
+      hasDestinationMismatch: false,
+    })
+
+    expect(result).toEqual({ ok: false, error: 'not_configured' })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('returns ai_preview_not_configured when INTERNAL_AI_PREVIEW_SECRET is missing for eligible product', async () => {
+    vi.stubEnv('INTERNAL_AI_PREVIEW_SECRET', '')
+
+    const result = await generateCandidate('product_abc', {
+      eligible: true,
+      reasons: [],
+      thailandSignals: ['Phuket'],
+      foreignSignals: [],
+      hasDestinationMismatch: false,
+    })
+
+    expect(result).toEqual({ ok: false, error: 'ai_preview_not_configured' })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('blocked product response does not expose rawJson or secrets', async () => {
+    const result = await generateCandidate('product_abc', {
+      eligible: false,
+      reasons: ['Source city is Phuket, but title mentions Singapore.'],
+      thailandSignals: ['Phuket'],
+      foreignSignals: ['Singapore'],
+      hasDestinationMismatch: true,
+    })
+
+    const serialized = JSON.stringify(result)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain(AI_PREVIEW_SECRET)
+    expect(serialized).not.toContain(ENRICHMENT_SECRET)
+    expect(serialized).not.toContain('aiRawResponse')
+  })
+
+  it('works correctly when no eligibility is provided (backward compatibility)', async () => {
+    const result = await generateCandidate('product_abc')
+
+    expect(fetchMock).toHaveBeenCalledOnce()
+    expect(result.ok).toBe(true)
+  })
+})

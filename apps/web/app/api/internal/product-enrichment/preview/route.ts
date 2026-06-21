@@ -4,6 +4,7 @@ import {
   generateProductEnrichmentCandidates,
   type ProductEnrichmentCandidate,
 } from '@/lib/localAi/productEnrichment'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 export const dynamic = 'force-dynamic'
 
@@ -108,6 +109,23 @@ export async function POST(request: NextRequest) {
 
   if (!product) {
     return NextResponse.json({ ok: false, error: 'product_not_found' }, { status: 404 })
+  }
+
+  const eligibility = evaluateThailandProductEligibility({
+    city: product.city,
+    title: product.title,
+    location: product.location,
+  })
+
+  if (!eligibility.eligible) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: 'source_product_not_thailand_eligible',
+        reasons: eligibility.reasons,
+      },
+      { status: 422 },
+    )
   }
 
   const candidate = await generateProductEnrichmentCandidates({

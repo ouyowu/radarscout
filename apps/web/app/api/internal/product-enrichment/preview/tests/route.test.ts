@@ -314,3 +314,99 @@ describe('POST /api/internal/product-enrichment/preview', () => {
     expect(serialized).not.toContain('999 USD')
   })
 })
+
+// ── Thailand eligibility guardrail ────────────────────────────────────────────
+
+describe('POST /api/internal/product-enrichment/preview — Thailand guardrail', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    process.env.INTERNAL_AI_PREVIEW_SECRET = 'preview-secret'
+  })
+
+  it('returns 422 source_product_not_thailand_eligible for a destination-mismatched product', async () => {
+    mockFindUnique.mockResolvedValue({
+      ...PRODUCT,
+      city: 'Phuket',
+      title: '6-Hours Private Singapore Customized Tour With Driver',
+      location: null,
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(422)
+    expect(body.ok).toBe(false)
+    expect(body.error).toBe('source_product_not_thailand_eligible')
+    expect(Array.isArray(body.reasons)).toBe(true)
+    expect(body.reasons.length).toBeGreaterThan(0)
+    expect(body.reasons[0]).toContain('Phuket')
+    expect(body.reasons[0]).toContain('Singapore')
+  })
+
+  it('does not call generateProductEnrichmentCandidates (local AI) for a blocked product', async () => {
+    mockFindUnique.mockResolvedValue({
+      ...PRODUCT,
+      city: 'Bangkok',
+      title: 'Best Kuala Lumpur city tour',
+      location: null,
+    })
+
+    await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+
+    expect(mockGenerateProductEnrichmentCandidates).not.toHaveBeenCalled()
+  })
+
+  it('returns 422 for product with explicit foreign destination in title regardless of city', async () => {
+    mockFindUnique.mockResolvedValue({
+      ...PRODUCT,
+      city: null,
+      title: 'Tokyo highlights full-day tour',
+      location: null,
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(422)
+    expect(body.error).toBe('source_product_not_thailand_eligible')
+  })
+
+  it('does not expose rawJson, prompts, or AI output in the guardrail error response', async () => {
+    mockFindUnique.mockResolvedValue({
+      ...PRODUCT,
+      city: 'Phuket',
+      title: 'Singapore private driver tour',
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const serialized = JSON.stringify(await response.json())
+
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('aiRawResponse')
+    expect(serialized).not.toContain('aiPrompt')
+    expect(serialized).not.toContain('preview-secret')
+  })
+
+  it('generates candidate normally for eligible Thailand product', async () => {
+    mockFindUnique.mockResolvedValue(PRODUCT) // Chiang Mai product
+    mockGenerateProductEnrichmentCandidates.mockResolvedValue({
+      ok: true,
+      productId: 'product_123',
+      cleanedTitle: 'Ethical Elephant Sanctuary',
+      shortSummary: 'A half-day elephant experience in Chiang Mai.',
+      suggestedTags: ['Elephants', 'Nature'],
+      seoTitle: 'Best Elephant Sanctuary Chiang Mai',
+      seoDescription: 'Visit rescued elephants ethically in Chiang Mai.',
+      missingFacts: [],
+      warnings: [],
+    })
+
+    const response = await POST(makeRequest({ productId: 'product_123' }, 'preview-secret'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.ok).toBe(true)
+    expect(body.candidate.ok).toBe(true)
+    expect(mockGenerateProductEnrichmentCandidates).toHaveBeenCalledOnce()
+  })
+})

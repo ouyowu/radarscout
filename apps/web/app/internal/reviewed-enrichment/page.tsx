@@ -5,6 +5,7 @@ import { InspectEditor } from './InspectEditor'
 import { ReviewChecklistPanel } from './ReviewChecklistPanel'
 import { detectSourceMismatch } from './qualityWarnings'
 import { isIssueFlagsEnabled } from '@/lib/featureFlags'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 export const metadata: Metadata = {
   title: 'Enrichment Console | Internal',
@@ -660,6 +661,15 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
         )
       : []
 
+  const eligibility =
+    inspectResult?.ok === true
+      ? evaluateThailandProductEligibility({
+          city: inspectResult.product.city,
+          title: inspectResult.product.title,
+          location: inspectResult.product.location,
+        })
+      : null
+
   return (
     <main className="min-h-screen bg-gray-100 p-6 font-sans text-gray-900">
       <div className="mx-auto max-w-5xl space-y-5">
@@ -754,6 +764,7 @@ export default async function InternalEnrichmentConsolePage({ searchParams }: Pa
                   navigation={navigationResult?.ok ? (navigationResult as NavigationSuccess) : null}
                   searchContext={searchContext}
                   city={inspectResult.product.city}
+                  eligibility={eligibility}
                   issueFlag={inspectResult.issueFlag}
                   issueFlagsEnabled={isIssueFlagsEnabled()}
                 />

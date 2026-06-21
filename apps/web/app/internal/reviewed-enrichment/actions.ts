@@ -1,6 +1,10 @@
 'use server'
 
 import { headers } from 'next/headers'
+import {
+  evaluateThailandProductEligibility,
+  type ThailandEligibilityResult,
+} from '@/lib/productEligibility/thailandEligibility'
 
 export type SaveState =
   | { ok: true; redirectTo: string }
@@ -134,9 +138,19 @@ const ALLOWED_CANDIDATE_ERRORS = new Set<string>([
   'openwebui_model_not_found',
   'openwebui_timeout',
   'openwebui_bad_response',
+  'source_product_not_thailand_eligible',
 ])
 
-export async function generateCandidate(productId: string): Promise<CandidateResult> {
+export type { ThailandEligibilityResult }
+
+export async function generateCandidate(
+  productId: string,
+  eligibility?: ThailandEligibilityResult,
+): Promise<CandidateResult> {
+  if (eligibility && !eligibility.eligible) {
+    return { ok: false, error: 'source_product_not_thailand_eligible' }
+  }
+
   const enrichmentSecret = process.env.INTERNAL_ENRICHMENT_REVIEW_SECRET
   if (!enrichmentSecret) return { ok: false, error: 'not_configured' }
 
