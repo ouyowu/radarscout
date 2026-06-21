@@ -8,7 +8,7 @@ import {
   withNormalizedIntentLists,
 } from './intent-schema'
 
-const MAX_PROMPT_LENGTH = 600
+export const PARSER_PROMPT_LIMIT = 600
 
 const interestMatchers: Array<[RegExp, string]> = [
   [/\b(food|foods|tapas|street food|local food)\b/i, 'food'],
@@ -231,11 +231,11 @@ export function parseTripIntent(prompt: string): ParseTripIntentResult {
     }
   }
 
-  const normalizedPrompt = rawPrompt.length > MAX_PROMPT_LENGTH
-    ? rawPrompt.slice(0, MAX_PROMPT_LENGTH)
+  const normalizedPrompt = rawPrompt.length > PARSER_PROMPT_LIMIT
+    ? rawPrompt.slice(0, PARSER_PROMPT_LIMIT)
     : rawPrompt
 
-  if (rawPrompt.length > MAX_PROMPT_LENGTH) warnings.push('prompt truncated')
+  if (rawPrompt.length > PARSER_PROMPT_LIMIT) warnings.push('prompt truncated')
 
   intent.destination = extractDestination(normalizedPrompt)
   intent.durationDays = extractDurationDays(normalizedPrompt)
