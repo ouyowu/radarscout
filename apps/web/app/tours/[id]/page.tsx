@@ -6,6 +6,7 @@ import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { PartnerInventoryNotice } from '@/app/_components/PartnerInventoryNotice'
+import { getPublicThailandProduct } from '@/lib/publicProducts/getPublicThailandProduct'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,12 +64,42 @@ type ProductDetailResult =
   | { status: 'not-found' }
   | { status: 'error' }
 
-export function generateMetadata({ params }: TourDetailPageProps): Metadata {
+const GENERIC_TOUR_METADATA = {
+  title: 'Thailand Tour Detail Preview | RadarScout',
+  description:
+    'A display-only RadarScout product detail page for curated Thailand supplier experiences powered by signed Bókun supplier partners.',
+} as const
+
+export async function generateMetadata({ params }: TourDetailPageProps): Promise<Metadata> {
+  const id = params.id.trim()
+  const canonical = `${siteBase}/tours/${encodeURIComponent(id)}`
+
+  const product = await getPublicThailandProduct(id)
+
+  if (!product) {
+    return {
+      ...GENERIC_TOUR_METADATA,
+      alternates: { canonical },
+    }
+  }
+
+  const title = product.reviewedEnrichment?.cleanedTitle ?? product.title
+  const description =
+    product.reviewedEnrichment?.shortSummary ??
+    product.summary ??
+    GENERIC_TOUR_METADATA.description
+
   return {
-    title: 'Thailand Tour Detail Preview | RadarScout',
-    description:
-      'A display-only RadarScout product detail page for curated Thailand supplier experiences powered by signed Bókun supplier partners.',
-    alternates: { canonical: `${siteBase}/tours/${encodeURIComponent(params.id)}` },
+    title: `${title} | RadarScout Thailand Tours`,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: canonical,
+      ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
+    },
   }
 }
 
