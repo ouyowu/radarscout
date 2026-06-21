@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
     while (collected.length < take && skip < SCAN_LIMIT) {
       const batch = await db.bokunProduct.findMany({
         where,
-        orderBy: [{ city: 'asc' }, { title: 'asc' }],
+        orderBy: [{ city: 'asc' }, { title: 'asc' }, { id: 'asc' }],
         take: SCAN_BATCH_SIZE,
         skip,
         select: {

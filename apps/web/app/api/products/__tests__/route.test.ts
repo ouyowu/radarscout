@@ -284,3 +284,159 @@ describe('GET /api/products', () => {
     expect(body.products.map((p: { id: string }) => p.id)).toEqual(['eligible_1', 'eligible_2'])
   })
 })
+
+describe('GET /api/products — deterministic ordering and query contract', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  const EXPECTED_ORDER_BY = [{ city: 'asc' }, { title: 'asc' }, { id: 'asc' }]
+
+  it('A: every batch query sends the complete orderBy contract including id tie-breaker', async () => {
+    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
+      id: `ineligible_${i}`,
+      title: 'Japan Tour',
+      city: 'Bangkok',
+    }))
+
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce([makeProduct({ id: 'eligible_1' })])
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    await GET(makeRequest({ take: '1' }))
+
+    const callCount = dbMock.bokunProduct.findMany.mock.calls.length
+    expect(callCount).toBeGreaterThanOrEqual(2)
+    for (let i = 1; i <= callCount; i++) {
+      expect(dbMock.bokunProduct.findMany).toHaveBeenNthCalledWith(
+        i,
+        expect.objectContaining({ orderBy: EXPECTED_ORDER_BY }),
+      )
+    }
+  })
+
+  it('B: preserves ID-ascending order for rows sharing city and title; no duplicates, no omissions', async () => {
+    // 49 ineligible + island_a in first batch of 50 triggers next batch
+    const shared = { city: 'Phuket', title: 'Island Tour' }
+    const batchOne = [
+      ...Array.from({ length: 49 }, (_, i) => makeProduct({
+        id: `ineligible_${i}`,
+        title: 'Japan Tour',
+        city: 'Bangkok',
+      })),
+      makeProduct({ id: 'island_a', ...shared }),
+    ]
+    const batchTwo = [
+      makeProduct({ id: 'island_b', ...shared }),
+      makeProduct({ id: 'island_c', ...shared }),
+    ]
+
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(batchOne)
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(batchTwo)
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ take: '5' }))
+    const body = await response.json()
+
+    const ids: string[] = body.products.map((p: { id: string }) => p.id)
+    expect(ids).toContain('island_a')
+    expect(ids).toContain('island_b')
+    expect(ids).toContain('island_c')
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(ids.indexOf('island_a')).toBeLessThan(ids.indexOf('island_b'))
+    expect(ids.indexOf('island_b')).toBeLessThan(ids.indexOf('island_c'))
+  })
+
+  it('C: multi-batch calls use identical orderBy; skip advances by 50; take stays 50', async () => {
+    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
+      id: `ineligible_${i}`,
+      title: 'Japan Tour',
+      city: 'Bangkok',
+    }))
+
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce([makeProduct({ id: 'eligible_1' })])
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    await GET(makeRequest({ take: '1' }))
+
+    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(2)
+
+    const first = dbMock.bokunProduct.findMany.mock.calls[0][0]
+    const second = dbMock.bokunProduct.findMany.mock.calls[1][0]
+
+    expect(first.orderBy).toEqual(EXPECTED_ORDER_BY)
+    expect(second.orderBy).toEqual(EXPECTED_ORDER_BY)
+    expect(first.skip).toBe(0)
+    expect(second.skip).toBe(50)
+    expect(first.take).toBe(50)
+    expect(second.take).toBe(50)
+  })
+
+  it('D: foreign products remain excluded across multiple batches', async () => {
+    const foreignBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
+      id: `foreign_${i}`,
+      title: 'Japan Tour',
+      city: 'Bangkok',
+    }))
+
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(foreignBatch)
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ take: '5' }))
+    const body = await response.json()
+
+    expect(body.products).toHaveLength(0)
+  })
+
+  it('D: "Thai" without geographic evidence remains excluded', async () => {
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
+      makeProduct({ id: 'cultural_only', title: 'Thai Massage Course', city: null, location: null }),
+    ])
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ take: '5' }))
+    const body = await response.json()
+
+    expect(body.products).toHaveLength(0)
+  })
+
+  it('D: eligible rows in a later batch still fill the requested take', async () => {
+    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
+      id: `ineligible_${i}`,
+      title: 'Vietnam Tour',
+      city: 'Bangkok',
+    }))
+    const eligibleBatch = [
+      makeProduct({ id: 'late_1', city: 'Krabi', title: 'Krabi Rock Climbing' }),
+      makeProduct({ id: 'late_2', city: 'Krabi', title: 'Krabi Kayaking' }),
+    ]
+
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce(eligibleBatch)
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ take: '2' }))
+    const body = await response.json()
+
+    expect(body.products).toHaveLength(2)
+    expect(body.products[0].id).toBe('late_1')
+    expect(body.products[1].id).toBe('late_2')
+  })
+
+  it('D: response does not expose eligibility internals or rawJson', async () => {
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
+      makeProductWithImage({ id: 'p1', title: 'Phuket Diving' }),
+    ])
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ take: '1' }))
+    const serialized = JSON.stringify(await response.json())
+
+    expect(serialized).not.toContain('"rawJson"')
+    expect(serialized).not.toContain('"eligible"')
+    expect(serialized).not.toContain('"foreignSignals"')
+    expect(serialized).not.toContain('"thailandSignals"')
+    expect(serialized).not.toContain('"reasons"')
+  })
+})
