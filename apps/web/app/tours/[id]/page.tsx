@@ -67,22 +67,24 @@ type ProductDetailResult =
 const GENERIC_TOUR_METADATA = {
   title: 'Thailand Tour Detail Preview | RadarScout',
   description:
-    'A display-only RadarScout product detail page for curated Thailand supplier experiences powered by signed Bókun supplier partners.',
+    'Explore curated Thailand travel experiences from trusted local operators, with a secure booking handoff.',
+} as const
+
+const BLOCKED_METADATA = {
+  ...GENERIC_TOUR_METADATA,
+  robots: { index: false, follow: false },
 } as const
 
 export async function generateMetadata({ params }: TourDetailPageProps): Promise<Metadata> {
   const id = params.id.trim()
-  const canonical = `${siteBase}/tours/${encodeURIComponent(id)}`
 
   const product = await getPublicThailandProduct(id)
 
   if (!product) {
-    return {
-      ...GENERIC_TOUR_METADATA,
-      alternates: { canonical },
-    }
+    return BLOCKED_METADATA
   }
 
+  const canonical = `${siteBase}/tours/${encodeURIComponent(id)}`
   const title = product.reviewedEnrichment?.cleanedTitle ?? product.title
   const description =
     product.reviewedEnrichment?.shortSummary ??

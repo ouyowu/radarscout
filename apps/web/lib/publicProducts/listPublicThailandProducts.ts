@@ -2,16 +2,6 @@ import 'server-only'
 import { db } from '@reddit-monitor/db'
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
-const THAILAND_CITIES = [
-  'Ayutthaya',
-  'Bangkok',
-  'Chiang Mai',
-  'Koh Samui',
-  'Krabi',
-  'Pattaya',
-  'Phuket',
-]
-
 const SCAN_BATCH_SIZE = 50
 const SCAN_LIMIT = 500
 
@@ -33,7 +23,6 @@ export async function listPublicThailandProducts(take = SCAN_LIMIT): Promise<Pub
         where: {
           active: true,
           supplierId: { not: null },
-          city: { in: THAILAND_CITIES },
         },
         orderBy: [{ city: 'asc' }, { title: 'asc' }, { id: 'asc' }],
         take: SCAN_BATCH_SIZE,

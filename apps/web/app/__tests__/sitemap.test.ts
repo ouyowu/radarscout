@@ -87,4 +87,15 @@ describe('sitemap', () => {
       expect(entry.url).not.toContain('/tours/')
     })
   })
+
+  it('includes product from Chiang Rai (outside original seven-city whitelist)', async () => {
+    listMock.listPublicThailandProducts.mockResolvedValue([
+      makeProduct('cr_tour_456', { city: 'Chiang Rai' }),
+    ])
+
+    const entries = await sitemap()
+    const urls = entries.map(e => e.url)
+
+    expect(urls).toContain(`${BASE}/tours/cr_tour_456`)
+  })
 })

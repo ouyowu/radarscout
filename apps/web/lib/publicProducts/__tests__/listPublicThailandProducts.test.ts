@@ -163,4 +163,25 @@ describe('listPublicThailandProducts', () => {
 
     expect(result).toEqual([])
   })
+
+  it('includes Chiang Rai product (outside original seven-city whitelist)', async () => {
+    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
+      makeRow({ id: 'cr_1', title: 'Chiang Rai Temple Tour', city: 'Chiang Rai', location: null }),
+    ]).mockResolvedValue([])
+
+    const result = await listPublicThailandProducts()
+
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('cr_1')
+  })
+
+  it('DB query does not filter by city whitelist — relies on eligibility helper only', async () => {
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    await listPublicThailandProducts()
+
+    const call = dbMock.bokunProduct.findMany.mock.calls[0][0]
+    expect(call.where).not.toHaveProperty('city')
+    expect(call.where).toMatchObject({ active: true })
+  })
 })

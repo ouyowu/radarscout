@@ -15,7 +15,8 @@ vi.mock('@/lib/publicProducts/getPublicThailandProduct', () => productLoaderMock
 import { generateMetadata } from '../page'
 
 const GENERIC_TITLE = 'Thailand Tour Detail Preview | RadarScout'
-const GENERIC_DESCRIPTION = 'A display-only RadarScout product detail page for curated Thailand supplier experiences powered by signed Bókun supplier partners.'
+const GENERIC_DESCRIPTION = 'Explore curated Thailand travel experiences from trusted local operators, with a secure booking handoff.'
+const FORBIDDEN_BOKUN_PHRASES = ['Bókun', 'bokun', 'Bokun', 'signed Bókun', 'Bókun supplier', 'Bókun-powered', 'Bókun backend', 'Bókun database']
 
 function makePublicProduct(overrides: Record<string, unknown> = {}) {
   return {
@@ -49,16 +50,62 @@ describe('generateMetadata — tours/[id]/page', () => {
     expect(meta.description).toBe(GENERIC_DESCRIPTION)
   })
 
-  it('returns generic metadata for unknown id with canonical URL still present', async () => {
+  it('unknown product has robots.index === false', async () => {
     productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
 
-    const meta = await generateMetadata({ params: { id: 'ghost_product' } })
+    const meta = await generateMetadata({ params: { id: 'unknown_id' } })
 
-    expect(meta.alternates?.canonical).toContain('ghost_product')
-    expect(meta.title).toBe(GENERIC_TITLE)
+    expect((meta.robots as { index: boolean }).index).toBe(false)
   })
 
-  it('returns product-specific title for eligible product', async () => {
+  it('unknown product has robots.follow === false', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
+
+    const meta = await generateMetadata({ params: { id: 'unknown_id' } })
+
+    expect((meta.robots as { follow: boolean }).follow).toBe(false)
+  })
+
+  it('ineligible product has the same generic noindex metadata as unknown product', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
+
+    const ineligibleMeta = await generateMetadata({ params: { id: 'ineligible_id' } })
+    const unknownMeta = await generateMetadata({ params: { id: 'unknown_id' } })
+
+    expect(ineligibleMeta.title).toBe(unknownMeta.title)
+    expect(ineligibleMeta.description).toBe(unknownMeta.description)
+    expect(JSON.stringify(ineligibleMeta.robots)).toBe(JSON.stringify(unknownMeta.robots))
+  })
+
+  it('unknown product canonical does not contain the requested product ID', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
+
+    const meta = await generateMetadata({ params: { id: 'blocked_product_id' } })
+
+    const serialized = JSON.stringify(meta)
+    expect(serialized).not.toContain('blocked_product_id')
+  })
+
+  it('generic metadata description contains no Bókun wording', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
+
+    const meta = await generateMetadata({ params: { id: 'any_id' } })
+
+    const serialized = JSON.stringify(meta)
+    for (const phrase of FORBIDDEN_BOKUN_PHRASES) {
+      expect(serialized).not.toContain(phrase)
+    }
+  })
+
+  it('eligible product has product-specific canonical URL', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct())
+
+    const meta = await generateMetadata({ params: { id: 'prod_abc' } })
+
+    expect(meta.alternates?.canonical).toContain('/tours/prod_abc')
+  })
+
+  it('eligible product returns product-specific title', async () => {
     productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct())
 
     const meta = await generateMetadata({ params: { id: 'prod_abc' } })
@@ -88,13 +135,12 @@ describe('generateMetadata — tours/[id]/page', () => {
     expect(meta.title).not.toContain('Chiang Mai Elephant Sanctuary')
   })
 
-  it('canonical URL always embeds the product id', async () => {
-    productLoaderMock.getPublicThailandProduct.mockResolvedValue(null)
+  it('eligible product does not have robots.index set to false', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct())
 
-    const id = 'my-tour-id-123'
-    const meta = await generateMetadata({ params: { id } })
+    const meta = await generateMetadata({ params: { id: 'prod_abc' } })
 
-    const canonical = meta.alternates?.canonical as string
-    expect(canonical).toContain(encodeURIComponent(id))
+    const robots = meta.robots as { index?: boolean } | undefined
+    expect(robots?.index).not.toBe(false)
   })
 })
