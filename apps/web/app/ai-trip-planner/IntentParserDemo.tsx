@@ -225,7 +225,7 @@ export function IntentParserDemo() {
                 Real Thailand experiences
               </p>
               <h2 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
-                Search live partner catalog
+                Search real Thailand experiences
               </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
                 Returns real eligible products from trusted local operators. No booking or availability check.

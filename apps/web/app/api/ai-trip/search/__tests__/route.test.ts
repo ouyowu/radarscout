@@ -83,19 +83,45 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.status).toBe('invalid_request')
   })
 
-  // Test 2: Oversized prompt returns 400 invalid_request
-  it('prompt exceeding 1000 chars returns 400 invalid_request', async () => {
-    const res = await POST(makeRequest({ prompt: 'a'.repeat(1001) }))
+  // Test 2: Oversized prompt returns 400 invalid_request (limit = PARSER_PROMPT_LIMIT = 600)
+  it('prompt exceeding 600 chars returns 400 invalid_request', async () => {
+    const res = await POST(makeRequest({ prompt: 'a'.repeat(601) }))
     const body = await res.json()
     expect(res.status).toBe(400)
     expect(body.status).toBe('invalid_request')
   })
 
-  it('prompt of exactly 1000 chars is accepted', async () => {
-    const res = await POST(makeRequest({ prompt: 'Bangkok '.repeat(125) })) // 1000 chars
+  it('prompt of exactly 600 chars is accepted', async () => {
+    const res = await POST(makeRequest({ prompt: 'Bangkok '.repeat(75) })) // 600 chars
     const body = await res.json()
     expect(body.status).not.toBe('invalid_request')
     expect(res.status).not.toBe(400)
+  })
+
+  it('oversized prompt (601+ chars) is rejected before calling parseTripIntent-dependent retrieval', async () => {
+    // Thailand in first 600 chars, Singapore appended after char 600 — must be rejected before parsing
+    const thaiPart = 'Bangkok 3 days food temples '.repeat(22).slice(0, 600) // exactly 600
+    const withForeignSuffix = thaiPart + ' Singapore beaches'
+    expect(withForeignSuffix.length).toBeGreaterThan(600)
+
+    const res = await POST(makeRequest({ prompt: withForeignSuffix }))
+    const body = await res.json()
+
+    expect(res.status).toBe(400)
+    expect(body.status).toBe('invalid_request')
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
+  })
+
+  it('oversized prompt response does not echo prompt contents', async () => {
+    const oversized = 'Bangkok '.repeat(100) // 800 chars
+    const res = await POST(makeRequest({ prompt: oversized }))
+    const body = await res.json()
+    const serialized = JSON.stringify(body)
+
+    expect(body.status).toBe('invalid_request')
+    // Response must not contain any portion of the raw prompt
+    expect(serialized).not.toContain('Bangkok')
   })
 
   // Test 3: Malformed request returns 400

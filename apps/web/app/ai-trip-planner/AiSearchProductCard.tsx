@@ -49,10 +49,9 @@ export function AiSearchProductCard({
         {priceLabel ? (
           <p className="text-base font-black text-[#101820]">
             From {priceLabel}
-            <span className="ml-1 text-xs font-semibold text-[#6b7280]">partner rate</span>
           </p>
         ) : (
-          <p className="text-xs font-semibold text-[#9a9084]">Contact for partner rate</p>
+          <div />
         )}
         <Link
           href={detailHref}

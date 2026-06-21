@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { parseTripIntent } from '@/lib/ai-trip/parse-intent'
+import { parseTripIntent, PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import { isThailandCompatibleDestination } from '@/lib/aiProducts/destinationIntent'
 import {
   listAiEligibleThailandProducts,
@@ -13,7 +13,6 @@ import { IneligibleProductInContextError } from '@/lib/aiProducts/assertAllProdu
 
 export const dynamic = 'force-dynamic'
 
-const MAX_PROMPT_LENGTH = 1_000
 const DEFAULT_TAKE = 6
 const MAX_TAKE = 12
 
@@ -98,7 +97,7 @@ export async function POST(request: NextRequest) {
 
   const prompt = rawPrompt.trim()
 
-  if (prompt.length > MAX_PROMPT_LENGTH) {
+  if (prompt.length > PARSER_PROMPT_LIMIT) {
     return NextResponse.json(
       { status: 'invalid_request', products: [], meta: META } satisfies AiTripSearchResponse,
       { status: 400 },
