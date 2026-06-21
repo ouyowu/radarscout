@@ -237,3 +237,97 @@ describe('GET /api/products/[id]', () => {
     expect(serialized).not.toContain('resolvedAt')
   })
 })
+
+describe('GET /api/products/[id] — Thailand eligibility guardrail', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns 404 for product with foreign signal in title (same shape as not-found)', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      title: 'Singapore City Tour',
+      city: 'Bangkok',
+    }))
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const body = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(body.product).toBeNull()
+    expect(body.error).toBe('PRODUCT_NOT_FOUND')
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+
+  it('returns 404 for product with no geographic signal ("Thai" only)', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      title: 'Thai Cooking Class',
+      city: null,
+      location: null,
+    }))
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const body = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(body.product).toBeNull()
+    expect(body.error).toBe('PRODUCT_NOT_FOUND')
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+
+  it('returns 404 for destination-mismatched product (city=Phuket but title mentions Bali)', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      title: 'Bali Yoga Retreat',
+      city: 'Phuket',
+    }))
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const body = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(body.product).toBeNull()
+    expect(body.error).toBe('PRODUCT_NOT_FOUND')
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+
+  it('returns 200 for eligible product (regression — existing behavior preserved)', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.product).not.toBeNull()
+    expect(body.product.id).toBe('product_abc')
+  })
+
+  it('ineligible 404 body matches the not-found 404 body', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      title: 'Vietnam Mekong River Tour',
+      city: 'Bangkok',
+    }))
+
+    const ineligibleResponse = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const ineligibleBody = await ineligibleResponse.json()
+
+    dbMock.bokunProduct.findFirst.mockResolvedValue(null)
+
+    const notFoundResponse = await GET(makeRequest('missing'), makeParams('missing'))
+    const notFoundBody = await notFoundResponse.json()
+
+    expect(ineligibleResponse.status).toBe(notFoundResponse.status)
+    expect(ineligibleBody.product).toEqual(notFoundBody.product)
+    expect(ineligibleBody.error).toBe(notFoundBody.error)
+  })
+
+  it('getReviewedEnrichmentByProductId is not called when product is ineligible', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      title: 'Tokyo Cherry Blossom Tour',
+      city: 'Bangkok',
+    }))
+
+    await GET(makeRequest('product_abc'), makeParams('product_abc'))
+
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+})

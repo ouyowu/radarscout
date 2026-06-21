@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bokunCatalog'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +16,9 @@ const THAILAND_CITIES = [
   'Pattaya',
   'Phuket',
 ]
+
+const SCAN_BATCH_SIZE = 50
+const SCAN_LIMIT = 500
 
 type ProductMeta = {
   source: typeof PRODUCT_SOURCE
@@ -122,55 +126,73 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const candidateTake = hasImage === null ? take : Math.min(take * 3, 100)
-    const products = await db.bokunProduct.findMany({
-      where: {
-        active: true,
-        supplierId: { not: null },
-        city: city ?? { in: THAILAND_CITIES },
-        ...(hasPrice === true ? { retailPrice: { not: null } } : {}),
-        ...(hasPrice === false ? { retailPrice: null } : {}),
-      },
-      orderBy: [{ city: 'asc' }, { title: 'asc' }],
-      take: candidateTake,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        excerpt: true,
-        city: true,
-        location: true,
-        retailPrice: true,
-        currency: true,
-        rawJson: true,
-        lastSyncedAt: true,
-        supplier: {
-          select: {
-            title: true,
+    const where = {
+      active: true as const,
+      supplierId: { not: null as null },
+      city: city ?? { in: THAILAND_CITIES },
+      ...(hasPrice === true ? { retailPrice: { not: null as null } } : {}),
+      ...(hasPrice === false ? { retailPrice: null as null } : {}),
+    }
+
+    const collected: ProductWithImage[] = []
+    let skip = 0
+
+    while (collected.length < take && skip < SCAN_LIMIT) {
+      const batch = await db.bokunProduct.findMany({
+        where,
+        orderBy: [{ city: 'asc' }, { title: 'asc' }],
+        take: SCAN_BATCH_SIZE,
+        skip,
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          excerpt: true,
+          city: true,
+          location: true,
+          retailPrice: true,
+          currency: true,
+          rawJson: true,
+          lastSyncedAt: true,
+          supplier: {
+            select: {
+              title: true,
+            },
           },
         },
-      },
-    }) as BokunCatalogRecord[]
-    const filteredProducts = products
-      .map(product => ({
-        product,
-        imageUrl: toReadOnlyBokunCatalogProduct(product).imageUrl,
-      }))
-      .filter(({ imageUrl }: ProductWithImage) => {
-        if (hasImage === true) return Boolean(imageUrl)
-        if (hasImage === false) return !imageUrl
+      }) as BokunCatalogRecord[]
 
-        return true
-      })
-      .slice(0, take)
+      if (batch.length === 0) break
+
+      for (const product of batch) {
+        if (collected.length >= take) break
+
+        const imageUrl = toReadOnlyBokunCatalogProduct(product).imageUrl
+
+        if (hasImage === true && !imageUrl) continue
+        if (hasImage === false && imageUrl) continue
+
+        const eligibility = evaluateThailandProductEligibility({
+          title: product.title,
+          city: product.city,
+          location: product.location,
+        })
+        if (!eligibility.eligible) continue
+
+        collected.push({ product, imageUrl })
+      }
+
+      skip += batch.length
+      if (batch.length < SCAN_BATCH_SIZE) break
+    }
 
     return NextResponse.json({
-      products: filteredProducts.map(({ product, imageUrl }: ProductWithImage) => ({
+      products: collected.map(({ product, imageUrl }: ProductWithImage) => ({
         ...toReadOnlyBokunCatalogProduct(product),
         imageUrl,
         tags: [],
       })),
-      meta: meta(filteredProducts.length, filters),
+      meta: meta(collected.length, filters),
     })
   } catch {
     return NextResponse.json({

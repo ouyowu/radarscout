@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { getReviewedEnrichmentByProductId } from '@/lib/reviewedEnrichmentReader'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 export const dynamic = 'force-dynamic'
 
@@ -134,6 +135,19 @@ export async function GET(
     })
 
     if (!product) {
+      return NextResponse.json({
+        product: null,
+        meta: meta(),
+        error: 'PRODUCT_NOT_FOUND',
+      }, { status: 404 })
+    }
+
+    const eligibility = evaluateThailandProductEligibility({
+      title: product.title,
+      city: product.city,
+      location: product.location,
+    })
+    if (!eligibility.eligible) {
       return NextResponse.json({
         product: null,
         meta: meta(),
