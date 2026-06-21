@@ -1,6 +1,5 @@
-export const THAILAND_TERMS: readonly string[] = [
+export const THAILAND_GEOGRAPHIC_TERMS: readonly string[] = [
   'Thailand',
-  'Thai',
   'Bangkok',
   'Phuket',
   'Chiang Mai',
@@ -24,6 +23,8 @@ export const THAILAND_TERMS: readonly string[] = [
   'Railay',
   'Ao Nang',
 ]
+
+export const THAILAND_CULTURAL_TERMS: readonly string[] = ['Thai']
 
 export const FOREIGN_TERMS: readonly string[] = [
   'Singapore',
@@ -85,6 +86,18 @@ function matchTerms(text: string, terms: readonly string[]): string[] {
   })
 }
 
+function attributeField(
+  term: string,
+  title: string | null | undefined,
+  location: string | null | undefined,
+): 'title' | 'location' | 'source data' {
+  const inTitle = Boolean(title && matchTerms(title, [term]).length > 0)
+  const inLocation = Boolean(location && matchTerms(location, [term]).length > 0)
+  if (inTitle && !inLocation) return 'title'
+  if (inLocation && !inTitle) return 'location'
+  return 'source data'
+}
+
 export function evaluateThailandProductEligibility(
   input: ThailandEligibilityInput,
 ): ThailandEligibilityResult {
@@ -93,16 +106,19 @@ export function evaluateThailandProductEligibility(
   const allText = [title, city, location].filter(Boolean).join(' ')
 
   const foreignSignals = matchTerms(allText, FOREIGN_TERMS)
-  const thailandSignals = matchTerms(allText, THAILAND_TERMS)
+  const geographicSignals = matchTerms(allText, THAILAND_GEOGRAPHIC_TERMS)
+  const culturalSignals = matchTerms(allText, THAILAND_CULTURAL_TERMS)
+  const thailandSignals = [...geographicSignals, ...culturalSignals]
 
   if (foreignSignals.length > 0) {
     const cityIsThailand =
-      city != null && matchTerms(city, THAILAND_TERMS).length > 0
+      city != null && matchTerms(city, THAILAND_GEOGRAPHIC_TERMS).length > 0
     const hasDestinationMismatch = cityIsThailand
 
     const reasons: string[] = foreignSignals.map(foreign => {
       if (hasDestinationMismatch) {
-        return `Source city is ${city}, but title mentions ${foreign}.`
+        const field = attributeField(foreign, title, location)
+        return `Source city is ${city}, but ${field} mentions ${foreign}.`
       }
       return `Source data explicitly mentions non-Thailand destination: ${foreign}.`
     })
@@ -116,7 +132,7 @@ export function evaluateThailandProductEligibility(
     }
   }
 
-  if (thailandSignals.length > 0) {
+  if (geographicSignals.length > 0) {
     return {
       eligible: true,
       reasons: [],
@@ -129,7 +145,7 @@ export function evaluateThailandProductEligibility(
   return {
     eligible: false,
     reasons: ['Source data does not clearly identify a Thailand destination.'],
-    thailandSignals: [],
+    thailandSignals,
     foreignSignals: [],
     hasDestinationMismatch: false,
   }

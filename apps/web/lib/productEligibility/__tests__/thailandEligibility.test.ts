@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { evaluateThailandProductEligibility } from '../thailandEligibility'
+import {
+  evaluateThailandProductEligibility,
+  THAILAND_GEOGRAPHIC_TERMS,
+  THAILAND_CULTURAL_TERMS,
+} from '../thailandEligibility'
 
 describe('evaluateThailandProductEligibility', () => {
   // Test 1: Phuket city + Phuket tour → eligible
@@ -308,5 +312,187 @@ describe('evaluateThailandProductEligibility — boundary-aware matching', () =>
     expect(result.eligible).toBe(false)
     expect(result.foreignSignals).toContain('Singapore')
     expect(result.thailandSignals).toContain('Phuket')
+  })
+})
+
+// ── Geographic vs cultural Thailand signals ────────────────────────────────────
+
+describe('evaluateThailandProductEligibility — geographic requirement', () => {
+  // Term lists are correctly partitioned
+  it('THAILAND_GEOGRAPHIC_TERMS does not include "Thai"', () => {
+    expect(THAILAND_GEOGRAPHIC_TERMS).not.toContain('Thai')
+  })
+
+  it('THAILAND_CULTURAL_TERMS contains only "Thai"', () => {
+    expect(THAILAND_CULTURAL_TERMS).toEqual(['Thai'])
+  })
+
+  // Test 1: "Thai cooking class" alone — blocked (no geographic signal)
+  it('"Thai cooking class" with no city/location is blocked', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai cooking class',
+      location: null,
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.reasons[0]).toContain('does not clearly identify a Thailand destination')
+  })
+
+  // Test 2: "Thai massage experience" alone — blocked
+  it('"Thai massage experience" with no city/location is blocked', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai massage experience',
+      location: null,
+    })
+    expect(result.eligible).toBe(false)
+  })
+
+  // Test 3: Bangkok + "Thai cooking class" → eligible
+  it('Bangkok city + "Thai cooking class" is eligible', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Bangkok',
+      title: 'Thai cooking class',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.foreignSignals).toHaveLength(0)
+    expect(result.thailandSignals).toContain('Bangkok')
+  })
+
+  // Test 4: "Thai cooking class in Bangkok" (no city) → eligible
+  it('"Thai cooking class in Bangkok" is eligible via geographic signal in title', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai cooking class in Bangkok',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Bangkok')
+  })
+
+  // Test 5: location="Phuket, Thailand" + title="Thai massage" → eligible
+  it('location containing Phuket makes "Thai massage" eligible', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai massage',
+      location: 'Phuket, Thailand',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.foreignSignals).toHaveLength(0)
+  })
+
+  // Test 6: "Thai cooking class in Singapore" → blocked (foreign wins)
+  it('"Thai cooking class in Singapore" is blocked by foreign signal', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thai cooking class in Singapore',
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.foreignSignals).toContain('Singapore')
+  })
+
+  // Test 7: Phuket + "Thai cooking class" → eligible
+  it('Phuket city + "Thai cooking class" is eligible', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Thai cooking class',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Phuket')
+  })
+
+  // Test 8: "Thailand private tour" → eligible
+  it('"Thailand private tour" is eligible via geographic signal', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thailand private tour',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Thailand')
+  })
+
+  // "Thai" still appears in thailandSignals even when city provides geographic signal
+  it('"Thai" appears in thailandSignals alongside geographic signals', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Bangkok',
+      title: 'Thai street food tour',
+    })
+    expect(result.eligible).toBe(true)
+    expect(result.thailandSignals).toContain('Thai')
+    expect(result.thailandSignals).toContain('Bangkok')
+  })
+})
+
+// ── Reason field attribution ──────────────────────────────────────────────────
+
+describe('evaluateThailandProductEligibility — reason field attribution', () => {
+  // Test 9: Foreign term in location → "but location mentions X."
+  it('reason says "location" when foreign term is found only in location', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Island tour',
+      location: 'Seoul area',
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.foreignSignals).toContain('Seoul')
+    expect(result.reasons[0]).toBe('Source city is Phuket, but location mentions Seoul.')
+  })
+
+  // Test 10: Foreign term in title → "but title mentions X."
+  it('reason says "title" when foreign term is found only in title', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Bangkok',
+      title: 'Singapore city tour',
+      location: null,
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.foreignSignals).toContain('Singapore')
+    expect(result.reasons[0]).toBe('Source city is Bangkok, but title mentions Singapore.')
+  })
+
+  // Test 11: Foreign in both title and location → "but source data mentions X."
+  it('reason says "source data" when foreign term appears in both title and location', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'Singapore inspired tour',
+      location: 'Near Singapore',
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.reasons[0]).toBe('Source city is Phuket, but source data mentions Singapore.')
+  })
+
+  // Test 11 (mixed geographic + foreign): geographic Thailand + foreign → blocked
+  it('geographic Thailand signal does not override a foreign signal', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Thailand and Singapore multi-city tour',
+    })
+    expect(result.eligible).toBe(false)
+    expect(result.foreignSignals).toContain('Singapore')
+    expect(result.thailandSignals).toContain('Thailand')
+  })
+
+  // Reason text is safe — no raw source payloads, no field values
+  it('reasons do not contain raw title or location values', () => {
+    const result = evaluateThailandProductEligibility({
+      city: 'Phuket',
+      title: 'An amazing tour with rawJson secrets',
+      location: 'Seoul, South Korea',
+    })
+    const serialized = JSON.stringify(result.reasons)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('secrets')
+    expect(serialized).not.toContain('amazing tour')
+  })
+
+  // No city → generic reason regardless of field
+  it('uses generic reason when no Thailand city is set', () => {
+    const result = evaluateThailandProductEligibility({
+      city: null,
+      title: 'Singapore experience',
+      location: null,
+    })
+    expect(result.reasons[0]).toBe(
+      'Source data explicitly mentions non-Thailand destination: Singapore.',
+    )
   })
 })
