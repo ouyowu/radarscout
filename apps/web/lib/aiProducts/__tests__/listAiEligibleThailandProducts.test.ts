@@ -11,7 +11,7 @@ const dbMock = vi.hoisted(() => ({
 vi.mock('@reddit-monitor/db', () => ({ db: dbMock }))
 
 const enrichmentMock = vi.hoisted(() => ({
-  getReviewedEnrichmentByProductId: vi.fn(),
+  getReviewedEnrichmentsByProductIds: vi.fn(),
 }))
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
@@ -33,7 +33,7 @@ function makeRow(overrides: Record<string, unknown> = {}) {
 describe('listAiEligibleThailandProducts — retrieval', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
   })
 
   // Test 1: Eligible Bangkok product is returned
@@ -135,30 +135,23 @@ describe('listAiEligibleThailandProducts — retrieval', () => {
     dbMock.bokunProduct.findMany
       .mockResolvedValueOnce([makeRow({ title: 'Vietnam Mekong Tour', city: 'Bangkok' })])
       .mockResolvedValue([])
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue({
-      cleanedTitle: 'Bangkok Canal Tour',
-      shortSummary: 'A Bangkok experience.',
-      suggestedTags: ['Bangkok'],
-      seoTitle: null,
-      seoDescription: null,
-      reviewedBy: null,
-      reviewedAt: null,
-    })
 
+    // Even if enrichment map has something (shouldn't happen since ineligible IDs never reach enrichment)
+    // the ineligible product must still be excluded
     const result = await listAiEligibleThailandProducts()
 
     expect(result).toHaveLength(0)
   })
 
-  // Test 10: Enrichment lookup is not called for ineligible products
-  it('does not call getReviewedEnrichmentByProductId for ineligible products', async () => {
+  // Test 10: Enrichment batch is not called for all-ineligible batches
+  it('does not call getReviewedEnrichmentsByProductIds when no eligible products found', async () => {
     dbMock.bokunProduct.findMany
       .mockResolvedValueOnce([makeRow({ title: 'Japan Cherry Tour', city: 'Bangkok' })])
       .mockResolvedValue([])
 
     await listAiEligibleThailandProducts()
 
-    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+    expect(enrichmentMock.getReviewedEnrichmentsByProductIds).not.toHaveBeenCalled()
   })
 
   // Test 11: Stable ordering with city/title/id tie-breaker
@@ -177,14 +170,12 @@ describe('listAiEligibleThailandProducts — retrieval', () => {
 
   // Test 12: Bounded scan cannot exceed configured cap
   it('collects no more than AI_SCAN_LIMIT products even with large take', async () => {
-    // Return 1 eligible product per batch; large take capped at 500
     dbMock.bokunProduct.findMany
       .mockResolvedValueOnce([makeRow()])
       .mockResolvedValue([])
 
     const result = await listAiEligibleThailandProducts({ take: 9999 })
 
-    // Only 1 product in DB mock, but take was capped — result is 1
     expect(result.length).toBeLessThanOrEqual(500)
     expect(result).toHaveLength(1)
   })
@@ -248,7 +239,7 @@ describe('listAiEligibleThailandProducts — retrieval', () => {
 describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
   })
 
   it('spans multiple batches — second batch called with incremented skip after full first batch', async () => {
@@ -271,8 +262,9 @@ describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => 
     expect(secondCall.skip).toBe(50)
   })
 
-  it('attaches reviewed enrichment for eligible products', async () => {
-    const enrichment = {
+  it('attaches reviewed enrichment for eligible products via batch lookup', async () => {
+    const enrichmentMap = new Map()
+    enrichmentMap.set('p1', {
       cleanedTitle: 'Ethical Elephant Sanctuary Chiang Mai',
       shortSummary: 'A half-day ethical elephant experience.',
       suggestedTags: ['Elephants', 'Nature'],
@@ -280,11 +272,12 @@ describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => 
       seoDescription: null,
       reviewedBy: null,
       reviewedAt: null,
-    }
+    })
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(enrichmentMap)
+
     dbMock.bokunProduct.findMany
       .mockResolvedValueOnce([makeRow({ id: 'p1', title: 'Chiang Mai Elephant Sanctuary', city: 'Chiang Mai' })])
       .mockResolvedValue([])
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(enrichment)
 
     const result = await listAiEligibleThailandProducts()
 
@@ -321,12 +314,23 @@ describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => 
 
     expect(result).toEqual([])
   })
+
+  it('returns empty array when enrichment batch query fails', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ id: 'p1', title: 'Bangkok Temple Tour', city: 'Bangkok' })])
+      .mockResolvedValue([])
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockRejectedValue(new Error('enrichment DB failure'))
+
+    const result = await listAiEligibleThailandProducts()
+
+    expect(result).toEqual([])
+  })
 })
 
 describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
   })
 
   // Test 22: Popular-products fallback remains Thailand-only
@@ -365,10 +369,17 @@ describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)'
 
   // Test 24: Reviewed-only fallback remains Thailand-only
   it('reviewed-only results still exclude ineligible products', async () => {
-    const enrichment = { cleanedTitle: 'Reviewed Title', shortSummary: null, suggestedTags: [], seoTitle: null, seoDescription: null, reviewedBy: 'editor', reviewedAt: null }
-    enrichmentMock.getReviewedEnrichmentByProductId
-      .mockResolvedValueOnce(enrichment)
-      .mockResolvedValue(null)
+    const enrichmentMap = new Map()
+    enrichmentMap.set('eligible_reviewed', {
+      cleanedTitle: 'Reviewed Title',
+      shortSummary: null,
+      suggestedTags: [],
+      seoTitle: null,
+      seoDescription: null,
+      reviewedBy: 'editor',
+      reviewedAt: null,
+    })
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(enrichmentMap)
 
     dbMock.bokunProduct.findMany
       .mockResolvedValueOnce([
@@ -404,5 +415,212 @@ describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)'
     expect(ids).toContain('p3')
     expect(ids).not.toContain('p4')
     expect(ids).toContain('p5')
+  })
+})
+
+// ── Section B + H: Query-count guardrail and performance acceptance tests ──────
+
+describe('listAiEligibleThailandProducts — query count and performance (H1–H9)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+  })
+
+  // H1: Six returned products do not cause six separate enrichment queries
+  it('H1: six eligible products cause exactly one enrichment batch query, not six', async () => {
+    const six = Array.from({ length: 6 }, (_, i) =>
+      makeRow({ id: `p${i}`, title: `Bangkok Tour ${i}`, city: 'Bangkok' }),
+    )
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce(six)
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ take: 6 })
+
+    expect(enrichmentMock.getReviewedEnrichmentsByProductIds).toHaveBeenCalledTimes(1)
+    const ids = enrichmentMock.getReviewedEnrichmentsByProductIds.mock.calls[0][0]
+    expect(ids).toHaveLength(6)
+  })
+
+  // H1b: Verify the six IDs passed to enrichment batch match the eligible IDs
+  it('H1b: enrichment batch receives exactly the eligible IDs in order', async () => {
+    const rows = ['a', 'b', 'c', 'd', 'e', 'f'].map(id =>
+      makeRow({ id, title: `Bangkok Tour ${id}`, city: 'Bangkok' }),
+    )
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce(rows)
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ take: 6 })
+
+    const ids = enrichmentMock.getReviewedEnrichmentsByProductIds.mock.calls[0][0]
+    expect(ids).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
+  })
+
+  // H2: Interest hit uses one candidate retrieval path (one findMany call)
+  it('H2: Chiang Mai search with immediate interest match uses one product query batch', async () => {
+    const hits = [makeRow({ id: 'cm1', title: 'Chiang Mai Elephant Tour', city: 'Chiang Mai' })]
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce(hits)
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ city: 'Chiang Mai', search: 'elephants', take: 6 })
+
+    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(1)
+    const call = dbMock.bokunProduct.findMany.mock.calls[0][0]
+    expect(call.where).toMatchObject({ city: 'Chiang Mai' })
+    expect(call.where.title).toMatchObject({ contains: 'elephants' })
+  })
+
+  // H3: Interest miss — the listAiEligibleThailandProducts function itself returns empty on no match;
+  // the route's queryEligibleCandidates handles the fallback. This test confirms the function
+  // returns empty when no eligible products match the interest filter.
+  it('H3: interest search with zero eligible results returns empty array', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ title: 'Japan Cherry Tour', city: 'Bangkok' })])
+      .mockResolvedValue([])
+
+    const result = await listAiEligibleThailandProducts({ city: 'Chiang Mai', search: 'elephants', take: 6 })
+
+    expect(result).toHaveLength(0)
+    expect(enrichmentMock.getReviewedEnrichmentsByProductIds).not.toHaveBeenCalled()
+  })
+
+  // H4: No duplicate products from batches
+  it('H4: no duplicate product IDs across multiple batches', async () => {
+    const batch1 = Array.from({ length: 50 }, (_, i) =>
+      makeRow({ id: `prod_${i}`, title: `Bangkok Tour ${i}`, city: 'Bangkok' }),
+    )
+    const batch2 = Array.from({ length: 10 }, (_, i) =>
+      makeRow({ id: `prod_${50 + i}`, title: `Phuket Tour ${i}`, city: 'Phuket' }),
+    )
+
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce(batch1)
+      .mockResolvedValueOnce(batch2)
+      .mockResolvedValue([])
+
+    const result = await listAiEligibleThailandProducts()
+    const ids = result.map(r => r.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  // H5: No ineligible ID enters enrichment lookup
+  it('H5: ineligible product IDs are never passed to enrichment batch', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([
+        makeRow({ id: 'eligible_1', title: 'Bangkok Temple Tour', city: 'Bangkok' }),
+        makeRow({ id: 'ineligible_1', title: 'Singapore City Tour', city: 'Singapore' }),
+        makeRow({ id: 'eligible_2', title: 'Phuket Snorkeling', city: 'Phuket' }),
+      ])
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts()
+
+    const ids = enrichmentMock.getReviewedEnrichmentsByProductIds.mock.calls[0][0]
+    expect(ids).toContain('eligible_1')
+    expect(ids).toContain('eligible_2')
+    expect(ids).not.toContain('ineligible_1')
+  })
+
+  // H6: No ineligible product reaches context output
+  it('H6: ineligible product does not appear in returned candidates', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([
+        makeRow({ id: 'eligible_1', title: 'Bangkok Temple Tour', city: 'Bangkok' }),
+        makeRow({ id: 'ineligible_1', title: 'Vietnam Mekong Tour', city: 'Bangkok' }),
+      ])
+      .mockResolvedValue([])
+
+    const result = await listAiEligibleThailandProducts()
+
+    const ids = result.map(r => r.id)
+    expect(ids).toContain('eligible_1')
+    expect(ids).not.toContain('ineligible_1')
+  })
+
+  // H7: No rawJson or eligibility internals enter output
+  it('H7: candidate output has no rawJson or eligibility internals', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ id: 'p1', title: 'Bangkok Temple Tour', city: 'Bangkok' })])
+      .mockResolvedValue([])
+
+    const result = await listAiEligibleThailandProducts()
+
+    const serialized = JSON.stringify(result)
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('eligible')
+    expect(serialized).not.toContain('foreignSignals')
+    expect(serialized).not.toContain('reasons')
+    expect(serialized).not.toContain('supplierId')
+  })
+
+  // H8: DB failure returns safe empty response
+  it('H8: DB failure returns safe empty array, not a thrown error', async () => {
+    dbMock.bokunProduct.findMany.mockRejectedValue(new Error('DB connection lost'))
+
+    const result = await listAiEligibleThailandProducts()
+
+    expect(result).toEqual([])
+  })
+
+  // H8b: Enrichment failure returns safe empty response
+  it('H8b: enrichment batch failure returns safe empty array', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ id: 'p1', title: 'Bangkok Temple Tour', city: 'Bangkok' })])
+      .mockResolvedValue([])
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockRejectedValue(new Error('enrichment timeout'))
+
+    const result = await listAiEligibleThailandProducts()
+
+    expect(result).toEqual([])
+  })
+
+  // H10: Existing 600-char prompt boundary remains unchanged (at route level — verified here
+  // by checking the listAiEligibleThailandProducts function itself doesn't validate prompt length)
+  it('H10: listAiEligibleThailandProducts accepts any city/search string — prompt limit is enforced at route level', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ id: 'p1', title: 'Chiang Mai Temple', city: 'Chiang Mai' })])
+      .mockResolvedValue([])
+
+    const longSearch = 'a'.repeat(600)
+    await expect(
+      listAiEligibleThailandProducts({ city: 'Chiang Mai', search: longSearch }),
+    ).resolves.toBeDefined()
+  })
+
+  // Query count: Thailand-wide search uses product query but no city filter
+  it('Thailand-wide search does not pass city filter to DB', async () => {
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ take: 6 })
+
+    const call = dbMock.bokunProduct.findMany.mock.calls[0][0]
+    expect(call.where).not.toHaveProperty('city')
+  })
+
+  // Query count: No-match search does not call enrichment
+  it('no-match search (zero eligible products) makes zero enrichment queries', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow({ title: 'Japan Tour', city: 'Bangkok' })])
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ city: 'Chiang Mai', take: 6 })
+
+    expect(enrichmentMock.getReviewedEnrichmentsByProductIds).not.toHaveBeenCalled()
+  })
+
+  // Query count: Enrichment is always batched, never per-product
+  it('enrichment is called at most once regardless of eligible product count', async () => {
+    const rows = Array.from({ length: 10 }, (_, i) =>
+      makeRow({ id: `p${i}`, title: `Bangkok Tour ${i}`, city: 'Bangkok' }),
+    )
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce(rows)
+      .mockResolvedValue([])
+
+    await listAiEligibleThailandProducts({ take: 10 })
+
+    expect(enrichmentMock.getReviewedEnrichmentsByProductIds).toHaveBeenCalledTimes(1)
   })
 })

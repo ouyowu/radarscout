@@ -418,4 +418,38 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
       expect.arrayContaining([expect.objectContaining({ id: 'prod_1' })]),
     )
   })
+
+  // Test H9: Timeout path returns safe error response (no partial products)
+  it('H9: search timeout returns safe error response with empty products', async () => {
+    listMock.listAiEligibleThailandProducts.mockImplementation(
+      () => new Promise((_, reject) => setTimeout(() => reject(new Error('search_timeout')), 0)),
+    )
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+
+    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('error')
+    expect(body.products).toEqual([])
+    expect(JSON.stringify(body)).not.toContain('search_timeout')
+    expect(JSON.stringify(body)).not.toContain('elapsed')
+    expect(JSON.stringify(body)).not.toContain('candidateCount')
+  })
+
+  // Telemetry: ok response does not expose timing internals in the JSON body
+  it('ok response does not expose timing or telemetry fields in the public JSON', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
+
+    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const body = await res.json()
+    const serialized = JSON.stringify(body)
+
+    expect(serialized).not.toContain('elapsedMs')
+    expect(serialized).not.toContain('candidateCount')
+    expect(serialized).not.toContain('eligibleCount')
+    expect(serialized).not.toContain('destinationCategory')
+    expect(serialized).not.toContain('fallbackUsed')
+  })
 })

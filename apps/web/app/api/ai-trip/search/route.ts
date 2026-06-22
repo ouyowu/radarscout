@@ -15,6 +15,7 @@ export const dynamic = 'force-dynamic'
 
 const DEFAULT_TAKE = 6
 const MAX_TAKE = 12
+const SEARCH_TIMEOUT_MS = 12_000
 
 const META = {
   productRetrievalEnabled: true,
@@ -62,7 +63,17 @@ async function queryEligibleCandidates(
   return listAiEligibleThailandProducts({ city: city ?? undefined, take })
 }
 
+function withSearchTimeout<T>(promise: Promise<T>): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error('search_timeout')), SEARCH_TIMEOUT_MS),
+    ),
+  ])
+}
+
 export async function POST(request: NextRequest) {
+  const startMs = Date.now()
   let body: unknown = {}
 
   try {
@@ -122,13 +133,32 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const candidates = await queryEligibleCandidates(
-      parsed.intent.destination,
-      parsed.intent.interests,
-      Math.min(DEFAULT_TAKE, MAX_TAKE),
+    const destinationCategory = parsed.intent.destination?.toLowerCase() === 'thailand' || !parsed.intent.destination
+      ? 'thailand-wide'
+      : 'city-specific'
+
+    const candidates = await withSearchTimeout(
+      queryEligibleCandidates(
+        parsed.intent.destination,
+        parsed.intent.interests,
+        Math.min(DEFAULT_TAKE, MAX_TAKE),
+      ),
     )
 
     const context = await buildAiProductContext(candidates)
+
+    const elapsedMs = Date.now() - startMs
+    const fallbackUsed = parsed.intent.interests.length > 0 && candidates.length > 0
+
+    console.log('[ai-trip/search]', JSON.stringify({
+      route: 'POST /api/ai-trip/search',
+      destinationCategory,
+      candidateCount: candidates.length,
+      eligibleCount: candidates.length,
+      resultCount: context.status === 'ok' ? context.items.length : 0,
+      elapsedMs,
+      fallbackUsed,
+    }))
 
     if (context.status === 'no_match') {
       return NextResponse.json({
@@ -147,8 +177,14 @@ export async function POST(request: NextRequest) {
     } satisfies AiTripSearchResponse)
   } catch (err) {
     if (err instanceof IneligibleProductInContextError) {
-      // Defense in depth: ineligible product reached context construction.
-      // Fail closed — never return the ineligible product.
+      return NextResponse.json(
+        { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,
+        { status: 500 },
+      )
+    }
+
+    if (err instanceof Error && err.message === 'search_timeout') {
+      console.warn('[ai-trip/search] timeout after', SEARCH_TIMEOUT_MS, 'ms')
       return NextResponse.json(
         { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,
         { status: 500 },
