@@ -37,6 +37,11 @@ export type AiTripSearchResponse = {
   meta: AiTripSearchMeta
 }
 
+type CandidateQueryResult = {
+  candidates: AiProductCandidate[]
+  fallbackUsed: boolean
+}
+
 function isCityDestination(destination: string): boolean {
   return destination.toLowerCase() !== 'thailand'
 }
@@ -45,7 +50,7 @@ async function queryEligibleCandidates(
   destination: string | null,
   interests: string[],
   take: number,
-): Promise<AiProductCandidate[]> {
+): Promise<CandidateQueryResult> {
   const city = destination && isCityDestination(destination) ? destination : null
 
   // Primary: with interest keyword search if interests present
@@ -55,11 +60,13 @@ async function queryEligibleCandidates(
       search: interests[0],
       take,
     })
-    if (primary.length > 0) return primary
+    if (primary.length > 0) return { candidates: primary, fallbackUsed: false }
   }
 
-  // Fallback: destination-only (no interest filter)
-  return listAiEligibleThailandProducts({ city: city ?? undefined, take })
+  // Fallback: destination-only (no interest filter).
+  // fallbackUsed is true only when interests were present but primary miss occurred.
+  const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
+  return { candidates: fallback, fallbackUsed: interests.length > 0 }
 }
 
 export async function POST(request: NextRequest) {
@@ -128,7 +135,7 @@ export async function POST(request: NextRequest) {
         ? 'thailand-wide'
         : 'city-specific'
 
-    const candidates = await queryEligibleCandidates(
+    const { candidates, fallbackUsed } = await queryEligibleCandidates(
       parsed.intent.destination,
       parsed.intent.interests,
       Math.min(DEFAULT_TAKE, MAX_TAKE),
@@ -137,7 +144,6 @@ export async function POST(request: NextRequest) {
     const context = await buildAiProductContext(candidates)
 
     const elapsedMs = Date.now() - startMs
-    const fallbackUsed = parsed.intent.interests.length > 0 && candidates.length > 0
 
     console.log('[ai-trip/search]', JSON.stringify({
       route: 'POST /api/ai-trip/search',

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.mock('server-only', () => ({}))
@@ -465,5 +465,92 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     expect(serialized).not.toContain('eligibleCount')
     expect(serialized).not.toContain('destinationCategory')
     expect(serialized).not.toContain('fallbackUsed')
+  })
+})
+
+describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
+  let consoleSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+  })
+
+  afterEach(() => {
+    consoleSpy.mockRestore()
+  })
+
+  function getSearchLog(): Record<string, unknown> {
+    const call = consoleSpy.mock.calls.find(c => c[0] === '[ai-trip/search]')
+    if (!call) throw new Error('No [ai-trip/search] log call found')
+    return JSON.parse(call[1] as string)
+  }
+
+  it('interest primary hit: fallbackUsed=false, retrieval called once', async () => {
+    // Primary returns a candidate → early return, no fallback
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
+
+    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+
+    expect(getSearchLog().fallbackUsed).toBe(false)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(1)
+  })
+
+  it('interest primary miss with successful fallback: fallbackUsed=true, retrieval called twice', async () => {
+    listMock.listAiEligibleThailandProducts
+      .mockResolvedValueOnce([])              // primary miss
+      .mockResolvedValueOnce([makeCandidate()])  // fallback hit
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
+
+    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants cooking' }))
+
+    expect(getSearchLog().fallbackUsed).toBe(true)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
+  })
+
+  it('interest primary miss with empty fallback: fallbackUsed=true even when fallback returns zero', async () => {
+    listMock.listAiEligibleThailandProducts
+      .mockResolvedValueOnce([])  // primary miss
+      .mockResolvedValueOnce([])  // fallback also empty
+
+    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+
+    expect(getSearchLog().fallbackUsed).toBe(true)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
+  })
+
+  it('no-interest query: fallbackUsed=false, retrieval called once', async () => {
+    // "Bangkok 3 days" has no interest keywords → interests=[] → no primary search
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+
+    await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+
+    expect(getSearchLog().fallbackUsed).toBe(false)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(1)
+  })
+
+  it('telemetry contains only approved keys (no raw destination, city, prompt, ids, titles, reasons)', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
+
+    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+
+    const log = getSearchLog()
+    const approvedKeys = new Set(['route', 'destinationCategory', 'candidateCount', 'eligibleCount', 'resultCount', 'elapsedMs', 'fallbackUsed'])
+    for (const key of Object.keys(log)) {
+      expect(approvedKeys, `Unexpected telemetry key: ${key}`).toContain(key)
+    }
+
+    const logStr = JSON.stringify(log)
+    expect(logStr).not.toContain('Chiang Mai')      // no raw city
+    expect(logStr).not.toContain('elephants')        // no raw prompt/interests
+    expect(logStr).not.toContain('prod_1')           // no product IDs
+    expect(logStr).not.toContain('Chiang Mai Elephant Sanctuary')  // no titles
+    expect(logStr).not.toContain('rawJson')          // no rawJson
+    expect(logStr).not.toContain('"eligible"')       // no bare eligibility status key
+    // destinationCategory must be one of the allowed values only
+    expect(['thailand-wide', 'city-specific']).toContain(log.destinationCategory)
   })
 })

@@ -59,6 +59,19 @@ const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   },
 }
 
+const MIXED_DESTINATION_RESPONSE: AiTripSearchResponse = {
+  status: 'unsupported_destination',
+  intent: { destination: 'Thailand and Singapore', days: 7, interests: [] },
+  products: [],
+  message: 'RadarScout currently searches Thailand experiences only.',
+  meta: {
+    productRetrievalEnabled: true,
+    itineraryGenerationEnabled: false,
+    bookingEnabled: false,
+    availabilityEnabled: false,
+  },
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 type Page = import('@playwright/test').Page
@@ -151,7 +164,7 @@ test.describe('Valid Chiang Mai flow', () => {
 // ── Unsupported destination: Singapore ───────────────────────────────────────
 
 test.describe('Unsupported destination flow (Singapore)', () => {
-  test('Singapore prompt — no product cards rendered', async ({ page }) => {
+  test('Singapore prompt — parse → confirm → search → Thailand-only message, zero product cards', async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({
         status: 200,
@@ -164,32 +177,48 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await page.fill('#trip-idea', 'Singapore 3 days food')
     await page.click('button[type="submit"]')
 
+    // Confirm button must be enabled (parser extracted destination + duration from Singapore prompt)
     const confirmBtn = page.getByRole('button', { name: /confirm trip intent/i })
-    const isConfirmEnabled = await confirmBtn.isEnabled()
+    await expect(confirmBtn).toBeEnabled()
+    await confirmBtn.click()
 
-    if (isConfirmEnabled) {
-      await confirmBtn.click()
-      const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
-      if (await searchBtn.isVisible()) {
-        await searchBtn.click()
-        await expect(page.getByText(/thailand-only/i)).toBeVisible()
-      }
-    }
+    // Search CTA must appear and be enabled
+    const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
+    await expect(searchBtn).toBeVisible()
+    await expect(searchBtn).toBeEnabled()
 
-    // No product cards regardless of whether confirm/search was possible
+    // Capture the API request to verify prompt and that exactly one request is made
+    const requestPromise = page.waitForRequest(
+      req => req.url().includes('/api/ai-trip/search') && req.method() === 'POST',
+    )
+    await searchBtn.click()
+    const apiRequest = await requestPromise
+
+    const requestBody = JSON.parse(apiRequest.postData() ?? '{}')
+    expect(requestBody.prompt).toBe('Singapore 3 days food')
+
+    // Thailand-only message must be visible after response
+    await expect(page.getByText('Thailand-only search')).toBeVisible()
+
+    // No product cards must be rendered
     await expect(productCards(page)).toHaveCount(0)
+
+    // No real Thailand product titles must appear anywhere on the page
+    const pageText = (await page.locator('body').innerText()).toLowerCase()
+    expect(pageText).not.toContain('chiang mai elephant sanctuary')
+    expect(pageText).not.toContain('old city temple walk')
   })
 })
 
 // ── Mixed flow: Thailand and Singapore ───────────────────────────────────────
 
 test.describe('Mixed flow (Thailand and Singapore)', () => {
-  test('mixed Thailand and Singapore prompt — no products rendered', async ({ page }) => {
+  test('mixed Thailand and Singapore prompt — parse → confirm → search → Thailand-only message, zero product cards', async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(UNSUPPORTED_DESTINATION_RESPONSE),
+        body: JSON.stringify(MIXED_DESTINATION_RESPONSE),
       })
     })
 
@@ -197,8 +226,37 @@ test.describe('Mixed flow (Thailand and Singapore)', () => {
     await page.fill('#trip-idea', 'Thailand and Singapore 7 days')
     await page.click('button[type="submit"]')
 
-    // No product cards — none should exist on the page
+    // Confirm button must be enabled (parser extracted destination + duration)
+    const confirmBtn = page.getByRole('button', { name: /confirm trip intent/i })
+    await expect(confirmBtn).toBeEnabled()
+    await confirmBtn.click()
+
+    // Search CTA must appear and be enabled
+    const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
+    await expect(searchBtn).toBeVisible()
+    await expect(searchBtn).toBeEnabled()
+
+    // Capture the API request to verify prompt and exactly one request was made
+    const requestPromise = page.waitForRequest(
+      req => req.url().includes('/api/ai-trip/search') && req.method() === 'POST',
+    )
+    await searchBtn.click()
+    const apiRequest = await requestPromise
+
+    const requestBody = JSON.parse(apiRequest.postData() ?? '{}')
+    expect(requestBody.prompt).toBe('Thailand and Singapore 7 days')
+
+    // Thailand-only message must be visible after response
+    await expect(page.getByText('Thailand-only search')).toBeVisible()
+
+    // No product cards must be rendered
     await expect(productCards(page)).toHaveCount(0)
+
+    // No real Thailand fallback product titles must appear
+    const pageText = (await page.locator('body').innerText()).toLowerCase()
+    expect(pageText).not.toContain('chiang mai elephant sanctuary')
+    expect(pageText).not.toContain('old city temple walk')
+    expect(pageText).not.toContain('night bazaar food tour')
   })
 })
 
