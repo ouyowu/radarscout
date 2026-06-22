@@ -59,6 +59,23 @@ export async function getReviewedEnrichmentByProductId(
   return row ? toOutput(row) : null
 }
 
+export async function getReviewedEnrichmentsByProductIds(
+  ids: string[],
+): Promise<Map<string, ReviewedEnrichmentOutput>> {
+  if (ids.length === 0) return new Map()
+
+  const rows = await db.bokunProductEnrichment.findMany({
+    where: { productId: { in: ids } },
+    select: { productId: true, ...ENRICHMENT_SELECT },
+  })
+
+  const map = new Map<string, ReviewedEnrichmentOutput>()
+  for (const row of rows) {
+    map.set(row.productId, toOutput(row))
+  }
+  return map
+}
+
 export async function getReviewedEnrichmentByBokunActivityId(
   bokunActivityId: string,
 ): Promise<ReviewedEnrichmentOutput | null> {

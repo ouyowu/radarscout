@@ -7,7 +7,8 @@
     "build": "pnpm --dir ../../packages/db generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -27,6 +28,7 @@
     "stripe": "^17"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^18",

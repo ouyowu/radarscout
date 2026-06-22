@@ -5,6 +5,7 @@ vi.mock('server-only', () => ({}))
 const dbMock = vi.hoisted(() => ({
   bokunProductEnrichment: {
     findUnique: vi.fn(),
+    findMany: vi.fn(),
   },
   bokunProduct: {
     findUnique: vi.fn(),
@@ -18,6 +19,7 @@ vi.mock('@reddit-monitor/db', () => ({
 import {
   getReviewedEnrichmentByProductId,
   getReviewedEnrichmentByBokunActivityId,
+  getReviewedEnrichmentsByProductIds,
   type ReviewedEnrichmentOutput,
 } from './reviewedEnrichmentReader'
 
@@ -262,5 +264,98 @@ describe('getReviewedEnrichmentByBokunActivityId', () => {
         },
       },
     })
+  })
+})
+
+describe('getReviewedEnrichmentsByProductIds', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns an empty Map when given an empty array', async () => {
+    const result = await getReviewedEnrichmentsByProductIds([])
+
+    expect(result).toBeInstanceOf(Map)
+    expect(result.size).toBe(0)
+    expect(dbMock.bokunProductEnrichment.findMany).not.toHaveBeenCalled()
+  })
+
+  it('issues a single findMany with productId:in filter', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([])
+
+    await getReviewedEnrichmentsByProductIds(['p1', 'p2', 'p3'])
+
+    expect(dbMock.bokunProductEnrichment.findMany).toHaveBeenCalledTimes(1)
+    expect(dbMock.bokunProductEnrichment.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { productId: { in: ['p1', 'p2', 'p3'] } },
+      }),
+    )
+  })
+
+  it('returns a Map keyed by productId', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([
+      { productId: 'p1', ...makeEnrichmentRow({ cleanedTitle: 'Title A' }) },
+      { productId: 'p2', ...makeEnrichmentRow({ cleanedTitle: 'Title B' }) },
+    ])
+
+    const result = await getReviewedEnrichmentsByProductIds(['p1', 'p2'])
+
+    expect(result.size).toBe(2)
+    expect(result.get('p1')?.cleanedTitle).toBe('Title A')
+    expect(result.get('p2')?.cleanedTitle).toBe('Title B')
+  })
+
+  it('returns empty Map when no enrichment rows exist for the given IDs', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([])
+
+    const result = await getReviewedEnrichmentsByProductIds(['p1', 'p2'])
+
+    expect(result.size).toBe(0)
+  })
+
+  it('does not return rawJson or forbidden fields in batch output', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([
+      { productId: 'p1', ...makeEnrichmentRow() },
+    ])
+
+    const result = await getReviewedEnrichmentsByProductIds(['p1'])
+    const serialized = JSON.stringify(Object.fromEntries(result))
+
+    for (const key of FORBIDDEN_KEYS) {
+      expect(serialized).not.toContain(key)
+    }
+  })
+
+  it('select includes productId for map key construction', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([])
+
+    await getReviewedEnrichmentsByProductIds(['p1'])
+
+    const call = dbMock.bokunProductEnrichment.findMany.mock.calls[0][0]
+    expect(call.select).toMatchObject({ productId: true })
+  })
+
+  it('select does not include rawJson or forbidden fields', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([])
+
+    await getReviewedEnrichmentsByProductIds(['p1'])
+
+    const call = dbMock.bokunProductEnrichment.findMany.mock.calls[0][0]
+    const selectKeys = Object.keys(call.select ?? {})
+    const forbidden = ['rawJson', 'netSettlementPrice', 'commissionPercent', 'supplierId']
+    for (const key of forbidden) {
+      expect(selectKeys).not.toContain(key)
+    }
+  })
+
+  it('correctly parses suggestedTags from batch rows', async () => {
+    dbMock.bokunProductEnrichment.findMany.mockResolvedValue([
+      { productId: 'p1', ...makeEnrichmentRow({ suggestedTags: ['Elephants', 42, null, 'Nature'] }) },
+    ])
+
+    const result = await getReviewedEnrichmentsByProductIds(['p1'])
+
+    expect(result.get('p1')?.suggestedTags).toEqual(['Elephants', 'Nature'])
   })
 })
