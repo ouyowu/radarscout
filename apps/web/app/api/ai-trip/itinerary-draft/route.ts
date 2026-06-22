@@ -12,7 +12,11 @@ import {
 } from '@/lib/aiProducts/buildAiProductContext'
 import { IneligibleProductInContextError } from '@/lib/aiProducts/assertAllProductsThailandEligible'
 import { buildItineraryDraftInput } from '@/lib/aiProducts/itineraryDraftInputBuilder'
-import { MockItineraryDraftProvider } from '@/lib/aiProducts/itineraryDraftProvider'
+import { hydrateItineraryExperienceFacts } from '@/lib/aiProducts/itineraryDraftHydrator'
+import {
+  ItineraryProviderUnavailableError,
+  type ItineraryDraftProvider,
+} from '@/lib/aiProducts/itineraryDraftProvider'
 import { validateItineraryDraftOutput } from '@/lib/aiProducts/itineraryDraftValidator'
 import type { ItineraryDraft } from '@/lib/aiProducts/itineraryDraftSchema'
 
@@ -52,11 +56,19 @@ export type ItineraryDraftResponse = {
   meta: typeof META | typeof META_DISABLED
 }
 
-// Provider is injected for testability; defaults to mock until a real provider is enabled.
-let _provider = new MockItineraryDraftProvider()
+let providerOverrideForTest: ItineraryDraftProvider | null = null
 
-export function _setProviderForTest(p: { generate: (input: unknown) => Promise<unknown> }) {
-  _provider = p as MockItineraryDraftProvider
+function getItineraryDraftProvider(): ItineraryDraftProvider {
+  if (providerOverrideForTest) return providerOverrideForTest
+  throw new ItineraryProviderUnavailableError()
+}
+
+export function _setProviderForTest(provider: ItineraryDraftProvider) {
+  providerOverrideForTest = provider
+}
+
+export function _resetProviderForTest() {
+  providerOverrideForTest = null
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -160,7 +172,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     let rawOutput: unknown
     try {
-      rawOutput = await _provider.generate(draftInput)
+      rawOutput = await getItineraryDraftProvider().generate(draftInput)
     } catch {
       return NextResponse.json(
         { status: 'generation_failed', itinerary: null, products: [], meta: META } satisfies ItineraryDraftResponse,
@@ -184,10 +196,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
+    const hydratedDraft = hydrateItineraryExperienceFacts({
+      draft: validation.draft,
+      allowedProducts,
+    })
+
     // Collect only products actually referenced by validated experience items, in itinerary order
     const referencedIds: string[] = []
     const seenIds = new Set<string>()
-    for (const day of validation.draft.days) {
+    for (const day of hydratedDraft.days) {
       for (const item of day.items) {
         if (item.type === 'experience' && item.productId && !seenIds.has(item.productId)) {
           seenIds.add(item.productId)
@@ -202,7 +219,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       status: 'ok',
       intent,
-      itinerary: validation.draft,
+      itinerary: hydratedDraft,
       products: referencedProducts,
       meta: META,
     } satisfies ItineraryDraftResponse)

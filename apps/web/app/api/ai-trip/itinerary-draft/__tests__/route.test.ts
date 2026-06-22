@@ -24,7 +24,11 @@ vi.mock('@/lib/aiProducts/assertAllProductsThailandEligible', () => ({
   },
 }))
 
-import { POST, _setProviderForTest } from '../route'
+import { POST, _resetProviderForTest, _setProviderForTest } from '../route'
+
+afterEach(() => {
+  _resetProviderForTest()
+})
 
 function makeRequest(body: unknown): NextRequest {
   return new NextRequest('http://localhost/api/ai-trip/itinerary-draft', {
@@ -306,6 +310,24 @@ describe('POST /api/ai-trip/itinerary-draft — ok flow', () => {
     expect(bodyStr).not.toContain('attacker_id')
     expect(bodyStr).not.toContain('other_id')
   })
+
+  it('replaces hallucinated experience facts with canonical allowed-product facts', async () => {
+    const output = makeValidDraftOutput([{ id: 'prod_1' }], 1)
+    output.days[0].items[0].title = 'Private Helicopter Flight'
+    output.days[0].items[0].description = 'Fly over Chiang Mai by helicopter.'
+    _setProviderForTest(makeMockProvider(output))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day food' }))
+    const body = await res.json()
+    const experience = body.itinerary.days[0].items[0]
+    const bodyStr = JSON.stringify(body)
+
+    expect(body.status).toBe('ok')
+    expect(experience.title).toBe('Chiang Mai Tour prod_1')
+    expect(experience.description).toBe('Half-day ethical elephant visit.')
+    expect(bodyStr).not.toContain('Private Helicopter Flight')
+    expect(bodyStr).not.toContain('Fly over Chiang Mai by helicopter.')
+  })
 })
 
 describe('POST /api/ai-trip/itinerary-draft — provider failure', () => {
@@ -322,6 +344,35 @@ describe('POST /api/ai-trip/itinerary-draft — provider failure', () => {
   })
 
   afterEach(() => vi.restoreAllMocks())
+
+  it('returns safe generation_failed when enabled without an injected provider', async () => {
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day food' }))
+    const body = await res.json()
+    const bodyStr = JSON.stringify(body)
+
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.itinerary).toBeNull()
+    expect(body.products).toEqual([])
+    expect(bodyStr).not.toContain('mock')
+    expect(bodyStr).not.toContain('provider')
+    expect(bodyStr).not.toContain('model')
+    expect(bodyStr).not.toContain('prompt')
+    expect(bodyStr).not.toContain('rawOutput')
+  })
+
+  it('reset helper clears an explicitly injected provider', async () => {
+    _setProviderForTest(makeMockProvider(makeValidDraftOutput([{ id: 'prod_1' }], 1)))
+    _resetProviderForTest()
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day food' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.itinerary).toBeNull()
+    expect(body.products).toEqual([])
+  })
 
   it('returns generation_failed when provider throws', async () => {
     _setProviderForTest({ generate: vi.fn().mockRejectedValue(new Error('provider error')) })
@@ -352,6 +403,24 @@ describe('POST /api/ai-trip/itinerary-draft — provider failure', () => {
     const bodyStr = JSON.stringify(body)
     expect(bodyStr).not.toContain('INTERNAL_SECRET_ERROR')
     expect(bodyStr).not.toContain('provider error')
+  })
+
+  it('rejects forbidden provider text before canonical hydration', async () => {
+    const output = makeValidDraftOutput([{ id: 'prod_1' }], 1)
+    output.days[0].items[0].title = 'Discount helicopter tour'
+    output.days[0].items[0].description = 'Book this private flight for $99.'
+    _setProviderForTest(makeMockProvider(output))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day food' }))
+    const body = await res.json()
+    const bodyStr = JSON.stringify(body)
+
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.itinerary).toBeNull()
+    expect(body.products).toEqual([])
+    expect(bodyStr).not.toContain('Discount helicopter tour')
+    expect(bodyStr).not.toContain('$99')
   })
 })
 

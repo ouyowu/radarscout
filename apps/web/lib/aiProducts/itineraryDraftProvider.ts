@@ -5,6 +5,13 @@ export interface ItineraryDraftProvider {
   generate(input: ItineraryDraftInput): Promise<unknown>
 }
 
+export class ItineraryProviderUnavailableError extends Error {
+  constructor() {
+    super('Itinerary draft provider is unavailable')
+    this.name = 'ItineraryProviderUnavailableError'
+  }
+}
+
 export class MockItineraryDraftProvider implements ItineraryDraftProvider {
   private readonly fixture: unknown
   private readonly useFixture: boolean
