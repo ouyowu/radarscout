@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from 'react'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
 import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
+import { ItineraryDraftShell } from './ItineraryDraftShell'
 import {
   CapabilityStatusPanel,
   LocalConfirmationPanel,
@@ -14,6 +15,7 @@ import {
 import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
+import type { ItineraryDraftResponse } from '../api/ai-trip/itinerary-draft/route'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const examplePrompts = [
@@ -27,12 +29,25 @@ export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boole
   return confirmed !== null
 }
 
-export function IntentParserDemo() {
+export function canGenerateDraft(
+  confirmed: ConfirmedIntent | null,
+  itineraryEnabled: boolean,
+): boolean {
+  return confirmed !== null && itineraryEnabled
+}
+
+type IntentParserDemoProps = {
+  itineraryEnabled?: boolean
+}
+
+export function IntentParserDemo({ itineraryEnabled = false }: IntentParserDemoProps) {
   const [prompt, setPrompt] = useState(defaultPrompt)
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
   const [confirmed, setConfirmed] = useState<ConfirmedIntent | null>(null)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [isSearching, setIsSearching] = useState(false)
+  const [draftState, setDraftState] = useState<ItineraryDraftResponse | null>(null)
+  const [isDrafting, setIsDrafting] = useState(false)
 
   const parsedJson = useMemo(() => JSON.stringify(result, null, 2), [result])
 
@@ -54,6 +69,33 @@ export function IntentParserDemo() {
     setPrompt(nextPrompt)
     setConfirmed(null)
     setSearchState(null)
+    setDraftState(null)
+  }
+
+  async function handleGenerateDraft() {
+    if (!canGenerateDraft(confirmed, itineraryEnabled) || isDrafting) return
+
+    setIsDrafting(true)
+    setDraftState(null)
+
+    try {
+      const res = await fetch('/api/ai-trip/itinerary-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      })
+      const data = (await res.json()) as ItineraryDraftResponse
+      setDraftState(data)
+    } catch {
+      setDraftState({
+        status: 'generation_failed',
+        itinerary: null,
+        products: [],
+        meta: { itineraryGenerationEnabled: true, bookingEnabled: false, availabilityEnabled: false },
+      })
+    } finally {
+      setIsDrafting(false)
+    }
   }
 
   const hasMissingFields = result.missingFields.length > 0
@@ -211,11 +253,32 @@ export function IntentParserDemo() {
           <ItineraryPlaceholderShell
             durationDays={confirmed.durationDays}
             placeholderDayCount={placeholderDayCount}
+            itineraryEnabled={itineraryEnabled}
+            isDrafting={isDrafting}
+            onGenerateDraft={handleGenerateDraft}
           />
         ) : null}
 
         <RawJsonDetails parsedJson={parsedJson} />
       </section>
+
+      {draftState ? (
+        <section className="mt-6" aria-label="Itinerary draft result">
+          {draftState.status === 'ok' && draftState.itinerary ? (
+            <ItineraryDraftShell
+              draft={draftState.itinerary}
+              products={draftState.products}
+            />
+          ) : draftState.status === 'generation_failed' || draftState.status === 'no_match' ? (
+            <div className="border border-[#fde8e8] bg-white p-5">
+              <p className="text-sm font-black text-[#a35c09]">Draft unavailable</p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-[#6b7280]">
+                An error occurred generating your itinerary draft. No partial plan has been saved.
+              </p>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {confirmed ? (
         <section className="mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">

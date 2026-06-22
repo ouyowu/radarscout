@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { IntentParserDemo } from './IntentParserDemo'
+import { isAiItineraryDraftEnabled } from '@/lib/featureFlags'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -68,6 +69,7 @@ const notConnected = [
 ]
 
 export default function AiTripPlannerPage() {
+  const itineraryEnabled = isAiItineraryDraftEnabled()
   return (
     <main className="min-h-screen bg-[#fbf8f3] text-[#111827]">
       <section className="relative overflow-hidden bg-[#1E2D59] text-white">
@@ -225,7 +227,7 @@ export default function AiTripPlannerPage() {
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
-            <IntentParserDemo />
+            <IntentParserDemo itineraryEnabled={itineraryEnabled} />
           </div>
         </div>
       </section>
