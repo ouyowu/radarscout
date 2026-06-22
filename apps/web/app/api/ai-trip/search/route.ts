@@ -15,7 +15,6 @@ export const dynamic = 'force-dynamic'
 
 const DEFAULT_TAKE = 6
 const MAX_TAKE = 12
-const SEARCH_TIMEOUT_MS = 12_000
 
 const META = {
   productRetrievalEnabled: true,
@@ -61,15 +60,6 @@ async function queryEligibleCandidates(
 
   // Fallback: destination-only (no interest filter)
   return listAiEligibleThailandProducts({ city: city ?? undefined, take })
-}
-
-function withSearchTimeout<T>(promise: Promise<T>): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('search_timeout')), SEARCH_TIMEOUT_MS),
-    ),
-  ])
 }
 
 export async function POST(request: NextRequest) {
@@ -133,16 +123,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const destinationCategory = parsed.intent.destination?.toLowerCase() === 'thailand' || !parsed.intent.destination
-      ? 'thailand-wide'
-      : 'city-specific'
+    const destinationCategory =
+      parsed.intent.destination?.toLowerCase() === 'thailand' || !parsed.intent.destination
+        ? 'thailand-wide'
+        : 'city-specific'
 
-    const candidates = await withSearchTimeout(
-      queryEligibleCandidates(
-        parsed.intent.destination,
-        parsed.intent.interests,
-        Math.min(DEFAULT_TAKE, MAX_TAKE),
-      ),
+    const candidates = await queryEligibleCandidates(
+      parsed.intent.destination,
+      parsed.intent.interests,
+      Math.min(DEFAULT_TAKE, MAX_TAKE),
     )
 
     const context = await buildAiProductContext(candidates)
@@ -177,14 +166,6 @@ export async function POST(request: NextRequest) {
     } satisfies AiTripSearchResponse)
   } catch (err) {
     if (err instanceof IneligibleProductInContextError) {
-      return NextResponse.json(
-        { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,
-        { status: 500 },
-      )
-    }
-
-    if (err instanceof Error && err.message === 'search_timeout') {
-      console.warn('[ai-trip/search] timeout after', SEARCH_TIMEOUT_MS, 'ms')
       return NextResponse.json(
         { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,
         { status: 500 },

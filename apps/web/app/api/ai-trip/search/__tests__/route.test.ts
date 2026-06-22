@@ -419,11 +419,24 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     )
   })
 
-  // Test H9: Timeout path returns safe error response (no partial products)
-  it('H9: search timeout returns safe error response with empty products', async () => {
+  // No application-level timeout: slow retrieval that eventually resolves must return success
+  it('slow retrieval that eventually resolves returns ok status (no application-level timeout)', async () => {
     listMock.listAiEligibleThailandProducts.mockImplementation(
-      () => new Promise((_, reject) => setTimeout(() => reject(new Error('search_timeout')), 0)),
+      () => new Promise(resolve => setTimeout(() => resolve([makeCandidate()]), 50)),
     )
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
+
+    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.products).toHaveLength(1)
+  })
+
+  // Actual retrieval rejection returns safe generic 500 (no partial products, no internal error detail)
+  it('retrieval rejection returns safe generic 500 with empty products', async () => {
+    listMock.listAiEligibleThailandProducts.mockRejectedValue(new Error('DB connection failed'))
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
@@ -432,9 +445,10 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     expect(res.status).toBe(500)
     expect(body.status).toBe('error')
     expect(body.products).toEqual([])
-    expect(JSON.stringify(body)).not.toContain('search_timeout')
-    expect(JSON.stringify(body)).not.toContain('elapsed')
-    expect(JSON.stringify(body)).not.toContain('candidateCount')
+    // Internal error must not be surfaced in the response
+    const serialized = JSON.stringify(body)
+    expect(serialized).not.toContain('DB connection failed')
+    expect(serialized).not.toContain('Error')
   })
 
   // Telemetry: ok response does not expose timing internals in the JSON body
