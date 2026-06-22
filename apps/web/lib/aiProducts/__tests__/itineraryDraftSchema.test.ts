@@ -357,3 +357,109 @@ describe('validateItineraryDraftSchema — malformed output', () => {
     if (!result.ok) expect(result.code).toBe('MALFORMED_OUTPUT')
   })
 })
+
+describe('validateItineraryDraftSchema — strict schema (UNKNOWN_FIELD)', () => {
+  it('rejects unknown root-level key: providerCommentary', () => {
+    const result = validateItineraryDraftSchema(
+      makeValidDraft({ providerCommentary: 'some internal note' }),
+    )
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.code).toBe('UNKNOWN_FIELD')
+      expect(result.reason).toContain('providerCommentary')
+    }
+  })
+
+  it('rejects unknown root-level key: systemPrompt', () => {
+    const result = validateItineraryDraftSchema(makeValidDraft({ systemPrompt: 'you are...' }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown root-level key: debug', () => {
+    const result = validateItineraryDraftSchema(makeValidDraft({ debug: { tokens: 1234 } }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown root-level key: price', () => {
+    const result = validateItineraryDraftSchema(makeValidDraft({ price: '1000' }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown root-level key: availability', () => {
+    const result = validateItineraryDraftSchema(makeValidDraft({ availability: 'open' }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown root-level key: bookingUrl', () => {
+    const result = validateItineraryDraftSchema(makeValidDraft({ bookingUrl: 'https://example.com' }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown day-level key: providerNotes', () => {
+    const days = [
+      {
+        day: 1,
+        title: 'Day 1',
+        theme: 'Culture',
+        items: [],
+        providerNotes: 'internal day notes',
+      },
+      { day: 2, title: 'Day 2', theme: 'Nature', items: [] },
+    ]
+    const result = validateItineraryDraftSchema(makeValidDraft({ days }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown item-level key: rating', () => {
+    const days = [
+      {
+        day: 1,
+        title: 'Day 1',
+        theme: 'Culture',
+        items: [
+          {
+            type: 'free_time',
+            title: 'Wander',
+            description: 'Walk around.',
+            timeOfDay: 'morning',
+            rating: 4.5,
+          },
+        ],
+      },
+      { day: 2, title: 'Day 2', theme: 'Nature', items: [] },
+    ]
+    const result = validateItineraryDraftSchema(makeValidDraft({ days }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+
+  it('rejects unknown item-level key: checkoutUrl', () => {
+    const days = [
+      {
+        day: 1,
+        title: 'Day 1',
+        theme: 'Culture',
+        items: [
+          {
+            type: 'experience',
+            productId: 'prod_1',
+            title: 'Tour',
+            description: 'Visit a temple.',
+            timeOfDay: 'morning',
+            checkoutUrl: 'https://book.example.com',
+          },
+        ],
+      },
+      { day: 2, title: 'Day 2', theme: 'Nature', items: [] },
+    ]
+    const result = validateItineraryDraftSchema(makeValidDraft({ days }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('UNKNOWN_FIELD')
+  })
+})

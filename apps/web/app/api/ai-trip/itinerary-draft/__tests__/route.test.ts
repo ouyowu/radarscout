@@ -386,3 +386,246 @@ describe('POST /api/ai-trip/itinerary-draft — safety constants', () => {
     expect(body.meta.availabilityEnabled).toBe(false)
   })
 })
+
+describe('POST /api/ai-trip/itinerary-draft — referenced products only', () => {
+  function makeContextItems(ids: string[]) {
+    return ids.map(id => makeContextItem(id))
+  }
+
+  function makeCandidates(ids: string[]) {
+    return ids.map(id => makeCandidate(id))
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    flagMock.isAiItineraryDraftEnabled.mockReturnValue(true)
+  })
+
+  afterEach(() => vi.restoreAllMocks())
+
+  it('6 allowed candidates, itinerary references 2 → exactly 2 products returned', async () => {
+    const ids = ['prod_1', 'prod_2', 'prod_3', 'prod_4', 'prod_5', 'prod_6']
+    listMock.listAiEligibleThailandProducts.mockResolvedValue(makeCandidates(ids))
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: makeContextItems(ids),
+    })
+
+    // Only reference prod_3 and prod_5 in the itinerary
+    const validOutput = {
+      destination: 'Chiang Mai',
+      durationDays: 2,
+      summary: 'Two days using only 2 of 6 products.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'prod_3', title: 'Tour 3', description: 'Visit.', timeOfDay: 'morning' },
+          ],
+        },
+        {
+          day: 2,
+          title: 'Day 2',
+          theme: 'Nature',
+          items: [
+            { type: 'experience', productId: 'prod_5', title: 'Tour 5', description: 'Visit.', timeOfDay: 'afternoon' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    _setProviderForTest(makeMockProvider(validOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 2 days culture' }))
+    const body = await res.json()
+    expect(body.status).toBe('ok')
+    expect(body.products).toHaveLength(2)
+    expect(body.products.map((p: { id: string }) => p.id)).toEqual(['prod_3', 'prod_5'])
+  })
+
+  it('returned product order follows first itinerary reference order', async () => {
+    const ids = ['prod_a', 'prod_b', 'prod_c']
+    listMock.listAiEligibleThailandProducts.mockResolvedValue(makeCandidates(ids))
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: makeContextItems(ids),
+    })
+
+    // Reference prod_c first, then prod_a
+    const validOutput = {
+      destination: 'Chiang Mai',
+      durationDays: 2,
+      summary: 'Two days, reversed reference order.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'prod_c', title: 'Tour C', description: 'C first.', timeOfDay: 'morning' },
+          ],
+        },
+        {
+          day: 2,
+          title: 'Day 2',
+          theme: 'Nature',
+          items: [
+            { type: 'experience', productId: 'prod_a', title: 'Tour A', description: 'A second.', timeOfDay: 'afternoon' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    _setProviderForTest(makeMockProvider(validOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 2 days' }))
+    const body = await res.json()
+    expect(body.status).toBe('ok')
+    expect(body.products).toHaveLength(2)
+    // Order must follow itinerary reference: prod_c before prod_a
+    expect(body.products[0].id).toBe('prod_c')
+    expect(body.products[1].id).toBe('prod_a')
+  })
+
+  it('no experience items → products []', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate('prod_1')])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem('prod_1')],
+    })
+
+    // All free_time — no experience items
+    const validOutput = {
+      destination: 'Chiang Mai',
+      durationDays: 1,
+      summary: 'Free day in Chiang Mai.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Free',
+          items: [
+            { type: 'free_time', title: 'Explore', description: 'Wander the city.', timeOfDay: 'flexible' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    _setProviderForTest(makeMockProvider(validOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day relaxed' }))
+    const body = await res.json()
+    expect(body.status).toBe('ok')
+    expect(body.products).toEqual([])
+  })
+
+  it('unknown product ID → generation_failed and products []', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate('prod_1')])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem('prod_1')],
+    })
+
+    const invalidOutput = {
+      destination: 'Chiang Mai',
+      durationDays: 1,
+      summary: 'One day.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'not_in_allowlist', title: 'Fake', description: 'Not verified.', timeOfDay: 'morning' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    _setProviderForTest(makeMockProvider(invalidOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day culture' }))
+    const body = await res.json()
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.products).toEqual([])
+  })
+
+  it('invalid output (unknown root field) → generation_failed, no partial products', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate('prod_1')])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem('prod_1')],
+    })
+
+    // Root has providerCommentary — unknown field — must be rejected
+    const invalidOutput = {
+      destination: 'Chiang Mai',
+      durationDays: 1,
+      summary: 'One day.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'prod_1', title: 'Tour', description: 'A tour.', timeOfDay: 'morning' },
+          ],
+        },
+      ],
+      warnings: [],
+      providerCommentary: 'internal note from provider',
+    }
+    _setProviderForTest(makeMockProvider(invalidOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day culture' }))
+    const body = await res.json()
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.products).toEqual([])
+    expect(JSON.stringify(body)).not.toContain('providerCommentary')
+  })
+})
+
+describe('POST /api/ai-trip/itinerary-draft — destination mismatch', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    flagMock.isAiItineraryDraftEnabled.mockReturnValue(true)
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate('prod_1')])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem('prod_1')],
+    })
+  })
+
+  afterEach(() => vi.restoreAllMocks())
+
+  it('generation_failed when draft destination does not match intent destination', async () => {
+    // Intent is Chiang Mai but provider returns Thailand as destination
+    const mismatchedOutput = {
+      destination: 'Thailand',
+      durationDays: 1,
+      summary: 'One day.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'prod_1', title: 'Tour', description: 'A tour.', timeOfDay: 'morning' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    _setProviderForTest(makeMockProvider(mismatchedOutput))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 1 day temples' }))
+    const body = await res.json()
+    expect(res.status).toBe(500)
+    expect(body.status).toBe('generation_failed')
+    expect(body.products).toEqual([])
+  })
+})

@@ -184,11 +184,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
+    // Collect only products actually referenced by validated experience items, in itinerary order
+    const referencedIds: string[] = []
+    const seenIds = new Set<string>()
+    for (const day of validation.draft.days) {
+      for (const item of day.items) {
+        if (item.type === 'experience' && item.productId && !seenIds.has(item.productId)) {
+          seenIds.add(item.productId)
+          referencedIds.push(item.productId)
+        }
+      }
+    }
+    const referencedProducts = referencedIds
+      .map(id => allowedProducts.get(id))
+      .filter((p): p is AiProductContextItem => p !== undefined)
+
     return NextResponse.json({
       status: 'ok',
       intent,
       itinerary: validation.draft,
-      products: context.items,
+      products: referencedProducts,
       meta: META,
     } satisfies ItineraryDraftResponse)
   } catch (err) {

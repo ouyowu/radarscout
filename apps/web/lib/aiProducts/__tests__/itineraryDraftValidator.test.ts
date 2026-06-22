@@ -396,3 +396,270 @@ describe('validateItineraryDraftOutput — malformed output', () => {
     expect(result.ok).toBe(false)
   })
 })
+
+describe('validateItineraryDraftOutput — destination mismatch', () => {
+  it('accepts case-insensitive same destination (Chiang Mai vs chiang mai)', () => {
+    const output = makeValidOutput()
+    output.destination = 'chiang mai'
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: { durationDays: 2, destination: 'Chiang Mai' },
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+
+  it('accepts whitespace-normalized same destination', () => {
+    const output = makeValidOutput()
+    output.destination = '  Chiang  Mai  '
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: { durationDays: 2, destination: 'Chiang Mai' },
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+
+  it('rejects Chiang Mai intent with Thailand draft destination', () => {
+    const output = makeValidOutput()
+    output.destination = 'Thailand'
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: { durationDays: 2, destination: 'Chiang Mai' },
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('DESTINATION_MISMATCH')
+  })
+
+  it('rejects Chiang Mai intent with Singapore draft destination', () => {
+    const output = makeValidOutput()
+    output.destination = 'Singapore'
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: { durationDays: 2, destination: 'Chiang Mai' },
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('DESTINATION_MISMATCH')
+  })
+
+  it('rejects Thailand intent with Japan draft destination', () => {
+    const allowed = makeAllowedProducts(['prod_1', 'prod_2'])
+    const output = {
+      destination: 'Japan',
+      durationDays: 2,
+      summary: 'Two days in Japan.',
+      days: [
+        {
+          day: 1,
+          title: 'Day 1',
+          theme: 'Culture',
+          items: [
+            { type: 'experience', productId: 'prod_1', title: 'Tour', description: 'A tour.', timeOfDay: 'morning' },
+          ],
+        },
+        {
+          day: 2,
+          title: 'Day 2',
+          theme: 'Food',
+          items: [
+            { type: 'experience', productId: 'prod_2', title: 'Market', description: 'A market.', timeOfDay: 'afternoon' },
+          ],
+        },
+      ],
+      warnings: [],
+    }
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: { durationDays: 2, destination: 'Thailand' },
+      allowedProducts: allowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('DESTINATION_MISMATCH')
+  })
+})
+
+describe('validateItineraryDraftOutput — operational claim rejection', () => {
+  function makeOutputWithDescription(text: string) {
+    const output = makeValidOutput()
+    output.days[0].items[0] = {
+      type: 'experience',
+      productId: 'prod_1',
+      title: 'Tour',
+      description: text,
+      timeOfDay: 'morning',
+    }
+    return output
+  }
+
+  // Opening hours
+  it('rejects "open daily" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('The temple is open daily from dawn to dusk.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects explicit opening-hour range in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Visit from 8:00 am to 5:00 pm.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects "operating hours" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Check operating hours before visiting.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects "opening hours" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Opening hours vary by season.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  // Meeting points
+  it('rejects "meet at" a named place', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Meet at the main gate entrance at 8am.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects "meeting point" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('The meeting point is at the car park.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  // Pickup
+  it('rejects "hotel pickup included" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Hotel pickup included with this experience.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects "free pickup" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Enjoy free pickup from your accommodation.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  // Transfer guarantees
+  it('rejects "transfer included" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('Transfer included from your hotel.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  it('rejects "guaranteed transfer" in description', () => {
+    const result = validateItineraryDraftOutput({
+      rawOutput: makeOutputWithDescription('A guaranteed transfer will pick you up.'),
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.code).toBe('FORBIDDEN_CLAIM')
+  })
+
+  // Safe generic transport — these must PASS
+  it('allows generic transfer note: "Allow time to travel between activities"', () => {
+    const output = makeValidOutput()
+    output.days[0].items[0] = {
+      type: 'transfer_note',
+      title: 'Travel between sites',
+      description: 'Allow time to travel between activities.',
+      timeOfDay: 'flexible',
+    } as unknown as typeof output.days[0]['items'][0]
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+
+  it('allows generic transport note: "Plan local transport separately"', () => {
+    const output = makeValidOutput()
+    output.days[0].items[0] = {
+      type: 'transfer_note',
+      title: 'Local transport',
+      description: 'Plan local transport separately for this leg.',
+      timeOfDay: 'afternoon',
+    } as unknown as typeof output.days[0]['items'][0]
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+
+  it('allows "morning" as a timeOfDay value (not scanned)', () => {
+    const output = makeValidOutput()
+    output.days[0].items[0] = {
+      type: 'experience',
+      productId: 'prod_1',
+      title: 'Morning temple visit',
+      description: 'A peaceful morning visit to a local temple.',
+      timeOfDay: 'morning',
+    }
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+
+  it('allows generic transfer note item without operational guarantee', () => {
+    const output = makeValidOutput()
+    output.days[1].items[0] = {
+      type: 'transfer_note',
+      title: 'Afternoon travel',
+      description: 'Budget extra time for travel between Chiang Mai and the next site.',
+      timeOfDay: 'afternoon',
+    } as unknown as typeof output.days[1]['items'][0]
+    const result = validateItineraryDraftOutput({
+      rawOutput: output,
+      intent: defaultIntent,
+      allowedProducts: defaultAllowed,
+    })
+    expect(result.ok).toBe(true)
+  })
+})

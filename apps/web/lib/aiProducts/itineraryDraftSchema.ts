@@ -37,6 +37,7 @@ export type ItineraryDraftValidationCode =
   | 'MALFORMED_OUTPUT'
   | 'INVALID_DURATION_DAYS'
   | 'DURATION_MISMATCH'
+  | 'DESTINATION_MISMATCH'
   | 'INVALID_DAY_COUNT'
   | 'NON_SEQUENTIAL_DAYS'
   | 'MISSING_DAY'
@@ -49,6 +50,7 @@ export type ItineraryDraftValidationCode =
   | 'OVERSIZED_TEXT'
   | 'INVALID_ITEM_TYPE'
   | 'INVALID_TIME_OF_DAY'
+  | 'UNKNOWN_FIELD'
 
 export type SchemaValidationResult =
   | { ok: true; draft: ItineraryDraft }
@@ -56,6 +58,10 @@ export type SchemaValidationResult =
 
 const VALID_ITEM_TYPES = new Set<string>(['experience', 'free_time', 'transfer_note', 'meal_note'])
 const VALID_TIME_OF_DAY = new Set<string>(['morning', 'afternoon', 'evening', 'flexible'])
+
+const ROOT_ALLOWED_KEYS = new Set(['destination', 'durationDays', 'summary', 'days', 'warnings'])
+const DAY_ALLOWED_KEYS = new Set(['day', 'title', 'theme', 'items'])
+const ITEM_ALLOWED_KEYS = new Set(['type', 'productId', 'title', 'description', 'timeOfDay'])
 
 function isString(v: unknown): v is string {
   return typeof v === 'string'
@@ -84,10 +90,31 @@ function assertMaxLength(
   return null
 }
 
+function rejectUnknownKeys(
+  obj: Record<string, unknown>,
+  allowed: Set<string>,
+  context: string,
+): SchemaValidationResult | null {
+  for (const key of Object.keys(obj)) {
+    if (!allowed.has(key)) {
+      return {
+        ok: false,
+        code: 'UNKNOWN_FIELD',
+        reason: `Unknown field "${key}" in ${context}`,
+      }
+    }
+  }
+  return null
+}
+
 export function validateItineraryDraftSchema(raw: unknown): SchemaValidationResult {
   if (!isObject(raw)) {
     return { ok: false, code: 'MALFORMED_OUTPUT', reason: 'Output is not an object' }
   }
+
+  // Reject unknown root-level keys
+  const rootKeyErr = rejectUnknownKeys(raw, ROOT_ALLOWED_KEYS, 'root')
+  if (rootKeyErr) return rootKeyErr
 
   if (!isString(raw.destination)) {
     return { ok: false, code: 'MALFORMED_OUTPUT', reason: 'destination is missing or not a string' }
@@ -132,6 +159,10 @@ export function validateItineraryDraftSchema(raw: unknown): SchemaValidationResu
       return { ok: false, code: 'MALFORMED_OUTPUT', reason: `Day at index ${i} is not an object` }
     }
 
+    // Reject unknown day-level keys
+    const dayKeyErr = rejectUnknownKeys(dayRaw, DAY_ALLOWED_KEYS, `day ${i + 1}`)
+    if (dayKeyErr) return dayKeyErr
+
     if (typeof dayRaw.day !== 'number' || dayRaw.day !== i + 1) {
       return {
         ok: false,
@@ -175,6 +206,10 @@ export function validateItineraryDraftSchema(raw: unknown): SchemaValidationResu
           reason: `Day ${i + 1} item ${j} is not an object`,
         }
       }
+
+      // Reject unknown item-level keys
+      const itemKeyErr = rejectUnknownKeys(itemRaw, ITEM_ALLOWED_KEYS, `day ${i + 1} item ${j}`)
+      if (itemKeyErr) return itemKeyErr
 
       if (!isString(itemRaw.type) || !VALID_ITEM_TYPES.has(itemRaw.type)) {
         return {

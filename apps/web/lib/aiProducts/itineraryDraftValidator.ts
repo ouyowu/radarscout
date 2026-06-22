@@ -9,6 +9,7 @@ export type ItineraryDraftValidationResult =
 type ForbiddenPattern = { pattern: RegExp; code: ItineraryDraftValidationCode; label: string }
 
 const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
+  // --- price and commerce ---
   {
     pattern: /\$\s*[\d,]+|\b\d+(?:\.\d+)?\s*(?:USD|THB|EUR|GBP|AUD|SGD)\b/i,
     code: 'FORBIDDEN_CLAIM',
@@ -19,6 +20,7 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
     code: 'FORBIDDEN_CLAIM',
     label: 'discount claim',
   },
+  // --- ratings and reviews ---
   {
     pattern: /\b(\d+(?:\.\d+)?\s*(?:out\s*of\s*)?\d*\s*stars?|★+)\b/i,
     code: 'FORBIDDEN_CLAIM',
@@ -29,6 +31,7 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
     code: 'FORBIDDEN_CLAIM',
     label: 'review count',
   },
+  // --- availability and booking ---
   {
     pattern: /\bavailable\s*now\b/i,
     code: 'FORBIDDEN_CLAIM',
@@ -79,6 +82,7 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
     code: 'FORBIDDEN_CLAIM',
     label: 'payment instruction',
   },
+  // --- supplier/partner pricing ---
   {
     pattern: /\bsupplier\s*net\s*rate\b/i,
     code: 'FORBIDDEN_CLAIM',
@@ -94,12 +98,121 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
     code: 'FORBIDDEN_CLAIM',
     label: 'partner rate claim',
   },
+  // --- pickup guarantees ---
   {
     pattern: /\bpickup\s*guaranteed\b|\bguaranteed\s*pickup\b/i,
     code: 'FORBIDDEN_CLAIM',
     label: 'pickup guarantee',
   },
+  // --- opening hours ---
+  {
+    pattern: /\bopen\s+daily\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'opening hours claim (open daily)',
+  },
+  {
+    pattern: /\bopens?\s+at\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'opening hours claim (opens at)',
+  },
+  {
+    pattern: /\bcloses?\s+at\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'opening hours claim (closes at)',
+  },
+  {
+    pattern: /\boperating\s+hours?\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'operating hours claim',
+  },
+  {
+    pattern: /\bopening\s+hours?\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'opening hours claim',
+  },
+  {
+    pattern: /\bfrom\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)\s+to\s+\d{1,2}/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'opening hours time range',
+  },
+  // --- meeting points ---
+  {
+    pattern: /\bmeet\s+at\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'meeting point claim (meet at)',
+  },
+  {
+    pattern: /\bmeeting\s+point\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'meeting point claim',
+  },
+  {
+    pattern: /\bassembly\s+point\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'assembly point claim',
+  },
+  {
+    pattern: /\bcheck\s+in\s+at\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'check in at claim',
+  },
+  {
+    pattern: /\breport\s+to\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'report to claim',
+  },
+  {
+    pattern: /\bexact\s+pickup\s+location\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'exact pickup location claim',
+  },
+  // --- pickup claims ---
+  {
+    pattern: /\bhotel\s+pickup\s+included\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'hotel pickup included claim',
+  },
+  {
+    pattern: /\bpickup\s+included\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'pickup included claim',
+  },
+  {
+    pattern: /\bfree\s+pickup\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'free pickup claim',
+  },
+  {
+    pattern: /\bpickup\s+from\s+your\s+hotel\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'pickup from hotel claim',
+  },
+  {
+    pattern: /\bdoor[-\s]to[-\s]door\s+pickup\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'door-to-door pickup claim',
+  },
+  // --- transfer guarantees ---
+  {
+    pattern: /\btransfer\s+included\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'transfer included claim',
+  },
+  {
+    pattern: /\bguaranteed\s+transfer\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'guaranteed transfer claim',
+  },
+  {
+    pattern: /\bprivate\s+transfer\s+included\b/i,
+    code: 'FORBIDDEN_CLAIM',
+    label: 'private transfer included claim',
+  },
 ]
+
+function normalizeDestination(s: string): string {
+  return s.trim().replace(/\s+/g, ' ').toLowerCase()
+}
 
 function scanStringForForbiddenContent(
   value: string,
@@ -139,7 +252,7 @@ export function validateItineraryDraftOutput(params: {
 }): ItineraryDraftValidationResult {
   const { rawOutput, intent, allowedProducts } = params
 
-  // Step 1: structural schema validation
+  // Step 1: structural schema validation (rejects unknown fields)
   const schemaResult = validateItineraryDraftSchema(rawOutput)
   if (!schemaResult.ok) return schemaResult
 
@@ -154,7 +267,16 @@ export function validateItineraryDraftOutput(params: {
     }
   }
 
-  // Step 3: product reference checks
+  // Step 3: destination must match confirmed intent (normalized)
+  if (normalizeDestination(draft.destination) !== normalizeDestination(intent.destination)) {
+    return {
+      ok: false,
+      code: 'DESTINATION_MISMATCH',
+      reason: `Draft destination "${draft.destination}" does not match intent destination "${intent.destination}"`,
+    }
+  }
+
+  // Step 4: product reference checks
   const seenProductIds = new Set<string>()
 
   for (const day of draft.days) {
@@ -195,7 +317,7 @@ export function validateItineraryDraftOutput(params: {
     }
   }
 
-  // Step 4: forbidden claim scan over all string fields
+  // Step 5: forbidden claim scan over all string fields
   const claimViolation = scanDraftStrings(draft)
   if (claimViolation) return { ok: false, ...claimViolation }
 
