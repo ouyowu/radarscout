@@ -165,7 +165,10 @@ test.describe('Valid Chiang Mai flow', () => {
 
 test.describe('Unsupported destination flow (Singapore)', () => {
   test('Singapore prompt — parse → confirm → search → Thailand-only message, zero product cards', async ({ page }) => {
+    let apiCallCount = 0
+
     await page.route('/api/ai-trip/search', async route => {
+      apiCallCount += 1
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -187,18 +190,23 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await expect(searchBtn).toBeVisible()
     await expect(searchBtn).toBeEnabled()
 
-    // Capture the API request to verify prompt and that exactly one request is made
+    // Capture the API request to verify prompt body and method
     const requestPromise = page.waitForRequest(
       req => req.url().includes('/api/ai-trip/search') && req.method() === 'POST',
     )
     await searchBtn.click()
     const apiRequest = await requestPromise
 
+    // Verify exact prompt body and request method
+    expect(apiRequest.method()).toBe('POST')
     const requestBody = JSON.parse(apiRequest.postData() ?? '{}')
     expect(requestBody.prompt).toBe('Singapore 3 days food')
 
     // Thailand-only message must be visible after response
     await expect(page.getByText('Thailand-only search')).toBeVisible()
+
+    // Verify exactly one API call was made (not zero, not two)
+    expect(apiCallCount).toBe(1)
 
     // No product cards must be rendered
     await expect(productCards(page)).toHaveCount(0)
@@ -214,7 +222,10 @@ test.describe('Unsupported destination flow (Singapore)', () => {
 
 test.describe('Mixed flow (Thailand and Singapore)', () => {
   test('mixed Thailand and Singapore prompt — parse → confirm → search → Thailand-only message, zero product cards', async ({ page }) => {
+    let apiCallCount = 0
+
     await page.route('/api/ai-trip/search', async route => {
+      apiCallCount += 1
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -236,18 +247,23 @@ test.describe('Mixed flow (Thailand and Singapore)', () => {
     await expect(searchBtn).toBeVisible()
     await expect(searchBtn).toBeEnabled()
 
-    // Capture the API request to verify prompt and exactly one request was made
+    // Capture the API request to verify prompt body and method
     const requestPromise = page.waitForRequest(
       req => req.url().includes('/api/ai-trip/search') && req.method() === 'POST',
     )
     await searchBtn.click()
     const apiRequest = await requestPromise
 
+    // Verify exact prompt body and request method
+    expect(apiRequest.method()).toBe('POST')
     const requestBody = JSON.parse(apiRequest.postData() ?? '{}')
     expect(requestBody.prompt).toBe('Thailand and Singapore 7 days')
 
     // Thailand-only message must be visible after response
     await expect(page.getByText('Thailand-only search')).toBeVisible()
+
+    // Verify exactly one API call was made (not zero, not two)
+    expect(apiCallCount).toBe(1)
 
     // No product cards must be rendered
     await expect(productCards(page)).toHaveCount(0)
