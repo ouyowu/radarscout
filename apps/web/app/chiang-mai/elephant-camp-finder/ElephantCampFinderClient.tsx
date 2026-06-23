@@ -16,6 +16,10 @@ export const COMING_SOON_MESSAGE =
   'We’re connecting owner-managed Chiang Mai elephant, nature, and local experiences. Please browse our current Thailand experiences for now.'
 export const COMING_SOON_CTA_LABEL = 'Browse Thailand experiences'
 export const COMING_SOON_CTA_HREF = '/tours'
+export const BATHING_HELPER_NOTE =
+  'We only highlight bathing when it is clearly listed by the booking partner.'
+export const OPTION_ROW_CLASS =
+  'flex min-h-[44px] items-center gap-3 rounded-[0.9rem] border border-[#eadfce] bg-[#fffdf7] px-3 py-2 text-sm font-semibold leading-5 text-[#36414a]'
 
 const hotelAreaOptions: { value: ElephantFinderInput['hotelArea']; label: string }[] = [
   { value: 'old_city', label: 'Old City' },
@@ -97,22 +101,32 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
       </h3>
       <p className="mt-1 text-sm font-semibold text-[#5a6670]">{recommendation.campName}</p>
 
-      <ul className="mt-4 space-y-2">
-        {recommendation.reasons.map(reason => (
-          <li key={reason} className="text-sm font-semibold leading-6 text-[#36414a]">
-            • {reason}
-          </li>
-        ))}
-      </ul>
-
-      {recommendation.cautionNotes.length > 0 ? (
-        <ul className="mt-3 space-y-1">
-          {recommendation.cautionNotes.map(note => (
-            <li key={note} className="text-xs font-semibold leading-5 text-[#a35c09]">
-              {note}
+      <div className="mt-4 rounded-[1rem] bg-[#f8f4ea] p-3">
+        <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
+          Why this matches
+        </p>
+        <ul className="mt-2 space-y-2">
+          {recommendation.reasons.map(reason => (
+            <li key={reason} className="text-sm font-semibold leading-6 text-[#36414a]">
+              • {reason}
             </li>
           ))}
         </ul>
+      </div>
+
+      {recommendation.cautionNotes.length > 0 ? (
+        <div className="mt-3 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-3">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#a35c09]">
+            Good to know
+          </p>
+          <ul className="mt-2 space-y-1">
+            {recommendation.cautionNotes.map(note => (
+              <li key={note} className="text-xs font-semibold leading-5 text-[#8a4f07]">
+                {note}
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
 
       <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
@@ -134,6 +148,9 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
           </Link>
         )}
       </div>
+      <p className="mt-2 text-xs font-semibold leading-5 text-[#6b5d4d]">
+        Opens the partner page in a new tab so you can review details there.
+      </p>
     </article>
   )
 }
@@ -213,16 +230,20 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
               ['wantsGentleFamilyExperience', 'Gentle family-friendly experience'],
               ['ethicalPriority', 'Ethical / no riding'],
             ].map(([key, label]) => (
-              <label key={key} className="flex items-center gap-3 text-sm font-semibold text-[#36414a]">
+              <label key={key} className={OPTION_ROW_CLASS}>
                 <input
                   type="checkbox"
                   checked={Boolean(input[key as keyof ElephantFinderInput])}
                   onChange={event => patchInput({ [key]: event.target.checked } as Partial<ElephantFinderInput>)}
+                  className="h-4 w-4 shrink-0 accent-[#0f766e]"
                 />
                 {label}
               </label>
             ))}
           </div>
+          <p className="mt-3 rounded-[0.9rem] bg-[#f8f4ea] px-3 py-2 text-xs font-semibold leading-5 text-[#6b5d4d]">
+            {BATHING_HELPER_NOTE}
+          </p>
         </fieldset>
 
         <div className="mt-5 grid gap-4">
