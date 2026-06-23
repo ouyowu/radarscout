@@ -9,10 +9,10 @@ import type {
   ElephantFinderRecommendation,
 } from '@/lib/elephantFinder/types'
 
-export const ELEPHANT_FINDER_TITLE = 'Find the right elephant camp in Chiang Mai'
-export const COMING_SOON_TITLE = 'Elephant Camp Finder is coming soon'
+export const ELEPHANT_FINDER_TITLE = 'Find the right Chiang Mai experience'
+export const COMING_SOON_TITLE = 'Chiang Mai Experience Finder is coming soon'
 export const COMING_SOON_MESSAGE =
-  'We’re connecting verified Chiang Mai elephant experiences. Please browse our current Thailand experiences for now.'
+  'We’re connecting owner-managed Chiang Mai elephant, nature, and local experiences. Please browse our current Thailand experiences for now.'
 export const COMING_SOON_CTA_LABEL = 'Browse Thailand experiences'
 export const COMING_SOON_CTA_HREF = '/tours'
 
@@ -35,6 +35,9 @@ export function getInitialElephantFinderInput(): ElephantFinderInput {
     wantsFeeding: false,
     wantsBathing: false,
     wantsCloseInteraction: false,
+    wantsElephantCare: false,
+    wantsCookingOrFood: false,
+    wantsNatureDayTrip: false,
     wantsGentleFamilyExperience: false,
     ethicalPriority: true,
     transferSensitivity: 'medium',
@@ -112,18 +115,23 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
       ) : null}
 
       <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
-        <Link
-          href={recommendation.detailHref}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
-        >
-          View experience
-        </Link>
-        <Link
-          href={recommendation.detailHref}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#0f766e] px-5 text-xs font-black uppercase tracking-[0.1em] text-[#0f766e] transition hover:bg-[#f5fbf7]"
-        >
-          Check availability
-        </Link>
+        {recommendation.externalHandoff ? (
+          <a
+            href={recommendation.ctaHref}
+            rel={recommendation.linkRel}
+            target="_blank"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+          >
+            {recommendation.ctaLabel}
+          </a>
+        ) : (
+          <Link
+            href={recommendation.ctaHref}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+          >
+            {recommendation.ctaLabel}
+          </Link>
+        )}
       </div>
     </article>
   )
@@ -198,6 +206,9 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
               ['wantsFeeding', 'Feeding elephants'],
               ['wantsBathing', 'Bathing elephants'],
               ['wantsCloseInteraction', 'More hands-on interaction'],
+              ['wantsElephantCare', 'Elephant care experience'],
+              ['wantsNatureDayTrip', 'Nature / mountain day trip'],
+              ['wantsCookingOrFood', 'Cooking / local food experience'],
               ['wantsGentleFamilyExperience', 'Gentle family-friendly experience'],
               ['ethicalPriority', 'Ethical / no riding'],
             ].map(([key, label]) => (
@@ -267,12 +278,12 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           Your recommendation
         </p>
         <h2 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
-          Best elephant camp matches
+          Best Chiang Mai experience matches
         </h2>
 
         {view.emptyState ? (
           <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-            Answer the questions, then click Get my match to compare Chiang Mai elephant experiences.
+            Answer the questions, then click Get my match to compare Chiang Mai experiences.
           </p>
         ) : view.showComingSoon ? (
           <div className="mt-5 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-4">
@@ -290,7 +301,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
         ) : (
           <div className="mt-5 grid gap-4">
             {view.recommendations.map(recommendation => (
-              <RecommendationCard key={recommendation.productId} recommendation={recommendation} />
+              <RecommendationCard key={recommendation.recommendationId} recommendation={recommendation} />
             ))}
           </div>
         )}
