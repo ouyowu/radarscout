@@ -8,8 +8,9 @@ import type {
   ElephantFinderInput,
   ElephantFinderRecommendation,
 } from '@/lib/elephantFinder/types'
+import { ELEPHANT_FINDER_TITLE } from './copy'
 
-export const ELEPHANT_FINDER_TITLE = 'Find the right Chiang Mai experience'
+export { ELEPHANT_FINDER_TITLE } from './copy'
 export const COMING_SOON_TITLE = 'Chiang Mai Experience Finder is coming soon'
 export const COMING_SOON_MESSAGE =
   'We’re connecting owner-managed Chiang Mai elephant, nature, and local experiences. Please browse our current Thailand experiences for now.'

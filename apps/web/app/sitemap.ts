@@ -8,6 +8,8 @@ const routes = [
   ['/terms-of-service', 'yearly', 0.3],
 ] as const
 
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
   const now = new Date()

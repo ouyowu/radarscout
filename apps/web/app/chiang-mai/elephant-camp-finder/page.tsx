@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { ElephantCampFinderClient, ELEPHANT_FINDER_TITLE } from './ElephantCampFinderClient'
+import { ElephantCampFinderClient } from './ElephantCampFinderClient'
+import { ELEPHANT_FINDER_INTRO_COPY, ELEPHANT_FINDER_TITLE } from './copy'
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
@@ -45,7 +46,7 @@ export default function ChiangMaiElephantCampFinderPage() {
             Match first, then choose your experience
           </h2>
           <p className="mt-4 text-sm font-semibold leading-7 text-[#5a6670]">
-            RadarScout uses your preferences to compare Chiang Mai experiences. It does not create reservations or claim live slots.
+            {ELEPHANT_FINDER_INTRO_COPY}
           </p>
         </div>
 
