@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { ownerManagedBokunProfiles } from '../ownerManagedBokunProfiles'
 import { scoreElephantCampProducts } from '../scoreElephantCamp'
 import type { ElephantCampProductProfile, ElephantFinderInput } from '../types'
 
@@ -184,6 +185,19 @@ describe('scoreElephantCampProducts', () => {
     expect(new Set(recommendations.map(r => r.recommendationId)).size).toBe(3)
   })
 
+  it('returns the top 3 unique owner-managed Chiang Mai recommendations', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: baseInput,
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(recommendations).toHaveLength(3)
+    expect(new Set(recommendations.map(r => r.recommendationId)).size).toBe(3)
+    expect(recommendations.every(recommendation => recommendation.city === 'Chiang Mai')).toBe(
+      true,
+    )
+  })
+
   it('uses internal product IDs for RadarScout tour links', () => {
     const recommendations = scoreElephantCampProducts({
       input: baseInput,
@@ -251,6 +265,18 @@ describe('scoreElephantCampProducts', () => {
     expect(recommendations[0].internalProductId).toBe('cooking')
   })
 
+  it('boosts the owner-managed cooking profile when cooking or food is requested', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsCookingOrFood: true },
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(recommendations.map(recommendation => recommendation.bokunId)).toContain('1232736')
+    expect(
+      recommendations.find(recommendation => recommendation.bokunId === '1232736')?.reasons,
+    ).toContain('Good fit for cooking or local food')
+  })
+
   it('prioritizes nature day trips when requested', () => {
     const recommendations = scoreElephantCampProducts({
       input: { ...baseInput, wantsNatureDayTrip: true },
@@ -265,5 +291,57 @@ describe('scoreElephantCampProducts', () => {
     })
 
     expect(recommendations[0].internalProductId).toBe('nature')
+  })
+
+  it('boosts the Inthanon nature profile when nature day trip is requested', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsNatureDayTrip: true, wantsElephantCare: false },
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(recommendations.map(recommendation => recommendation.bokunId)).toContain('1232798')
+    expect(
+      recommendations.find(recommendation => recommendation.bokunId === '1232798')?.reasons,
+    ).toContain('Good fit for a nature day trip')
+  })
+
+  it('boosts family-friendly low-intensity owner-managed profiles for families', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, children: 2, wantsGentleFamilyExperience: true },
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(recommendations.map(recommendation => recommendation.bokunId)).toContain('1232729')
+    expect(
+      recommendations.find(recommendation => recommendation.bokunId === '1232729')?.reasons,
+    ).toContain('Good for families')
+  })
+
+  it('boosts elephant profiles when elephant care is requested', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsElephantCare: true },
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(recommendations.some(recommendation => recommendation.title.toLowerCase().includes('elephant'))).toBe(
+      true,
+    )
+    expect(
+      recommendations.some(recommendation =>
+        recommendation.reasons.includes('Matches your elephant care preference'),
+      ),
+    ).toBe(true)
+  })
+
+  it('excludes non-Chiang-Mai owner-managed products from Chiang Mai recommendations', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsElephantCare: true, hotelArea: 'outside_city' },
+      profiles: ownerManagedBokunProfiles,
+    })
+
+    expect(ownerManagedBokunProfiles.find(profile => profile.bokunId === '1232799')?.city).toBe(
+      'Bangkok & Pattaya',
+    )
+    expect(recommendations.map(recommendation => recommendation.bokunId)).not.toContain('1232799')
   })
 })

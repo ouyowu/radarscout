@@ -75,10 +75,12 @@ function scoreProfile(input: ElephantFinderInput, profile: ElephantCampProductPr
 
   if (input.wantsCookingOrFood) {
     score += profile.foodOrCookingFocus ? 20 : -6
+    score += profile.category === 'cooking_or_food' ? 10 : 0
   }
 
   if (input.wantsNatureDayTrip) {
     score += profile.natureFocus ? 18 : -4
+    score += profile.category === 'nature_day_trip' ? 12 : 0
   }
 
   if (input.children > 0 || input.wantsGentleFamilyExperience) {
@@ -161,6 +163,7 @@ export function scoreElephantCampProducts(params: {
   const seen = new Set<string>()
 
   return params.profiles
+    .filter(profile => profile.city === 'Chiang Mai')
     .map(profile => ({ profile, link: buildProfileLink(profile) }))
     .filter((entry): entry is { profile: ElephantCampProductProfile; link: NonNullable<ReturnType<typeof buildProfileLink>> } => Boolean(entry.link))
     .filter(profile => {
