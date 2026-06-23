@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     'Answer a few quick questions and match with real Chiang Mai elephant experiences from trusted local operators.',
   alternates: { canonical: `${base}/chiang-mai/elephant-camp-finder` },
+  robots: { index: false, follow: false },
 }
 
 export default function ChiangMaiElephantCampFinderPage() {

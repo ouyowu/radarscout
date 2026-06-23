@@ -10,6 +10,11 @@ import type {
 } from '@/lib/elephantFinder/types'
 
 export const ELEPHANT_FINDER_TITLE = 'Find the right elephant camp in Chiang Mai'
+export const COMING_SOON_TITLE = 'Elephant Camp Finder is coming soon'
+export const COMING_SOON_MESSAGE =
+  'We’re connecting verified Chiang Mai elephant experiences. Please browse our current Thailand experiences for now.'
+export const COMING_SOON_CTA_LABEL = 'Browse Thailand experiences'
+export const COMING_SOON_CTA_HREF = '/tours'
 
 const hotelAreaOptions: { value: ElephantFinderInput['hotelArea']; label: string }[] = [
   { value: 'old_city', label: 'Old City' },
@@ -50,18 +55,18 @@ export function buildElephantFinderViewModel(params: {
   submitted: boolean
 }): {
   emptyState: boolean
-  needsRealProductIds: boolean
+  showComingSoon: boolean
   recommendations: ElephantFinderRecommendation[]
 } {
   if (!params.submitted) {
-    return { emptyState: true, needsRealProductIds: false, recommendations: [] }
+    return { emptyState: true, showComingSoon: false, recommendations: [] }
   }
 
   const recommendations = scoreElephantCampProducts(params)
 
   return {
     emptyState: false,
-    needsRealProductIds: recommendations.length === 0,
+    showComingSoon: recommendations.length === 0,
     recommendations,
   }
 }
@@ -269,12 +274,18 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
             Answer the questions, then click Get my match to compare Chiang Mai elephant experiences.
           </p>
-        ) : view.needsRealProductIds ? (
+        ) : view.showComingSoon ? (
           <div className="mt-5 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-4">
-            <p className="text-sm font-black text-[#a35c09]">Real product IDs needed</p>
+            <p className="text-sm font-black text-[#a35c09]">{COMING_SOON_TITLE}</p>
             <p className="mt-2 text-sm font-semibold leading-6 text-[#6b5d4d]">
-              This finder is ready, but recommendations stay hidden until real Chiang Mai elephant camp product IDs are connected.
+              {COMING_SOON_MESSAGE}
             </p>
+            <Link
+              href={COMING_SOON_CTA_HREF}
+              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+            >
+              {COMING_SOON_CTA_LABEL}
+            </Link>
           </div>
         ) : (
           <div className="mt-5 grid gap-4">

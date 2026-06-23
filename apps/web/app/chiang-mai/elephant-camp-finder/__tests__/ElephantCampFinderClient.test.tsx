@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest'
 import {
   ELEPHANT_FINDER_TITLE,
   buildElephantFinderViewModel,
+  COMING_SOON_CTA_HREF,
+  COMING_SOON_CTA_LABEL,
+  COMING_SOON_MESSAGE,
+  COMING_SOON_TITLE,
   getInitialElephantFinderInput,
   updateElephantFinderInput,
 } from '../ElephantCampFinderClient'
@@ -160,15 +164,27 @@ describe('ElephantCampFinderClient view model', () => {
     expect(serialized).not.toMatch(/\/api\/bokun/i)
   })
 
-  it('default placeholder profiles do not expose fake product IDs', () => {
+  it('default profiles do not expose internal placeholder details', () => {
     const view = buildElephantFinderViewModel({
       input: getInitialElephantFinderInput(),
       profiles: elephantCampProfiles,
       submitted: true,
     })
+    const serialized = JSON.stringify(view)
 
     expect(view.recommendations).toEqual([])
-    expect(view.needsRealProductIds).toBe(true)
-    expect(JSON.stringify(view)).not.toContain('NEEDS_REAL_PRODUCT_ID')
+    expect(view.showComingSoon).toBe(true)
+    expect(serialized).not.toContain('NEEDS_REAL_PRODUCT_ID')
+    expect(serialized).not.toContain('Real product IDs needed')
+    expect(serialized).not.toMatch(/placeholder/i)
+  })
+
+  it('uses public-safe coming-soon copy and a safe fallback CTA', () => {
+    expect(COMING_SOON_TITLE).toBe('Elephant Camp Finder is coming soon')
+    expect(COMING_SOON_MESSAGE).toBe(
+      'We’re connecting verified Chiang Mai elephant experiences. Please browse our current Thailand experiences for now.',
+    )
+    expect(COMING_SOON_CTA_LABEL).toBe('Browse Thailand experiences')
+    expect(COMING_SOON_CTA_HREF).toBe('/tours')
   })
 })
