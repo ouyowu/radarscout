@@ -10,6 +10,9 @@ const baseInput: ElephantFinderInput = {
   wantsFeeding: false,
   wantsBathing: false,
   wantsCloseInteraction: false,
+  wantsElephantCare: false,
+  wantsCookingOrFood: false,
+  wantsNatureDayTrip: false,
   wantsGentleFamilyExperience: false,
   ethicalPriority: false,
   transferSensitivity: 'medium',
@@ -17,18 +20,23 @@ const baseInput: ElephantFinderInput = {
 }
 
 function profile(
-  productId: string,
+  id: string,
   overrides: Partial<ElephantCampProductProfile> = {},
 ): ElephantCampProductProfile {
   return {
-    productId,
-    title: `Elephant Experience ${productId}`,
-    campName: `Camp ${productId}`,
+    source: 'bokun_owner_managed',
+    bokunId: `bokun_${id}`,
+    internalProductId: id,
+    title: `Elephant Experience ${id}`,
+    campName: `Camp ${id}`,
     city: 'Chiang Mai',
+    category: 'elephant_care',
     durationType: 'half_day',
     kidFriendlyScore: 3,
     ethicalScore: 3,
-    interactionLevel: 3,
+    elephantInteractionLevel: 3,
+    foodOrCookingFocus: false,
+    natureFocus: false,
     bathingAvailable: false,
     feedingAvailable: false,
     walkingAvailable: true,
@@ -39,7 +47,6 @@ function profile(
     notIdealFor: [],
     pickupAreas: ['old_city'],
     priceLevel: 'mid',
-    detailHref: `/tours/${productId}`,
     ...overrides,
   }
 }
@@ -54,7 +61,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('family')
+    expect(recommendations[0].internalProductId).toBe('family')
   })
 
   it('prioritizes products with bathing when bathing is requested', () => {
@@ -66,7 +73,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('bath')
+    expect(recommendations[0].internalProductId).toBe('bath')
   })
 
   it('prioritizes products with feeding when feeding is requested', () => {
@@ -78,7 +85,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('feed')
+    expect(recommendations[0].internalProductId).toBe('feed')
   })
 
   it('prioritizes easier transfer when transfer sensitivity is high', () => {
@@ -90,7 +97,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('easy')
+    expect(recommendations[0].internalProductId).toBe('easy')
   })
 
   it('prioritizes budget products when budget sensitivity is high', () => {
@@ -102,7 +109,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('budget')
+    expect(recommendations[0].internalProductId).toBe('budget')
   })
 
   it('prioritizes high ethical score when ethical priority is selected', () => {
@@ -114,7 +121,7 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('ethical')
+    expect(recommendations[0].internalProductId).toBe('ethical')
   })
 
   it('prioritizes half-day products when half-day is preferred', () => {
@@ -126,34 +133,38 @@ describe('scoreElephantCampProducts', () => {
       ],
     })
 
-    expect(recommendations[0].productId).toBe('half')
+    expect(recommendations[0].internalProductId).toBe('half')
   })
 
   it('excludes placeholder product IDs from final recommendations', () => {
     const recommendations = scoreElephantCampProducts({
       input: baseInput,
       profiles: [
-        profile('NEEDS_REAL_PRODUCT_ID', { kidFriendlyScore: 5 }),
+        profile('placeholder', {
+          internalProductId: 'NEEDS_REAL_PRODUCT_ID',
+          bookingHandoffUrl: undefined,
+          kidFriendlyScore: 5,
+        }),
         profile('real_1'),
         profile('real_2'),
         profile('real_3'),
       ],
     })
 
-    expect(recommendations.map(r => r.productId)).not.toContain('NEEDS_REAL_PRODUCT_ID')
+    expect(recommendations.map(r => r.internalProductId)).not.toContain('NEEDS_REAL_PRODUCT_ID')
   })
 
   it('returns recommendations sorted by score', () => {
     const recommendations = scoreElephantCampProducts({
       input: { ...baseInput, wantsCloseInteraction: true },
       profiles: [
-        profile('low', { interactionLevel: 1 }),
-        profile('high', { interactionLevel: 5 }),
-        profile('medium', { interactionLevel: 3 }),
+        profile('low', { elephantInteractionLevel: 1 }),
+        profile('high', { elephantInteractionLevel: 5 }),
+        profile('medium', { elephantInteractionLevel: 3 }),
       ],
     })
 
-    expect(recommendations.map(r => r.productId)).toEqual(['high', 'medium', 'low'])
+    expect(recommendations.map(r => r.internalProductId)).toEqual(['high', 'medium', 'low'])
     expect(recommendations[0].score).toBeGreaterThanOrEqual(recommendations[1].score)
     expect(recommendations[1].score).toBeGreaterThanOrEqual(recommendations[2].score)
   })
@@ -165,11 +176,94 @@ describe('scoreElephantCampProducts', () => {
         profile('one', { kidFriendlyScore: 5 }),
         profile('two', { ethicalScore: 5 }),
         profile('three', { transferConvenienceScore: 5 }),
-        profile('four', { interactionLevel: 5 }),
+        profile('four', { elephantInteractionLevel: 5 }),
       ],
     })
 
     expect(recommendations).toHaveLength(3)
-    expect(new Set(recommendations.map(r => r.productId)).size).toBe(3)
+    expect(new Set(recommendations.map(r => r.recommendationId)).size).toBe(3)
+  })
+
+  it('uses internal product IDs for RadarScout tour links', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: baseInput,
+      profiles: [profile('internal_tour_1', { bokunId: '1232729' })],
+    })
+
+    expect(recommendations[0]).toMatchObject({
+      internalProductId: 'internal_tour_1',
+      ctaHref: '/tours/internal_tour_1',
+      ctaLabel: 'View experience',
+      externalHandoff: false,
+    })
+  })
+
+  it('uses safe external handoff links when no internal product exists', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: baseInput,
+      profiles: [
+        profile('external_source', {
+          bokunId: '1232731',
+          internalProductId: undefined,
+          bookingHandoffUrl: 'https://example.com/owner-managed-experience',
+        }),
+      ],
+    })
+
+    expect(recommendations[0]).toMatchObject({
+      bokunId: '1232731',
+      recommendationId: 'bokun:1232731',
+      ctaHref: 'https://example.com/owner-managed-experience',
+      ctaLabel: 'Check availability',
+      externalHandoff: true,
+      linkRel: 'nofollow sponsored noopener noreferrer',
+    })
+    expect(recommendations[0].ctaHref).not.toBe('/tours/1232731')
+  })
+
+  it('does not recommend profiles with neither internal product nor handoff URL', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: baseInput,
+      profiles: [
+        profile('unlinked', {
+          internalProductId: undefined,
+          bookingHandoffUrl: undefined,
+        }),
+      ],
+    })
+
+    expect(recommendations).toEqual([])
+  })
+
+  it('prioritizes cooking and local food experiences when requested', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsCookingOrFood: true },
+      profiles: [
+        profile('elephant'),
+        profile('cooking', {
+          category: 'cooking_or_food',
+          foodOrCookingFocus: true,
+          elephantInteractionLevel: 0,
+        }),
+      ],
+    })
+
+    expect(recommendations[0].internalProductId).toBe('cooking')
+  })
+
+  it('prioritizes nature day trips when requested', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: { ...baseInput, wantsNatureDayTrip: true },
+      profiles: [
+        profile('elephant'),
+        profile('nature', {
+          category: 'nature_day_trip',
+          natureFocus: true,
+          elephantInteractionLevel: 0,
+        }),
+      ],
+    })
+
+    expect(recommendations[0].internalProductId).toBe('nature')
   })
 })

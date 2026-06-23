@@ -13,6 +13,9 @@ export type ElephantFinderInput = {
   wantsFeeding: boolean
   wantsBathing: boolean
   wantsCloseInteraction: boolean
+  wantsElephantCare: boolean
+  wantsCookingOrFood: boolean
+  wantsNatureDayTrip: boolean
   wantsGentleFamilyExperience: boolean
   ethicalPriority: boolean
   transferSensitivity: 'low' | 'medium' | 'high'
@@ -20,14 +23,20 @@ export type ElephantFinderInput = {
 }
 
 export type ElephantCampProductProfile = {
-  productId: string
+  source: 'bokun_owner_managed'
+  bokunId: string
+  internalProductId?: string
+  bookingHandoffUrl?: string
   title: string
   campName: string
   city: 'Chiang Mai'
-  durationType: 'half_day' | 'full_day'
+  category: 'elephant_care' | 'nature_day_trip' | 'cooking_or_food' | 'local_experience'
+  durationType: 'half_day' | 'full_day' | 'flexible'
   kidFriendlyScore: 1 | 2 | 3 | 4 | 5
   ethicalScore: 1 | 2 | 3 | 4 | 5
-  interactionLevel: 1 | 2 | 3 | 4 | 5
+  elephantInteractionLevel: 0 | 1 | 2 | 3 | 4 | 5
+  foodOrCookingFocus: boolean
+  natureFocus: boolean
   bathingAvailable: boolean
   feedingAvailable: boolean
   walkingAvailable: boolean
@@ -38,11 +47,12 @@ export type ElephantCampProductProfile = {
   notIdealFor: string[]
   pickupAreas: ElephantFinderInput['hotelArea'][]
   priceLevel: 'budget' | 'mid' | 'premium'
-  detailHref: string
 }
 
 export type ElephantFinderRecommendation = {
-  productId: string
+  recommendationId: string
+  bokunId: string
+  internalProductId?: string
   matchType: 'best_match' | 'family_friendly' | 'best_value' | 'alternative'
   score: number
   title: string
@@ -50,5 +60,8 @@ export type ElephantFinderRecommendation = {
   city: 'Chiang Mai'
   reasons: string[]
   cautionNotes: string[]
-  detailHref: string
+  ctaHref: string
+  ctaLabel: 'View experience' | 'Check availability'
+  externalHandoff: boolean
+  linkRel?: 'nofollow sponsored noopener noreferrer'
 }

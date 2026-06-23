@@ -13,18 +13,23 @@ import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
 import type { ElephantCampProductProfile } from '@/lib/elephantFinder/types'
 
 function testProfile(
-  productId: string,
+  id: string,
   overrides: Partial<ElephantCampProductProfile> = {},
 ): ElephantCampProductProfile {
   return {
-    productId,
-    title: `Chiang Mai Elephant Experience ${productId}`,
-    campName: `Camp ${productId}`,
+    source: 'bokun_owner_managed',
+    bokunId: `bokun_${id}`,
+    internalProductId: id,
+    title: `Chiang Mai Elephant Experience ${id}`,
+    campName: `Camp ${id}`,
     city: 'Chiang Mai',
+    category: 'elephant_care',
     durationType: 'half_day',
     kidFriendlyScore: 3,
     ethicalScore: 3,
-    interactionLevel: 3,
+    elephantInteractionLevel: 3,
+    foodOrCookingFocus: false,
+    natureFocus: false,
     bathingAvailable: false,
     feedingAvailable: false,
     walkingAvailable: true,
@@ -35,7 +40,6 @@ function testProfile(
     notIdealFor: [],
     pickupAreas: ['old_city'],
     priceLevel: 'mid',
-    detailHref: `/tours/${productId}`,
     ...overrides,
   }
 }
@@ -50,7 +54,7 @@ const profiles = [
   testProfile('real_elephant_bathing', {
     title: 'Hands-on Elephant Bathing Visit',
     bathingAvailable: true,
-    interactionLevel: 5,
+    elephantInteractionLevel: 5,
   }),
   testProfile('real_elephant_budget', {
     title: 'Best Value Elephant Half Day',
@@ -65,7 +69,7 @@ const profiles = [
 
 describe('ElephantCampFinderClient view model', () => {
   it('page exposes the expected title', () => {
-    expect(ELEPHANT_FINDER_TITLE).toBe('Find the right elephant camp in Chiang Mai')
+    expect(ELEPHANT_FINDER_TITLE).toBe('Find the right Chiang Mai experience')
   })
 
   it('form fields are operable through input updates', () => {
@@ -74,6 +78,8 @@ describe('ElephantCampFinderClient view model', () => {
       children: 2,
       hotelArea: 'nimman',
       wantsBathing: true,
+      wantsCookingOrFood: true,
+      wantsNatureDayTrip: true,
       durationPreference: 'full_day',
     })
 
@@ -81,6 +87,8 @@ describe('ElephantCampFinderClient view model', () => {
     expect(input.children).toBe(2)
     expect(input.hotelArea).toBe('nimman')
     expect(input.wantsBathing).toBe(true)
+    expect(input.wantsCookingOrFood).toBe(true)
+    expect(input.wantsNatureDayTrip).toBe(true)
     expect(input.durationPreference).toBe('full_day')
   })
 
@@ -115,8 +123,32 @@ describe('ElephantCampFinderClient view model', () => {
     })
 
     for (const recommendation of view.recommendations) {
-      expect(recommendation.detailHref).toBe(`/tours/${recommendation.productId}`)
+      expect(recommendation.ctaHref).toBe(`/tours/${recommendation.internalProductId}`)
+      expect(recommendation.ctaLabel).toBe('View experience')
     }
+  })
+
+  it('supports safe external handoff links without using Bókun IDs as tour URLs', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: [
+        testProfile('external_source', {
+          bokunId: '1232729',
+          internalProductId: undefined,
+          bookingHandoffUrl: 'https://example.com/chiang-mai-experience',
+        }),
+      ],
+      submitted: true,
+    })
+
+    expect(view.recommendations[0]).toMatchObject({
+      bokunId: '1232729',
+      ctaHref: 'https://example.com/chiang-mai-experience',
+      ctaLabel: 'Check availability',
+      externalHandoff: true,
+      linkRel: 'nofollow sponsored noopener noreferrer',
+    })
+    expect(view.recommendations[0].ctaHref).not.toBe('/tours/1232729')
   })
 
   it('updates recommendations after preferences change', () => {
@@ -131,8 +163,8 @@ describe('ElephantCampFinderClient view model', () => {
       submitted: true,
     })
 
-    expect(familyView.recommendations[0].productId).toBe('real_elephant_family')
-    expect(bathingView.recommendations[0].productId).toBe('real_elephant_bathing')
+    expect(familyView.recommendations[0].internalProductId).toBe('real_elephant_family')
+    expect(bathingView.recommendations[0].internalProductId).toBe('real_elephant_bathing')
   })
 
   it('does not include forbidden booking, checkout, fake availability, rating, or review claims', () => {
@@ -180,9 +212,9 @@ describe('ElephantCampFinderClient view model', () => {
   })
 
   it('uses public-safe coming-soon copy and a safe fallback CTA', () => {
-    expect(COMING_SOON_TITLE).toBe('Elephant Camp Finder is coming soon')
+    expect(COMING_SOON_TITLE).toBe('Chiang Mai Experience Finder is coming soon')
     expect(COMING_SOON_MESSAGE).toBe(
-      'We’re connecting verified Chiang Mai elephant experiences. Please browse our current Thailand experiences for now.',
+      'We’re connecting owner-managed Chiang Mai elephant, nature, and local experiences. Please browse our current Thailand experiences for now.',
     )
     expect(COMING_SOON_CTA_LABEL).toBe('Browse Thailand experiences')
     expect(COMING_SOON_CTA_HREF).toBe('/tours')

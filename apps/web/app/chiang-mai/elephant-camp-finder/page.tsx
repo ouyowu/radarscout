@@ -7,7 +7,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: `${ELEPHANT_FINDER_TITLE} | RadarScout`,
   description:
-    'Answer a few quick questions and match with real Chiang Mai elephant experiences from trusted local operators.',
+    'Answer a few quick questions and match with owner-managed Chiang Mai elephant, nature, and local experiences.',
   alternates: { canonical: `${base}/chiang-mai/elephant-camp-finder` },
   robots: { index: false, follow: false },
 }
@@ -19,13 +19,13 @@ export default function ChiangMaiElephantCampFinderPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,124,72,0.28),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_28%)]" />
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
           <span className="inline-flex rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#f8d7bf]">
-            AI Elephant Camp Finder
+            Chiang Mai Experience Finder
           </span>
           <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[0.95] tracking-tight sm:text-6xl">
             {ELEPHANT_FINDER_TITLE}
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-            Answer a few quick questions and we’ll match you with the best elephant experience based on your group, hotel area, travel style, and activity preferences.
+            Answer a few quick questions and we’ll match you with owner-managed Chiang Mai elephant, nature, and local experiences.
           </p>
           <a
             href="#elephant-finder"
@@ -45,7 +45,7 @@ export default function ChiangMaiElephantCampFinderPage() {
             Match first, then choose your experience
           </h2>
           <p className="mt-4 text-sm font-semibold leading-7 text-[#5a6670]">
-            RadarScout uses your preferences to compare real Chiang Mai elephant experiences. It does not create reservations or claim live slots.
+            RadarScout uses your preferences to compare Chiang Mai experiences. It does not create reservations or claim live slots.
           </p>
         </div>
 
