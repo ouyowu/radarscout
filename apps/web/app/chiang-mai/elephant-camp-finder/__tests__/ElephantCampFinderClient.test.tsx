@@ -178,6 +178,10 @@ describe('ElephantCampFinderClient view model', () => {
     expect(serialized).not.toMatch(/\bbooking\b/i)
     expect(serialized).not.toMatch(/\bcheckout\b/i)
     expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/guaranteed bathing/i)
+    expect(serialized).not.toMatch(/guaranteed pickup/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
     expect(serialized).not.toMatch(/\brating\b/i)
     expect(serialized).not.toMatch(/review count/i)
     expect(serialized).not.toMatch(/\d+(?:\.\d+)?\s*stars?/i)
@@ -204,14 +208,78 @@ describe('ElephantCampFinderClient view model', () => {
     })
     const serialized = JSON.stringify(view)
 
-    expect(view.recommendations).toEqual([])
-    expect(view.showComingSoon).toBe(true)
+    expect(view.recommendations).toHaveLength(3)
+    expect(view.showComingSoon).toBe(false)
     expect(serialized).not.toContain('NEEDS_REAL_PRODUCT_ID')
     expect(serialized).not.toContain('Real product IDs needed')
     expect(serialized).not.toMatch(/placeholder/i)
   })
 
+  it('default profiles render external Check availability handoff links', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: elephantCampProfiles,
+      submitted: true,
+    })
+
+    expect(view.recommendations).toHaveLength(3)
+    for (const recommendation of view.recommendations) {
+      expect(recommendation.externalHandoff).toBe(true)
+      expect(recommendation.ctaLabel).toBe('Check availability')
+      expect(recommendation.ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\/online-sales\//)
+      expect(recommendation.linkRel).toBe('nofollow sponsored noopener noreferrer')
+      expect(recommendation.ctaHref).not.toBe(`/tours/${recommendation.bokunId}`)
+    }
+  })
+
+  it('does not expose profile assumption comments in the public view model', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: elephantCampProfiles,
+      submitted: true,
+    })
+    const serialized = JSON.stringify(view)
+
+    expect(serialized).not.toMatch(/manual classifications/i)
+    expect(serialized).not.toMatch(/supplier net rates/i)
+    expect(serialized).not.toMatch(/partner rates/i)
+    expect(serialized).not.toMatch(/booking confirmations/i)
+  })
+
+  it('does not show coming-soon copy when renderable Chiang Mai profiles exist', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: elephantCampProfiles,
+      submitted: true,
+    })
+
+    expect(view.showComingSoon).toBe(false)
+    expect(JSON.stringify(view)).not.toContain(COMING_SOON_TITLE)
+  })
+
+  it('excludes the Bangkok and Pattaya product from normal Chiang Mai recommendations', () => {
+    const view = buildElephantFinderViewModel({
+      input: { ...getInitialElephantFinderInput(), hotelArea: 'outside_city', wantsElephantCare: true },
+      profiles: elephantCampProfiles,
+      submitted: true,
+    })
+
+    expect(elephantCampProfiles.find(profile => profile.bokunId === '1232799')?.city).toBe(
+      'Bangkok & Pattaya',
+    )
+    expect(view.recommendations.map(recommendation => recommendation.bokunId)).not.toContain(
+      '1232799',
+    )
+  })
+
   it('uses public-safe coming-soon copy and a safe fallback CTA', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: [],
+      submitted: true,
+    })
+
+    expect(view.showComingSoon).toBe(true)
     expect(COMING_SOON_TITLE).toBe('Chiang Mai Experience Finder is coming soon')
     expect(COMING_SOON_MESSAGE).toBe(
       'We’re connecting owner-managed Chiang Mai elephant, nature, and local experiences. Please browse our current Thailand experiences for now.',
