@@ -178,6 +178,10 @@ describe('ElephantCampFinderClient view model', () => {
     expect(serialized).not.toMatch(/\bbooking\b/i)
     expect(serialized).not.toMatch(/\bcheckout\b/i)
     expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/guaranteed bathing/i)
+    expect(serialized).not.toMatch(/guaranteed pickup/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
     expect(serialized).not.toMatch(/\brating\b/i)
     expect(serialized).not.toMatch(/review count/i)
     expect(serialized).not.toMatch(/\d+(?:\.\d+)?\s*stars?/i)
@@ -226,6 +230,20 @@ describe('ElephantCampFinderClient view model', () => {
       expect(recommendation.linkRel).toBe('nofollow sponsored noopener noreferrer')
       expect(recommendation.ctaHref).not.toBe(`/tours/${recommendation.bokunId}`)
     }
+  })
+
+  it('does not expose profile assumption comments in the public view model', () => {
+    const view = buildElephantFinderViewModel({
+      input: getInitialElephantFinderInput(),
+      profiles: elephantCampProfiles,
+      submitted: true,
+    })
+    const serialized = JSON.stringify(view)
+
+    expect(serialized).not.toMatch(/manual classifications/i)
+    expect(serialized).not.toMatch(/supplier net rates/i)
+    expect(serialized).not.toMatch(/partner rates/i)
+    expect(serialized).not.toMatch(/booking confirmations/i)
   })
 
   it('does not show coming-soon copy when renderable Chiang Mai profiles exist', () => {

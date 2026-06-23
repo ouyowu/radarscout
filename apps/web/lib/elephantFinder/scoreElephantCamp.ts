@@ -7,6 +7,14 @@ import type {
 const PLACEHOLDER_PRODUCT_ID = 'NEEDS_REAL_PRODUCT_ID'
 const EXTERNAL_HANDOFF_REL = 'nofollow sponsored noopener noreferrer' as const
 
+type ChiangMaiElephantCampProductProfile = ElephantCampProductProfile & { city: 'Chiang Mai' }
+
+function isChiangMaiProfile(
+  profile: ElephantCampProductProfile,
+): profile is ChiangMaiElephantCampProductProfile {
+  return profile.city === 'Chiang Mai'
+}
+
 function priceScore(priceLevel: ElephantCampProductProfile['priceLevel']) {
   if (priceLevel === 'budget') return 12
   if (priceLevel === 'premium') return -8
@@ -163,12 +171,19 @@ export function scoreElephantCampProducts(params: {
   const seen = new Set<string>()
 
   return params.profiles
-    .filter(profile => profile.city === 'Chiang Mai')
+    .filter(isChiangMaiProfile)
     .map(profile => ({ profile, link: buildProfileLink(profile) }))
-    .filter((entry): entry is { profile: ElephantCampProductProfile; link: NonNullable<ReturnType<typeof buildProfileLink>> } => Boolean(entry.link))
-    .filter(profile => {
-      if (seen.has(profile.link.recommendationId)) return false
-      seen.add(profile.link.recommendationId)
+    .filter(
+      (
+        entry,
+      ): entry is {
+        profile: ChiangMaiElephantCampProductProfile
+        link: NonNullable<ReturnType<typeof buildProfileLink>>
+      } => Boolean(entry.link),
+    )
+    .filter(entry => {
+      if (seen.has(entry.link.recommendationId)) return false
+      seen.add(entry.link.recommendationId)
       return true
     })
     .map(({ profile, link }) => ({

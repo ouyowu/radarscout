@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { ownerManagedBokunProfiles } from '../ownerManagedBokunProfiles'
 
 describe('ownerManagedBokunProfiles', () => {
@@ -71,5 +73,15 @@ describe('ownerManagedBokunProfiles', () => {
     expect(nonChiangMaiProfile).toBeDefined()
     expect(nonChiangMaiProfile?.city).toBe('Bangkok & Pattaya')
     expect(nonChiangMaiProfile?.notIdealFor.join(' ')).toMatch(/not a chiang mai/i)
+  })
+
+  it('does not use an unsafe city type cast for non-Chiang-Mai profiles', () => {
+    const source = readFileSync(
+      join(process.cwd(), 'lib/elephantFinder/ownerManagedBokunProfiles.ts'),
+      'utf8',
+    )
+
+    expect(source).not.toContain("as ElephantCampProductProfile['city']")
+    expect(source).toContain("city: 'Bangkok & Pattaya'")
   })
 })

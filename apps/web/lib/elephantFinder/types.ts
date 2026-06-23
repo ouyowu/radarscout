@@ -29,7 +29,7 @@ export type ElephantCampProductProfile = {
   bookingHandoffUrl?: string
   title: string
   campName: string
-  city: 'Chiang Mai'
+  city: 'Chiang Mai' | 'Bangkok & Pattaya'
   category: 'elephant_care' | 'nature_day_trip' | 'cooking_or_food' | 'local_experience'
   durationType: 'half_day' | 'full_day' | 'flexible'
   kidFriendlyScore: 1 | 2 | 3 | 4 | 5
