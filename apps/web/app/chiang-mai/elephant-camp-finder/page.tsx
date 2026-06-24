@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
 import { ElephantCampFinderClient } from './ElephantCampFinderClient'
-import { ELEPHANT_FINDER_INTRO_COPY, ELEPHANT_FINDER_TITLE } from './copy'
+import {
+  ELEPHANT_FINDER_HANDOFF_COPY,
+  ELEPHANT_FINDER_HERO_COPY,
+  ELEPHANT_FINDER_INTRO_COPY,
+  ELEPHANT_FINDER_PROMPT_CHIPS,
+  ELEPHANT_FINDER_TITLE,
+} from './copy'
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
@@ -26,8 +32,18 @@ export default function ChiangMaiElephantCampFinderPage() {
             {ELEPHANT_FINDER_TITLE}
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-            Answer a few quick questions and we’ll match you with owner-managed Chiang Mai elephant, nature, and local experiences.
+            {ELEPHANT_FINDER_HERO_COPY}
           </p>
+          <div className="mt-6 flex max-w-3xl flex-wrap gap-2">
+            {ELEPHANT_FINDER_PROMPT_CHIPS.map(chip => (
+              <span
+                key={chip}
+                className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold text-white/85"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
           <a
             href="#elephant-finder"
             className="mt-8 inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#D57C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#c66b37]"
@@ -47,6 +63,9 @@ export default function ChiangMaiElephantCampFinderPage() {
           </h2>
           <p className="mt-4 text-sm font-semibold leading-7 text-[#5a6670]">
             {ELEPHANT_FINDER_INTRO_COPY}
+          </p>
+          <p className="mt-3 rounded-[1rem] border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 text-sm font-semibold leading-6 text-[#3f665f]">
+            {ELEPHANT_FINDER_HANDOFF_COPY}
           </p>
         </div>
 

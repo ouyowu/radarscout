@@ -20,6 +20,8 @@ export const BATHING_HELPER_NOTE =
   'We only highlight bathing when it is clearly listed by the booking partner.'
 export const OPTION_ROW_CLASS =
   'flex min-h-[44px] items-center gap-3 rounded-[0.9rem] border border-[#eadfce] bg-[#fffdf7] px-3 py-2 text-sm font-semibold leading-5 text-[#36414a]'
+export const FORM_SECTION_CLASS =
+  'rounded-[1.1rem] border border-[#eadfce] bg-[#fffdf7] p-4'
 
 const hotelAreaOptions: { value: ElephantFinderInput['hotelArea']; label: string }[] = [
   { value: 'old_city', label: 'Old City' },
@@ -100,6 +102,14 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
         {recommendation.title}
       </h3>
       <p className="mt-1 text-sm font-semibold text-[#5a6670]">{recommendation.campName}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <span className="rounded-full bg-[#e9f6f2] px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]">
+          Chiang Mai
+        </span>
+        <span className="rounded-full bg-[#f8f4ea] px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-[#6b5d4d]">
+          Partner handoff
+        </span>
+      </div>
 
       <div className="mt-4 rounded-[1rem] bg-[#f8f4ea] p-3">
         <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
@@ -179,46 +189,53 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
       >
         <h2 className="text-xl font-black text-[#101820]">Tell us about your group</h2>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <label className="text-sm font-black text-[#36414a]">
-            Number of adults
-            <input
-              type="number"
-              min={1}
-              value={input.adults}
-              onChange={event => patchInput({ adults: Number(event.target.value) })}
-              className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
-            />
-          </label>
-          <label className="text-sm font-black text-[#36414a]">
-            Number of children
-            <input
-              type="number"
-              min={0}
-              value={input.children}
-              onChange={event => patchInput({ children: Number(event.target.value) })}
-              className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
-            />
-          </label>
-        </div>
+        <section className={`mt-5 ${FORM_SECTION_CLASS}`}>
+          <h3 className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            Group size / location
+          </h3>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <label className="text-sm font-black text-[#36414a]">
+              Number of adults
+              <input
+                type="number"
+                min={1}
+                value={input.adults}
+                onChange={event => patchInput({ adults: Number(event.target.value) })}
+                className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
+              />
+            </label>
+            <label className="text-sm font-black text-[#36414a]">
+              Number of children
+              <input
+                type="number"
+                min={0}
+                value={input.children}
+                onChange={event => patchInput({ children: Number(event.target.value) })}
+                className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
+              />
+            </label>
+          </div>
 
-        <label className="mt-4 block text-sm font-black text-[#36414a]">
-          Hotel area
-          <select
-            value={input.hotelArea}
-            onChange={event => patchInput({ hotelArea: event.target.value as ElephantFinderInput['hotelArea'] })}
-            className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
-          >
-            {hotelAreaOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label className="mt-4 block text-sm font-black text-[#36414a]">
+            Hotel area
+            <select
+              value={input.hotelArea}
+              onChange={event => patchInput({ hotelArea: event.target.value as ElephantFinderInput['hotelArea'] })}
+              className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
+            >
+              {hotelAreaOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
 
-        <fieldset className="mt-5">
-          <legend className="text-sm font-black text-[#36414a]">Experience preferences</legend>
+        <fieldset className={`mt-4 ${FORM_SECTION_CLASS}`}>
+          <legend className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            Experience interests
+          </legend>
           <div className="mt-3 grid gap-3">
             {[
               ['wantsFeeding', 'Feeding elephants'],
@@ -246,13 +263,16 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           </p>
         </fieldset>
 
-        <div className="mt-5 grid gap-4">
+        <div className={`mt-4 grid gap-4 ${FORM_SECTION_CLASS}`}>
+          <h3 className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            Duration / pace
+          </h3>
           <label className="text-sm font-black text-[#36414a]">
             Duration preference
             <select
               value={input.durationPreference}
               onChange={event => patchInput({ durationPreference: event.target.value as ElephantFinderInput['durationPreference'] })}
-              className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
+              className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
             >
               <option value="either">Either</option>
               <option value="half_day">Half day</option>
@@ -265,7 +285,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
             <select
               value={input.transferSensitivity}
               onChange={event => patchInput({ transferSensitivity: event.target.value as ElephantFinderInput['transferSensitivity'] })}
-              className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
+              className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -278,7 +298,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
             <select
               value={input.budgetSensitivity}
               onChange={event => patchInput({ budgetSensitivity: event.target.value as ElephantFinderInput['budgetSensitivity'] })}
-              className="mt-2 w-full border border-[#ded7ca] bg-[#fffdf7] px-3 py-3 font-semibold"
+              className="mt-2 w-full border border-[#ded7ca] bg-white px-3 py-3 font-semibold"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
