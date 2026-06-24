@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  BATHING_HELPER_NOTE,
   ELEPHANT_FINDER_TITLE,
   buildElephantFinderViewModel,
   COMING_SOON_CTA_HREF,
@@ -7,6 +8,7 @@ import {
   COMING_SOON_MESSAGE,
   COMING_SOON_TITLE,
   getInitialElephantFinderInput,
+  OPTION_ROW_CLASS,
   updateElephantFinderInput,
 } from '../ElephantCampFinderClient'
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
@@ -90,6 +92,25 @@ describe('ElephantCampFinderClient view model', () => {
     expect(input.wantsCookingOrFood).toBe(true)
     expect(input.wantsNatureDayTrip).toBe(true)
     expect(input.durationPreference).toBe('full_day')
+  })
+
+  it('uses larger mobile-friendly option row tap targets', () => {
+    expect(OPTION_ROW_CLASS).toContain('min-h-[44px]')
+    expect(OPTION_ROW_CLASS).toContain('items-center')
+    expect(OPTION_ROW_CLASS).toContain('gap-3')
+  })
+
+  it('shows a conservative bathing helper note without guarantee or live wording', () => {
+    expect(BATHING_HELPER_NOTE).toBe(
+      'We only highlight bathing when it is clearly listed by the booking partner.',
+    )
+    expect(BATHING_HELPER_NOTE).not.toMatch(/guaranteed/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/available now/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/live availability/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/live slots/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/instant confirmation/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/\bcheckout\b/i)
+    expect(BATHING_HELPER_NOTE).not.toMatch(/\bpayment\b/i)
   })
 
   it('does not show recommendations before submit', () => {
