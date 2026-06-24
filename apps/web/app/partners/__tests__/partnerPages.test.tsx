@@ -1,14 +1,15 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import PartnersPage, { metadata as partnersMetadata, PARTNERS_PAGE_CONTENT } from '../page'
-import SuppliersPage, {
-  metadata as suppliersMetadata,
-  SUPPLIERS_PAGE_CONTENT,
-} from '../../suppliers/page'
+import PartnersPage, { metadata as partnersMetadata } from '../page'
+import SuppliersPage, { metadata as suppliersMetadata } from '../../suppliers/page'
 import DestinationPartnersPage, {
-  DESTINATION_PARTNERS_PAGE_CONTENT,
   metadata as destinationPartnersMetadata,
 } from '../../destination-partners/page'
+import {
+  DESTINATION_PARTNERS_PAGE_CONTENT,
+  PARTNERS_PAGE_CONTENT,
+  SUPPLIERS_PAGE_CONTENT,
+} from '../../_components/partnerInterestContent'
 import type { PartnerInterestPageContent } from '../../_components/PartnerInterestPage'
 
 const pages: {
@@ -124,5 +125,15 @@ describe('RadarScout partner interest pages', () => {
     expect(routeSources).not.toMatch(/action=/i)
     expect(routeSources).not.toMatch(/resend/i)
     expect(routeSources).not.toMatch(/crm/i)
+  })
+
+  it('keeps arbitrary content constants out of App Router page module exports', () => {
+    const routeSources = [
+      readFileSync(new URL('../page.tsx', import.meta.url), 'utf8'),
+      readFileSync(new URL('../../suppliers/page.tsx', import.meta.url), 'utf8'),
+      readFileSync(new URL('../../destination-partners/page.tsx', import.meta.url), 'utf8'),
+    ].join('\n')
+
+    expect(routeSources).not.toMatch(/export const .*PAGE_CONTENT/)
   })
 })
