@@ -7,6 +7,7 @@ import {
   COMING_SOON_CTA_LABEL,
   COMING_SOON_MESSAGE,
   COMING_SOON_TITLE,
+  FORM_SECTION_CLASS,
   getInitialElephantFinderInput,
   OPTION_ROW_CLASS,
   updateElephantFinderInput,
@@ -98,6 +99,12 @@ describe('ElephantCampFinderClient view model', () => {
     expect(OPTION_ROW_CLASS).toContain('min-h-[44px]')
     expect(OPTION_ROW_CLASS).toContain('items-center')
     expect(OPTION_ROW_CLASS).toContain('gap-3')
+  })
+
+  it('uses grouped form sections for guided planning inputs', () => {
+    expect(FORM_SECTION_CLASS).toContain('rounded-[1.1rem]')
+    expect(FORM_SECTION_CLASS).toContain('border')
+    expect(FORM_SECTION_CLASS).toContain('p-4')
   })
 
   it('shows a conservative bathing helper note without guarantee or live wording', () => {
