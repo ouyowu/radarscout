@@ -12,8 +12,10 @@ import {
   COMING_SOON_MESSAGE,
   COMING_SOON_TITLE,
   FORM_SECTION_CLASS,
+  getChatPlannerSelectedLabels,
   getInitialElephantFinderInput,
   OPTION_ROW_CLASS,
+  updateChatPlannerSelections,
   updateElephantFinderInput,
 } from '../ElephantCampFinderClient'
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
@@ -112,33 +114,64 @@ describe('ElephantCampFinderClient view model', () => {
   })
 
   it('defines a deterministic chat-style planner without LLM/API behavior', () => {
-    expect(CHAT_PLANNER_TITLE).toBe('Quick chat-style planner')
+    expect(CHAT_PLANNER_TITLE).toBe('Plan with RadarScout')
     expect(CHAT_PLANNER_HELPER).toBe(
-      'Answer a few guided prompts, then fine-tune the form before checking your matches.',
+      'Start with your travel style, choose your pace, then see matching experiences.',
     )
     expect(CHAT_PLANNER_STEPS.map(step => step.question)).toEqual([
+      'What kind of Chiang Mai day are you planning?',
       'Who are you traveling with?',
       'How much time do you have?',
-      'What kind of day do you want?',
       'Any must-have preferences?',
+    ])
+    expect(CHAT_PLANNER_STEPS[0].options.map(option => option.label)).toEqual([
+      'Gentle elephant day',
+      'Family-friendly half day',
+      'Cooking + local food',
+      'Nature day trip',
+      'Low-intensity experience',
+      'Photo-friendly experience',
+    ])
+    expect(CHAT_PLANNER_STEPS[1].options.map(option => option.label)).toEqual([
+      'Solo',
+      'Couple',
+      'Family',
+      'Friends',
+      'Group',
+    ])
+    expect(CHAT_PLANNER_STEPS[3].options.map(option => option.label)).toEqual([
+      'Feeding',
+      'Bathing if clearly listed',
+      'Ethical priority',
+      'Easy pace',
+      'Hotel-area friendly',
     ])
 
     const serialized = JSON.stringify({ CHAT_PLANNER_HELPER, CHAT_PLANNER_STEPS })
     expect(serialized).not.toMatch(/\/api\//i)
+    expect(serialized).not.toMatch(/\/api\/bokun/i)
     expect(serialized).not.toMatch(/llm/i)
     expect(serialized).not.toMatch(/openai/i)
+    expect(serialized).not.toMatch(/ai booked this/i)
     expect(serialized).not.toMatch(/live availability/i)
     expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/guaranteed slot/i)
     expect(serialized).not.toMatch(/instant confirmation/i)
     expect(serialized).not.toMatch(/\bcheckout\b/i)
     expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/reservation complete/i)
+    expect(serialized).not.toMatch(/Bókun backend/i)
+    expect(serialized).not.toMatch(/Bókun database/i)
+    expect(serialized).not.toMatch(/Bókun-powered/i)
+    expect(serialized).not.toMatch(/fake reviews/i)
+    expect(serialized).not.toMatch(/fake ratings/i)
   })
 
   it('maps chat planner choices into the existing ElephantFinderInput shape', () => {
     let input = getInitialElephantFinderInput()
+    input = applyChatPlannerChoice(input, 'gentle-elephant')
     input = applyChatPlannerChoice(input, 'family')
     input = applyChatPlannerChoice(input, 'half-day')
-    input = applyChatPlannerChoice(input, 'gentle-elephant')
     input = applyChatPlannerChoice(input, 'feeding')
     input = applyChatPlannerChoice(input, 'bathing-listed')
 
@@ -152,6 +185,42 @@ describe('ElephantCampFinderClient view model', () => {
       wantsBathing: true,
       ethicalPriority: true,
     })
+  })
+
+  it('maps quick style choices into recommendation-affecting finder state', () => {
+    expect(applyChatPlannerChoice(getInitialElephantFinderInput(), 'family-half-day')).toMatchObject({
+      adults: 2,
+      children: 1,
+      durationPreference: 'half_day',
+      wantsGentleFamilyExperience: true,
+      wantsElephantCare: true,
+    })
+    expect(applyChatPlannerChoice(getInitialElephantFinderInput(), 'cooking-food')).toMatchObject({
+      wantsCookingOrFood: true,
+      wantsNatureDayTrip: false,
+      wantsElephantCare: false,
+    })
+    expect(applyChatPlannerChoice(getInitialElephantFinderInput(), 'nature-day')).toMatchObject({
+      wantsNatureDayTrip: true,
+      wantsCookingOrFood: false,
+      durationPreference: 'full_day',
+    })
+  })
+
+  it('tracks selected prompt chips and supports reset-friendly empty state', () => {
+    let selections: Record<string, string> = {}
+    selections = updateChatPlannerSelections(selections, 'style', 'gentle-elephant')
+    selections = updateChatPlannerSelections(selections, 'group', 'family')
+    selections = updateChatPlannerSelections(selections, 'time', 'half-day')
+
+    expect(getChatPlannerSelectedLabels(selections)).toEqual([
+      'Gentle elephant day',
+      'Family',
+      'Half day',
+    ])
+
+    selections = {}
+    expect(getChatPlannerSelectedLabels(selections)).toEqual([])
   })
 
   it('ignores unknown chat planner choices safely', () => {

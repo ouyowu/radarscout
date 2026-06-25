@@ -22,9 +22,9 @@ export const OPTION_ROW_CLASS =
   'flex min-h-[44px] items-center gap-3 rounded-[0.9rem] border border-[#eadfce] bg-[#fffdf7] px-3 py-2 text-sm font-semibold leading-5 text-[#36414a]'
 export const FORM_SECTION_CLASS =
   'rounded-[1.1rem] border border-[#eadfce] bg-[#fffdf7] p-4'
-export const CHAT_PLANNER_TITLE = 'Quick chat-style planner'
+export const CHAT_PLANNER_TITLE = 'Plan with RadarScout'
 export const CHAT_PLANNER_HELPER =
-  'Answer a few guided prompts, then fine-tune the form before checking your matches.'
+  'Start with your travel style, choose your pace, then see matching experiences.'
 
 type ChatPlannerStep = {
   id: string
@@ -38,31 +38,8 @@ type ChatPlannerStep = {
 
 export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
   {
-    id: 'group',
-    question: 'Who are you traveling with?',
-    options: [
-      { id: 'solo', label: 'Solo', patch: { adults: 1, children: 0 } },
-      { id: 'couple', label: 'Couple', patch: { adults: 2, children: 0 } },
-      {
-        id: 'family',
-        label: 'Family',
-        patch: { adults: 2, children: 1, wantsGentleFamilyExperience: true },
-      },
-      { id: 'friends', label: 'Friends', patch: { adults: 3, children: 0 } },
-    ],
-  },
-  {
-    id: 'time',
-    question: 'How much time do you have?',
-    options: [
-      { id: 'half-day', label: 'Half day', patch: { durationPreference: 'half_day' } },
-      { id: 'full-day', label: 'Full day', patch: { durationPreference: 'full_day' } },
-      { id: 'flexible-time', label: 'Flexible', patch: { durationPreference: 'either' } },
-    ],
-  },
-  {
     id: 'style',
-    question: 'What kind of day do you want?',
+    question: 'What kind of Chiang Mai day are you planning?',
     options: [
       {
         id: 'gentle-elephant',
@@ -73,6 +50,17 @@ export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
           wantsNatureDayTrip: false,
           wantsCookingOrFood: false,
           ethicalPriority: true,
+        },
+      },
+      {
+        id: 'family-half-day',
+        label: 'Family-friendly half day',
+        patch: {
+          adults: 2,
+          children: 1,
+          durationPreference: 'half_day',
+          wantsGentleFamilyExperience: true,
+          wantsElephantCare: true,
         },
       },
       {
@@ -98,6 +86,35 @@ export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
         label: 'Low-intensity experience',
         patch: { wantsGentleFamilyExperience: true, transferSensitivity: 'high' },
       },
+      {
+        id: 'photo-friendly',
+        label: 'Photo-friendly experience',
+        patch: { wantsCloseInteraction: true },
+      },
+    ],
+  },
+  {
+    id: 'group',
+    question: 'Who are you traveling with?',
+    options: [
+      { id: 'solo', label: 'Solo', patch: { adults: 1, children: 0 } },
+      { id: 'couple', label: 'Couple', patch: { adults: 2, children: 0 } },
+      {
+        id: 'family',
+        label: 'Family',
+        patch: { adults: 2, children: 1, wantsGentleFamilyExperience: true },
+      },
+      { id: 'friends', label: 'Friends', patch: { adults: 3, children: 0 } },
+      { id: 'group', label: 'Group', patch: { adults: 4, children: 0 } },
+    ],
+  },
+  {
+    id: 'time',
+    question: 'How much time do you have?',
+    options: [
+      { id: 'half-day', label: 'Half day', patch: { durationPreference: 'half_day' } },
+      { id: 'full-day', label: 'Full day', patch: { durationPreference: 'full_day' } },
+      { id: 'flexible-time', label: 'Flexible', patch: { durationPreference: 'either' } },
     ],
   },
   {
@@ -107,7 +124,16 @@ export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
       { id: 'feeding', label: 'Feeding', patch: { wantsFeeding: true } },
       { id: 'bathing-listed', label: 'Bathing if clearly listed', patch: { wantsBathing: true } },
       { id: 'ethical-priority', label: 'Ethical priority', patch: { ethicalPriority: true } },
-      { id: 'hotel-area', label: 'Easy hotel-area handoff', patch: { transferSensitivity: 'high' } },
+      {
+        id: 'easy-pace',
+        label: 'Easy pace',
+        patch: { wantsGentleFamilyExperience: true, transferSensitivity: 'high' },
+      },
+      {
+        id: 'hotel-area-friendly',
+        label: 'Hotel-area friendly',
+        patch: { transferSensitivity: 'high' },
+      },
     ],
   },
 ]
@@ -157,6 +183,23 @@ export function applyChatPlannerChoice(
   )
 
   return option ? updateElephantFinderInput(input, option.patch) : input
+}
+
+export function updateChatPlannerSelections(
+  selections: Record<string, string>,
+  stepId: string,
+  choiceId: string,
+): Record<string, string> {
+  return { ...selections, [stepId]: choiceId }
+}
+
+export function getChatPlannerSelectedLabels(selections: Record<string, string>): string[] {
+  return CHAT_PLANNER_STEPS.flatMap(step => {
+    const selectedChoiceId = selections[step.id]
+    const selectedOption = step.options.find(option => option.id === selectedChoiceId)
+
+    return selectedOption ? [selectedOption.label] : []
+  })
 }
 
 export function buildElephantFinderViewModel(params: {
@@ -278,15 +321,23 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
   }
 
   function chooseChatPlannerOption(stepId: string, choiceId: string) {
-    setSelectedChatChoices(current => ({ ...current, [stepId]: choiceId }))
+    setSelectedChatChoices(current => updateChatPlannerSelections(current, stepId, choiceId))
     setInput(current => applyChatPlannerChoice(current, choiceId))
     if (submitted) setSubmitted(false)
+  }
+
+  function resetChatPlanner() {
+    setInput(getInitialElephantFinderInput())
+    setSelectedChatChoices({})
+    setSubmitted(false)
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitted(true)
   }
+
+  const selectedChatLabels = getChatPlannerSelectedLabels(selectedChatChoices)
 
   return (
     <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -299,7 +350,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
             {CHAT_PLANNER_TITLE}
           </p>
           <h2 className="mt-2 text-xl font-black text-[#101820]">
-            Plan your Chiang Mai day like a conversation.
+            Start with your travel style.
           </h2>
           <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
             {CHAT_PLANNER_HELPER}
@@ -332,6 +383,24 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-4 rounded-[1rem] border border-[#d8eadf] bg-white p-3">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+              Your planner picks
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+              {selectedChatLabels.length > 0
+                ? selectedChatLabels.join(' · ')
+                : 'Choose a few chips to shape your Chiang Mai experience matches.'}
+            </p>
+            <button
+              type="button"
+              onClick={resetChatPlanner}
+              className="mt-3 inline-flex min-h-[40px] items-center rounded-full border border-[#d8eadf] px-4 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]"
+            >
+              Reset planner
+            </button>
           </div>
         </section>
 
@@ -459,7 +528,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           type="submit"
           className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[#0f766e] px-6 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#115e59]"
         >
-          Get my match
+          See matching experiences
         </button>
       </form>
 
@@ -473,7 +542,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
 
         {view.emptyState ? (
           <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-            Answer the questions, then click Get my match to compare Chiang Mai experiences.
+            Answer the questions, then click See matching experiences to compare Chiang Mai experiences.
           </p>
         ) : view.showComingSoon ? (
           <div className="mt-5 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-4">
