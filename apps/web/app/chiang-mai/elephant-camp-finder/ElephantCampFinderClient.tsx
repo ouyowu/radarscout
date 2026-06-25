@@ -25,6 +25,12 @@ export const FORM_SECTION_CLASS =
 export const CHAT_PLANNER_TITLE = 'Plan with RadarScout'
 export const CHAT_PLANNER_HELPER =
   'Start with your travel style, choose your pace, then see matching experiences.'
+export const CHAT_PLANNER_CHIP_CLASS =
+  'inline-flex min-h-[44px] items-center rounded-full px-4 text-xs font-black uppercase tracking-[0.08em]'
+export const CHAT_PLANNER_SUBMIT_LABEL = 'See matching experiences'
+export const FINE_TUNE_DETAILS_TITLE = 'Fine-tune details'
+export const FINE_TUNE_DETAILS_HELPER =
+  'Adjust group size, hotel area, and specific preferences if you want a more precise match.'
 
 type ChatPlannerStep = {
   id: string
@@ -351,6 +357,10 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
     setSubmitted(true)
   }
 
+  function showMatches() {
+    setSubmitted(true)
+  }
+
   const selectedChatLabels = getChatPlannerSelectedLabels(selectedChatChoices)
 
   return (
@@ -386,8 +396,8 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
                         aria-pressed={selected}
                         className={
                           selected
-                            ? 'inline-flex min-h-[40px] items-center rounded-full bg-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.08em] text-white'
-                            : 'inline-flex min-h-[40px] items-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-4 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]'
+                            ? `${CHAT_PLANNER_CHIP_CLASS} bg-[#0f766e] text-white`
+                            : `${CHAT_PLANNER_CHIP_CLASS} border border-[#d8eadf] bg-[#f5fbf7] text-[#0f766e]`
                         }
                       >
                         {option.label}
@@ -411,14 +421,29 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
             <button
               type="button"
               onClick={resetChatPlanner}
-              className="mt-3 inline-flex min-h-[40px] items-center rounded-full border border-[#d8eadf] px-4 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]"
+              className="mt-3 inline-flex min-h-[44px] items-center rounded-full border border-[#d8eadf] px-4 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]"
             >
               Reset planner
+            </button>
+            <button
+              type="button"
+              onClick={showMatches}
+              className="mt-3 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[#0f766e] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#115e59]"
+            >
+              {CHAT_PLANNER_SUBMIT_LABEL}
             </button>
           </div>
         </section>
 
-        <h2 className="mt-5 text-xl font-black text-[#101820]">Tell us about your group</h2>
+        <div className="mt-5 rounded-[1.1rem] border border-[#eadfce] bg-[#fcfaf5] p-4">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#8a6a43]">
+            Optional
+          </p>
+          <h2 className="mt-2 text-lg font-black text-[#101820]">{FINE_TUNE_DETAILS_TITLE}</h2>
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#6b5d4d]">
+            {FINE_TUNE_DETAILS_HELPER}
+          </p>
+        </div>
 
         <section className={`mt-5 ${FORM_SECTION_CLASS}`}>
           <h3 className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
@@ -542,7 +567,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           type="submit"
           className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[#0f766e] px-6 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#115e59]"
         >
-          See matching experiences
+          {CHAT_PLANNER_SUBMIT_LABEL}
         </button>
       </form>
 

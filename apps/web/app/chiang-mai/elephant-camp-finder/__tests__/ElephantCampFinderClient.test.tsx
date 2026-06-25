@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import {
   applyChatPlannerChoice,
   BATHING_HELPER_NOTE,
+  CHAT_PLANNER_CHIP_CLASS,
   CHAT_PLANNER_HELPER,
+  CHAT_PLANNER_SUBMIT_LABEL,
   CHAT_PLANNER_STEPS,
   CHAT_PLANNER_TITLE,
   ELEPHANT_FINDER_TITLE,
@@ -12,6 +14,8 @@ import {
   COMING_SOON_MESSAGE,
   COMING_SOON_TITLE,
   FORM_SECTION_CLASS,
+  FINE_TUNE_DETAILS_HELPER,
+  FINE_TUNE_DETAILS_TITLE,
   getChatPlannerSelectedLabels,
   getInitialElephantFinderInput,
   OPTION_ROW_CLASS,
@@ -118,6 +122,7 @@ describe('ElephantCampFinderClient view model', () => {
     expect(CHAT_PLANNER_HELPER).toBe(
       'Start with your travel style, choose your pace, then see matching experiences.',
     )
+    expect(CHAT_PLANNER_SUBMIT_LABEL).toBe('See matching experiences')
     expect(CHAT_PLANNER_STEPS.map(step => step.question)).toEqual([
       'What kind of Chiang Mai day are you planning?',
       'Who are you traveling with?',
@@ -147,7 +152,11 @@ describe('ElephantCampFinderClient view model', () => {
       'Hotel-area friendly',
     ])
 
-    const serialized = JSON.stringify({ CHAT_PLANNER_HELPER, CHAT_PLANNER_STEPS })
+    const serialized = JSON.stringify({
+      CHAT_PLANNER_HELPER,
+      CHAT_PLANNER_STEPS,
+      CHAT_PLANNER_SUBMIT_LABEL,
+    })
     expect(serialized).not.toMatch(/\/api\//i)
     expect(serialized).not.toMatch(/\/api\/bokun/i)
     expect(serialized).not.toMatch(/llm/i)
@@ -165,6 +174,30 @@ describe('ElephantCampFinderClient view model', () => {
     expect(serialized).not.toMatch(/Bókun-powered/i)
     expect(serialized).not.toMatch(/fake reviews/i)
     expect(serialized).not.toMatch(/fake ratings/i)
+  })
+
+  it('uses 44px chat planner chip tap targets', () => {
+    expect(CHAT_PLANNER_CHIP_CLASS).toContain('min-h-[44px]')
+    expect(CHAT_PLANNER_CHIP_CLASS).toContain('items-center')
+    expect(CHAT_PLANNER_CHIP_CLASS).toContain('rounded-full')
+  })
+
+  it('keeps the detailed form available as secondary fine-tuning copy', () => {
+    expect(FINE_TUNE_DETAILS_TITLE).toBe('Fine-tune details')
+    expect(FINE_TUNE_DETAILS_HELPER).toBe(
+      'Adjust group size, hotel area, and specific preferences if you want a more precise match.',
+    )
+
+    const serialized = JSON.stringify({ FINE_TUNE_DETAILS_TITLE, FINE_TUNE_DETAILS_HELPER })
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/guaranteed slot/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/Bókun backend/i)
+    expect(serialized).not.toMatch(/Bókun database/i)
+    expect(serialized).not.toMatch(/Bókun-powered/i)
   })
 
   it('maps chat planner choices into the existing ElephantFinderInput shape', () => {
