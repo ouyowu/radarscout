@@ -29,6 +29,7 @@ export const CHAT_PLANNER_HELPER =
 type ChatPlannerStep = {
   id: string
   question: string
+  multiSelect?: boolean
   options: {
     id: string
     label: string
@@ -120,6 +121,7 @@ export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
   {
     id: 'preferences',
     question: 'Any must-have preferences?',
+    multiSelect: true,
     options: [
       { id: 'feeding', label: 'Feeding', patch: { wantsFeeding: true } },
       { id: 'bathing-listed', label: 'Bathing if clearly listed', patch: { wantsBathing: true } },
@@ -186,19 +188,31 @@ export function applyChatPlannerChoice(
 }
 
 export function updateChatPlannerSelections(
-  selections: Record<string, string>,
+  selections: Record<string, string[]>,
   stepId: string,
   choiceId: string,
-): Record<string, string> {
-  return { ...selections, [stepId]: choiceId }
+): Record<string, string[]> {
+  const step = CHAT_PLANNER_STEPS.find(step => step.id === stepId)
+
+  if (!step?.multiSelect) {
+    return { ...selections, [stepId]: [choiceId] }
+  }
+
+  const currentChoices = selections[stepId] ?? []
+  const nextChoices = currentChoices.includes(choiceId)
+    ? currentChoices.filter(currentChoice => currentChoice !== choiceId)
+    : [...currentChoices, choiceId]
+
+  return { ...selections, [stepId]: nextChoices }
 }
 
-export function getChatPlannerSelectedLabels(selections: Record<string, string>): string[] {
+export function getChatPlannerSelectedLabels(selections: Record<string, string[]>): string[] {
   return CHAT_PLANNER_STEPS.flatMap(step => {
-    const selectedChoiceId = selections[step.id]
-    const selectedOption = step.options.find(option => option.id === selectedChoiceId)
+    const selectedChoiceIds = selections[step.id] ?? []
 
-    return selectedOption ? [selectedOption.label] : []
+    return step.options
+      .filter(option => selectedChoiceIds.includes(option.id))
+      .map(option => option.label)
   })
 }
 
@@ -311,7 +325,7 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
 export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientProps) {
   const [input, setInput] = useState<ElephantFinderInput>(() => getInitialElephantFinderInput())
   const [submitted, setSubmitted] = useState(false)
-  const [selectedChatChoices, setSelectedChatChoices] = useState<Record<string, string>>({})
+  const [selectedChatChoices, setSelectedChatChoices] = useState<Record<string, string[]>>({})
 
   const view = buildElephantFinderViewModel({ input, profiles, submitted })
 
@@ -362,7 +376,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
                 <p className="text-sm font-black text-[#36414a]">{step.question}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {step.options.map(option => {
-                    const selected = selectedChatChoices[step.id] === option.id
+                    const selected = selectedChatChoices[step.id]?.includes(option.id) ?? false
 
                     return (
                       <button

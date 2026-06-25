@@ -208,19 +208,37 @@ describe('ElephantCampFinderClient view model', () => {
   })
 
   it('tracks selected prompt chips and supports reset-friendly empty state', () => {
-    let selections: Record<string, string> = {}
+    let selections: Record<string, string[]> = {}
     selections = updateChatPlannerSelections(selections, 'style', 'gentle-elephant')
     selections = updateChatPlannerSelections(selections, 'group', 'family')
     selections = updateChatPlannerSelections(selections, 'time', 'half-day')
+    selections = updateChatPlannerSelections(selections, 'preferences', 'feeding')
+    selections = updateChatPlannerSelections(selections, 'preferences', 'bathing-listed')
 
     expect(getChatPlannerSelectedLabels(selections)).toEqual([
       'Gentle elephant day',
       'Family',
       'Half day',
+      'Feeding',
+      'Bathing if clearly listed',
     ])
 
     selections = {}
     expect(getChatPlannerSelectedLabels(selections)).toEqual([])
+  })
+
+  it('keeps style, group, and time single-choice while preferences can be multi-choice', () => {
+    let selections: Record<string, string[]> = {}
+    selections = updateChatPlannerSelections(selections, 'style', 'gentle-elephant')
+    selections = updateChatPlannerSelections(selections, 'style', 'nature-day')
+    selections = updateChatPlannerSelections(selections, 'preferences', 'feeding')
+    selections = updateChatPlannerSelections(selections, 'preferences', 'bathing-listed')
+
+    expect(getChatPlannerSelectedLabels(selections)).toEqual([
+      'Nature day trip',
+      'Feeding',
+      'Bathing if clearly listed',
+    ])
   })
 
   it('ignores unknown chat planner choices safely', () => {
