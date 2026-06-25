@@ -43,6 +43,15 @@ type ChatPlannerStep = {
   }[]
 }
 
+type ItinerarySummary = {
+  title: string
+  summary: string
+  segments: {
+    label: 'Morning' | 'Midday' | 'Afternoon'
+    text: string
+  }[]
+}
+
 export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
   {
     id: 'style',
@@ -222,6 +231,69 @@ export function getChatPlannerSelectedLabels(selections: Record<string, string[]
   })
 }
 
+export function buildItinerarySummaryFromPlanner(params: {
+  input: ElephantFinderInput
+  selectedLabels: string[]
+  submitted: boolean
+}): ItinerarySummary | null {
+  if (!params.submitted || params.selectedLabels.length === 0) return null
+
+  if (params.selectedLabels.includes('Low-intensity experience')) {
+    return {
+      title: 'Your suggested Chiang Mai day',
+      summary: 'A flexible plan that prioritizes an easier pace over packing too much into the day.',
+      segments: [
+        { label: 'Morning', text: 'Choose a lighter experience that does not feel rushed.' },
+        { label: 'Midday', text: 'Compare options by comfort, transfer fit, and group pace.' },
+        { label: 'Afternoon', text: 'Leave room for rest or a simple handoff to the partner.' },
+      ],
+    }
+  }
+
+  if (params.input.wantsCookingOrFood) {
+    return {
+      title: 'Your suggested Chiang Mai day',
+      summary:
+        'A full-day food-focused plan that pairs local cooking or food experiences with a relaxed Chiang Mai pace.',
+      segments: [
+        { label: 'Morning', text: 'Begin with a local experience or partner-hosted activity.' },
+        { label: 'Midday', text: 'Make food or cooking the center of the day.' },
+        { label: 'Afternoon', text: 'Compare experiences that keep the pace relaxed.' },
+      ],
+    }
+  }
+
+  if (params.input.wantsNatureDayTrip) {
+    return {
+      title: 'Your suggested Chiang Mai day',
+      summary: 'A full-day nature-focused plan for travelers who want more time outside the city.',
+      segments: [
+        { label: 'Morning', text: 'Start earlier for a nature-focused day outside central Chiang Mai.' },
+        { label: 'Midday', text: 'Choose experiences with stronger outdoor or scenery fit.' },
+        { label: 'Afternoon', text: 'Keep the plan flexible for a longer return toward Chiang Mai.' },
+      ],
+    }
+  }
+
+  if (
+    params.input.wantsElephantCare ||
+    params.input.wantsGentleFamilyExperience ||
+    params.input.durationPreference === 'half_day'
+  ) {
+    return {
+      title: 'Your suggested Chiang Mai day',
+      summary: 'A gentle half-day plan focused on elephant care and family-friendly pacing.',
+      segments: [
+        { label: 'Morning', text: 'Start with a gentle elephant care experience.' },
+        { label: 'Midday', text: 'Keep the plan light and easy for the group.' },
+        { label: 'Afternoon', text: 'Leave space to return toward Chiang Mai or rest.' },
+      ],
+    }
+  }
+
+  return null
+}
+
 export function buildElephantFinderViewModel(params: {
   input: ElephantFinderInput
   profiles: ElephantCampProductProfile[]
@@ -328,6 +400,28 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
   )
 }
 
+function ItinerarySummaryCard({ summary }: { summary: ItinerarySummary }) {
+  return (
+    <div className="mt-5 rounded-[1.25rem] border border-[#d8eadf] bg-white p-4">
+      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+        Planning summary
+      </p>
+      <h3 className="mt-2 text-lg font-black text-[#101820]">{summary.title}</h3>
+      <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">{summary.summary}</p>
+      <div className="mt-4 grid gap-3">
+        {summary.segments.map(segment => (
+          <div key={segment.label} className="rounded-[1rem] bg-[#f8f4ea] p-3">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
+              {segment.label}
+            </p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-[#36414a]">{segment.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientProps) {
   const [input, setInput] = useState<ElephantFinderInput>(() => getInitialElephantFinderInput())
   const [submitted, setSubmitted] = useState(false)
@@ -362,6 +456,11 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
   }
 
   const selectedChatLabels = getChatPlannerSelectedLabels(selectedChatChoices)
+  const itinerarySummary = buildItinerarySummaryFromPlanner({
+    input,
+    selectedLabels: selectedChatLabels,
+    submitted,
+  })
 
   return (
     <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -598,6 +697,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
           </div>
         ) : (
           <div className="mt-5 grid gap-4">
+            {itinerarySummary ? <ItinerarySummaryCard summary={itinerarySummary} /> : null}
             {view.recommendations.map(recommendation => (
               <RecommendationCard key={recommendation.recommendationId} recommendation={recommendation} />
             ))}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   applyChatPlannerChoice,
   BATHING_HELPER_NOTE,
+  buildItinerarySummaryFromPlanner,
   CHAT_PLANNER_CHIP_CLASS,
   CHAT_PLANNER_HELPER,
   CHAT_PLANNER_SUBMIT_LABEL,
@@ -278,6 +279,114 @@ describe('ElephantCampFinderClient view model', () => {
     const input = getInitialElephantFinderInput()
 
     expect(applyChatPlannerChoice(input, 'unknown-choice')).toBe(input)
+  })
+
+  it('does not build an itinerary summary before planner submit', () => {
+    const summary = buildItinerarySummaryFromPlanner({
+      input: getInitialElephantFinderInput(),
+      selectedLabels: ['Gentle elephant day', 'Family', 'Half day'],
+      submitted: false,
+    })
+
+    expect(summary).toBeNull()
+  })
+
+  it('builds a deterministic gentle family half-day summary', () => {
+    const summary = buildItinerarySummaryFromPlanner({
+      input: {
+        ...getInitialElephantFinderInput(),
+        children: 1,
+        durationPreference: 'half_day',
+        wantsElephantCare: true,
+        wantsGentleFamilyExperience: true,
+        wantsFeeding: true,
+      },
+      selectedLabels: ['Gentle elephant day', 'Family', 'Half day', 'Feeding'],
+      submitted: true,
+    })
+
+    expect(summary).toEqual({
+      title: 'Your suggested Chiang Mai day',
+      summary: 'A gentle half-day plan focused on elephant care and family-friendly pacing.',
+      segments: [
+        { label: 'Morning', text: 'Start with a gentle elephant care experience.' },
+        { label: 'Midday', text: 'Keep the plan light and easy for the group.' },
+        { label: 'Afternoon', text: 'Leave space to return toward Chiang Mai or rest.' },
+      ],
+    })
+  })
+
+  it('builds a deterministic cooking and local food full-day summary', () => {
+    const summary = buildItinerarySummaryFromPlanner({
+      input: {
+        ...getInitialElephantFinderInput(),
+        durationPreference: 'full_day',
+        wantsCookingOrFood: true,
+      },
+      selectedLabels: ['Cooking + local food', 'Couple', 'Full day', 'Easy pace'],
+      submitted: true,
+    })
+
+    expect(summary?.summary).toBe(
+      'A full-day food-focused plan that pairs local cooking or food experiences with a relaxed Chiang Mai pace.',
+    )
+    expect(summary?.segments).toEqual([
+      { label: 'Morning', text: 'Begin with a local experience or partner-hosted activity.' },
+      { label: 'Midday', text: 'Make food or cooking the center of the day.' },
+      { label: 'Afternoon', text: 'Compare experiences that keep the pace relaxed.' },
+    ])
+  })
+
+  it('builds a deterministic nature day trip full-day summary', () => {
+    const summary = buildItinerarySummaryFromPlanner({
+      input: {
+        ...getInitialElephantFinderInput(),
+        durationPreference: 'full_day',
+        wantsNatureDayTrip: true,
+      },
+      selectedLabels: ['Nature day trip', 'Friends', 'Full day', 'Hotel-area friendly'],
+      submitted: true,
+    })
+
+    expect(summary?.summary).toBe(
+      'A full-day nature-focused plan for travelers who want more time outside the city.',
+    )
+    expect(summary?.segments).toEqual([
+      { label: 'Morning', text: 'Start earlier for a nature-focused day outside central Chiang Mai.' },
+      { label: 'Midday', text: 'Choose experiences with stronger outdoor or scenery fit.' },
+      { label: 'Afternoon', text: 'Keep the plan flexible for a longer return toward Chiang Mai.' },
+    ])
+  })
+
+  it('keeps itinerary summary copy free of booking and availability claims', () => {
+    const summary = buildItinerarySummaryFromPlanner({
+      input: {
+        ...getInitialElephantFinderInput(),
+        durationPreference: 'either',
+        wantsGentleFamilyExperience: true,
+        transferSensitivity: 'high',
+      },
+      selectedLabels: ['Low-intensity experience', 'Flexible'],
+      submitted: true,
+    })
+    const serialized = JSON.stringify(summary)
+
+    expect(summary?.summary).toBe(
+      'A flexible plan that prioritizes an easier pace over packing too much into the day.',
+    )
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/guaranteed slot/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/reservation complete/i)
+    expect(serialized).not.toMatch(/AI booked this/i)
+    expect(serialized).not.toMatch(/Bókun backend/i)
+    expect(serialized).not.toMatch(/Bókun database/i)
+    expect(serialized).not.toMatch(/Bókun-powered/i)
+    expect(serialized).not.toMatch(/fake reviews/i)
+    expect(serialized).not.toMatch(/fake ratings/i)
   })
 
   it('shows a conservative bathing helper note without guarantee or live wording', () => {
