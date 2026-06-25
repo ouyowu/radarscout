@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  applyChatPlannerChoice,
   BATHING_HELPER_NOTE,
+  CHAT_PLANNER_HELPER,
+  CHAT_PLANNER_STEPS,
+  CHAT_PLANNER_TITLE,
   ELEPHANT_FINDER_TITLE,
   buildElephantFinderViewModel,
   COMING_SOON_CTA_HREF,
@@ -105,6 +109,55 @@ describe('ElephantCampFinderClient view model', () => {
     expect(FORM_SECTION_CLASS).toContain('rounded-[1.1rem]')
     expect(FORM_SECTION_CLASS).toContain('border')
     expect(FORM_SECTION_CLASS).toContain('p-4')
+  })
+
+  it('defines a deterministic chat-style planner without LLM/API behavior', () => {
+    expect(CHAT_PLANNER_TITLE).toBe('Quick chat-style planner')
+    expect(CHAT_PLANNER_HELPER).toBe(
+      'Answer a few guided prompts, then fine-tune the form before checking your matches.',
+    )
+    expect(CHAT_PLANNER_STEPS.map(step => step.question)).toEqual([
+      'Who are you traveling with?',
+      'How much time do you have?',
+      'What kind of day do you want?',
+      'Any must-have preferences?',
+    ])
+
+    const serialized = JSON.stringify({ CHAT_PLANNER_HELPER, CHAT_PLANNER_STEPS })
+    expect(serialized).not.toMatch(/\/api\//i)
+    expect(serialized).not.toMatch(/llm/i)
+    expect(serialized).not.toMatch(/openai/i)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+  })
+
+  it('maps chat planner choices into the existing ElephantFinderInput shape', () => {
+    let input = getInitialElephantFinderInput()
+    input = applyChatPlannerChoice(input, 'family')
+    input = applyChatPlannerChoice(input, 'half-day')
+    input = applyChatPlannerChoice(input, 'gentle-elephant')
+    input = applyChatPlannerChoice(input, 'feeding')
+    input = applyChatPlannerChoice(input, 'bathing-listed')
+
+    expect(input).toMatchObject({
+      adults: 2,
+      children: 1,
+      durationPreference: 'half_day',
+      wantsElephantCare: true,
+      wantsGentleFamilyExperience: true,
+      wantsFeeding: true,
+      wantsBathing: true,
+      ethicalPriority: true,
+    })
+  })
+
+  it('ignores unknown chat planner choices safely', () => {
+    const input = getInitialElephantFinderInput()
+
+    expect(applyChatPlannerChoice(input, 'unknown-choice')).toBe(input)
   })
 
   it('shows a conservative bathing helper note without guarantee or live wording', () => {

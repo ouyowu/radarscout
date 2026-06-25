@@ -22,6 +22,95 @@ export const OPTION_ROW_CLASS =
   'flex min-h-[44px] items-center gap-3 rounded-[0.9rem] border border-[#eadfce] bg-[#fffdf7] px-3 py-2 text-sm font-semibold leading-5 text-[#36414a]'
 export const FORM_SECTION_CLASS =
   'rounded-[1.1rem] border border-[#eadfce] bg-[#fffdf7] p-4'
+export const CHAT_PLANNER_TITLE = 'Quick chat-style planner'
+export const CHAT_PLANNER_HELPER =
+  'Answer a few guided prompts, then fine-tune the form before checking your matches.'
+
+type ChatPlannerStep = {
+  id: string
+  question: string
+  options: {
+    id: string
+    label: string
+    patch: Partial<ElephantFinderInput>
+  }[]
+}
+
+export const CHAT_PLANNER_STEPS: ChatPlannerStep[] = [
+  {
+    id: 'group',
+    question: 'Who are you traveling with?',
+    options: [
+      { id: 'solo', label: 'Solo', patch: { adults: 1, children: 0 } },
+      { id: 'couple', label: 'Couple', patch: { adults: 2, children: 0 } },
+      {
+        id: 'family',
+        label: 'Family',
+        patch: { adults: 2, children: 1, wantsGentleFamilyExperience: true },
+      },
+      { id: 'friends', label: 'Friends', patch: { adults: 3, children: 0 } },
+    ],
+  },
+  {
+    id: 'time',
+    question: 'How much time do you have?',
+    options: [
+      { id: 'half-day', label: 'Half day', patch: { durationPreference: 'half_day' } },
+      { id: 'full-day', label: 'Full day', patch: { durationPreference: 'full_day' } },
+      { id: 'flexible-time', label: 'Flexible', patch: { durationPreference: 'either' } },
+    ],
+  },
+  {
+    id: 'style',
+    question: 'What kind of day do you want?',
+    options: [
+      {
+        id: 'gentle-elephant',
+        label: 'Gentle elephant day',
+        patch: {
+          wantsElephantCare: true,
+          wantsGentleFamilyExperience: true,
+          wantsNatureDayTrip: false,
+          wantsCookingOrFood: false,
+          ethicalPriority: true,
+        },
+      },
+      {
+        id: 'cooking-food',
+        label: 'Cooking + local food',
+        patch: {
+          wantsCookingOrFood: true,
+          wantsNatureDayTrip: false,
+          wantsElephantCare: false,
+        },
+      },
+      {
+        id: 'nature-day',
+        label: 'Nature day trip',
+        patch: {
+          wantsNatureDayTrip: true,
+          wantsCookingOrFood: false,
+          durationPreference: 'full_day',
+        },
+      },
+      {
+        id: 'low-intensity',
+        label: 'Low-intensity experience',
+        patch: { wantsGentleFamilyExperience: true, transferSensitivity: 'high' },
+      },
+    ],
+  },
+  {
+    id: 'preferences',
+    question: 'Any must-have preferences?',
+    options: [
+      { id: 'feeding', label: 'Feeding', patch: { wantsFeeding: true } },
+      { id: 'bathing-listed', label: 'Bathing if clearly listed', patch: { wantsBathing: true } },
+      { id: 'ethical-priority', label: 'Ethical priority', patch: { ethicalPriority: true } },
+      { id: 'hotel-area', label: 'Easy hotel-area handoff', patch: { transferSensitivity: 'high' } },
+    ],
+  },
+]
 
 const hotelAreaOptions: { value: ElephantFinderInput['hotelArea']; label: string }[] = [
   { value: 'old_city', label: 'Old City' },
@@ -57,6 +146,17 @@ export function updateElephantFinderInput(
   patch: Partial<ElephantFinderInput>,
 ): ElephantFinderInput {
   return { ...input, ...patch }
+}
+
+export function applyChatPlannerChoice(
+  input: ElephantFinderInput,
+  choiceId: string,
+): ElephantFinderInput {
+  const option = CHAT_PLANNER_STEPS.flatMap(step => step.options).find(
+    option => option.id === choiceId,
+  )
+
+  return option ? updateElephantFinderInput(input, option.patch) : input
 }
 
 export function buildElephantFinderViewModel(params: {
@@ -168,11 +268,18 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
 export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientProps) {
   const [input, setInput] = useState<ElephantFinderInput>(() => getInitialElephantFinderInput())
   const [submitted, setSubmitted] = useState(false)
+  const [selectedChatChoices, setSelectedChatChoices] = useState<Record<string, string>>({})
 
   const view = buildElephantFinderViewModel({ input, profiles, submitted })
 
   function patchInput(patch: Partial<ElephantFinderInput>) {
     setInput(current => updateElephantFinderInput(current, patch))
+    if (submitted) setSubmitted(false)
+  }
+
+  function chooseChatPlannerOption(stepId: string, choiceId: string) {
+    setSelectedChatChoices(current => ({ ...current, [stepId]: choiceId }))
+    setInput(current => applyChatPlannerChoice(current, choiceId))
     if (submitted) setSubmitted(false)
   }
 
@@ -187,7 +294,48 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
         onSubmit={handleSubmit}
         className="rounded-[1.5rem] border border-[#ded7ca] bg-white p-5 shadow-[0_12px_28px_rgba(17,24,39,0.06)]"
       >
-        <h2 className="text-xl font-black text-[#101820]">Tell us about your group</h2>
+        <section className="rounded-[1.1rem] border border-[#d8eadf] bg-[#f5fbf7] p-4">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            {CHAT_PLANNER_TITLE}
+          </p>
+          <h2 className="mt-2 text-xl font-black text-[#101820]">
+            Plan your Chiang Mai day like a conversation.
+          </h2>
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+            {CHAT_PLANNER_HELPER}
+          </p>
+
+          <div className="mt-4 space-y-4">
+            {CHAT_PLANNER_STEPS.map(step => (
+              <div key={step.id} className="rounded-[1rem] bg-white p-3">
+                <p className="text-sm font-black text-[#36414a]">{step.question}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {step.options.map(option => {
+                    const selected = selectedChatChoices[step.id] === option.id
+
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => chooseChatPlannerOption(step.id, option.id)}
+                        aria-pressed={selected}
+                        className={
+                          selected
+                            ? 'inline-flex min-h-[40px] items-center rounded-full bg-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.08em] text-white'
+                            : 'inline-flex min-h-[40px] items-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-4 text-xs font-black uppercase tracking-[0.08em] text-[#0f766e]'
+                        }
+                      >
+                        {option.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <h2 className="mt-5 text-xl font-black text-[#101820]">Tell us about your group</h2>
 
         <section className={`mt-5 ${FORM_SECTION_CLASS}`}>
           <h3 className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
