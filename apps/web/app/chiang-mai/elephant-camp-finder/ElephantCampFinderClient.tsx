@@ -31,6 +31,11 @@ export const CHAT_PLANNER_SUBMIT_LABEL = 'See matching experiences'
 export const FINE_TUNE_DETAILS_TITLE = 'Fine-tune details'
 export const FINE_TUNE_DETAILS_HELPER =
   'Adjust group size, hotel area, and specific preferences if you want a more precise match.'
+export const ITINERARY_SUMMARY_CARD_CLASS =
+  'rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:p-4'
+export const ITINERARY_SUMMARY_SEGMENTS_CLASS = 'mt-3 grid gap-2 sm:mt-4 sm:gap-3'
+export const ITINERARY_SUMMARY_SEGMENT_CLASS = 'rounded-[1rem] bg-[#f8f4ea] p-2.5 sm:p-3'
+export const RECOMMENDATION_RESULTS_CLASS = 'mt-4 grid gap-3 sm:mt-5 sm:gap-4'
 
 type ChatPlannerStep = {
   id: string
@@ -402,19 +407,23 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
 
 function ItinerarySummaryCard({ summary }: { summary: ItinerarySummary }) {
   return (
-    <div className="mt-5 rounded-[1.25rem] border border-[#d8eadf] bg-white p-4">
+    <div className={ITINERARY_SUMMARY_CARD_CLASS}>
       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
         Planning summary
       </p>
       <h3 className="mt-2 text-lg font-black text-[#101820]">{summary.title}</h3>
-      <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">{summary.summary}</p>
-      <div className="mt-4 grid gap-3">
+      <p className="mt-2 text-sm font-semibold leading-5 text-[#5a6670] sm:leading-6">
+        {summary.summary}
+      </p>
+      <div className={ITINERARY_SUMMARY_SEGMENTS_CLASS}>
         {summary.segments.map(segment => (
-          <div key={segment.label} className="rounded-[1rem] bg-[#f8f4ea] p-3">
+          <div key={segment.label} className={ITINERARY_SUMMARY_SEGMENT_CLASS}>
             <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
               {segment.label}
             </p>
-            <p className="mt-1 text-sm font-semibold leading-6 text-[#36414a]">{segment.text}</p>
+            <p className="mt-1 text-sm font-semibold leading-5 text-[#36414a] sm:leading-6">
+              {segment.text}
+            </p>
           </div>
         ))}
       </div>
@@ -696,7 +705,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
             </Link>
           </div>
         ) : (
-          <div className="mt-5 grid gap-4">
+          <div className={RECOMMENDATION_RESULTS_CLASS}>
             {itinerarySummary ? <ItinerarySummaryCard summary={itinerarySummary} /> : null}
             {view.recommendations.map(recommendation => (
               <RecommendationCard key={recommendation.recommendationId} recommendation={recommendation} />
