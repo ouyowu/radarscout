@@ -14,7 +14,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: `${ELEPHANT_FINDER_TITLE} | RadarScout`,
   description:
-    'Answer a few quick questions and match with owner-managed Chiang Mai elephant, nature, and local experiences.',
+    'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.',
   alternates: { canonical: `${base}/chiang-mai/elephant-camp-finder` },
   robots: { index: false, follow: false },
 }
