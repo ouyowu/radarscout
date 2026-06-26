@@ -19,7 +19,11 @@ import {
   FINE_TUNE_DETAILS_TITLE,
   getChatPlannerSelectedLabels,
   getInitialElephantFinderInput,
+  ITINERARY_SUMMARY_CARD_CLASS,
+  ITINERARY_SUMMARY_SEGMENT_CLASS,
+  ITINERARY_SUMMARY_SEGMENTS_CLASS,
   OPTION_ROW_CLASS,
+  RECOMMENDATION_RESULTS_CLASS,
   updateChatPlannerSelections,
   updateElephantFinderInput,
 } from '../ElephantCampFinderClient'
@@ -181,6 +185,22 @@ describe('ElephantCampFinderClient view model', () => {
     expect(CHAT_PLANNER_CHIP_CLASS).toContain('min-h-[44px]')
     expect(CHAT_PLANNER_CHIP_CLASS).toContain('items-center')
     expect(CHAT_PLANNER_CHIP_CLASS).toContain('rounded-full')
+  })
+
+  it('uses compact mobile spacing for the itinerary summary before expanding on desktop', () => {
+    expect(ITINERARY_SUMMARY_CARD_CLASS).toContain('p-3')
+    expect(ITINERARY_SUMMARY_CARD_CLASS).toContain('sm:p-4')
+    expect(ITINERARY_SUMMARY_CARD_CLASS).not.toContain('mt-5')
+    expect(ITINERARY_SUMMARY_SEGMENTS_CLASS).toContain('mt-3')
+    expect(ITINERARY_SUMMARY_SEGMENTS_CLASS).toContain('gap-2')
+    expect(ITINERARY_SUMMARY_SEGMENTS_CLASS).toContain('sm:mt-4')
+    expect(ITINERARY_SUMMARY_SEGMENTS_CLASS).toContain('sm:gap-3')
+    expect(ITINERARY_SUMMARY_SEGMENT_CLASS).toContain('p-2.5')
+    expect(ITINERARY_SUMMARY_SEGMENT_CLASS).toContain('sm:p-3')
+    expect(RECOMMENDATION_RESULTS_CLASS).toContain('mt-4')
+    expect(RECOMMENDATION_RESULTS_CLASS).toContain('gap-3')
+    expect(RECOMMENDATION_RESULTS_CLASS).toContain('sm:mt-5')
+    expect(RECOMMENDATION_RESULTS_CLASS).toContain('sm:gap-4')
   })
 
   it('keeps the detailed form available as secondary fine-tuning copy', () => {
