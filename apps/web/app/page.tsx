@@ -82,7 +82,7 @@ const howItWorks = [
 
 const faqItems = [
   {
-    question: 'Is RadarScout a marketplace with every country available now?',
+    question: 'Is RadarScout a marketplace with every country currently shown?',
     answer:
       'No. RadarScout focuses on selected high-demand travel destinations. Thailand is currently the first live inventory destination, and more destinations are added as supplier agreements and product connections are completed.',
   },

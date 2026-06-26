@@ -13,6 +13,26 @@ describe('Chiang Mai elephant camp finder metadata', () => {
     expect(String(metadata.title)).not.toContain('[object Object]')
   })
 
+  it('uses a safe SEO-ready description while robots remain closed', () => {
+    expect(metadata.description).toBe(
+      'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.',
+    )
+
+    const description = String(metadata.description)
+    expect(description).not.toMatch(/live availability/i)
+    expect(description).not.toMatch(/available now/i)
+    expect(description).not.toMatch(/instant confirmation/i)
+    expect(description).not.toMatch(/\bcheckout\b/i)
+    expect(description).not.toMatch(/\bpayment\b/i)
+    expect(description).not.toMatch(/booking complete/i)
+    expect(description).not.toMatch(/Bókun backend/i)
+    expect(description).not.toMatch(/Bókun database/i)
+    expect(description).not.toMatch(/Bókun-powered/i)
+    expect(description).not.toMatch(/partner rate/i)
+    expect(description).not.toMatch(/supplier net rate/i)
+    expect(description).not.toMatch(/\bcommission\b/i)
+  })
+
   it('keeps the finder noindex/nofollow while owner-managed profiles are being verified', () => {
     expect(metadata.robots).toMatchObject({ index: false, follow: false })
   })
