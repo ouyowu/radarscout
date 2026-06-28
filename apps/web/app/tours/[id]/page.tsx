@@ -5,7 +5,6 @@ import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
-import { PartnerInventoryNotice } from '@/app/_components/PartnerInventoryNotice'
 import { getPublicThailandProduct } from '@/lib/publicProducts/getPublicThailandProduct'
 
 export const dynamic = 'force-dynamic'
@@ -142,7 +141,7 @@ function productLocation(product: ProductDetail) {
 }
 
 function productPrice(product: ProductDetail) {
-  if (!product.retailPrice) return 'Contact for partner rate'
+  if (!product.retailPrice) return 'Price not listed'
 
   return product.currency ? `${product.currency} ${product.retailPrice}` : product.retailPrice
 }
@@ -154,7 +153,7 @@ function factRows(facts?: ProductFacts | null) {
     facts.duration ? { label: 'Duration', value: facts.duration } : null,
     facts.meetingPoint ? { label: 'Meeting point', value: facts.meetingPoint } : null,
     typeof facts.pickupAvailable === 'boolean'
-      ? { label: 'Pickup', value: facts.pickupAvailable ? 'Pickup information provided by partner data' : 'Pickup not listed in partner data' }
+      ? { label: 'Pickup', value: facts.pickupAvailable ? 'Pickup details are provided in the product record' : 'Pickup is not listed in the product record' }
       : null,
     facts.cancellationPolicy ? { label: 'Cancellation policy', value: facts.cancellationPolicy } : null,
   ].filter((item): item is { label: string; value: string } => Boolean(item))
@@ -174,31 +173,31 @@ function displaySummary(product: ProductDetail): string {
 
 const trustItems = [
   { label: 'Page status', value: 'Display-only detail' },
-  { label: 'Live destination', value: 'Thailand first' },
-  { label: 'Supplier source', value: 'Signed Bókun partners' },
-  { label: 'Purchase flow', value: 'Not enabled here' },
+  { label: 'Destination focus', value: 'Thailand first' },
+  { label: 'Product source', value: 'Trusted partner record' },
+  { label: 'Next step', value: 'Booking partner handoff' },
 ]
 
 const faqItems = [
   {
-    question: 'Can I reserve this experience here?',
+    question: 'Can I compare this experience here?',
     answer:
-      'No. This page is display-only. Booking and payment are not enabled, and availability is not checked on this preview page.',
+      'Yes. This page helps travelers compare experience details before they continue with a booking partner.',
   },
   {
     question: 'Where does this product information come from?',
     answer:
-      'Product details are read from RadarScout’s signed Bókun supplier partner product database. Missing fields are left blank or shown as partner-rate placeholders instead of being invented.',
+      'Product details are read from a trusted partner product record. Missing fields are left blank or shown as not listed instead of being invented.',
   },
   {
-    question: 'Why do some fields say partner data is not available yet?',
+    question: 'Why do some fields say details are not available yet?',
     answer:
-      'RadarScout only displays fields that exist in the partner product record. Details such as duration, pickup, or cancellation policy are not fabricated when supplier data is missing.',
+      'RadarScout only displays fields that exist in the product record. Details such as duration, pickup, or cancellation policy are not fabricated when product details are missing.',
   },
   {
-    question: 'Which destination has live inventory first?',
+    question: 'Which destination is supported first?',
     answer:
-      'Thailand is currently RadarScout’s first live inventory destination. Other destinations remain planning-only or partner tours coming soon.',
+      'Thailand is currently RadarScout’s first supported destination. Other destinations remain planning-only while trusted product records are prepared.',
   },
 ]
 
@@ -207,7 +206,7 @@ function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
     ? 'This product preview is not available.'
     : 'Product details are temporarily unavailable.'
   const body = status === 'not-found'
-    ? 'This product may no longer be active, may not belong to Thailand live inventory, or may not have a signed supplier partner record available for display.'
+    ? 'This product may no longer be active, may not belong to the supported Thailand preview, or may not have a trusted partner record available for display.'
     : 'RadarScout could not load this product detail preview right now. No fallback product has been invented.'
 
   return (
@@ -274,7 +273,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
           { label: 'Back to tours', href: '/tours' },
           { label: 'Plan Thailand trip', href: '/destinations/thailand', variant: 'secondary' },
         ]}
-        trustNote="This product detail page is display-only. Booking and payment are not enabled, and availability is not checked on this preview page."
+        trustNote="This product detail page is display-only. RadarScout helps you compare details before you continue with a booking partner."
       />
 
       <DmcTrustBar items={trustItems} />
@@ -315,7 +314,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
                 </div>
               )}
               <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-                {product.description ?? product.summary ?? 'Partner description is not available yet. RadarScout does not create placeholder descriptions for real supplier products.'}
+                {product.description ?? product.summary ?? 'Product description is not available yet. RadarScout does not create placeholder descriptions for real partner records.'}
               </p>
             </div>
           </article>
@@ -323,27 +322,34 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
           <aside className="grid gap-5">
             <div className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                Partner rate
+                Price detail
               </p>
               <p className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-none tracking-[-0.035em]">
                 {productPrice(product)}
               </p>
               <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-                Prices are shown only when provided by the signed supplier product record. No estimated or invented price is displayed.
+                Prices are shown only when provided in the product record. No estimated or invented price is displayed.
               </p>
             </div>
 
-            <PartnerInventoryNotice status="live" currentDestination="Thailand" />
+            <div className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                Planning boundary
+              </p>
+              <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                RadarScout helps travelers compare details before they continue with a booking partner. Current details should be reviewed on the partner page.
+              </p>
+            </div>
 
             <div className="rounded-[2rem] bg-[var(--color-bg-dark)] p-6 text-white shadow-lg">
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
-                Transaction boundary
+                Handoff boundary
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-                Booking and payment are not enabled.
+                Compare details before continuing.
               </h2>
               <p className="mt-4 text-sm font-semibold leading-7 text-white/75">
-                Availability is not checked on this preview page. This page does not create a reservation, payment, inquiry, or Bókun order.
+                Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
             </div>
           </aside>
@@ -358,7 +364,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
                 Product facts
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-                Displayed only when present in partner data.
+                Displayed only when present in the product record.
               </h2>
             </div>
             <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
@@ -391,8 +397,8 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
 
       <EditorialBanner
         label="Display-only detail"
-        title="Plan around verified partner product data without starting a transaction."
-        body="This detail page is connected to real product data, but purchase flow remains disabled. Travelers can continue planning through RadarScout while direct booking remains in a later dedicated phase."
+        title="Plan around trusted product details before choosing a next step."
+        body="This detail page is connected to a real product record. Travelers can continue planning through RadarScout and review current details on the booking partner page."
         href="/tours"
         ctaLabel="Back to tours"
       />

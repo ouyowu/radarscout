@@ -7,8 +7,6 @@ import { DmcTrustBar } from '../_components/DmcTrustBar'
 import { EditorialBanner } from '../_components/EditorialBanner'
 import { ExperienceCategoryGrid } from '../_components/ExperienceCategoryGrid'
 import { FAQAccordion } from '../_components/FAQAccordion'
-import { PartnerInventoryNotice } from '../_components/PartnerInventoryNotice'
-import { SupplierPartnerCTA } from '../_components/SupplierPartnerCTA'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -17,14 +15,14 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Thailand Tours Marketplace Preview | RadarScout',
   description:
-    'Explore RadarScout’s display-only Thailand tour marketplace preview for curated day tours, private experiences, transfers, food, culture, and signed Bókun supplier partner inventory.',
+    'Explore RadarScout’s display-only Thailand tour preview for curated day tours, private experiences, transfers, food, culture, and trusted booking partner records.',
   alternates: { canonical: `${base}/tours` },
   robots: { index: false, follow: false },
 }
 
 const trustItems = [
-  { label: 'Live destination', value: 'Thailand first' },
-  { label: 'Supplier source', value: 'Signed Bókun partners' },
+  { label: 'Destination focus', value: 'Thailand first' },
+  { label: 'Product source', value: 'Trusted partner records' },
   { label: 'Marketplace status', value: 'Display-only preview' },
   { label: 'Expansion model', value: 'Selected destinations' },
 ]
@@ -102,19 +100,19 @@ type FilterState = {
 
 const faqItems = [
   {
-    question: 'Can I book tours from every destination on this page?',
+    question: 'Can I compare tours from every destination on this page?',
     answer:
-      'No. Thailand is currently RadarScout’s first live inventory destination. Other destinations remain planning-only or partner tours coming soon until signed supplier connections are completed.',
+      'No. Thailand is currently RadarScout’s first supported destination. Other destinations remain planning-only while trusted local product records are prepared.',
   },
   {
-    question: 'Where do RadarScout bookable tours come from?',
+    question: 'Where do RadarScout tour records come from?',
     answer:
-      'Bookable products are powered by signed Bókun supplier partners who can directly operate and fulfill the experience.',
+      'RadarScout shows trusted partner product records and leaves missing fields blank instead of inventing unsupported listings.',
   },
   {
-    question: 'Is this page connected to a purchase flow?',
+    question: 'Is this page connected to a transaction flow?',
     answer:
-      'No. This UI-3A page is display-only. It does not submit bookings, collect money, create inquiries, call Bókun, or write to the database.',
+      'No. This preview helps travelers compare details before they continue with a booking partner. It does not create a traveler request or write to the database.',
   },
   {
     question: 'Will RadarScout add more destinations?',
@@ -184,7 +182,7 @@ function cityLabel(city: string | null) {
 
 function priceLabel(hasPrice: FilterState['hasPrice']) {
   if (hasPrice === 'true') return 'Has price'
-  if (hasPrice === 'false') return 'Partner rate'
+  if (hasPrice === 'false') return 'Price not listed'
 
   return null
 }
@@ -275,7 +273,7 @@ function FilterGroup({
 }
 
 function formatPrice(product: ProductDisplay) {
-  if (!product.retailPrice) return 'Contact for partner rate'
+  if (!product.retailPrice) return 'Price not listed'
   if (!product.currency) return product.retailPrice
 
   return `${product.currency} ${product.retailPrice}`
@@ -313,7 +311,7 @@ function ProductCard({ product }: { product: ProductDisplay }) {
           {product.title}
         </h3>
         <p className="mt-3 min-h-[4.5rem] text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-          {product.summary ?? 'Partner product details are being normalized from signed Bókun supplier data.'}
+          {product.summary ?? 'Product details are being prepared from trusted partner records.'}
         </p>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-black uppercase tracking-[0.1em] text-[var(--color-live-inventory)]">
@@ -345,14 +343,14 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
-        eyebrow="Thailand live inventory preview"
+        eyebrow="Thailand experience preview"
         title="Curated Thailand Tours & Private Experiences"
-        subtitle="Explore a display-only preview of RadarScout’s DMC marketplace for curated day tours, private experiences, transfers, food, culture, and AI-assisted itinerary planning powered by signed Bókun supplier partners."
+        subtitle="Explore a display-only preview of curated day tours, private experiences, transfers, food, culture, and AI-assisted itinerary planning from trusted partner records."
         actions={[
           { label: 'Plan with AI', href: '/ai-trip-planner' },
           { label: 'View Thailand destination', href: '/destinations/thailand', variant: 'secondary' },
         ]}
-        trustNote="Thailand is RadarScout’s first live inventory destination. Bookable products are shown only when they come from signed Bókun supplier partners."
+        trustNote="Thailand is RadarScout’s first supported destination. Product cards appear only when there is a trusted partner record to show."
       />
 
       <DmcTrustBar items={trustItems} />
@@ -361,16 +359,26 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-              Inventory boundary
+              Experience boundary
             </p>
             <h1 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-              Real partner inventory only. No unsupported product listings.
+              Real partner records only. No unsupported product listings.
             </h1>
             <p className="mt-4 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              This tours surface is designed for signed supplier partner products. It does not add external marketplace inventory, unsupported manual listings, or unavailable experiences.
+              This tours surface is designed for trusted partner product records. It does not add external marketplace listings, unsupported manual listings, or unavailable experiences.
             </p>
           </div>
-          <PartnerInventoryNotice status="live" currentDestination="Thailand" />
+          <div className="rounded-3xl border border-[var(--color-border-light)] bg-white p-5 shadow-lg">
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+              Planning boundary
+            </p>
+            <p className="mt-3 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              RadarScout helps travelers compare experience details before they continue with a booking partner. Missing fields are left empty instead of being invented.
+            </p>
+            <p className="mt-2 text-xs font-bold leading-6 text-[var(--color-text-muted)]">
+              Thailand is currently the first supported destination for this preview surface.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -385,14 +393,14 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
-                Live Thailand products
+                Thailand experience records
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
                 Real partner product cards, no invented listings.
               </h2>
             </div>
             <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              These cards are loaded from RadarScout&apos;s read-only product API and display only active Thailand products from signed Bókun supplier partner data. Booking and payment are not enabled on this preview page.
+              These cards are loaded from RadarScout&apos;s read-only product API and display only Thailand product records that are prepared for comparison. Use the booking partner page to review current details.
             </p>
           </div>
 
@@ -403,7 +411,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
                   Browse filters
                 </p>
                 <p className="mt-2 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-                  Filter display-only supplier products. Booking and payment remain disabled.
+                  Filter display-only experience records before continuing with a booking partner.
                 </p>
               </div>
               <div className="rounded-2xl bg-[var(--color-bg-secondary)] px-4 py-3 text-left lg:text-right">
@@ -452,7 +460,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
                 />
                 <FilterChip
                   href={buildToursHref({ ...filters, hasPrice: 'false' })}
-                  label="Partner rate"
+                  label="Price not listed"
                   active={filters.hasPrice === 'false'}
                 />
               </FilterGroup>
@@ -498,17 +506,17 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
           ) : (
             <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 shadow-lg">
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                {hasActiveFilters ? 'No products match these filters' : 'Partner inventory coming online'}
+                {hasActiveFilters ? 'No products match these filters' : 'Experience records coming online'}
               </p>
               <h3 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
                 {hasActiveFilters
-                  ? 'No active supplier products match these filters yet.'
-                  : 'Thailand supplier products are being prepared for display.'}
+                  ? 'No trusted partner records match these filters yet.'
+                  : 'Thailand experience records are being prepared for display.'}
               </h3>
               <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
                 {hasActiveFilters
                   ? 'Try clearing filters or choosing another Thailand city. RadarScout does not add placeholder products to fill filtered results.'
-                  : 'The product API returned no display-ready rows right now. RadarScout will show real signed Bókun supplier products here when active partner inventory is available, without creating placeholder products, prices, ratings, reviews, or supplier names.'}
+                  : 'The product API returned no display-ready rows right now. RadarScout will show trusted partner product records here when they are ready, without creating placeholder products, prices, ratings, reviews, or names.'}
               </p>
               {hasActiveFilters ? (
                 <Link
@@ -531,7 +539,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
       <EditorialBanner
         label="Coming soon destinations"
         title="Japan, France, and other selected destinations remain planning-only."
-        body="RadarScout does not claim live inventory for every destination. More partner destinations will become bookable only after signed supplier agreements and product connections are completed."
+        body="RadarScout does not claim current product coverage for every destination. More partner destinations will appear only after trusted product records are ready for comparison."
         href="/destinations"
         ctaLabel="View destination status"
       />
@@ -549,31 +557,30 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
               Explore Thailand destination planning
             </h2>
             <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-              See why Thailand is the first live inventory destination and how RadarScout structures partner-tour planning.
+              See why Thailand is the first supported destination and how RadarScout structures guided travel planning.
             </p>
           </Link>
 
-          <a
-            href="mailto:ouyowu@gmail.com?subject=RadarScout%20Supplier%20Partnership"
+          <Link
+            href="/chiang-mai/elephant-camp-finder"
             className="rounded-[2rem] border border-[var(--color-border-light)] bg-[var(--color-bg-dark)] p-6 text-white shadow-lg transition hover:-translate-y-1"
           >
             <p className="text-sm font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
-              Supplier CTA
+              Guided planner
             </p>
             <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-              Supplier partners wanted
+              Plan a Chiang Mai experience
             </h2>
             <p className="mt-4 text-sm font-semibold leading-7 text-white/72">
-              For Thailand tour, transfer, and activity operators using Bókun or able to connect via Bókun. Email RadarScout to discuss supplier rates, commission terms, and marketplace connection details.
+              Use RadarScout&apos;s guided planner to compare elephant care, cooking, nature, and family-friendly experiences before continuing with a booking partner.
             </p>
             <span className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-xs font-black uppercase tracking-[0.1em] text-white">
-              Email RadarScout
+              Plan with RadarScout
             </span>
-          </a>
+          </Link>
         </div>
       </section>
 
-      <SupplierPartnerCTA />
       <FAQAccordion items={faqItems} title="Tours marketplace preview FAQ" />
     </main>
   )
