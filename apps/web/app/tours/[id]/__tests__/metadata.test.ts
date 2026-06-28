@@ -135,12 +135,11 @@ describe('generateMetadata — tours/[id]/page', () => {
     expect(meta.title).not.toContain('Chiang Mai Elephant Sanctuary')
   })
 
-  it('eligible product does not have robots.index set to false', async () => {
+  it('eligible product remains noindex while tour detail pages are being remediated', async () => {
     productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct())
 
     const meta = await generateMetadata({ params: { id: 'prod_abc' } })
 
-    const robots = meta.robots as { index?: boolean } | undefined
-    expect(robots?.index).not.toBe(false)
+    expect(meta.robots).toMatchObject({ index: false, follow: false })
   })
 })

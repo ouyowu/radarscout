@@ -95,6 +95,7 @@ export async function generateMetadata({ params }: TourDetailPageProps): Promise
     title: `${title} | RadarScout Thailand Tours`,
     description,
     alternates: { canonical },
+    robots: { index: false, follow: false },
     openGraph: {
       title,
       description,
