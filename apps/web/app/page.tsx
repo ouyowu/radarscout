@@ -118,6 +118,31 @@ export default function LandingPage() {
 
       <DmcTrustBar items={trustItems} />
 
+      <section className="bg-[var(--color-bg-secondary)] px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+              Chiang Mai guided planner
+            </p>
+            <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em] sm:text-5xl">
+              Plan a Chiang Mai elephant day
+            </h2>
+            <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)] sm:text-base">
+              Use RadarScout&apos;s guided planner to compare experiences for elephant care, cooking, nature, and
+              family-friendly travel before you continue with a booking partner.
+            </p>
+          </div>
+          <div className="mt-6 lg:mt-0">
+            <Link
+              href="/chiang-mai/elephant-camp-finder"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-bg-dark)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
+            >
+              Plan with RadarScout
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-3">
           {howItWorks.map((item, index) => (
