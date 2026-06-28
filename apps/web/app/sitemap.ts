@@ -1,5 +1,4 @@
 import type { MetadataRoute } from 'next'
-import { listPublicThailandProducts } from '@/lib/publicProducts/listPublicThailandProducts'
 
 const routes = [
   ['', 'weekly', 1.0],
@@ -21,13 +20,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   }))
 
-  const products = await listPublicThailandProducts()
-  const productRoutes: MetadataRoute.Sitemap = products.map(product => ({
-    url: `${base}/tours/${encodeURIComponent(product.id)}`,
-    lastModified: product.lastSyncedAt ?? now,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
-
-  return [...staticRoutes, ...productRoutes]
+  return staticRoutes
 }
