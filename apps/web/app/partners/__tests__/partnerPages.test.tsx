@@ -19,6 +19,7 @@ const pages: {
   metadata: { title?: unknown; robots?: unknown }
   headline: string
   ctaLabel: string
+  sourceLabel: string
 }[] = [
   {
     route: '/partners',
@@ -27,6 +28,7 @@ const pages: {
     metadata: partnersMetadata,
     headline: 'Sell trusted Thailand experiences with AI-guided discovery',
     ctaLabel: 'Contact RadarScout about partnerships',
+    sourceLabel: '[RadarScout partners page]',
   },
   {
     route: '/suppliers',
@@ -35,6 +37,7 @@ const pages: {
     metadata: suppliersMetadata,
     headline: 'List your Thailand experience with RadarScout',
     ctaLabel: 'Share your experience details',
+    sourceLabel: '[RadarScout suppliers page]',
   },
   {
     route: '/destination-partners',
@@ -43,6 +46,7 @@ const pages: {
     metadata: destinationPartnersMetadata,
     headline: 'Help travelers discover the best local experiences in your destination',
     ctaLabel: 'Discuss a destination partnership',
+    sourceLabel: '[RadarScout destination partners page]',
   },
 ]
 
@@ -80,6 +84,17 @@ function contentText(content: PartnerInterestPageContent) {
   ].join(' ')
 }
 
+function decodedMailto(href: string) {
+  const url = new URL(href)
+
+  return {
+    protocol: url.protocol,
+    email: url.pathname,
+    subject: url.searchParams.get('subject') ?? '',
+    body: url.searchParams.get('body') ?? '',
+  }
+}
+
 describe('RadarScout partner interest pages', () => {
   it.each(pages)('$route renders as a static page component', ({ component }) => {
     expect(component()).toBeTruthy()
@@ -107,6 +122,23 @@ describe('RadarScout partner interest pages', () => {
     expect(content.ctaHref).toMatch(/^mailto:/)
     expect(content.ctaHref).not.toContain('/api/')
     expect(content.ctaHref).not.toContain('/checkout')
+  })
+
+  it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {
+    const mailto = decodedMailto(content.ctaHref)
+
+    expect(mailto.protocol).toBe('mailto:')
+    expect(mailto.email).toBe('hello@radarscout.io')
+    expect(mailto.subject).toContain(sourceLabel)
+    expect(mailto.body).toContain(sourceLabel)
+    expect(mailto.body).toContain('Name:')
+    expect(mailto.body).toContain('Organization:')
+    expect(mailto.body).toContain('Destination focus:')
+    expect(mailto.body).toContain('What you want to discuss:')
+    expect(mailto.body).not.toMatch(/traveler name/i)
+    expect(mailto.body).not.toMatch(/payment/i)
+    expect(mailto.body).not.toMatch(/booking reference/i)
+    expect(mailto.body).not.toMatch(/private supplier/i)
   })
 
   it('does not add DB, API, or service-backed form dependencies to the page routes', () => {
