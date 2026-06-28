@@ -213,6 +213,49 @@ describe('GET /api/products/[id]', () => {
     expect(body.product).toHaveProperty('reviewedEnrichment')
   })
 
+  it('returns only the public product detail allowlist fields', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      rawJson: {
+        duration: 'Half day',
+        meetingPoint: 'Mae Rim',
+        pickupAvailable: true,
+        cancellationPolicy: 'Review partner policy before continuing.',
+        bookingUrl: 'https://internal.example.com/book',
+        supplierRate: '10.00',
+      },
+    }))
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(Object.keys(body).sort()).toEqual(['meta', 'product'])
+    expect(Object.keys(body.product).sort()).toEqual([
+      'city',
+      'currency',
+      'description',
+      'destination',
+      'detailHref',
+      'facts',
+      'id',
+      'imageUrl',
+      'location',
+      'retailPrice',
+      'reviewedEnrichment',
+      'summary',
+      'title',
+    ])
+    expect(Object.keys(body.product.facts).sort()).toEqual([
+      'cancellationPolicy',
+      'duration',
+      'meetingPoint',
+      'pickupAvailable',
+    ])
+    expect(JSON.stringify(body)).not.toContain('bookingUrl')
+    expect(JSON.stringify(body)).not.toContain('supplierRate')
+  })
+
   it('returns 500 when an unexpected error occurs', async () => {
     dbMock.bokunProduct.findFirst.mockRejectedValue(new Error('DB failure'))
 
@@ -299,6 +342,28 @@ describe('GET /api/products/[id] — Thailand eligibility guardrail', () => {
     expect(response.status).toBe(200)
     expect(body.product).not.toBeNull()
     expect(body.product.id).toBe('product_abc')
+  })
+
+  it('does not constrain detail lookup to the old hardcoded Thailand city list', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
+      id: 'chiang_rai_1',
+      title: 'Chiang Rai Temple Tour',
+      city: 'Chiang Rai',
+      location: null,
+    }))
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const response = await GET(makeRequest('chiang_rai_1'), makeParams('chiang_rai_1'))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.product.id).toBe('chiang_rai_1')
+    expect(body.product.city).toBe('Chiang Rai')
+    expect(dbMock.bokunProduct.findFirst).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.not.objectContaining({
+        city: expect.anything(),
+      }),
+    }))
   })
 
   it('ineligible 404 body matches the not-found 404 body', async () => {

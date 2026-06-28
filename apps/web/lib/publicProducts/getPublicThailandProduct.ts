@@ -7,6 +7,7 @@ import { getReviewedEnrichmentByProductId, type ReviewedEnrichmentOutput } from 
 export type PublicThailandProduct = {
   id: string
   title: string
+  destination: string | null
   city: string | null
   location: string | null
   imageUrl: string | null
@@ -15,16 +16,66 @@ export type PublicThailandProduct = {
   retailPrice: string | null
   currency: string | null
   detailHref: string
+  facts: {
+    duration: string | null
+    meetingPoint: string | null
+    pickupAvailable: boolean | null
+    cancellationPolicy: string | null
+  }
   reviewedEnrichment: ReviewedEnrichmentOutput | null
 }
 
-export async function getPublicThailandProduct(id: string): Promise<PublicThailandProduct | null> {
-  if (!id.trim()) return null
+export type PublicThailandProductDetailResult =
+  | { status: 'found'; product: PublicThailandProduct }
+  | { status: 'not-found' }
+  | { status: 'error' }
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' ? value as Record<string, unknown> : {}
+}
+
+function readString(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() ? value.trim() : null
+}
+
+function stripHtml(value: string | null): string | null {
+  if (!value) return null
+
+  return value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function productDescription(rawJson: unknown, description: string | null): string | null {
+  const raw = asRecord(rawJson)
+
+  return stripHtml(description) ??
+    stripHtml(readString(raw.description))
+}
+
+function productFacts(rawJson: unknown): PublicThailandProduct['facts'] {
+  const raw = asRecord(rawJson)
+  const pickupAvailable = typeof raw.pickupAvailable === 'boolean'
+    ? raw.pickupAvailable
+    : null
+
+  return {
+    duration: readString(raw.duration) ?? readString(raw.durationText),
+    meetingPoint: readString(raw.meetingPoint) ?? readString(raw.meetingPointText),
+    pickupAvailable,
+    cancellationPolicy: readString(raw.cancellationPolicy) ?? readString(raw.cancellationPolicyText),
+  }
+}
+
+export async function loadPublicThailandProductDetail(id: string): Promise<PublicThailandProductDetailResult> {
+  const normalizedId = id.trim()
+  if (!normalizedId) return { status: 'not-found' }
 
   try {
     const product = await db.bokunProduct.findFirst({
       where: {
-        id: id.trim(),
+        id: normalizedId,
         active: true,
         supplierId: { not: null },
       },
@@ -43,7 +94,7 @@ export async function getPublicThailandProduct(id: string): Promise<PublicThaila
       },
     })
 
-    if (!product) return null
+    if (!product) return { status: 'not-found' }
 
     const eligibility = evaluateThailandProductEligibility({
       title: product.title,
@@ -51,25 +102,36 @@ export async function getPublicThailandProduct(id: string): Promise<PublicThaila
       location: product.location,
     })
 
-    if (!eligibility.eligible) return null
+    if (!eligibility.eligible) return { status: 'not-found' }
 
     const shaped = toReadOnlyBokunCatalogProduct(product as BokunCatalogRecord)
     const reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
 
     return {
-      id: shaped.id,
-      title: shaped.title,
-      city: product.city,
-      location: product.location,
-      imageUrl: shaped.imageUrl,
-      summary: shaped.summary,
-      description: shaped.summary,
-      retailPrice: shaped.retailPrice,
-      currency: shaped.currency,
-      detailHref: shaped.detailHref,
-      reviewedEnrichment,
+      status: 'found',
+      product: {
+        id: shaped.id,
+        title: shaped.title,
+        destination: shaped.destination ?? 'Thailand',
+        city: product.city,
+        location: product.location,
+        imageUrl: shaped.imageUrl,
+        summary: shaped.summary,
+        description: productDescription(product.rawJson, product.description) ?? shaped.summary,
+        retailPrice: shaped.retailPrice,
+        currency: shaped.currency,
+        detailHref: shaped.detailHref,
+        facts: productFacts(product.rawJson),
+        reviewedEnrichment,
+      },
     }
   } catch {
-    return null
+    return { status: 'error' }
   }
+}
+
+export async function getPublicThailandProduct(id: string): Promise<PublicThailandProduct | null> {
+  const result = await loadPublicThailandProductDetail(id)
+
+  return result.status === 'found' ? result.product : null
 }
