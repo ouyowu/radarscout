@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description:
     'Explore RadarScout’s display-only Thailand tour marketplace preview for curated day tours, private experiences, transfers, food, culture, and signed Bókun supplier partner inventory.',
   alternates: { canonical: `${base}/tours` },
+  robots: { index: false, follow: false },
 }
 
 const trustItems = [
