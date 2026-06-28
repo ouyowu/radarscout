@@ -79,6 +79,7 @@ function contentText(content: PartnerInterestPageContent) {
     ...content.helps,
     ...content.doesNotReplace,
     ...content.intake,
+    content.reviewNote,
     content.ctaLabel,
     content.ctaHref,
   ].join(' ')
@@ -122,6 +123,16 @@ describe('RadarScout partner interest pages', () => {
     expect(content.ctaHref).toMatch(/^mailto:/)
     expect(content.ctaHref).not.toContain('/api/')
     expect(content.ctaHref).not.toContain('/checkout')
+  })
+
+  it.each(pages)('$route sets manual review expectations before public recommendation', ({ content }) => {
+    expect(content.reviewNote).toContain('destination focus')
+    expect(content.reviewNote).toContain('public booking link')
+    expect(content.reviewNote).toContain('manually checks partner inquiries')
+    expect(content.reviewNote).toContain('before any public recommendation')
+    expect(content.reviewNote).not.toMatch(/guaranteed placement/i)
+    expect(content.reviewNote).not.toMatch(/live availability/i)
+    expect(content.reviewNote).not.toMatch(/\bpayment\b/i)
   })
 
   it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {

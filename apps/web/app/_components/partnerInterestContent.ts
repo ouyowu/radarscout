@@ -1,5 +1,8 @@
 import type { PartnerInterestPageContent } from './PartnerInterestPage'
 
+const MANUAL_REVIEW_NOTE =
+  'Send a short note with your destination focus and public booking link. RadarScout manually checks partner inquiries before any public recommendation.'
+
 function buildPartnerMailto({
   sourceLabel,
   subject,
@@ -49,6 +52,7 @@ export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'The types of Thailand experiences you want to recommend.',
     'The best contact path for a short partnership conversation.',
   ],
+  reviewNote: MANUAL_REVIEW_NOTE,
   ctaLabel: 'Contact RadarScout about partnerships',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout partners page]',
@@ -86,6 +90,7 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'Trust notes such as suitability, safety boundaries, and who the experience is best for.',
     'A customer-facing public booking link that travelers can open safely.',
   ],
+  reviewNote: MANUAL_REVIEW_NOTE,
   ctaLabel: 'Share your experience details',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout suppliers page]',
@@ -123,6 +128,7 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'Recommended local operators or experiences with public-safe details.',
     'A contact person for manual partnership scoping.',
   ],
+  reviewNote: MANUAL_REVIEW_NOTE,
   ctaLabel: 'Discuss a destination partnership',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout destination partners page]',

@@ -8,6 +8,7 @@ export type PartnerInterestPageContent = {
   helps: string[]
   doesNotReplace: string[]
   intake: string[]
+  reviewNote: string
   ctaLabel: string
   ctaHref: string
 }
@@ -48,6 +49,9 @@ export function PartnerInterestPage({ content }: PartnerInterestPageProps) {
           </h1>
           <p className="mt-6 max-w-2xl text-base font-semibold leading-8 text-white/78 sm:text-lg">
             {content.intro}
+          </p>
+          <p className="mt-4 max-w-2xl rounded-2xl border border-white/12 bg-white/8 p-4 text-sm font-semibold leading-7 text-white/74">
+            {content.reviewNote}
           </p>
           <a
             href={content.ctaHref}
