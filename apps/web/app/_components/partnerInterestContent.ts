@@ -1,5 +1,29 @@
 import type { PartnerInterestPageContent } from './PartnerInterestPage'
 
+function buildPartnerMailto({
+  sourceLabel,
+  subject,
+  bodyPrompts,
+}: {
+  sourceLabel: string
+  subject: string
+  bodyPrompts: string[]
+}) {
+  const body = [
+    sourceLabel,
+    '',
+    'Name:',
+    'Organization:',
+    'Destination focus:',
+    ...bodyPrompts,
+    'What you want to discuss:',
+  ].join('\n')
+
+  return `mailto:hello@radarscout.io?subject=${encodeURIComponent(
+    `${sourceLabel} ${subject}`,
+  )}&body=${encodeURIComponent(body)}`
+}
+
 export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
   eyebrow: 'Partner program',
   headline: 'Sell trusted Thailand experiences with AI-guided discovery',
@@ -26,7 +50,15 @@ export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'The best contact path for a short partnership conversation.',
   ],
   ctaLabel: 'Contact RadarScout about partnerships',
-  ctaHref: 'mailto:hello@radarscout.io?subject=RadarScout%20partner%20interest',
+  ctaHref: buildPartnerMailto({
+    sourceLabel: '[RadarScout partners page]',
+    subject: 'RadarScout partner interest',
+    bodyPrompts: [
+      'Audience or client type:',
+      'Thailand experiences you want to recommend:',
+      'Preferred contact path:',
+    ],
+  }),
 }
 
 export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
@@ -55,7 +87,15 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'A customer-facing public booking link that travelers can open safely.',
   ],
   ctaLabel: 'Share your experience details',
-  ctaHref: 'mailto:hello@radarscout.io?subject=RadarScout%20supplier%20interest',
+  ctaHref: buildPartnerMailto({
+    sourceLabel: '[RadarScout suppliers page]',
+    subject: 'RadarScout supplier interest',
+    bodyPrompts: [
+      'Public experience link:',
+      'Experience type and duration:',
+      'Customer-facing booking link:',
+    ],
+  }),
 }
 
 export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
@@ -84,5 +124,13 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'A contact person for manual partnership scoping.',
   ],
   ctaLabel: 'Discuss a destination partnership',
-  ctaHref: 'mailto:hello@radarscout.io?subject=RadarScout%20destination%20partnership',
+  ctaHref: buildPartnerMailto({
+    sourceLabel: '[RadarScout destination partners page]',
+    subject: 'RadarScout destination partnership',
+    bodyPrompts: [
+      'Traveler segments:',
+      'Priority experience categories:',
+      'Best contact person:',
+    ],
+  }),
 }
