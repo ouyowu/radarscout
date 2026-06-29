@@ -101,6 +101,29 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
       'Customer-facing booking link:',
     ],
   }),
+  operatorUrlRequest: {
+    eyebrow: 'Public link check',
+    title: 'Send the traveler-facing page you want RadarScout to check.',
+    body:
+      'Operators can share a public product page or booking partner page for a manual handoff check. RadarScout checks the link before using it in any recommendation.',
+    items: [
+      'Public traveler-facing URL',
+      'Experience name and destination',
+      'Operator public name',
+      'Contact person for link check',
+    ],
+    ctaLabel: 'Submit public link for check',
+    ctaHref: buildPartnerMailto({
+      sourceLabel: '[RadarScout supplier public link check]',
+      subject: 'Public handoff URL check',
+      bodyPrompts: [
+        'Public traveler-facing URL:',
+        'Experience name and destination:',
+        'Operator public name:',
+        'Contact person for link check:',
+      ],
+    }),
+  },
 }
 
 export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
