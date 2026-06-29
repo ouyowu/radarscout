@@ -11,6 +11,14 @@ export type PartnerInterestPageContent = {
   reviewNote: string
   ctaLabel: string
   ctaHref: string
+  operatorUrlRequest?: {
+    eyebrow: string
+    title: string
+    body: string
+    items: string[]
+    ctaLabel: string
+    ctaHref: string
+  }
 }
 
 type PartnerInterestPageProps = {
@@ -68,6 +76,38 @@ export function PartnerInterestPage({ content }: PartnerInterestPageProps) {
         <CardList title="What we do not replace" items={content.doesNotReplace} />
         <CardList title="What we need to start" items={content.intake} />
       </section>
+
+      {content.operatorUrlRequest ? (
+        <section className="bg-[var(--color-bg-primary)] px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-6xl gap-6 rounded-[1.75rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_12px_28px_rgba(17,24,39,0.06)] lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--color-accent-orange-dark)]">
+                {content.operatorUrlRequest.eyebrow}
+              </p>
+              <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-black tracking-[-0.035em]">
+                {content.operatorUrlRequest.title}
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                {content.operatorUrlRequest.body}
+              </p>
+              <ul className="mt-4 grid gap-2 text-sm font-semibold leading-7 text-[var(--color-text-secondary)] sm:grid-cols-2">
+                {content.operatorUrlRequest.items.map(item => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--color-accent-orange)]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <a
+              href={content.operatorUrlRequest.ctaHref}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-sm font-black uppercase tracking-[0.1em] text-white"
+            >
+              {content.operatorUrlRequest.ctaLabel}
+            </a>
+          </div>
+        </section>
+      ) : null}
 
       <section className="bg-[var(--color-bg-secondary)] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-5 rounded-[1.75rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_12px_28px_rgba(17,24,39,0.06)] md:flex-row md:items-center md:justify-between">

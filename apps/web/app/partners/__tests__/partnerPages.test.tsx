@@ -82,6 +82,12 @@ function contentText(content: PartnerInterestPageContent) {
     content.reviewNote,
     content.ctaLabel,
     content.ctaHref,
+    content.operatorUrlRequest?.eyebrow ?? '',
+    content.operatorUrlRequest?.title ?? '',
+    content.operatorUrlRequest?.body ?? '',
+    ...(content.operatorUrlRequest?.items ?? []),
+    content.operatorUrlRequest?.ctaLabel ?? '',
+    content.operatorUrlRequest?.ctaHref ?? '',
   ].join(' ')
 }
 
@@ -123,6 +129,8 @@ describe('RadarScout partner interest pages', () => {
     expect(content.ctaHref).toMatch(/^mailto:/)
     expect(content.ctaHref).not.toContain('/api/')
     expect(content.ctaHref).not.toContain('/checkout')
+    expect(content.operatorUrlRequest?.ctaHref ?? '').not.toContain('/api/')
+    expect(content.operatorUrlRequest?.ctaHref ?? '').not.toContain('/checkout')
   })
 
   it.each(pages)('$route sets manual review expectations before public recommendation', ({ content }) => {
@@ -150,6 +158,34 @@ describe('RadarScout partner interest pages', () => {
     expect(mailto.body).not.toMatch(/payment/i)
     expect(mailto.body).not.toMatch(/booking reference/i)
     expect(mailto.body).not.toMatch(/private supplier/i)
+  })
+
+  it('lets suppliers submit a public traveler-facing URL for a manual handoff check', () => {
+    const request = SUPPLIERS_PAGE_CONTENT.operatorUrlRequest
+
+    expect(request).toBeTruthy()
+    expect(request?.title).toContain('traveler-facing page')
+    expect(request?.body).toContain('manual handoff check')
+    expect(request?.ctaLabel).toBe('Submit public link for check')
+    expect(request?.items).toContain('Public traveler-facing URL')
+
+    const mailto = decodedMailto(request?.ctaHref ?? '')
+
+    expect(mailto.protocol).toBe('mailto:')
+    expect(mailto.email).toBe('hello@radarscout.io')
+    expect(mailto.subject).toContain('[RadarScout supplier public link check]')
+    expect(mailto.subject).toContain('Public handoff URL check')
+    expect(mailto.body).toContain('Public traveler-facing URL:')
+    expect(mailto.body).toContain('Experience name and destination:')
+    expect(mailto.body).toContain('Operator public name:')
+    expect(mailto.body).toContain('Contact person for link check:')
+    expect(mailto.body).not.toMatch(/backend/i)
+    expect(mailto.body).not.toMatch(/database/i)
+    expect(mailto.body).not.toMatch(/partner rate/i)
+    expect(mailto.body).not.toMatch(/supplier net rate/i)
+    expect(mailto.body).not.toMatch(/\bcheckout\b/i)
+    expect(mailto.body).not.toMatch(/\bpayment\b/i)
+    expect(mailto.body).not.toMatch(/\breviews?\b/i)
   })
 
   it('does not add DB, API, or service-backed form dependencies to the page routes', () => {
