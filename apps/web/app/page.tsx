@@ -36,8 +36,8 @@ const featuredDestinations = [
 ].filter((destination): destination is NonNullable<typeof destination> => Boolean(destination))
 
 const trustItems = [
-  { label: 'Live inventory', value: 'Thailand partner tours' },
-  { label: 'Supplier boundary', value: 'Signed Bókun partners only' },
+  { label: 'Thailand focus', value: 'Guided experience discovery' },
+  { label: 'Handoff boundary', value: 'Continue with a booking partner' },
   { label: 'Planning engine', value: 'AI itinerary matching' },
   { label: 'Expansion model', value: 'Selected destinations, city by city' },
 ]
@@ -75,8 +75,8 @@ const howItWorks = [
     body: 'The planning layer compares destination fit, time value, experience type, transfer needs, and itinerary flow.',
   },
   {
-    title: 'Book only trusted partner inventory',
-    body: 'Bookable products appear only when they are supplied by signed Bókun supplier partners who can operate the experience.',
+    title: 'Continue with a booking partner',
+    body: 'When you are ready, RadarScout sends you to the relevant product or booking partner page for final details.',
   },
 ]
 
@@ -84,22 +84,22 @@ const faqItems = [
   {
     question: 'Is RadarScout a marketplace with every country currently shown?',
     answer:
-      'No. RadarScout focuses on selected high-demand travel destinations. Thailand is currently the first live inventory destination, and more destinations are added as supplier agreements and product connections are completed.',
+      'No. RadarScout focuses on selected high-demand travel destinations. Thailand is currently the first focused experience destination, and more destinations are added as local partner coverage improves.',
   },
   {
-    question: 'Where do bookable products come from?',
+    question: 'Where do recommended experiences come from?',
     answer:
-      'Bookable products come from signed Bókun supplier partners who can directly operate and fulfill the experience. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the bookable catalog.',
+      'RadarScout recommends real local experiences and routes travelers to product or booking partner pages for final details. RadarScout does not add fake, unsupported, or unverified products to the traveler-facing recommendations.',
   },
   {
     question: 'What does the AI planning engine compare?',
     answer:
-      'It helps compare experiences by destination, travel style, time value, itinerary fit, private customization needs, and available partner inventory.',
+      'It helps compare experiences by destination, travel style, time value, itinerary fit, private customization needs, and booking partner handoff fit.',
   },
   {
-    question: 'Can I use RadarScout before a destination has live inventory?',
+    question: 'Can I use RadarScout before a destination has full partner coverage?',
     answer:
-      'Yes, planning pages can help structure routes and ideas. Destinations without signed supplier inventory are marked as planning-only or partner tours coming soon.',
+      'Yes, planning pages can help structure routes and ideas. Destinations without enough local partner coverage are marked as planning-only or coming soon.',
   },
 ]
 
@@ -107,13 +107,13 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
-        title="AI-powered Destination DMC Portal for Curated Day Tours"
-        subtitle="Plan private trips, compare local experiences, and discover curated day tours, transfers, food tours, and custom itineraries from signed Bókun supplier partners in selected top travel destinations."
+        title="AI-guided Thailand Experience Planner"
+        subtitle="Plan private trips, compare local experiences, and discover day tours, transfers, food tours, and custom itinerary ideas across selected top travel destinations."
         actions={[
           { label: 'Start planning with AI', href: '/ai-trip-planner' },
-          { label: 'Explore live tours', href: '/tours', variant: 'secondary' },
+          { label: 'Compare Thailand experiences', href: '/tours', variant: 'secondary' },
         ]}
-        trustNote="Thailand is currently RadarScout's first live inventory destination. Other destinations remain planning-only while trusted local Bókun supplier partners are onboarded."
+        trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
       />
 
       <DmcTrustBar items={trustItems} />
@@ -171,7 +171,7 @@ export default function LandingPage() {
               </h2>
             </div>
             <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              RadarScout does not try to list every destination. We focus on high-demand travel countries where trusted local supplier partners can directly operate and fulfill the experience.
+              RadarScout does not try to list every destination. We focus on high-demand travel countries where travelers can compare real local experiences and continue with a booking partner when ready.
             </p>
           </div>
 
@@ -206,11 +206,11 @@ export default function LandingPage() {
       />
 
       <EditorialBanner
-        label="Thailand live inventory"
-        title="Thailand is RadarScout's first live partner-tour destination."
-        body="Explore current Bókun partner inventory for Thailand while RadarScout expands signed supplier coverage into more selected high-demand destinations."
+        label="Thailand guided discovery"
+        title="Thailand is RadarScout's first focused experience destination."
+        body="Compare Thailand experiences while RadarScout expands local partner coverage into more selected high-demand destinations."
         href="/tours"
-        ctaLabel="Explore Thailand tours"
+        ctaLabel="Compare Thailand experiences"
       />
 
       <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
