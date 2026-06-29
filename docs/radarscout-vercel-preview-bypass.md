@@ -130,18 +130,41 @@ Keep the report focused on evidence, not credentials.
 
 ## 8. Future helper task
 
-If preview protection continues to slow QA, create a follow-up task:
+RadarScout includes a local read-only helper for preview protection checks:
 
 ```text
-TD-RADARSCOUT-VERCEL-PREVIEW-BYPASS-1-SMOKE-HELPER
+scripts/radarscout-preview-protection-check.sh <vercel-preview-url>
 ```
 
-Scope:
+Use it before browser smoke when a preview URL might be protected by Vercel Authentication.
+
+The helper:
+
+- checks `/`, `/sitemap.xml`, and `/robots.txt`;
+- reports whether normal fetch access is redirected to Vercel SSO;
+- refuses non-`.vercel.app` URLs;
+- refuses RadarScout production-looking URLs;
+- does not deploy;
+- does not call the Vercel API;
+- does not generate or store share URLs.
+
+Example:
+
+```bash
+scripts/radarscout-preview-protection-check.sh \
+  https://reddit-monitor-example-ouyowus-projects.vercel.app
+```
+
+If the helper reports `protected_by_vercel_authentication`, continue with Method A or Method C.
+
+## 9. Future automation boundary
+
+If preview protection continues to slow QA, a later task may extend this into a broader local smoke checklist.
+
+Future scope:
 
 - document a small operator-only smoke checklist;
-- optionally add a local-only script that accepts a preview URL and prints safe diagnostic status;
+- keep automation outside application runtime behavior;
 - do not store share URLs;
 - do not change Vercel project settings;
 - do not deploy.
-
-The helper should stay outside application runtime behavior.
