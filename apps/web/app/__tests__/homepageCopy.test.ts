@@ -7,6 +7,7 @@ const homepageVisibleCopySources = [
   homepageSource,
   readFileSync(new URL('../_components/AdventureHero.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/SupplierPartnerCTA.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../../lib/global-destinations.ts', import.meta.url), 'utf8'),
 ].join('\n')
 
