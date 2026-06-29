@@ -42,6 +42,10 @@ describe('homepage public copy safety', () => {
   })
 
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {
+    expect(homepageSource).not.toMatch(/Bókun/i)
+    expect(homepageSource).not.toMatch(/DMC Portal/i)
+    expect(homepageSource).not.toMatch(/live inventory/i)
+    expect(homepageSource).not.toMatch(/live tours/i)
     expect(homepageSource).not.toMatch(/live availability/i)
     expect(homepageSource).not.toMatch(/available now/i)
     expect(homepageSource).not.toMatch(/instant confirmation/i)
