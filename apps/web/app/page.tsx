@@ -14,14 +14,14 @@ import { globalDestinations } from '@/lib/global-destinations'
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'RadarScout | AI-powered Destination DMC Portal',
+  title: 'RadarScout | AI-guided Thailand Experience Planner',
   description:
-    'Plan smarter private trips and discover curated day tours, transfers, food tours, cultural experiences, and custom itineraries from signed Bókun supplier partners in selected top travel destinations.',
+    'Plan Thailand experiences with guided discovery for elephant care, cooking, nature, family-friendly days, and trusted booking partner handoff.',
   alternates: { canonical: base },
   openGraph: {
-    title: 'RadarScout | AI-powered Destination DMC Portal',
+    title: 'RadarScout | AI-guided Thailand Experience Planner',
     description:
-      'AI-powered destination planning for curated day tours, private trips, local experiences, transfers, and custom itineraries powered by signed supplier partners.',
+      'Compare Thailand experiences, draft a day plan, and continue with a trusted booking partner when you are ready.',
     type: 'website',
     url: base,
   },

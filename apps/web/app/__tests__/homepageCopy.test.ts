@@ -1,9 +1,32 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { metadata } from '../page'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 
 describe('homepage public copy safety', () => {
+  it('uses traveler-facing homepage metadata without Bókun-heavy wording', () => {
+    expect(metadata.title).toBe('RadarScout | AI-guided Thailand Experience Planner')
+    expect(metadata.description).toBe(
+      'Plan Thailand experiences with guided discovery for elephant care, cooking, nature, family-friendly days, and trusted booking partner handoff.',
+    )
+
+    const metadataCopy = [
+      metadata.title,
+      metadata.description,
+      metadata.openGraph?.title,
+      metadata.openGraph?.description,
+    ].join(' ')
+
+    expect(metadataCopy).not.toMatch(/Bókun/i)
+    expect(metadataCopy).not.toMatch(/DMC Portal/i)
+    expect(metadataCopy).not.toMatch(/live availability/i)
+    expect(metadataCopy).not.toMatch(/available now/i)
+    expect(metadataCopy).not.toMatch(/instant confirmation/i)
+    expect(metadataCopy).not.toMatch(/\bcheckout\b/i)
+    expect(metadataCopy).not.toMatch(/\bpayment\b/i)
+  })
+
   it('does not use available-now wording in visible FAQ copy', () => {
     expect(homepageSource).not.toMatch(/available now/i)
     expect(homepageSource).toContain('Is RadarScout a marketplace with every country currently shown?')
