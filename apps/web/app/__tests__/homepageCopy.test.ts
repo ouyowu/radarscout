@@ -3,6 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { metadata } from '../page'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
+const homepageVisibleCopySources = [
+  homepageSource,
+  readFileSync(new URL('../_components/AdventureHero.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../../lib/global-destinations.ts', import.meta.url), 'utf8'),
+].join('\n')
 
 describe('homepage public copy safety', () => {
   it('uses traveler-facing homepage metadata without Bókun-heavy wording', () => {
@@ -42,21 +48,21 @@ describe('homepage public copy safety', () => {
   })
 
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {
-    expect(homepageSource).not.toMatch(/Bókun/i)
-    expect(homepageSource).not.toMatch(/DMC Portal/i)
-    expect(homepageSource).not.toMatch(/live inventory/i)
-    expect(homepageSource).not.toMatch(/live tours/i)
-    expect(homepageSource).not.toMatch(/live availability/i)
-    expect(homepageSource).not.toMatch(/available now/i)
-    expect(homepageSource).not.toMatch(/instant confirmation/i)
-    expect(homepageSource).not.toMatch(/\bcheckout\b/i)
-    expect(homepageSource).not.toMatch(/\bpayment\b/i)
-    expect(homepageSource).not.toMatch(/booking complete/i)
-    expect(homepageSource).not.toMatch(/Bókun backend/i)
-    expect(homepageSource).not.toMatch(/Bókun database/i)
-    expect(homepageSource).not.toMatch(/Bókun-powered/i)
-    expect(homepageSource).not.toMatch(/partner rate/i)
-    expect(homepageSource).not.toMatch(/supplier net rate/i)
-    expect(homepageSource).not.toMatch(/\bcommission\b/i)
+    expect(homepageVisibleCopySources).not.toMatch(/Bókun/i)
+    expect(homepageVisibleCopySources).not.toMatch(/DMC Portal/i)
+    expect(homepageVisibleCopySources).not.toMatch(/live inventory/i)
+    expect(homepageVisibleCopySources).not.toMatch(/live tours/i)
+    expect(homepageVisibleCopySources).not.toMatch(/live availability/i)
+    expect(homepageVisibleCopySources).not.toMatch(/available now/i)
+    expect(homepageVisibleCopySources).not.toMatch(/instant confirmation/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bcheckout\b/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bpayment\b/i)
+    expect(homepageVisibleCopySources).not.toMatch(/booking complete/i)
+    expect(homepageVisibleCopySources).not.toMatch(/Bókun backend/i)
+    expect(homepageVisibleCopySources).not.toMatch(/Bókun database/i)
+    expect(homepageVisibleCopySources).not.toMatch(/Bókun-powered/i)
+    expect(homepageVisibleCopySources).not.toMatch(/partner rate/i)
+    expect(homepageVisibleCopySources).not.toMatch(/supplier net rate/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bcommission\b/i)
   })
 })

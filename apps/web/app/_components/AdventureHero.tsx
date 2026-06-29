@@ -18,7 +18,7 @@ type AdventureHeroProps = {
 }
 
 export function AdventureHero({
-  eyebrow = 'AI-powered Destination DMC Portal',
+  eyebrow = 'AI-guided travel planning',
   title,
   subtitle,
   actions = [],
