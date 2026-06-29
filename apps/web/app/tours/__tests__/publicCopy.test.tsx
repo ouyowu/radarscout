@@ -136,6 +136,56 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Price not listed')
     expect(normalizedMarkup).toContain('booking partner')
     expect(normalizedMarkup).toContain('trusted partner record')
+    expect(markup).not.toContain('Check availability')
+    expectSafeTourCopy(markup)
+  })
+
+  it('renders a verified product-specific booking partner handoff CTA on /tours/{id}', async () => {
+    mockFetchJson({
+      product: {
+        id: 'tour_with_handoff',
+        title: 'Chiang Mai Elephant Care',
+        city: 'Chiang Mai',
+        location: 'Mae Rim',
+        destination: 'Thailand',
+        imageUrl: null,
+        summary: null,
+        description: null,
+        retailPrice: null,
+        currency: null,
+        detailHref: '/tours/tour_with_handoff',
+        facts: {
+          duration: null,
+          meetingPoint: null,
+          pickupAvailable: false,
+          cancellationPolicy: null,
+        },
+        reviewedEnrichment: null,
+        bookingPartnerHandoff: {
+          href: 'https://booking.example.com/experience/1232729',
+          label: 'Check availability',
+          rel: 'nofollow sponsored noopener noreferrer',
+          source: 'owner_managed_profile',
+          verifiedBy: 'owner_managed_catalog',
+        },
+      },
+      meta: {
+        source: 'signed-bokun-supplier-products',
+        inventoryScope: 'thailand-first',
+        bookingEnabled: false,
+        availabilityEnabled: false,
+        detailSupported: true,
+      },
+    })
+
+    const element = await TourDetailPage({ params: { id: 'tour_with_handoff' } })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('Check availability')
+    expect(markup).toContain('href="https://booking.example.com/experience/1232729"')
+    expect(markup).toContain('target="_blank"')
+    expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
+    expect(markup).toContain('Continue with a booking partner')
     expectSafeTourCopy(markup)
   })
 })

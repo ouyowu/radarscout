@@ -3,6 +3,10 @@ import { db } from '@reddit-monitor/db'
 import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bokunCatalog'
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 import { getReviewedEnrichmentByProductId, type ReviewedEnrichmentOutput } from '@/lib/reviewedEnrichmentReader'
+import {
+  resolveOwnerManagedProfileHandoff,
+  type PublicBookingPartnerHandoff,
+} from './bookingPartnerHandoff'
 
 export type PublicThailandProduct = {
   id: string
@@ -23,6 +27,7 @@ export type PublicThailandProduct = {
     cancellationPolicy: string | null
   }
   reviewedEnrichment: ReviewedEnrichmentOutput | null
+  bookingPartnerHandoff?: PublicBookingPartnerHandoff
 }
 
 export type PublicThailandProductDetailResult =
@@ -89,6 +94,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
         retailPrice: true,
         currency: true,
         rawJson: true,
+        bokunActivityId: true,
         lastSyncedAt: true,
         supplier: { select: { title: true } },
       },
@@ -106,6 +112,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
 
     const shaped = toReadOnlyBokunCatalogProduct(product as BokunCatalogRecord)
     const reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
+    const bookingPartnerHandoff = resolveOwnerManagedProfileHandoff(product.bokunActivityId)
 
     return {
       status: 'found',
@@ -123,6 +130,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
         detailHref: shaped.detailHref,
         facts: productFacts(product.rawJson),
         reviewedEnrichment,
+        ...(bookingPartnerHandoff ? { bookingPartnerHandoff } : {}),
       },
     }
   } catch {

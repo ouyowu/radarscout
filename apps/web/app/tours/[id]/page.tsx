@@ -30,6 +30,17 @@ type ReviewedEnrichment = {
   suggestedTags: string[]
 }
 
+type BookingPartnerHandoff = {
+  href: string
+  label: 'Check availability'
+  rel: 'nofollow sponsored noopener noreferrer'
+  source:
+    | 'owner_managed_profile'
+    | 'operator_verified_public_link'
+    | 'booking_partner_verified_public_widget'
+  verifiedBy: 'operator_manual_review' | 'owner_managed_catalog'
+}
+
 type ProductDetail = {
   id: string
   title: string
@@ -44,6 +55,7 @@ type ProductDetail = {
   detailHref: string
   facts?: ProductFacts | null
   reviewedEnrichment?: ReviewedEnrichment | null
+  bookingPartnerHandoff?: BookingPartnerHandoff
 }
 
 type ProductDetailResponse = {
@@ -351,6 +363,21 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
               <p className="mt-4 text-sm font-semibold leading-7 text-white/75">
                 Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
+              {product.bookingPartnerHandoff ? (
+                <a
+                  href={product.bookingPartnerHandoff.href}
+                  target="_blank"
+                  rel={product.bookingPartnerHandoff.rel}
+                  className="mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-accent-orange-dark)]"
+                >
+                  {product.bookingPartnerHandoff.label}
+                </a>
+              ) : null}
+              {product.bookingPartnerHandoff ? (
+                <p className="mt-3 text-xs font-bold leading-6 text-white/65">
+                  Continue with a booking partner to review current details.
+                </p>
+              ) : null}
             </div>
           </aside>
         </div>

@@ -115,6 +115,34 @@ describe('getPublicThailandProduct', () => {
     expect(result!).toHaveProperty('reviewedEnrichment')
   })
 
+  it('includes a verified owner-managed booking partner handoff when a profile matches', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(
+      makeProduct({ bokunActivityId: '1232729' }),
+    )
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const result = await getPublicThailandProduct('prod_abc')
+
+    expect(result?.bookingPartnerHandoff).toEqual({
+      href: 'https://widgets.bokun.io/online-sales/3f335ed3-148b-4690-b13f-c76a637227db/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'owner_managed_profile',
+      verifiedBy: 'owner_managed_catalog',
+    })
+  })
+
+  it('does not include booking partner handoff when no owner-managed profile matches', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(
+      makeProduct({ bokunActivityId: '999999999' }),
+    )
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+
+    const result = await getPublicThailandProduct('prod_abc')
+
+    expect(result).not.toHaveProperty('bookingPartnerHandoff')
+  })
+
   it('does not expose rawJson in the returned product', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ rawJson: { keyPhoto: { originalUrl: 'https://cdn.example.com/img.jpg' }, secret: 'internal' } }),
