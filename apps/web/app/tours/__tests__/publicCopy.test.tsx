@@ -14,7 +14,7 @@ vi.mock('next/headers', () => ({
   })),
 }))
 
-import ToursMarketplacePreviewPage from '../page'
+import ToursExperienceDiscoveryPage from '../page'
 import TourDetailPage from '../[id]/page'
 
 const FORBIDDEN_TOUR_COPY = [
@@ -36,6 +36,8 @@ const FORBIDDEN_TOUR_COPY = [
   /partner rate/i,
   /\bcommission\b/i,
   /supplier rates/i,
+  /display-only/i,
+  /\bpreview\b/i,
 ]
 
 function expectSafeTourCopy(markup: string) {
@@ -85,7 +87,7 @@ describe('tour public copy safety', () => {
       },
     })
 
-    const element = await ToursMarketplacePreviewPage({
+    const element = await ToursExperienceDiscoveryPage({
       searchParams: { hasPrice: 'false' },
     })
     const markup = renderToStaticMarkup(element)
