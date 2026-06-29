@@ -13,9 +13,9 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Thailand Tours Marketplace Preview | RadarScout',
+  title: 'Thailand Experience Discovery | RadarScout',
   description:
-    'Explore RadarScout’s display-only Thailand tour preview for curated day tours, private experiences, transfers, food, culture, and trusted booking partner records.',
+    'Explore RadarScout’s Thailand experience discovery page for curated day tours, private experiences, transfers, food, culture, and trusted booking partner records.',
   alternates: { canonical: `${base}/tours` },
   robots: { index: false, follow: false },
 }
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 const trustItems = [
   { label: 'Destination focus', value: 'Thailand first' },
   { label: 'Product source', value: 'Trusted partner records' },
-  { label: 'Marketplace status', value: 'Display-only preview' },
+  { label: 'Experience model', value: 'Guided comparison' },
   { label: 'Expansion model', value: 'Selected destinations' },
 ]
 
@@ -112,7 +112,7 @@ const faqItems = [
   {
     question: 'Is this page connected to a transaction flow?',
     answer:
-      'No. This preview helps travelers compare details before they continue with a booking partner. It does not create a traveler request or write to the database.',
+      'No. This page helps travelers compare details before they continue with a booking partner. It does not create a traveler request or write to the database.',
   },
   {
     question: 'Will RadarScout add more destinations?',
@@ -321,7 +321,7 @@ function ProductCard({ product }: { product: ProductDisplay }) {
             href={product.detailHref}
             className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-5 text-xs font-black uppercase tracking-[0.1em] text-white"
           >
-            View preview details
+            View details
           </Link>
         </div>
       </div>
@@ -329,7 +329,7 @@ function ProductCard({ product }: { product: ProductDisplay }) {
   )
 }
 
-export default async function ToursMarketplacePreviewPage({ searchParams }: ToursPageProps) {
+export default async function ToursExperienceDiscoveryPage({ searchParams }: ToursPageProps) {
   const filters = readFilters(searchParams)
   const productResponse = await fetchThailandProducts(filters)
   const products = productResponse.products
@@ -343,9 +343,9 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
-        eyebrow="Thailand experience preview"
+        eyebrow="Thailand experience discovery"
         title="Curated Thailand Tours & Private Experiences"
-        subtitle="Explore a display-only preview of curated day tours, private experiences, transfers, food, culture, and AI-assisted itinerary planning from trusted partner records."
+        subtitle="Explore curated day tours, private experiences, transfers, food, culture, and guided itinerary planning from trusted partner records."
         actions={[
           { label: 'Plan with AI', href: '/ai-trip-planner' },
           { label: 'View Thailand destination', href: '/destinations/thailand', variant: 'secondary' },
@@ -365,7 +365,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
               Real partner records only. No unsupported product listings.
             </h1>
             <p className="mt-4 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              This tours surface is designed for trusted partner product records. It does not add external marketplace listings, unsupported manual listings, or unavailable experiences.
+              This experience surface is designed for trusted partner product records. It does not add external marketplace listings, unsupported manual listings, or unavailable experiences.
             </p>
           </div>
           <div className="rounded-3xl border border-[var(--color-border-light)] bg-white p-5 shadow-lg">
@@ -376,7 +376,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
               RadarScout helps travelers compare experience details before they continue with a booking partner. Missing fields are left empty instead of being invented.
             </p>
             <p className="mt-2 text-xs font-bold leading-6 text-[var(--color-text-muted)]">
-              Thailand is currently the first supported destination for this preview surface.
+              Thailand is currently the first supported destination for this guided comparison surface.
             </p>
           </div>
         </div>
@@ -384,7 +384,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
 
       <ExperienceCategoryGrid
         eyebrow="Thailand experience categories"
-        title="Preview the kinds of partner experiences RadarScout is built to compare."
+        title="Explore the kinds of partner experiences RadarScout is built to compare."
         categories={categories}
       />
 
@@ -411,7 +411,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
                   Browse filters
                 </p>
                 <p className="mt-2 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-                  Filter display-only experience records before continuing with a booking partner.
+                  Filter Thailand experience records before continuing with a booking partner.
                 </p>
               </div>
               <div className="rounded-2xl bg-[var(--color-bg-secondary)] px-4 py-3 text-left lg:text-right">
@@ -581,7 +581,7 @@ export default async function ToursMarketplacePreviewPage({ searchParams }: Tour
         </div>
       </section>
 
-      <FAQAccordion items={faqItems} title="Tours marketplace preview FAQ" />
+      <FAQAccordion items={faqItems} title="Thailand experience discovery FAQ" />
     </main>
   )
 }

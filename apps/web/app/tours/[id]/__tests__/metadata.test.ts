@@ -14,7 +14,7 @@ vi.mock('@/lib/publicProducts/getPublicThailandProduct', () => productLoaderMock
 
 import { generateMetadata } from '../page'
 
-const GENERIC_TITLE = 'Thailand Tour Detail Preview | RadarScout'
+const GENERIC_TITLE = 'Thailand Tour Detail | RadarScout'
 const GENERIC_DESCRIPTION = 'Explore curated Thailand travel experiences from trusted local operators, with a secure booking handoff.'
 const FORBIDDEN_BOKUN_PHRASES = ['Bókun', 'bokun', 'Bokun', 'signed Bókun', 'Bókun supplier', 'Bókun-powered', 'Bókun backend', 'Bókun database']
 

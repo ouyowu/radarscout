@@ -64,7 +64,7 @@ type ProductDetailResult =
   | { status: 'error' }
 
 const GENERIC_TOUR_METADATA = {
-  title: 'Thailand Tour Detail Preview | RadarScout',
+  title: 'Thailand Tour Detail | RadarScout',
   description:
     'Explore curated Thailand travel experiences from trusted local operators, with a secure booking handoff.',
 } as const
@@ -167,12 +167,12 @@ function displaySummary(product: ProductDetail): string {
   return (
     product.reviewedEnrichment?.shortSummary ??
     product.summary ??
-    'A display-only RadarScout product detail page for Thailand experiences from trusted local partners.'
+    'A RadarScout product detail page for Thailand experiences from trusted local partners.'
   )
 }
 
 const trustItems = [
-  { label: 'Page status', value: 'Display-only detail' },
+  { label: 'Page status', value: 'Experience detail' },
   { label: 'Destination focus', value: 'Thailand first' },
   { label: 'Product source', value: 'Trusted partner record' },
   { label: 'Next step', value: 'Booking partner handoff' },
@@ -203,18 +203,18 @@ const faqItems = [
 
 function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
   const title = status === 'not-found'
-    ? 'This product preview is not available.'
+    ? 'This product detail is not available.'
     : 'Product details are temporarily unavailable.'
   const body = status === 'not-found'
-    ? 'This product may no longer be active, may not belong to the supported Thailand preview, or may not have a trusted partner record available for display.'
-    : 'RadarScout could not load this product detail preview right now. No fallback product has been invented.'
+    ? 'This product may no longer be active, may not belong to the supported Thailand experience set, or may not have a trusted partner record available for display.'
+    : 'RadarScout could not load this product detail right now. No fallback product has been invented.'
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 text-center shadow-lg">
           <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-            Display-only product detail
+            Experience detail
           </p>
           <h1 className="mt-4 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
             {title}
@@ -273,7 +273,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
           { label: 'Back to tours', href: '/tours' },
           { label: 'Plan Thailand trip', href: '/destinations/thailand', variant: 'secondary' },
         ]}
-        trustNote="This product detail page is display-only. RadarScout helps you compare details before you continue with a booking partner."
+        trustNote="RadarScout helps you compare experience details before you continue with a booking partner."
       />
 
       <DmcTrustBar items={trustItems} />
@@ -396,7 +396,7 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
       </section>
 
       <EditorialBanner
-        label="Display-only detail"
+        label="Experience detail"
         title="Plan around trusted product details before choosing a next step."
         body="This detail page is connected to a real product record. Travelers can continue planning through RadarScout and review current details on the booking partner page."
         href="/tours"

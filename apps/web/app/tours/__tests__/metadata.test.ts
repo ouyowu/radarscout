@@ -6,8 +6,8 @@ describe('tours page metadata', () => {
     expect(metadata.robots).toMatchObject({ index: false, follow: false })
   })
 
-  it('keeps product preview metadata out of index/follow opening work', () => {
-    expect(metadata.title).toBe('Thailand Tours Marketplace Preview | RadarScout')
+  it('keeps product discovery metadata out of index/follow opening work', () => {
+    expect(metadata.title).toBe('Thailand Experience Discovery | RadarScout')
     expect(metadata.alternates?.canonical).toBe('https://www.radarscout.io/tours')
   })
 })
