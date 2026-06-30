@@ -23,7 +23,7 @@ const demoTours = [
   {
     title: 'UI Demo: Bangkok Food and Canal Route',
     href: '/components-showcase',
-    summary: 'Demo-only card showing how a curated tour can be presented. This is not a real bookable product.',
+    summary: 'Demo-only card showing how a curated tour can be presented. This is not a real traveler product.',
     tourStyle: 'Food and culture',
     bestFor: 'First-time visitors',
     inventoryStatus: 'demo' as const,
