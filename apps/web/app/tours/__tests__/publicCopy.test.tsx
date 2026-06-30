@@ -1,6 +1,7 @@
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { expectNoForbiddenPublicCopy } from '../../__tests__/publicSafetyPatterns'
 
 vi.mock('server-only', () => ({}))
 
@@ -18,29 +19,14 @@ import ToursExperienceDiscoveryPage from '../page'
 import TourDetailPage from '../[id]/page'
 
 const FORBIDDEN_TOUR_COPY = [
-  /live availability/i,
-  /live inventory/i,
-  /available now/i,
-  /guaranteed slot/i,
-  /instant confirmation/i,
-  /\bcheckout\b/i,
-  /\bpayment\b/i,
-  /reservation complete/i,
-  /Bókun/i,
-  /Bokun/i,
-  /Bókun-powered/i,
-  /Bókun backend/i,
-  /Bókun database/i,
-  /Bókun supplier partner product database/i,
-  /supplier net rate/i,
-  /partner rate/i,
-  /\bcommission\b/i,
   /supplier rates/i,
   /display-only/i,
   /\bpreview\b/i,
 ]
 
 function expectSafeTourCopy(markup: string) {
+  expectNoForbiddenPublicCopy(markup)
+
   for (const pattern of FORBIDDEN_TOUR_COPY) {
     expect(markup).not.toMatch(pattern)
   }
