@@ -24,7 +24,7 @@ export function ItineraryPlaceholderShell({
       </div>
 
       <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-        This is a planning shell, not a generated itinerary. No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
+        This is a planning shell, not a generated itinerary. No tours, suppliers, prices, availability status, or partner handoff links are loaded.
       </p>
 
       {durationDays > 7 ? (
@@ -67,8 +67,8 @@ export function ItineraryPlaceholderShell({
             <p>Supplier data: <span className="font-black text-[#101820]">not connected</span></p>
             <p>Availability: <span className="font-black text-[#101820]">not connected</span></p>
             <p>Pricing: <span className="font-black text-[#101820]">not connected</span></p>
-            <p>Checkout: <span className="font-black text-[#101820]">not connected</span></p>
-            <p>Booking: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Partner handoff: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Reservation workflow: <span className="font-black text-[#101820]">not connected</span></p>
           </div>
         </section>
       </div>
@@ -86,7 +86,7 @@ export function ItineraryPlaceholderShell({
               Experience slots will appear here after itinerary generation is implemented.
             </p>
             <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-              No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.
+              No tours, suppliers, prices, availability status, or partner handoff links are loaded.
             </p>
           </article>
         ))}
