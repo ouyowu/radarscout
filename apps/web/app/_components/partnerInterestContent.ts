@@ -3,6 +3,13 @@ import type { PartnerInterestPageContent } from './PartnerInterestPage'
 const MANUAL_REVIEW_NOTE =
   'Send a short note with your destination focus and public booking link. RadarScout manually checks partner inquiries before any public recommendation.'
 
+const MANUAL_NEXT_STEPS = [
+  'We read your message and confirm the destination focus, audience, and public links.',
+  'If the fit is relevant, we ask for any missing public experience details before considering a recommendation.',
+  'RadarScout checks traveler-facing links manually and avoids private backend, rate, or inventory materials.',
+  'Nothing is published, recommended, or represented as accepted without a separate manual check.',
+]
+
 function buildPartnerMailto({
   sourceLabel,
   subject,
@@ -53,6 +60,7 @@ export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'The best contact path for a short partnership conversation.',
   ],
   reviewNote: MANUAL_REVIEW_NOTE,
+  nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Contact RadarScout about partnerships',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout partners page]',
@@ -105,6 +113,7 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'A customer-facing public booking link that travelers can open safely.',
   ],
   reviewNote: MANUAL_REVIEW_NOTE,
+  nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Share your experience details',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout suppliers page]',
@@ -180,6 +189,7 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'A contact person for manual partnership scoping.',
   ],
   reviewNote: MANUAL_REVIEW_NOTE,
+  nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Discuss a destination partnership',
   ctaHref: buildPartnerMailto({
     sourceLabel: '[RadarScout destination partners page]',

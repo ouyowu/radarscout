@@ -9,6 +9,7 @@ export type PartnerInterestPageContent = {
   doesNotReplace: string[]
   intake: string[]
   reviewNote: string
+  nextSteps: string[]
   ctaLabel: string
   ctaHref: string
   relatedLinks: {
@@ -80,6 +81,30 @@ export function PartnerInterestPage({ content }: PartnerInterestPageProps) {
         <CardList title="How RadarScout helps" items={content.helps} />
         <CardList title="What we do not replace" items={content.doesNotReplace} />
         <CardList title="What we need to start" items={content.intake} />
+      </section>
+
+      <section className="bg-[var(--color-bg-secondary)] px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-[1.75rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_12px_28px_rgba(17,24,39,0.06)]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--color-accent-orange-dark)]">
+            What happens next
+          </p>
+          <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-black tracking-[-0.035em]">
+            RadarScout checks every inquiry manually.
+          </h2>
+          <ol className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[var(--color-text-secondary)] md:grid-cols-2">
+            {content.nextSteps.map((step, index) => (
+              <li
+                key={step}
+                className="flex gap-3 rounded-2xl border border-[var(--color-border-light)] bg-[var(--color-bg-primary)] p-4"
+              >
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-orange)] text-xs font-black text-white">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {content.operatorUrlRequest ? (
