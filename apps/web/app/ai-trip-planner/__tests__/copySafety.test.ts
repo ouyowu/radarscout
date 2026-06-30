@@ -21,6 +21,14 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toContain('partner handoff')
     expect(publicCopy).toContain('Reservation workflow')
     expect(publicCopy).toMatch(/transparent planning mode/i)
+    expect(publicCopy).toMatch(/read-only Thailand product search/i)
+    expect(publicCopy).toMatch(/comparison-only product results/i)
+
+    expect(publicCopy).not.toMatch(/Product search comes later/i)
+    expect(publicCopy).not.toMatch(/Product search'[,\n]/i)
+    expect(publicCopy).not.toMatch(/No products are loaded/i)
+    expect(publicCopy).not.toMatch(/This page does not load products/i)
+    expect(publicCopy).not.toMatch(/before any product matching exists/i)
 
     expect(publicCopy).not.toMatch(/Bókun/i)
     expect(publicCopy).not.toMatch(/\bcheckout\b/i)
