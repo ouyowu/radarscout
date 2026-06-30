@@ -62,6 +62,13 @@ describe('public RadarScout copy safety', () => {
     expect(publicCopySources).not.toMatch(/\bpayment\b/i)
   })
 
+  it('does not wire public planning components to internal Bókun APIs or net-rate style estimates', () => {
+    expect(publicCopySources).not.toMatch(/\/api\/bokun/i)
+    expect(publicCopySources).not.toMatch(/netSettlementPrice/i)
+    expect(publicCopySources).not.toMatch(/Public est\./i)
+    expect(publicCopySources).not.toMatch(/RadarScout est\./i)
+  })
+
   it('uses safe destination and product-sample labels instead', () => {
     expect(publicCopySources).toContain('Focused experience coverage')
     expect(publicCopySources).toContain('booking partner handoff')

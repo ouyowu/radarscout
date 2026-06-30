@@ -1,22 +1,15 @@
 'use client'
 
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useMemo, useState } from 'react'
 
 type Product = {
   id: string
   title: string
   city: string | null
   imageUrl: string | null
-  retailPrice: string | null
-  netSettlementPrice: string | null
-  currency: string | null
   excerpt: string | null
   summary: string | null
   supplier: { title: string } | null
-}
-
-type ProductsResponse = {
-  products: Product[]
 }
 
 const promptExamples = [
@@ -31,9 +24,6 @@ const fallbackTours: Product[] = [
     title: 'Phuket Phi Phi Island Speedboat Day',
     city: 'Phuket',
     imageUrl: null,
-    retailPrice: '129',
-    netSettlementPrice: '98',
-    currency: 'USD',
     excerpt: 'A fast island day with hotel pickup, snorkel time, and a clear experience-fit estimate.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
@@ -43,9 +33,6 @@ const fallbackTours: Product[] = [
     title: 'Chiang Mai Ethical Elephant Walk',
     city: 'Chiang Mai',
     imageUrl: null,
-    retailPrice: '145',
-    netSettlementPrice: '112',
-    currency: 'USD',
     excerpt: 'No riding, softer pace, local lunch, and clearer animal-welfare expectations.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
@@ -55,9 +42,6 @@ const fallbackTours: Product[] = [
     title: 'Bangkok Canals, Temples & Food Route',
     city: 'Bangkok',
     imageUrl: null,
-    retailPrice: '118',
-    netSettlementPrice: '86',
-    currency: 'USD',
     excerpt: 'Heat-aware Bangkok route for old-town temples, canals, and evening food.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
@@ -67,9 +51,6 @@ const fallbackTours: Product[] = [
     title: 'Krabi Four Islands Longtail Day',
     city: 'Krabi',
     imageUrl: null,
-    retailPrice: '105',
-    netSettlementPrice: '79',
-    currency: 'USD',
     excerpt: 'Classic Krabi beaches sequenced around tide windows and easier pier logistics.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
@@ -79,10 +60,7 @@ const fallbackTours: Product[] = [
     title: 'Koh Samui Ang Thong Marine Park',
     city: 'Koh Samui',
     imageUrl: null,
-    retailPrice: '142',
-    netSettlementPrice: '109',
-    currency: 'USD',
-    excerpt: 'A scenic marine park day with kayak options and comfort notes before booking.',
+    excerpt: 'A scenic marine park day with kayak options and comfort notes before partner handoff.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
   },
@@ -91,30 +69,11 @@ const fallbackTours: Product[] = [
     title: 'Ayutthaya Temples from Bangkok',
     city: 'Ayutthaya',
     imageUrl: null,
-    retailPrice: '96',
-    netSettlementPrice: '72',
-    currency: 'USD',
     excerpt: 'A clean historical day trip with private-driver logic and less midday walking.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
   },
 ]
-
-function parseMoney(value: string | null): number | null {
-  if (!value) return null
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? Math.round(parsed) : null
-}
-
-function displayPrice(product: Product): string {
-  const price = parseMoney(product.netSettlementPrice) ?? parseMoney(product.retailPrice) ?? 99
-  return `$${price}`
-}
-
-function publicPrice(product: Product): string {
-  const base = parseMoney(product.retailPrice) ?? parseMoney(product.netSettlementPrice) ?? 129
-  return `$${Math.round(base * 1.18)}`
-}
 
 function shortText(product: Product): string {
   return product.excerpt ?? product.summary ?? 'Thailand day-tour option with city match, route fit, and clear partner handoff details.'
@@ -124,47 +83,23 @@ function cityList(products: Product[]): string {
   return Array.from(new Set(products.map(product => product.city).filter(Boolean))).slice(0, 4).join(' + ')
 }
 
+function rankProductsForQuery(query: string): Product[] {
+  const normalizedQuery = query.toLowerCase()
+  const preferredCity = fallbackTours.find(product => product.city && normalizedQuery.includes(product.city.toLowerCase()))
+
+  if (!preferredCity) return fallbackTours
+
+  return [
+    preferredCity,
+    ...fallbackTours.filter(product => product.id !== preferredCity.id),
+  ]
+}
+
 export function ThailandTourChat() {
   const [query, setQuery] = useState(promptExamples[0])
   const [submittedQuery, setSubmittedQuery] = useState(promptExamples[0])
-  const [products, setProducts] = useState<Product[]>(fallbackTours)
   const [isLoading, setIsLoading] = useState(false)
-  const [hasLiveCatalog, setHasLiveCatalog] = useState(false)
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function loadProducts() {
-      try {
-        const params = new URLSearchParams({ take: '6' })
-        if (submittedQuery.trim()) params.set('q', submittedQuery.trim())
-
-        const response = await fetch(`/api/bokun/products?${params.toString()}`, {
-          signal: controller.signal,
-        })
-
-        if (!response.ok) throw new Error('Unable to load products')
-
-        const payload = await response.json() as ProductsResponse
-        if (payload.products.length) {
-          setProducts(payload.products.slice(0, 6))
-          setHasLiveCatalog(true)
-        } else {
-          setProducts(fallbackTours)
-          setHasLiveCatalog(false)
-        }
-      } catch {
-        if (!controller.signal.aborted) {
-          setProducts(fallbackTours)
-          setHasLiveCatalog(false)
-        }
-      }
-    }
-
-    loadProducts()
-
-    return () => controller.abort()
-  }, [submittedQuery])
+  const products = useMemo(() => rankProductsForQuery(submittedQuery), [submittedQuery])
 
   const answer = useMemo(() => {
     const cities = cityList(products) || 'Thailand'
@@ -174,7 +109,7 @@ export function ThailandTourChat() {
 
     return {
       headline: `I found a ${cities} route with matched day-tour ideas.`,
-      body: `For this request, I would start with ${first?.title ?? 'a private city introduction'}, then add ${second?.title ?? 'one relaxed nature day'} and ${third?.title ?? 'one food or culture day'}. The plan keeps pickup zones simple, avoids long midday transfers, and compares experience fit before sending you to a booking partner for final details.`,
+      body: `For this request, I would start with ${first?.title ?? 'a private city introduction'}, then add ${second?.title ?? 'one relaxed nature day'} and ${third?.title ?? 'one food or culture day'}. The plan keeps pickup zones simple, avoids long midday transfers, and compares experience fit before sending you to a booking partner for current details.`,
     }
   }, [products])
 
@@ -203,7 +138,7 @@ export function ThailandTourChat() {
           value={query}
           onChange={event => setQuery(event.target.value)}
           className="mt-3 min-h-36 w-full resize-none border border-[#e5dccf] bg-[#fcfaee] p-4 text-base leading-7 text-black outline-none placeholder:text-[#81776b] focus:border-black sm:text-lg"
-          placeholder="Example: Phuket 3 days, Chiang Mai 4 days, island tours, elephants, boutique hotels, under Viator prices..."
+          placeholder="Example: Phuket 3 days, Chiang Mai 4 days, island tours, elephants, boutique hotels, softer pace..."
         />
         <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
           <p className="text-sm leading-6 text-[#5f5549]">
@@ -236,7 +171,7 @@ export function ThailandTourChat() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-[#ff7900]">
-              {hasLiveCatalog ? 'Current product sample' : 'Curated demo catalog'}
+              Current product sample
             </p>
             <h2 className="mt-3 max-w-3xl text-2xl font-black leading-tight text-black sm:text-4xl">
               {answer.headline}
@@ -272,15 +207,13 @@ export function ThailandTourChat() {
               </p>
               <h3 className="mt-3 text-xl font-black leading-tight text-black">{product.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-6 text-[#5f5549]">{shortText(product)}</p>
-              <div className="mt-5 grid grid-cols-2 border border-[#e5dccf]">
-                <div className="border-r border-[#e5dccf] p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#81776b]">Public est.</p>
-                  <p className="mt-1 text-lg font-black text-[#81776b] line-through">{publicPrice(product)}</p>
-                </div>
-                <div className="bg-[#fcfaee] p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ff7900]">RadarScout est.</p>
-                  <p className="mt-1 text-lg font-black text-black">{displayPrice(product)}</p>
-                </div>
+              <div className="mt-5 border border-[#e5dccf] bg-[#fcfaee] p-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ff7900]">
+                  Read-only comparison sample
+                </p>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#5f5549]">
+                  Use this static planning card to compare fit, then continue with a booking partner for current details.
+                </p>
               </div>
               <a
                 href={`mailto:hello@radarscout.io?subject=${encodeURIComponent(`RadarScout question: ${product.title}`)}`}
