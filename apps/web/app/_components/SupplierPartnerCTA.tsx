@@ -5,6 +5,18 @@ type SupplierPartnerCTAProps = {
   showPartnerPathLinks?: boolean
 }
 
+const supplierPartnerMailtoBody = [
+  '[RadarScout homepage supplier interest]',
+  '',
+  'Name:',
+  'Organization:',
+  'Destination focus:',
+  'Public experience or partner page:',
+  'Traveler audience:',
+  'Best contact path:',
+  'What you want RadarScout to check:',
+].join('\n')
+
 export function SupplierPartnerCTA({
   title = 'Local tour operator or Thailand experience partner?',
   body = 'RadarScout is onboarding trusted suppliers in selected top travel destinations for curated day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
@@ -19,7 +31,10 @@ export function SupplierPartnerCTA({
           <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black tracking-[-0.035em]">{title}</h2>
           <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-white/72">{body}</p>
         </div>
-        <a href={`mailto:${email}?subject=RadarScout%20supplier%20partnership`} className="inline-flex min-h-[44px] items-center justify-center bg-[var(--color-accent-orange)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white">
+        <a
+          href={`mailto:${email}?subject=${encodeURIComponent('RadarScout supplier partnership')}&body=${encodeURIComponent(supplierPartnerMailtoBody)}`}
+          className="inline-flex min-h-[44px] items-center justify-center bg-[var(--color-accent-orange)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
+        >
           Partner with RadarScout
         </a>
         {showPartnerPathLinks ? (
