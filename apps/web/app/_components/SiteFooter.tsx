@@ -4,7 +4,7 @@ const footerLinks = [
   { href: '/destinations', label: 'Destinations' },
   { href: '/tours', label: 'Tours' },
   { href: '/ai-trip-planner', label: 'AI Planner' },
-  { href: 'mailto:hello@radarscout.io?subject=B%C3%B3kun%20Supplier%20Partnership%20Inquiry', label: 'Supplier partners' },
+  { href: 'mailto:hello@radarscout.io?subject=RadarScout%20Supplier%20Partnership%20Inquiry', label: 'Supplier partners' },
   { href: '/privacy-policy', label: 'Privacy' },
   { href: '/terms-of-service', label: 'Terms' },
 ]
@@ -18,7 +18,7 @@ export function SiteFooter() {
             Radar<span className="text-[var(--color-accent-orange-dark)]">Scout</span>
           </p>
           <p className="mt-2 max-w-xs text-sm font-semibold leading-6 text-[var(--color-text-secondary)]">
-            AI-powered Destination DMC Portal for selected top travel destinations.
+            AI-guided travel discovery for selected top destinations.
           </p>
         </div>
 
