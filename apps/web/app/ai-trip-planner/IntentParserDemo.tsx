@@ -20,7 +20,7 @@ const examplePrompts = [
   'Chiang Mai 3 days food temples elephants, less crowded',
   'Tokyo for 5 days, anime, food and local markets',
   '清迈3天，大象，寺庙，美食，避开人多',
-  'I want to book and pay for Dubai tomorrow',
+  'Dubai tomorrow, luxury food, less crowded',
 ]
 
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
@@ -136,7 +136,7 @@ export function IntentParserDemo() {
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">
-            This preview only understands your travel intent locally. It does not search tours, check availability, show prices, or create bookings.
+            This planner only understands your travel intent locally. It does not search tours, check availability, show prices, or create reservation handoffs.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
@@ -156,7 +156,7 @@ export function IntentParserDemo() {
           </div>
         </div>
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, search tours, check availability, show prices, or create bookings.
+          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, search tours, check availability, show prices, or create reservation handoffs.
         </p>
         {!canConfirm ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
@@ -169,7 +169,7 @@ export function IntentParserDemo() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
-              Local deterministic parser preview
+              Local deterministic planner
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
               Trip Intent Summary
@@ -228,7 +228,7 @@ export function IntentParserDemo() {
                 Search real Thailand experiences
               </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
-                Returns real eligible products from trusted local operators. No booking or availability check.
+                Returns real eligible products from trusted local operators. No reservation handoff or availability check.
               </p>
             </div>
             <button
@@ -252,7 +252,7 @@ export function IntentParserDemo() {
                 </div>
               ) : searchState.status === 'no_match' ? (
                 <div className="rounded-[1.25rem] border border-[#e8dfd2] bg-white p-5">
-                  <p className="text-sm font-black text-[#5a5147]">No matching bookable experiences found</p>
+                  <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b7280]">
                     No Thailand experiences matched your current intent. Try adjusting the destination or interests.
                   </p>
@@ -263,7 +263,7 @@ export function IntentParserDemo() {
                     {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
                   </p>
                   <p className="mt-1 text-xs font-semibold text-[#6b7280]">
-                    Display-only. Booking and availability are not enabled.
+                    Comparison only. Reservation handoff and availability are not enabled.
                   </p>
                   <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {searchState.products.map(product => (

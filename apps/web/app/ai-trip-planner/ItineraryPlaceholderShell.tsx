@@ -29,7 +29,7 @@ export function ItineraryPlaceholderShell({
 
       {durationDays > 7 ? (
         <p className="mt-3 text-sm font-semibold leading-6 text-[#a35c09]">
-          Only the first 7 placeholder days are shown in this preview.
+          Only the first 7 placeholder days are shown in this planning workspace.
         </p>
       ) : null}
 
