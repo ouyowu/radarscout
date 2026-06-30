@@ -59,6 +59,17 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).toContain('For destination partners')
   })
 
+  it('uses a structured mailto intake for homepage supplier interest', () => {
+    expect(homepageVisibleCopySources).toContain('supplierPartnerMailtoBody')
+    expect(homepageVisibleCopySources).toContain('[RadarScout homepage supplier interest]')
+    expect(homepageVisibleCopySources).toContain('Destination focus:')
+    expect(homepageVisibleCopySources).toContain('Public experience or partner page:')
+    expect(homepageVisibleCopySources).toContain('Traveler audience:')
+    expect(homepageVisibleCopySources).toContain('Best contact path:')
+    expect(homepageVisibleCopySources).toContain('What you want RadarScout to check:')
+    expect(homepageVisibleCopySources).toContain('encodeURIComponent(supplierPartnerMailtoBody)')
+  })
+
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {
     expect(homepageVisibleCopySources).not.toMatch(/Bókun/i)
     expect(homepageVisibleCopySources).not.toMatch(/DMC Portal/i)
