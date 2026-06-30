@@ -26,8 +26,18 @@ export function AiSearchProductCard({
 
   return (
     <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-5 shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
+      <div className="flex flex-wrap gap-2">
+        <span className="rounded-full bg-[#e7f5f2] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.1em] text-[#0f766e]">
+          Comparison match
+        </span>
+        <span className="rounded-full bg-[#f5efe8] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.1em] text-[#8a4b25]">
+          Read-only product result
+        </span>
+      </div>
       {city ? (
-        <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">{city}</p>
+        <p className="mt-3 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+          {city}
+        </p>
       ) : null}
       <h3 className="mt-2 text-lg font-black leading-tight text-[#101820]">{title}</h3>
       {summary ? (
