@@ -27,11 +27,11 @@ export function generateMetadata({ params }: DestinationPageProps): Metadata {
   if (!destination) return {}
 
   const title = destination.hasLiveInventory
-    ? `${destination.name} AI Destination Portal | Live Partner Tours`
+    ? `${destination.name} AI Destination Portal | Focused Experience Coverage`
     : `${destination.name} Travel Planning Guide | Partner Tours Coming Soon`
   const description = destination.hasLiveInventory
-    ? `${destination.shortDescription} Live bookable tours are supplied by signed Bókun supplier partners.`
-    : `${destination.shortDescription} Planning-only destination guide while RadarScout onboards signed local Bókun supplier partners.`
+    ? `${destination.shortDescription} RadarScout highlights traveler-ready experience discovery with booking partner handoff.`
+    : `${destination.shortDescription} Planning-only destination guide while RadarScout onboards trusted local suppliers.`
 
   return {
     title,
@@ -62,50 +62,50 @@ export default function DestinationPage({ params }: DestinationPageProps) {
     {
       question: `Can I book ${destination.name} tours on RadarScout now?`,
       answer: destination.hasLiveInventory
-        ? 'Yes. Thailand currently has live bookable partner tours supplied through signed Bókun supplier partners.'
-        : `Not yet. ${destination.name} is a planning-only destination while RadarScout onboards signed local Bókun supplier partners.`,
+        ? 'Thailand currently has traveler-ready recommendations with booking partner handoff. RadarScout sends travelers to the partner page for final details.'
+        : `Not yet. ${destination.name} is a planning-only destination while RadarScout onboards trusted local suppliers.`,
     },
     {
-      question: 'What makes this a Destination DMC portal?',
+      question: 'What makes this a destination planning portal?',
       answer:
-        'RadarScout combines destination planning, experience category matching, private itinerary thinking, and clear supplier inventory boundaries instead of behaving like a generic product list.',
+        'RadarScout combines destination planning, experience category matching, private itinerary thinking, and clear booking partner handoff boundaries instead of behaving like a generic product list.',
     },
     {
       question: 'Does RadarScout show third-party marketplace or affiliate products here?',
       answer:
-        'No. Bookable products must come from signed Bókun supplier partners. Destinations without signed inventory are clearly marked as partner tours coming soon.',
+        'No. Traveler-facing recommendations must have enough product detail and a safe booking partner handoff path. Destinations without enough supplier coverage are clearly marked as partner tours coming soon.',
     },
     {
       question: 'How can a local supplier join this destination?',
       answer:
-        'Local tour operators and Bókun supplier partners can contact RadarScout to discuss day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
+        'Local tour operators and destination partners can contact RadarScout to discuss day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
     },
   ]
 
   const categoryCards = destination.popularTourTypes.slice(0, 4).map(type => ({
     title: type,
     description: destination.hasLiveInventory
-      ? `RadarScout can match ${type.toLowerCase()} with current Thailand partner inventory where available.`
-      : `${type} is part of this planning guide and will become bookable only after signed local supplier inventory is connected.`,
-    label: destination.hasLiveInventory ? 'Live destination' : 'Planning only',
+      ? `RadarScout can match ${type.toLowerCase()} with current Thailand experience coverage where safe partner handoff details are available.`
+      : `${type} is part of this planning guide and will become traveler-ready only after trusted local supplier coverage is connected.`,
+    label: destination.hasLiveInventory ? 'Focused destination' : 'Planning only',
   }))
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
-        eyebrow={destination.hasLiveInventory ? 'Live destination portal' : 'Planning-only destination portal'}
+        eyebrow={destination.hasLiveInventory ? 'Focused destination portal' : 'Planning-only destination portal'}
         title={destination.heroTitle}
         subtitle={`${destination.shortDescription} RadarScout helps compare experience types, route fit, travel style, time value, and private customization needs.`}
         actions={[
           destination.hasLiveInventory
-            ? { label: 'Explore live tours', href: '/tours' }
+            ? { label: 'Explore Thailand experiences', href: '/tours' }
             : { label: 'Start AI planner', href: '/ai-trip-planner' },
           { label: 'All destinations', href: '/destinations', variant: 'secondary' },
         ]}
         trustNote={
           destination.hasLiveInventory
-            ? 'Thailand is currently RadarScout’s first live inventory destination, powered by signed Bókun supplier partners.'
-            : 'Planning only — partner tours are coming soon. Thailand is currently RadarScout’s first live inventory destination.'
+            ? 'Thailand is currently RadarScout’s first focused experience destination with booking partner handoff.'
+            : 'Planning only — partner tours are coming soon. Thailand is currently RadarScout’s first focused experience destination.'
         }
       />
 
@@ -139,9 +139,9 @@ export default function DestinationPage({ params }: DestinationPageProps) {
 
       {destination.hasLiveInventory ? (
         <EditorialBanner
-          label="Live partner inventory"
-          title="Thailand partner tours are available through the existing tours catalog."
-          body="RadarScout keeps live products behind a signed supplier boundary. Use the tours page to browse current Bókun partner inventory for Thailand."
+          label="Focused experience coverage"
+          title="Thailand partner-ready experiences are available through the existing discovery catalog."
+          body="RadarScout keeps traveler recommendations behind a safe handoff boundary. Use the tours page to browse current Thailand experience options and continue with a booking partner for final details."
           href="/tours"
           ctaLabel="Browse Thailand tours"
         />
@@ -165,8 +165,8 @@ export default function DestinationPage({ params }: DestinationPageProps) {
               `Use ${destination.topCities[0]} as the first planning anchor.`,
               `Add ${destination.topCities[1] ?? destination.topCities[0]} if the trip has enough days.`,
               destination.hasLiveInventory
-                ? 'Compare live Thailand partner tours against your daily timing.'
-                : 'Mark partner tours as coming soon until signed local inventory is connected.',
+                ? 'Compare Thailand experience options against your daily timing.'
+                : 'Mark partner tours as coming soon until trusted local supplier coverage is connected.',
             ].map((idea, index) => (
               <article key={idea} className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
                 <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">Idea {index + 1}</p>
@@ -180,7 +180,7 @@ export default function DestinationPage({ params }: DestinationPageProps) {
       {!destination.hasLiveInventory ? (
         <SupplierPartnerCTA
           title={`Operate tours in ${destination.name}?`}
-          body={`RadarScout is onboarding signed Bókun supplier partners for ${destination.name}. We are interested in day tours, private tours, transfers, food tours, cultural experiences, and custom local activities that can be directly operated and fulfilled.`}
+          body={`RadarScout is onboarding trusted local suppliers for ${destination.name}. We are interested in day tours, private tours, transfers, food tours, cultural experiences, and custom local activities that can be directly operated and fulfilled.`}
         />
       ) : null}
 
@@ -209,7 +209,7 @@ export default function DestinationPage({ params }: DestinationPageProps) {
 
       <section className="bg-[var(--color-bg-primary)] px-4 py-10 text-center sm:px-6 lg:px-8">
         <a
-          href="mailto:hello@radarscout.io?subject=B%C3%B3kun%20Supplier%20Partnership%20Inquiry"
+          href="mailto:hello@radarscout.io?subject=RadarScout%20Supplier%20Partnership%20Inquiry"
           className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[var(--color-border-medium)] bg-white px-6 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]"
         >
           Email us to become a partner

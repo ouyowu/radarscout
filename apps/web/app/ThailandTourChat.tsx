@@ -22,7 +22,7 @@ type ProductsResponse = {
 const promptExamples = [
   'Phuket 3 days and Chiang Mai 4 days, private feel, elephants, islands, food, nice hotels',
   'Bangkok day tour for a couple: canals, temples, street food, avoid tourist traps',
-  'Find Thailand island day tours cheaper than Viator, with hotel pickup and easy booking',
+  'Find Thailand island day tours with hotel pickup, clear inclusions, and easy partner handoff',
 ]
 
 const fallbackTours: Product[] = [
@@ -34,7 +34,7 @@ const fallbackTours: Product[] = [
     retailPrice: '129',
     netSettlementPrice: '98',
     currency: 'USD',
-    excerpt: 'A fast island day with hotel pickup, snorkel time, and a lower direct-rate estimate.',
+    excerpt: 'A fast island day with hotel pickup, snorkel time, and a clear experience-fit estimate.',
     summary: null,
     supplier: { title: 'RadarScout curated' },
   },
@@ -117,7 +117,7 @@ function publicPrice(product: Product): string {
 }
 
 function shortText(product: Product): string {
-  return product.excerpt ?? product.summary ?? 'Active Thailand day-tour option with supplier inventory, city match, and direct-rate estimate.'
+  return product.excerpt ?? product.summary ?? 'Thailand day-tour option with city match, route fit, and clear partner handoff details.'
 }
 
 function cityList(products: Product[]): string {
@@ -173,8 +173,8 @@ export function ThailandTourChat() {
     const third = products[2]
 
     return {
-      headline: `I found a ${cities} route with direct-rate day tours.`,
-      body: `For this request, I would start with ${first?.title ?? 'a private city introduction'}, then add ${second?.title ?? 'one relaxed nature day'} and ${third?.title ?? 'one food or culture day'}. The plan keeps pickup zones simple, avoids long midday transfers, and shows the public marketplace estimate beside your direct RadarScout price.`,
+      headline: `I found a ${cities} route with matched day-tour ideas.`,
+      body: `For this request, I would start with ${first?.title ?? 'a private city introduction'}, then add ${second?.title ?? 'one relaxed nature day'} and ${third?.title ?? 'one food or culture day'}. The plan keeps pickup zones simple, avoids long midday transfers, and compares experience fit before sending you to a booking partner for final details.`,
     }
   }, [products])
 
@@ -236,7 +236,7 @@ export function ThailandTourChat() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-[#ff7900]">
-              {hasLiveCatalog ? 'Live Bókun catalog demo' : 'Curated demo catalog'}
+              {hasLiveCatalog ? 'Current product sample' : 'Curated demo catalog'}
             </p>
             <h2 className="mt-3 max-w-3xl text-2xl font-black leading-tight text-black sm:text-4xl">
               {answer.headline}
@@ -274,19 +274,19 @@ export function ThailandTourChat() {
               <p className="mt-3 flex-1 text-sm leading-6 text-[#5f5549]">{shortText(product)}</p>
               <div className="mt-5 grid grid-cols-2 border border-[#e5dccf]">
                 <div className="border-r border-[#e5dccf] p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#81776b]">Viator est.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#81776b]">Public est.</p>
                   <p className="mt-1 text-lg font-black text-[#81776b] line-through">{publicPrice(product)}</p>
                 </div>
                 <div className="bg-[#fcfaee] p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ff7900]">Our offer</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ff7900]">RadarScout est.</p>
                   <p className="mt-1 text-lg font-black text-black">{displayPrice(product)}</p>
                 </div>
               </div>
               <a
-                href={`mailto:hello@radarscout.io?subject=${encodeURIComponent(`Reserve ${product.title}`)}`}
+                href={`mailto:hello@radarscout.io?subject=${encodeURIComponent(`RadarScout question: ${product.title}`)}`}
                 className="mt-5 inline-flex min-h-[48px] items-center justify-center bg-black px-4 text-center text-xs font-black uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#ff9933] hover:text-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
               >
-                Reserve in 2 minutes
+                Ask about this experience
               </a>
             </div>
           </article>

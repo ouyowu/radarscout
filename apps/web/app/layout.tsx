@@ -11,14 +11,14 @@ export const metadata: Metadata = {
     template: '%s',
   },
   description:
-    'Plan Thailand day tours with an AI concierge that matches local supplier products, compares direct-rate pricing, and simplifies booking.',
+    'Plan Thailand experiences with guided discovery, trip-fit matching, and trusted booking partner handoff.',
   icons: {
     icon: '/logo-icon.svg',
     apple: '/logo-icon.svg',
   },
   openGraph: {
     title: 'RadarScout — Thailand Day Tour AI Concierge',
-    description: 'Ask for Thailand day tours like a chat, compare direct-rate prices, and reserve with simple concierge support.',
+    description: 'Ask for Thailand experience ideas, compare trip-fit options, and continue with a trusted booking partner.',
     type: 'website',
     url: base,
     images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Thailand day tour AI concierge' }],
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'RadarScout — Thailand Day Tour AI Concierge',
-    description: 'Plan Thailand day tours, compare direct-rate prices, and reserve faster.',
+    description: 'Plan Thailand experiences, compare trip-fit options, and continue with a booking partner.',
     images: [`${base}/og-image.png`],
   },
 }
