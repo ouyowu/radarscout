@@ -11,6 +11,11 @@ export type PartnerInterestPageContent = {
   reviewNote: string
   ctaLabel: string
   ctaHref: string
+  relatedLinks: {
+    label: string
+    description: string
+    href: string
+  }[]
   operatorUrlRequest?: {
     eyebrow: string
     title: string
@@ -108,6 +113,33 @@ export function PartnerInterestPage({ content }: PartnerInterestPageProps) {
           </div>
         </section>
       ) : null}
+
+      <section className="bg-[var(--color-bg-primary)] px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-[1.75rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_12px_28px_rgba(17,24,39,0.06)]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--color-accent-orange-dark)]">
+            Choose the right starting point
+          </p>
+          <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-black tracking-[-0.035em]">
+            Not sure which RadarScout path fits?
+          </h2>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {content.relatedLinks.map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-2xl border border-[var(--color-border-light)] bg-[var(--color-bg-secondary)] p-4 transition hover:border-[var(--color-accent-orange)]"
+              >
+                <span className="text-sm font-black text-[var(--color-text-primary)]">
+                  {link.label}
+                </span>
+                <span className="mt-2 block text-sm font-semibold leading-6 text-[var(--color-text-secondary)]">
+                  {link.description}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="bg-[var(--color-bg-secondary)] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-5 rounded-[1.75rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_12px_28px_rgba(17,24,39,0.06)] md:flex-row md:items-center md:justify-between">
