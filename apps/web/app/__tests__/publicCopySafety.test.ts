@@ -12,6 +12,8 @@ const publicCopySources = [
   readFileSync(new URL('../destinations/[slug]/page.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/DestinationCapsuleCard.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/CuratedTourCard.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/SupplierPartnerCTA.tsx', import.meta.url), 'utf8'),
 ].join('\n')
 
 describe('public RadarScout copy safety', () => {
@@ -33,6 +35,7 @@ describe('public RadarScout copy safety', () => {
 
   it('does not expose inventory, rate, reservation, or Bókun-backend style copy in public UI sources', () => {
     expect(publicCopySources).not.toMatch(/Live Bókun/i)
+    expect(publicCopySources).not.toMatch(/Bókun/i)
     expect(publicCopySources).not.toMatch(/DMC Portal/i)
     expect(publicCopySources).not.toMatch(/DMC-style/i)
     expect(publicCopySources).not.toMatch(/Bókun partner inventory/i)
@@ -45,9 +48,12 @@ describe('public RadarScout copy safety', () => {
     expect(publicCopySources).not.toMatch(/live inventory/i)
     expect(publicCopySources).not.toMatch(/live signed/i)
     expect(publicCopySources).not.toMatch(/live bookable/i)
+    expect(publicCopySources).not.toMatch(/\bbookable\b/i)
+    expect(publicCopySources).not.toMatch(/live tours/i)
     expect(publicCopySources).not.toMatch(/available now/i)
     expect(publicCopySources).not.toMatch(/instant confirmation/i)
     expect(publicCopySources).not.toMatch(/Reserve in/i)
+    expect(publicCopySources).not.toMatch(/\bReserve\b/i)
     expect(publicCopySources).not.toMatch(/reserve faster/i)
     expect(publicCopySources).not.toMatch(/partner rate/i)
     expect(publicCopySources).not.toMatch(/supplier net rate/i)

@@ -40,7 +40,7 @@ const faqItems = [
   {
     question: 'Do destination pages include external affiliate products?',
     answer:
-      'No. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the bookable catalog.',
+      'No. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the comparison catalog.',
   },
   {
     question: 'Can suppliers apply for a destination that is coming soon?',
