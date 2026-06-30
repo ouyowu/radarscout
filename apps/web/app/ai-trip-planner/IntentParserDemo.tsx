@@ -136,7 +136,7 @@ export function IntentParserDemo() {
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">
-            This planner only understands your travel intent locally. It does not search tours, check availability, show prices, or create reservation handoffs.
+            This planner understands your travel intent locally first. Product search appears only after local confirmation and remains comparison-only.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
@@ -156,7 +156,7 @@ export function IntentParserDemo() {
           </div>
         </div>
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, search tours, check availability, show prices, or create reservation handoffs.
+          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, check availability, or create reservation handoffs.
         </p>
         {!canConfirm ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">

@@ -7,13 +7,13 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: 'AI Private Trip Search | RadarScout',
   description:
-    'Describe a custom travel idea in one sentence. RadarScout understands trip intent locally today, with booking-partner product matching planned next.',
+    'Describe a custom Thailand travel idea in one sentence. RadarScout understands trip intent locally, then supports read-only Thailand product search for comparison.',
   alternates: { canonical: `${base}/ai-trip-planner` },
   robots: { index: false, follow: false },
   openGraph: {
     title: 'AI Private Trip Search | RadarScout',
     description:
-      'AI private trip search engine for custom travel ideas. Local intent parsing only for now. Booking-partner product matching is planned next.',
+      'AI private trip search engine for custom Thailand ideas. Local intent parsing with read-only Thailand product search for comparison.',
     type: 'website',
     url: `${base}/ai-trip-planner`,
   },
@@ -26,11 +26,11 @@ const differentiators = [
   },
   {
     title: 'Not a filter-first tour list',
-    body: 'You start with a natural-language trip idea. Product-style matching only comes later, after the catalog connection is ready.',
+    body: 'You start with a natural-language trip idea, confirm the detected intent, then use read-only Thailand product search for comparison.',
   },
   {
     title: 'Transparent planning mode',
-    body: 'This page does not load products, prices, availability, or booking links. It shows the intent-understanding layer only.',
+    body: 'This page can show comparison-only product results, but availability checks, reservation handoff, and final partner workflows stay disabled.',
   },
 ]
 
@@ -47,8 +47,8 @@ const steps = [
   },
   {
     label: 'Step 3',
-    title: 'Booking-partner catalog coming next',
-    body: 'Real product matching will only appear after the read-only catalog connection is implemented.',
+    title: 'Search read-only Thailand experiences',
+    body: 'After local confirmation, RadarScout can show comparison-only product results without availability checks or reservation handoff.',
   },
 ]
 
@@ -60,11 +60,10 @@ const transparencyPoints = [
 ]
 
 const notConnected = [
-  'Booking partner catalog sync',
-  'Product search',
-  'Availability',
+  'Availability checks',
   'Final partner handoff',
   'Reservation workflow',
+  'Itinerary generation',
 ]
 
 export default function AiTripPlannerPage() {
@@ -85,8 +84,8 @@ export default function AiTripPlannerPage() {
                 AI private trip search engine for custom travel ideas
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-                Describe your trip in one sentence. RadarScout understands your travel intent locally first, then will match products from a
-                real booking-partner catalog later.
+                Describe your trip in one sentence. RadarScout understands your travel intent locally first, then can show read-only Thailand
+                product search results for comparison.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -133,17 +132,17 @@ export default function AiTripPlannerPage() {
                     </p>
                   </div>
                   <div className="rounded-2xl bg-[#f5efe8] p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a15d31]">Connects later</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a15d31]">After confirmation</p>
                     <p className="mt-3 text-sm leading-7 text-[#4b5563]">
-                      Real product matching from the booking-partner catalog after read-only catalog connection is implemented.
+                      Read-only Thailand product search after local confirmation, with results clearly marked as comparison-only.
                     </p>
                   </div>
                 </div>
                 <div className="mt-6 rounded-2xl border border-dashed border-[#d9cab4] bg-white p-4">
                   <p className="text-sm font-semibold text-[#1E2D59]">Transparent planning mode</p>
                   <p className="mt-2 text-sm leading-7 text-[#6b7280]">
-                    This page only demonstrates local trip intent parsing. Product details, availability status, pricing context, and partner handoff
-                    integrations are not connected yet.
+                    This page demonstrates local trip intent parsing and comparison-only product results. Availability status and partner handoff
+                    integrations are not connected.
                   </p>
                 </div>
               </div>
@@ -192,8 +191,7 @@ export default function AiTripPlannerPage() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-7 text-[#6b7280]">
-              This is a guarded planning surface. It understands travel intent locally today and keeps the future catalog layer clearly marked
-              as not connected yet.
+              This is a guarded planning surface. It understands travel intent locally and keeps product results clearly marked as comparison-only.
             </p>
           </div>
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
@@ -217,11 +215,11 @@ export default function AiTripPlannerPage() {
               AI Trip Planner
             </span>
             <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
-              Understand your travel intent locally before any product matching exists
+              Understand your travel intent locally before read-only product matching
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
-              The planner below keeps all current safety boundaries. No products are loaded. No fake prices, no fake availability, and
-              no fake booking links are shown.
+              The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. No fake prices,
+              no fake availability, and no fake reservation links are shown.
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
@@ -238,11 +236,11 @@ export default function AiTripPlannerPage() {
                 Catalog transparency
               </span>
               <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-5xl">
-                The booking-partner product catalog is planned next, but not connected yet
+                The booking-partner product catalog is connected for read-only comparison only
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
-                This page positions RadarScout as an AI private trip search engine. The current implementation only understands trip intent
-                locally. Real product matching will appear later, after the booking-partner catalog connection is implemented safely.
+                This page positions RadarScout as an AI private trip search engine. The current implementation understands trip intent locally
+                and can return comparison-only product results. Availability checks, final partner handoff, and reservation workflow stay disabled.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {transparencyPoints.map(point => (
@@ -279,10 +277,10 @@ export default function AiTripPlannerPage() {
             Planning shell only
           </span>
           <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
-            Start with a custom trip idea now. Product search comes later.
+            Start with a custom trip idea, then compare Thailand experiences.
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
-            This workspace understands travel intent locally and keeps future catalog behavior transparent. No form submission is connected. No
+            This workspace understands travel intent locally and keeps product search transparent. No form submission is connected. No
             email capture is enabled. No reservation handoff flow is active.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">

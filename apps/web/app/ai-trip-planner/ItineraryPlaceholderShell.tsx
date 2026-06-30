@@ -24,7 +24,7 @@ export function ItineraryPlaceholderShell({
       </div>
 
       <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
-        This is a planning shell, not a generated itinerary. No tours, suppliers, prices, availability status, or partner handoff links are loaded.
+        This is a planning shell, not a generated itinerary. Product cards, availability status, and partner handoff links are not inserted into this itinerary space.
       </p>
 
       {durationDays > 7 ? (
@@ -63,10 +63,10 @@ export function ItineraryPlaceholderShell({
             Not yet connected
           </h4>
           <div className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670]">
-            <p>Product search: <span className="font-black text-[#101820]">not connected</span></p>
-            <p>Supplier data: <span className="font-black text-[#101820]">not connected</span></p>
-            <p>Availability: <span className="font-black text-[#101820]">not connected</span></p>
-            <p>Pricing: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Itinerary generation: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Supplier workflow: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Availability checks: <span className="font-black text-[#101820]">not connected</span></p>
+            <p>Final partner workflow: <span className="font-black text-[#101820]">not connected</span></p>
             <p>Partner handoff: <span className="font-black text-[#101820]">not connected</span></p>
             <p>Reservation workflow: <span className="font-black text-[#101820]">not connected</span></p>
           </div>
@@ -86,7 +86,7 @@ export function ItineraryPlaceholderShell({
               Experience slots will appear here after itinerary generation is implemented.
             </p>
             <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-              No tours, suppliers, prices, availability status, or partner handoff links are loaded.
+              No product cards, availability status, or partner handoff links are loaded into this placeholder.
             </p>
           </article>
         ))}
