@@ -395,6 +395,22 @@ test.describe('Product card safety', () => {
     }
   })
 
+  test('product cards identify results as read-only comparison matches', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(3)
+
+    const cards = page.locator('article').filter({
+      has: page.getByRole('link', { name: /view experience/i }),
+    })
+    await expect(cards).toHaveCount(3)
+
+    for (let i = 0; i < 3; i++) {
+      await expect(cards.nth(i).getByText(/comparison match/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/read-only product result/i)).toBeVisible()
+    }
+  })
+
   test('product cards do not render rating or star rating', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
