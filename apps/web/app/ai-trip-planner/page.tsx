@@ -7,12 +7,12 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: 'AI Private Trip Search | RadarScout',
   description:
-    'Describe a custom travel idea in one sentence. RadarScout understands trip intent locally today, with Bókun-backed product catalog matching planned next.',
+    'Describe a custom travel idea in one sentence. RadarScout understands trip intent locally today, with booking-partner product matching planned next.',
   alternates: { canonical: `${base}/ai-trip-planner` },
   openGraph: {
     title: 'AI Private Trip Search | RadarScout',
     description:
-      'AI private trip search engine for custom travel ideas. Local intent parsing only for now. Bókun-backed catalog matching is coming next.',
+      'AI private trip search engine for custom travel ideas. Local intent parsing only for now. Booking-partner product matching is coming next.',
     type: 'website',
     url: `${base}/ai-trip-planner`,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const differentiators = [
   {
     title: 'Not a generic chatbot',
-    body: 'The experience is focused on travel structure: destination, duration, interests, avoid preferences, pace, budget, and booking intent.',
+    body: 'The experience is focused on travel structure: destination, duration, interests, avoid preferences, pace, budget, and trip intent.',
   },
   {
     title: 'Not a filter-first tour list',
@@ -42,11 +42,11 @@ const steps = [
   {
     label: 'Step 2',
     title: 'Understand travel intent locally',
-    body: 'RadarScout parses destination, duration, interests, style exclusions, and booking-related wording locally in the browser.',
+    body: 'RadarScout parses destination, duration, interests, style exclusions, and travel-style wording locally in the browser.',
   },
   {
     label: 'Step 3',
-    title: 'Bókun-backed catalog coming next',
+    title: 'Booking-partner catalog coming next',
     body: 'Real product matching will only appear after the read-only catalog connection is implemented.',
   },
 ]
@@ -59,12 +59,11 @@ const transparencyPoints = [
 ]
 
 const notConnected = [
-  'Bókun catalog sync',
+  'Booking partner catalog sync',
   'Product search',
   'Availability',
-  'Checkout',
-  'Payment',
-  'Booking',
+  'Final partner handoff',
+  'Reservation workflow',
 ]
 
 export default function AiTripPlannerPage() {
@@ -86,7 +85,7 @@ export default function AiTripPlannerPage() {
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
                 Describe your trip in one sentence. RadarScout understands your travel intent locally first, then will match products from a
-                real Bókun-backed catalog later.
+                real booking-partner catalog later.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -135,14 +134,14 @@ export default function AiTripPlannerPage() {
                   <div className="rounded-2xl bg-[#f5efe8] p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a15d31]">Connects later</p>
                     <p className="mt-3 text-sm leading-7 text-[#4b5563]">
-                      Real product matching from the Bókun-backed catalog after read-only catalog connection is implemented.
+                      Real product matching from the booking-partner catalog after read-only catalog connection is implemented.
                     </p>
                   </div>
                 </div>
                 <div className="mt-6 rounded-2xl border border-dashed border-[#d9cab4] bg-white p-4">
                   <p className="text-sm font-semibold text-[#1E2D59]">Transparent preview mode</p>
                   <p className="mt-2 text-sm leading-7 text-[#6b7280]">
-                    This page only demonstrates local trip intent parsing. Supplier, availability, pricing, checkout, payment, and booking
+                    This page only demonstrates local trip intent parsing. Product details, availability status, pricing context, and partner handoff
                     integrations are not connected yet.
                   </p>
                 </div>
@@ -235,14 +234,14 @@ export default function AiTripPlannerPage() {
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div>
               <span className="inline-flex rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[#f8d7bf]">
-                Bókun catalog transparency
+                Catalog transparency
               </span>
               <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-5xl">
-                The Bókun-backed product catalog is planned next, but not connected in this PR
+                The booking-partner product catalog is planned next, but not connected in this PR
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
                 This page positions RadarScout as an AI private trip search engine. The current implementation only understands trip intent
-                locally. Real product matching will appear later, after the Bókun-backed catalog connection is implemented safely.
+                locally. Real product matching will appear later, after the booking-partner catalog connection is implemented safely.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {transparencyPoints.map(point => (
@@ -283,7 +282,7 @@ export default function AiTripPlannerPage() {
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
             This preview understands travel intent locally and keeps future catalog behavior transparent. No form submission is connected. No
-            email capture is enabled. No booking or payment flow is active.
+            email capture is enabled. No reservation handoff flow is active.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
