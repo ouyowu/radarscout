@@ -80,6 +80,7 @@ function contentText(content: PartnerInterestPageContent) {
     ...content.doesNotReplace,
     ...content.intake,
     content.reviewNote,
+    ...content.nextSteps,
     content.ctaLabel,
     content.ctaHref,
     ...content.relatedLinks.flatMap(link => [link.label, link.description, link.href]),
@@ -179,6 +180,21 @@ describe('RadarScout partner interest pages', () => {
     expect(content.reviewNote).not.toMatch(/guaranteed placement/i)
     expect(content.reviewNote).not.toMatch(/live availability/i)
     expect(content.reviewNote).not.toMatch(/\bpayment\b/i)
+  })
+
+  it.each(pages)('$route explains the manual next-step process without promises', ({ content }) => {
+    expect(content.nextSteps).toHaveLength(4)
+    expect(content.nextSteps.join(' ')).toContain('read your message')
+    expect(content.nextSteps.join(' ')).toContain('traveler-facing links manually')
+    expect(content.nextSteps.join(' ')).toContain('Nothing is published')
+    expect(content.nextSteps.join(' ')).toContain('separate manual check')
+    expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed placement/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed leads/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed sales/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/live availability/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/\bcheckout\b/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/\bpayment\b/i)
+    expect(content.nextSteps.join(' ')).not.toMatch(/Bókun/i)
   })
 
   it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {
