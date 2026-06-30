@@ -24,6 +24,9 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toMatch(/transparent planning mode/i)
     expect(publicCopy).toMatch(/read-only Thailand product search/i)
     expect(publicCopy).toMatch(/comparison-only product results/i)
+    expect(publicCopy).toContain('href="/chiang-mai/elephant-camp-finder"')
+    expect(publicCopy).toContain('Open Chiang Mai finder')
+    expect(publicCopy).toMatch(/guided Chiang Mai finder/i)
 
     expect(publicCopy).not.toMatch(/Product search comes later/i)
     expect(publicCopy).not.toMatch(/Product search'[,\n]/i)

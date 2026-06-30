@@ -95,10 +95,10 @@ export default function AiTripPlannerPage() {
                   Try the AI Trip Planner
                 </a>
                 <Link
-                  href="#planner-demo"
+                  href="/chiang-mai/elephant-camp-finder"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-white/10"
                 >
-                  Thailand live destination
+                  Open Chiang Mai finder
                 </Link>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -283,6 +283,10 @@ export default function AiTripPlannerPage() {
             This workspace understands travel intent locally and keeps product search transparent. No form submission is connected. No
             email capture is enabled. No reservation handoff flow is active.
           </p>
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#6b7280]">
+            For a concrete guided Chiang Mai finder, compare elephant care, cooking, nature, and family-friendly experiences before
+            continuing with a booking partner.
+          </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
               href="#intent-demo"
@@ -291,10 +295,10 @@ export default function AiTripPlannerPage() {
               Try the AI Trip Planner
             </a>
             <Link
-              href="#planner-demo"
+              href="/chiang-mai/elephant-camp-finder"
               className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#d9cab4] bg-white px-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#1E2D59] transition hover:bg-[#fcfaf6]"
             >
-              Explore Thailand ideas
+              Open Chiang Mai finder
             </Link>
           </div>
         </div>
