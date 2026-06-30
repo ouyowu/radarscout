@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     'Describe a custom travel idea in one sentence. RadarScout understands trip intent locally today, with booking-partner product matching planned next.',
   alternates: { canonical: `${base}/ai-trip-planner` },
+  robots: { index: false, follow: false },
   openGraph: {
     title: 'AI Private Trip Search | RadarScout',
     description:
