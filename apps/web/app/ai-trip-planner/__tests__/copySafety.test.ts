@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { expectNoForbiddenPublicCopy } from '../../__tests__/publicSafetyPatterns'
 
 const aiTripPlannerDir = join(process.cwd(), 'app', 'ai-trip-planner')
 
@@ -30,17 +31,11 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/This page does not load products/i)
     expect(publicCopy).not.toMatch(/before any product matching exists/i)
 
-    expect(publicCopy).not.toMatch(/Bókun/i)
-    expect(publicCopy).not.toMatch(/\bcheckout\b/i)
-    expect(publicCopy).not.toMatch(/\bpayment\b/i)
+    expectNoForbiddenPublicCopy(publicCopy)
     expect(publicCopy).not.toMatch(/\bpreview\b/i)
     expect(publicCopy).not.toMatch(/book and pay/i)
-    expect(publicCopy).not.toMatch(/\bbookable\b/i)
     expect(publicCopy).not.toMatch(/create bookings/i)
     expect(publicCopy).not.toMatch(/Bókun-backed/i)
     expect(publicCopy).not.toMatch(/Bókun catalog/i)
-    expect(publicCopy).not.toMatch(/Bókun backend/i)
-    expect(publicCopy).not.toMatch(/Bókun database/i)
-    expect(publicCopy).not.toMatch(/Bókun-powered/i)
   })
 })

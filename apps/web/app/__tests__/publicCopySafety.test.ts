@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { expectNoForbiddenPublicCopy, expectNoInternalBokunPublicWiring } from './publicSafetyPatterns'
 
 const rootLayoutSource = readFileSync(new URL('../layout.tsx', import.meta.url), 'utf8')
 const destinationsPageSource = readFileSync(new URL('../destinations/page.tsx', import.meta.url), 'utf8')
@@ -34,39 +35,11 @@ describe('public RadarScout copy safety', () => {
   })
 
   it('does not expose inventory, rate, reservation, or Bókun-backend style copy in public UI sources', () => {
-    expect(publicCopySources).not.toMatch(/Live Bókun/i)
-    expect(publicCopySources).not.toMatch(/Bókun/i)
-    expect(publicCopySources).not.toMatch(/DMC Portal/i)
-    expect(publicCopySources).not.toMatch(/DMC-style/i)
-    expect(publicCopySources).not.toMatch(/Bókun partner inventory/i)
-    expect(publicCopySources).not.toMatch(/Bókun supplier/i)
-    expect(publicCopySources).not.toMatch(/Bókun backend/i)
-    expect(publicCopySources).not.toMatch(/Bókun database/i)
-    expect(publicCopySources).not.toMatch(/Bókun-powered/i)
-    expect(publicCopySources).not.toMatch(/direct-rate/i)
-    expect(publicCopySources).not.toMatch(/supplier inventory/i)
-    expect(publicCopySources).not.toMatch(/live inventory/i)
-    expect(publicCopySources).not.toMatch(/live signed/i)
-    expect(publicCopySources).not.toMatch(/live bookable/i)
-    expect(publicCopySources).not.toMatch(/\bbookable\b/i)
-    expect(publicCopySources).not.toMatch(/live tours/i)
-    expect(publicCopySources).not.toMatch(/available now/i)
-    expect(publicCopySources).not.toMatch(/instant confirmation/i)
-    expect(publicCopySources).not.toMatch(/Reserve in/i)
-    expect(publicCopySources).not.toMatch(/\bReserve\b/i)
-    expect(publicCopySources).not.toMatch(/reserve faster/i)
-    expect(publicCopySources).not.toMatch(/partner rate/i)
-    expect(publicCopySources).not.toMatch(/supplier net rate/i)
-    expect(publicCopySources).not.toMatch(/\bcommission\b/i)
-    expect(publicCopySources).not.toMatch(/\bcheckout\b/i)
-    expect(publicCopySources).not.toMatch(/\bpayment\b/i)
+    expectNoForbiddenPublicCopy(publicCopySources)
   })
 
   it('does not wire public planning components to internal Bókun APIs or net-rate style estimates', () => {
-    expect(publicCopySources).not.toMatch(/\/api\/bokun/i)
-    expect(publicCopySources).not.toMatch(/netSettlementPrice/i)
-    expect(publicCopySources).not.toMatch(/Public est\./i)
-    expect(publicCopySources).not.toMatch(/RadarScout est\./i)
+    expectNoInternalBokunPublicWiring(publicCopySources)
   })
 
   it('uses safe destination and product-sample labels instead', () => {
