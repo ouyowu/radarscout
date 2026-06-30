@@ -48,6 +48,17 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('booking partner')
   })
 
+  it('exposes safe homepage entry points for B2B partner paths', () => {
+    expect(homepageSource).toContain('<SupplierPartnerCTA showPartnerPathLinks />')
+    expect(homepageVisibleCopySources).toContain("href: '/partners'")
+    expect(homepageVisibleCopySources).toContain("href: '/suppliers'")
+    expect(homepageVisibleCopySources).toContain("href: '/destination-partners'")
+    expect(homepageVisibleCopySources).toContain('Choose a partner path')
+    expect(homepageVisibleCopySources).toContain('For travel partners')
+    expect(homepageVisibleCopySources).toContain('For local suppliers')
+    expect(homepageVisibleCopySources).toContain('For destination partners')
+  })
+
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {
     expect(homepageVisibleCopySources).not.toMatch(/Bókun/i)
     expect(homepageVisibleCopySources).not.toMatch(/DMC Portal/i)
