@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { metadata } from '../page'
+import { expectNoForbiddenPublicCopy } from './publicSafetyPatterns'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 const homepageVisibleCopySources = [
@@ -39,6 +40,13 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('Is RadarScout a marketplace with every country currently shown?')
   })
 
+  it('links to the AI trip planner with safe planning-first copy', () => {
+    expect(homepageSource).toContain("href: '/ai-trip-planner'")
+    expect(homepageSource).toContain('Start planning with AI')
+    expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
+    expect(homepageSource).toContain('trusted booking partner handoff')
+  })
+
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
     expect(homepageSource).toContain('href="/chiang-mai/elephant-camp-finder"')
     expect(homepageSource).toContain('Plan a Chiang Mai elephant day')
@@ -71,6 +79,7 @@ describe('homepage public copy safety', () => {
   })
 
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {
+    expectNoForbiddenPublicCopy(homepageVisibleCopySources)
     expect(homepageVisibleCopySources).not.toMatch(/Bókun/i)
     expect(homepageVisibleCopySources).not.toMatch(/DMC Portal/i)
     expect(homepageVisibleCopySources).not.toMatch(/live inventory/i)
