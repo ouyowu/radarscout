@@ -31,7 +31,7 @@ const demoTours = [
   {
     title: 'UI Demo: Private Island Day Plan',
     href: '/components-showcase',
-    summary: 'Demo-only card for visual testing. Real inventory must come from signed Bókun supplier partners.',
+    summary: 'Demo-only card for visual testing. Real traveler-facing recommendations need trusted supplier coverage.',
     tourStyle: 'Private experience',
     bestFor: 'Private custom planning',
     inventoryStatus: 'demo' as const,
@@ -39,7 +39,7 @@ const demoTours = [
   {
     title: 'UI Demo: Airport Transfer Experience',
     href: '/components-showcase',
-    summary: 'Demo-only transfer card used to test layout, labels, and warm DMC styling.',
+    summary: 'Demo-only transfer card used to test layout, labels, and warm travel-planning styling.',
     tourStyle: 'Transfer',
     bestFor: 'Smooth arrivals',
     inventoryStatus: 'demo' as const,
@@ -51,24 +51,24 @@ export default function ComponentsShowcasePage() {
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
         title="RadarScout UI component showcase"
-        subtitle="This page is a local UI demo only. Demo cards are not real bookable products, reviews, ratings, or supplier inventory."
+        subtitle="This page is a local UI demo only. Demo cards are not real traveler recommendations, reviews, ratings, or supplier-backed experiences."
         actions={[
           { label: 'Explore demo cards', href: '#tour-cards' },
           { label: 'Back home', href: '/', variant: 'secondary' },
         ]}
-        trustNote="UI demo only. Real bookable products must come from signed Bókun supplier partners."
+        trustNote="UI demo only. Traveler-facing recommendations need trusted supplier coverage and safe booking partner handoff."
       />
 
       <DmcTrustBar
         items={[
-          { label: 'Inventory boundary', value: 'Signed Bókun partners only' },
+          { label: 'Coverage boundary', value: 'Trusted suppliers only' },
           { label: 'Coverage style', value: 'Selected destinations' },
-          { label: 'Planning model', value: 'AI-assisted DMC portal' },
+          { label: 'Planning model', value: 'AI-assisted travel planning' },
           { label: 'Demo status', value: 'No booking enabled' },
         ]}
       />
 
-      <ExperienceCategoryGrid title="Premium DMC-style experience categories" categories={demoCategories} />
+      <ExperienceCategoryGrid title="Premium travel-planning experience categories" categories={demoCategories} />
 
       <section className="mx-auto grid max-w-7xl gap-5 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <DestinationCapsuleCard
@@ -76,7 +76,7 @@ export default function ComponentsShowcasePage() {
           href="/components-showcase"
           status="live"
           region="Southeast Asia"
-          summary="Demo card showing live inventory styling."
+          summary="Demo card showing focused coverage styling."
           highlights={['Day tours', 'Transfers', 'Food', 'Nature']}
         />
         <DestinationCapsuleCard
@@ -115,7 +115,7 @@ export default function ComponentsShowcasePage() {
       <EditorialBanner
         label="Editorial travel desk"
         title="Plan around time value, route fit, and supplier readiness."
-        body="RadarScout pages should feel like a destination expert desk, with clear inventory boundaries and no fake marketplace promises."
+        body="RadarScout pages should feel like a destination expert desk, with clear coverage boundaries and no fake marketplace promises."
       />
 
       <section className="mx-auto grid max-w-7xl gap-5 px-4 py-14 sm:px-6 md:grid-cols-2 lg:px-8">
@@ -128,8 +128,8 @@ export default function ComponentsShowcasePage() {
         <GuideBlogCard
           title="UI Demo: Choosing the right day tour style"
           href="/components-showcase"
-          category="DMC guide"
-          summary="A demo editorial card that does not imply real inventory."
+          category="Planning guide"
+          summary="A demo editorial card that does not imply real supplier-backed coverage."
         />
       </section>
 
@@ -147,7 +147,7 @@ export default function ComponentsShowcasePage() {
           },
           {
             question: 'Are the demo cards real products?',
-            answer: 'No. They are explicitly marked as UI demos. Real bookable products must come from signed Bókun supplier partners.',
+            answer: 'No. They are explicitly marked as UI demos. Traveler-facing recommendations need trusted supplier coverage and safe booking partner handoff.',
           },
         ]}
       />
@@ -158,7 +158,7 @@ export default function ComponentsShowcasePage() {
         label="Back home"
         href="/"
         secondaryLabel="Email supplier partnership"
-        secondaryHref="mailto:hello@radarscout.io?subject=B%C3%B3kun%20Supplier%20Partnership%20Inquiry"
+        secondaryHref="mailto:hello@radarscout.io?subject=RadarScout%20Supplier%20Partnership%20Inquiry"
       />
     </main>
   )

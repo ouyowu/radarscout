@@ -16,7 +16,7 @@ type CuratedTourCardProps = {
 export function CuratedTourCard({
   title,
   href,
-  supplierName = 'Signed Bókun supplier partner',
+  supplierName = 'Trusted local supplier',
   imageUrl,
   imageAlt = '',
   summary,
@@ -25,7 +25,7 @@ export function CuratedTourCard({
   priceLabel,
   inventoryStatus = 'live',
 }: CuratedTourCardProps) {
-  const statusText = inventoryStatus === 'live' ? 'Bókun partner inventory' : inventoryStatus === 'demo' ? 'UI demo only' : 'Partner onboarding'
+  const statusText = inventoryStatus === 'live' ? 'Partner handoff ready' : inventoryStatus === 'demo' ? 'UI demo only' : 'Partner onboarding'
 
   return (
     <Link href={href} className="group block overflow-hidden rounded-[1.75rem] bg-white shadow-xl transition hover:-translate-y-1">

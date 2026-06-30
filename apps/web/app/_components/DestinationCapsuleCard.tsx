@@ -10,7 +10,7 @@ type DestinationCapsuleCardProps = {
 }
 
 const statusCopy = {
-  live: 'Live partner inventory',
+  live: 'Focused experience coverage',
   'coming-soon': 'Partner onboarding',
   planning: 'Planning guide',
 }
