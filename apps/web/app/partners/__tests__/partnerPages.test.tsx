@@ -82,6 +82,7 @@ function contentText(content: PartnerInterestPageContent) {
     content.reviewNote,
     content.ctaLabel,
     content.ctaHref,
+    ...content.relatedLinks.flatMap(link => [link.label, link.description, link.href]),
     content.operatorUrlRequest?.eyebrow ?? '',
     content.operatorUrlRequest?.title ?? '',
     content.operatorUrlRequest?.body ?? '',
@@ -131,6 +132,43 @@ describe('RadarScout partner interest pages', () => {
     expect(content.ctaHref).not.toContain('/checkout')
     expect(content.operatorUrlRequest?.ctaHref ?? '').not.toContain('/api/')
     expect(content.operatorUrlRequest?.ctaHref ?? '').not.toContain('/checkout')
+  })
+
+  it.each(pages)('$route links only to other static B2B interest pages', ({ route, content }) => {
+    expect(content.relatedLinks).toHaveLength(2)
+
+    const hrefs = content.relatedLinks.map(link => link.href)
+
+    expect(hrefs).not.toContain(route)
+    expect(hrefs).toEqual(
+      expect.arrayContaining(
+        ['/partners', '/suppliers', '/destination-partners'].filter(path => path !== route),
+      ),
+    )
+
+    for (const href of hrefs) {
+      expect(href).toMatch(/^\/(partners|suppliers|destination-partners)$/)
+      expect(href).not.toContain('/api/')
+      expect(href).not.toContain('/checkout')
+      expect(href).not.toContain('/tours/')
+      expect(href).not.toContain('/chiang-mai/elephant-camp-finder')
+    }
+  })
+
+  it.each(pages)('$route keeps B2B crosslink labels safe and non-transactional', ({ content }) => {
+    const serializedLinks = content.relatedLinks
+      .flatMap(link => [link.label, link.description, link.href])
+      .join(' ')
+
+    expect(serializedLinks).not.toMatch(/live availability/i)
+    expect(serializedLinks).not.toMatch(/available now/i)
+    expect(serializedLinks).not.toMatch(/instant confirmation/i)
+    expect(serializedLinks).not.toMatch(/\bcheckout\b/i)
+    expect(serializedLinks).not.toMatch(/\bpayment\b/i)
+    expect(serializedLinks).not.toMatch(/Bókun/i)
+    expect(serializedLinks).not.toMatch(/partner rate/i)
+    expect(serializedLinks).not.toMatch(/supplier net rate/i)
+    expect(serializedLinks).not.toMatch(/\bcommission\b/i)
   })
 
   it.each(pages)('$route sets manual review expectations before public recommendation', ({ content }) => {
@@ -194,6 +232,7 @@ describe('RadarScout partner interest pages', () => {
       readFileSync(new URL('../../suppliers/page.tsx', import.meta.url), 'utf8'),
       readFileSync(new URL('../../destination-partners/page.tsx', import.meta.url), 'utf8'),
       readFileSync(new URL('../../_components/PartnerInterestPage.tsx', import.meta.url), 'utf8'),
+      readFileSync(new URL('../../_components/partnerInterestContent.ts', import.meta.url), 'utf8'),
     ].join('\n')
 
     expect(routeSources).not.toMatch(/@reddit-monitor\/db/)

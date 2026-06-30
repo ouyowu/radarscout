@@ -63,6 +63,20 @@ export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
       'Preferred contact path:',
     ],
   }),
+  relatedLinks: [
+    {
+      label: 'List a Thailand experience',
+      description:
+        'For local operators with a public traveler-facing page and booking partner path.',
+      href: '/suppliers',
+    },
+    {
+      label: 'Discuss a destination partnership',
+      description:
+        'For DMCs, local agencies, and destination teams organizing local experience knowledge.',
+      href: '/destination-partners',
+    },
+  ],
 }
 
 export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
@@ -101,6 +115,20 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
       'Customer-facing booking link:',
     ],
   }),
+  relatedLinks: [
+    {
+      label: 'Partner with RadarScout',
+      description:
+        'For travel agents, hotels, concierges, and creators matching travelers with Thailand experiences.',
+      href: '/partners',
+    },
+    {
+      label: 'Plan a destination collaboration',
+      description:
+        'For destination teams that want to shape curated local experience discovery.',
+      href: '/destination-partners',
+    },
+  ],
   operatorUrlRequest: {
     eyebrow: 'Public link check',
     title: 'Send the traveler-facing page you want RadarScout to check.',
@@ -162,4 +190,18 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
       'Best contact person:',
     ],
   }),
+  relatedLinks: [
+    {
+      label: 'Partner with RadarScout',
+      description:
+        'For travel sellers and concierges who want a clearer discovery path for clients.',
+      href: '/partners',
+    },
+    {
+      label: 'Share a supplier experience',
+      description:
+        'For local operators with public-safe experience details and a customer-facing booking link.',
+      href: '/suppliers',
+    },
+  ],
 }
