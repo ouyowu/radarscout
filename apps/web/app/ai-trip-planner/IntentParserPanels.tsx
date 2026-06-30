@@ -106,7 +106,7 @@ export function CapabilityStatusPanel({
         Capability status
       </h3>
       <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-        Disabled means this preview is not searching products, checking availability, showing prices, or creating bookings.
+        Disabled means this planner is not searching products, checking availability, showing prices, or creating reservation handoffs.
       </p>
       <div className="mt-4 grid gap-3">
         <CapabilityStatus label="bookingEnabled" enabled={bookingEnabled} />

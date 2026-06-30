@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AI Private Trip Search | RadarScout',
     description:
-      'AI private trip search engine for custom travel ideas. Local intent parsing only for now. Booking-partner product matching is coming next.',
+      'AI private trip search engine for custom travel ideas. Local intent parsing only for now. Booking-partner product matching is planned next.',
     type: 'website',
     url: `${base}/ai-trip-planner`,
   },
@@ -29,7 +29,7 @@ const differentiators = [
     body: 'You start with a natural-language trip idea. Product-style matching only comes later, after the catalog connection is ready.',
   },
   {
-    title: 'Transparent preview mode',
+    title: 'Transparent planning mode',
     body: 'This page does not load products, prices, availability, or booking links. It shows the intent-understanding layer only.',
   },
 ]
@@ -79,7 +79,7 @@ export default function AiTripPlannerPage() {
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
               <span className="inline-flex rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#f8d7bf]">
-                AI Private Trip Search Preview
+                AI Private Trip Search
               </span>
               <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
                 AI private trip search engine for custom travel ideas
@@ -93,7 +93,7 @@ export default function AiTripPlannerPage() {
                   href="#intent-demo"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#D57C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#c66b37]"
                 >
-                  Try the AI Search Preview
+                  Try the AI Trip Planner
                 </a>
                 <Link
                   href="#planner-demo"
@@ -140,7 +140,7 @@ export default function AiTripPlannerPage() {
                   </div>
                 </div>
                 <div className="mt-6 rounded-2xl border border-dashed border-[#d9cab4] bg-white p-4">
-                  <p className="text-sm font-semibold text-[#1E2D59]">Transparent preview mode</p>
+                  <p className="text-sm font-semibold text-[#1E2D59]">Transparent planning mode</p>
                   <p className="mt-2 text-sm leading-7 text-[#6b7280]">
                     This page only demonstrates local trip intent parsing. Product details, availability status, pricing context, and partner handoff
                     integrations are not connected yet.
@@ -192,7 +192,7 @@ export default function AiTripPlannerPage() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-7 text-[#6b7280]">
-              This is still a frontend preview. It understands travel intent locally today and keeps the future catalog layer clearly marked
+              This is a guarded planning surface. It understands travel intent locally today and keeps the future catalog layer clearly marked
               as not connected yet.
             </p>
           </div>
@@ -214,13 +214,13 @@ export default function AiTripPlannerPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 max-w-3xl">
             <span className="inline-flex rounded-full bg-[#1E2D59] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
-              AI Search Preview
+              AI Trip Planner
             </span>
             <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
               Understand your travel intent locally before any product matching exists
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
-              The parser preview below keeps all current safety boundaries. No products are loaded. No fake prices, no fake availability, and
+              The planner below keeps all current safety boundaries. No products are loaded. No fake prices, no fake availability, and
               no fake booking links are shown.
             </p>
           </div>
@@ -238,7 +238,7 @@ export default function AiTripPlannerPage() {
                 Catalog transparency
               </span>
               <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-5xl">
-                The booking-partner product catalog is planned next, but not connected in this PR
+                The booking-partner product catalog is planned next, but not connected yet
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
                 This page positions RadarScout as an AI private trip search engine. The current implementation only understands trip intent
@@ -282,7 +282,7 @@ export default function AiTripPlannerPage() {
             Start with a custom trip idea now. Product search comes later.
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
-            This preview understands travel intent locally and keeps future catalog behavior transparent. No form submission is connected. No
+            This workspace understands travel intent locally and keeps future catalog behavior transparent. No form submission is connected. No
             email capture is enabled. No reservation handoff flow is active.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -290,7 +290,7 @@ export default function AiTripPlannerPage() {
               href="#intent-demo"
               className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#D57C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#c66b37]"
             >
-              Try the AI Search Preview
+              Try the AI Trip Planner
             </a>
             <Link
               href="#planner-demo"
