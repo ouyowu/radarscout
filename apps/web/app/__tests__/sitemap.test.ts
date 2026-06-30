@@ -109,6 +109,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).not.toContain(`${BASE}/chiang-mai/elephant-camp-finder`)
+    expect(urls).not.toContain(`${BASE}/ai-trip-planner`)
     expect(urls).not.toContain(`${BASE}/partners`)
     expect(urls).not.toContain(`${BASE}/suppliers`)
     expect(urls).not.toContain(`${BASE}/destination-partners`)
