@@ -230,7 +230,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <SupplierPartnerCTA />
+      <SupplierPartnerCTA showPartnerPathLinks />
       <FAQAccordion items={faqItems} title="RadarScout travel planning FAQ" />
       <WarmNewsletterFooter
         title="Follow RadarScout's destination rollout."
