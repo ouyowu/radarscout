@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 
 const routes = [
   ['', 'weekly', 1.0],
+  ['/chiang-mai/elephant-camp-finder', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],
   ['/terms-of-service', 'yearly', 0.3],

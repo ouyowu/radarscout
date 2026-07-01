@@ -79,12 +79,12 @@ describe('sitemap', () => {
     expect(unique.size).toBe(urls.length)
   })
 
-  it('returns only static routes when listPublicThailandProducts returns empty array', async () => {
+  it('returns only static routes and controlled SEO candidates when listPublicThailandProducts returns empty array', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([])
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(4)
+    expect(entries).toHaveLength(5)
     entries.forEach(entry => {
       expect(entry.url).not.toContain('/tours/')
     })
@@ -102,13 +102,21 @@ describe('sitemap', () => {
     expect(urls.some(url => url.includes('/tours/'))).toBe(false)
   })
 
-  it('does not include noindex public pages while they remain closed to indexing', async () => {
+  it('includes the Chiang Mai finder as the single controlled-opening SEO candidate', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([])
 
     const entries = await sitemap()
     const urls = entries.map(e => e.url)
 
-    expect(urls).not.toContain(`${BASE}/chiang-mai/elephant-camp-finder`)
+    expect(urls).toContain(`${BASE}/chiang-mai/elephant-camp-finder`)
+  })
+
+  it('does not include other noindex public pages while they remain closed to indexing', async () => {
+    listMock.listPublicThailandProducts.mockResolvedValue([])
+
+    const entries = await sitemap()
+    const urls = entries.map(e => e.url)
+
     expect(urls).not.toContain(`${BASE}/ai-trip-planner`)
     expect(urls).not.toContain(`${BASE}/partners`)
     expect(urls).not.toContain(`${BASE}/suppliers`)

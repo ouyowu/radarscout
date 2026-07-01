@@ -33,8 +33,8 @@ describe('Chiang Mai elephant camp finder metadata', () => {
     expect(description).not.toMatch(/\bcommission\b/i)
   })
 
-  it('keeps the finder noindex/nofollow while owner-managed profiles are being verified', () => {
-    expect(metadata.robots).toMatchObject({ index: false, follow: false })
+  it('opens the finder metadata for the controlled Chiang Mai SEO candidate', () => {
+    expect(metadata.robots).toMatchObject({ index: true, follow: true })
   })
 
   it('does not expose forbidden live availability copy in the public intro', () => {
