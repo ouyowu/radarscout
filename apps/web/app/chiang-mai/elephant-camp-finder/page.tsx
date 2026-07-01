@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description:
     'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.',
   alternates: { canonical: `${base}/chiang-mai/elephant-camp-finder` },
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
 }
 
 export default function ChiangMaiElephantCampFinderPage() {
