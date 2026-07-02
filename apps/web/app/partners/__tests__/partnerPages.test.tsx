@@ -55,6 +55,7 @@ const forbiddenPhrases = [
   /Bókun backend/i,
   /Bókun-powered/i,
   /Bókun supplier products/i,
+  /private backend/i,
   /supplier net rate/i,
   /partner rate/i,
   /\bcommission\b/i,
@@ -79,6 +80,9 @@ function contentText(content: PartnerInterestPageContent) {
     ...content.helps,
     ...content.doesNotReplace,
     ...content.intake,
+    content.intakeGuide?.title ?? '',
+    content.intakeGuide?.body ?? '',
+    ...(content.intakeGuide?.items ?? []),
     content.reviewNote,
     ...content.nextSteps,
     content.ctaLabel,
@@ -186,8 +190,10 @@ describe('RadarScout partner interest pages', () => {
     expect(content.nextSteps).toHaveLength(4)
     expect(content.nextSteps.join(' ')).toContain('read your message')
     expect(content.nextSteps.join(' ')).toContain('traveler-facing links manually')
+    expect(content.nextSteps.join(' ')).toContain('public-safe details')
     expect(content.nextSteps.join(' ')).toContain('Nothing is published')
     expect(content.nextSteps.join(' ')).toContain('separate manual check')
+    expect(content.nextSteps.join(' ')).not.toMatch(/private backend/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed placement/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed leads/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed sales/i)
@@ -195,6 +201,32 @@ describe('RadarScout partner interest pages', () => {
     expect(content.nextSteps.join(' ')).not.toMatch(/\bcheckout\b/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/\bpayment\b/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/Bókun/i)
+  })
+
+  it.each(pages)('$route gives safe visible guidance for what to send first', ({ content }) => {
+    expect(content.intakeGuide?.title).toBe('What to send first')
+    expect(content.intakeGuide?.body).toContain('public-safe')
+    expect(content.intakeGuide?.items).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/Organization name/i),
+        expect.stringMatching(/Destination focus/i),
+        expect.stringMatching(/Public traveler-facing URL/i),
+      ]),
+    )
+
+    const serialized = [
+      content.intakeGuide?.title ?? '',
+      content.intakeGuide?.body ?? '',
+      ...(content.intakeGuide?.items ?? []),
+    ].join(' ')
+
+    expect(serialized).not.toMatch(/private backend/i)
+    expect(serialized).not.toMatch(/supplier net rate/i)
+    expect(serialized).not.toMatch(/partner rate/i)
+    expect(serialized).not.toMatch(/\bcommission\b/i)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
   })
 
   it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {
@@ -251,6 +283,8 @@ describe('RadarScout partner interest pages', () => {
       readFileSync(new URL('../../_components/partnerInterestContent.ts', import.meta.url), 'utf8'),
     ].join('\n')
 
+    expect(routeSources).toContain('What to send first')
+    expect(routeSources).toContain('intakeGuide')
     expect(routeSources).not.toMatch(/@reddit-monitor\/db/)
     expect(routeSources).not.toMatch(/\bdb\./)
     expect(routeSources).not.toMatch(/\bprisma\b/i)
