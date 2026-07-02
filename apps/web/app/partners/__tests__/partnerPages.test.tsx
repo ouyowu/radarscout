@@ -55,6 +55,7 @@ const forbiddenPhrases = [
   /Bókun backend/i,
   /Bókun-powered/i,
   /Bókun supplier products/i,
+  /private backend/i,
   /supplier net rate/i,
   /partner rate/i,
   /\bcommission\b/i,
@@ -189,8 +190,10 @@ describe('RadarScout partner interest pages', () => {
     expect(content.nextSteps).toHaveLength(4)
     expect(content.nextSteps.join(' ')).toContain('read your message')
     expect(content.nextSteps.join(' ')).toContain('traveler-facing links manually')
+    expect(content.nextSteps.join(' ')).toContain('public-safe details')
     expect(content.nextSteps.join(' ')).toContain('Nothing is published')
     expect(content.nextSteps.join(' ')).toContain('separate manual check')
+    expect(content.nextSteps.join(' ')).not.toMatch(/private backend/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed placement/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed leads/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed sales/i)
