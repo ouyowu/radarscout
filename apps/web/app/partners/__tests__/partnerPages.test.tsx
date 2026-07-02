@@ -79,6 +79,9 @@ function contentText(content: PartnerInterestPageContent) {
     ...content.helps,
     ...content.doesNotReplace,
     ...content.intake,
+    content.intakeGuide?.title ?? '',
+    content.intakeGuide?.body ?? '',
+    ...(content.intakeGuide?.items ?? []),
     content.reviewNote,
     ...content.nextSteps,
     content.ctaLabel,
@@ -197,6 +200,32 @@ describe('RadarScout partner interest pages', () => {
     expect(content.nextSteps.join(' ')).not.toMatch(/Bókun/i)
   })
 
+  it.each(pages)('$route gives safe visible guidance for what to send first', ({ content }) => {
+    expect(content.intakeGuide?.title).toBe('What to send first')
+    expect(content.intakeGuide?.body).toContain('public-safe')
+    expect(content.intakeGuide?.items).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/Organization name/i),
+        expect.stringMatching(/Destination focus/i),
+        expect.stringMatching(/Public traveler-facing URL/i),
+      ]),
+    )
+
+    const serialized = [
+      content.intakeGuide?.title ?? '',
+      content.intakeGuide?.body ?? '',
+      ...(content.intakeGuide?.items ?? []),
+    ].join(' ')
+
+    expect(serialized).not.toMatch(/private backend/i)
+    expect(serialized).not.toMatch(/supplier net rate/i)
+    expect(serialized).not.toMatch(/partner rate/i)
+    expect(serialized).not.toMatch(/\bcommission\b/i)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+  })
+
   it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {
     const mailto = decodedMailto(content.ctaHref)
 
@@ -251,6 +280,8 @@ describe('RadarScout partner interest pages', () => {
       readFileSync(new URL('../../_components/partnerInterestContent.ts', import.meta.url), 'utf8'),
     ].join('\n')
 
+    expect(routeSources).toContain('What to send first')
+    expect(routeSources).toContain('intakeGuide')
     expect(routeSources).not.toMatch(/@reddit-monitor\/db/)
     expect(routeSources).not.toMatch(/\bdb\./)
     expect(routeSources).not.toMatch(/\bprisma\b/i)

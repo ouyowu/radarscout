@@ -10,6 +10,18 @@ const MANUAL_NEXT_STEPS = [
   'Nothing is published, recommended, or represented as accepted without a separate manual check.',
 ]
 
+const SAFE_INTAKE_GUIDE = {
+  title: 'What to send first',
+  body:
+    'Start with public-safe details RadarScout can check manually before any recommendation is considered.',
+  items: [
+    'Organization name and contact person',
+    'Destination focus and traveler audience',
+    'Public traveler-facing URL if you have one',
+    'Experience category, duration, and public booking partner path if available',
+  ],
+}
+
 function buildPartnerMailto({
   sourceLabel,
   subject,
@@ -59,6 +71,7 @@ export const PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'The types of Thailand experiences you want to recommend.',
     'The best contact path for a short partnership conversation.',
   ],
+  intakeGuide: SAFE_INTAKE_GUIDE,
   reviewNote: MANUAL_REVIEW_NOTE,
   nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Contact RadarScout about partnerships',
@@ -112,6 +125,7 @@ export const SUPPLIERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'Trust notes such as suitability, safety boundaries, and who the experience is best for.',
     'A customer-facing public booking link that travelers can open safely.',
   ],
+  intakeGuide: SAFE_INTAKE_GUIDE,
   reviewNote: MANUAL_REVIEW_NOTE,
   nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Share your experience details',
@@ -188,6 +202,7 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
     'Recommended local operators or experiences with public-safe details.',
     'A contact person for manual partnership scoping.',
   ],
+  intakeGuide: SAFE_INTAKE_GUIDE,
   reviewNote: MANUAL_REVIEW_NOTE,
   nextSteps: MANUAL_NEXT_STEPS,
   ctaLabel: 'Discuss a destination partnership',
