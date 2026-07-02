@@ -156,4 +156,3 @@ This queue plan must not be used to justify:
 - LLM/OpenAI integration
 - ThaiEleHub or Shopify work
 - SEO `index,follow` opening
-
