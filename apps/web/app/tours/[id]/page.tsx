@@ -377,7 +377,19 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
                 <p className="mt-3 text-xs font-bold leading-6 text-white/65">
                   Continue with a booking partner to review current details.
                 </p>
-              ) : null}
+              ) : (
+                <div className="mt-6 rounded-[1.5rem] border border-white/15 bg-white/10 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
+                    Planning-only detail
+                  </p>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                    RadarScout can help you compare this experience, but a verified booking partner handoff is not available yet.
+                  </p>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                    Use this page for planning and compare other experiences with verified handoff options.
+                  </p>
+                </div>
+              )}
             </div>
           </aside>
         </div>
