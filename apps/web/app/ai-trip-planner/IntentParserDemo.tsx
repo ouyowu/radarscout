@@ -105,10 +105,6 @@ export function IntentParserDemo() {
     }
   }
 
-  const placeholderDayCount = confirmed?.durationDays
-    ? Math.min(confirmed.durationDays, 7)
-    : 0
-
   return (
     <div className="mt-10 max-w-5xl border border-[#ded7ca] bg-white p-4 shadow-[0_18px_0_rgba(16,24,32,0.08)] sm:p-6">
       <form onSubmit={handleSubmit}>
@@ -210,8 +206,15 @@ export function IntentParserDemo() {
 
         {confirmed?.durationDays ? (
           <ItineraryPlaceholderShell
-            durationDays={confirmed.durationDays}
-            placeholderDayCount={placeholderDayCount}
+            intent={{
+              destination: result.intent.destination,
+              durationDays: confirmed.durationDays,
+              interests: result.intent.interests,
+              foodPreferences: result.intent.foodPreferences,
+              pace: result.intent.pace,
+              travelerType: result.intent.travelerType,
+              avoid: result.intent.avoid,
+            }}
           />
         ) : null}
 
