@@ -4,9 +4,9 @@ import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bo
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 import { getReviewedEnrichmentByProductId, type ReviewedEnrichmentOutput } from '@/lib/reviewedEnrichmentReader'
 import {
-  resolveOwnerManagedProfileHandoff,
   type PublicBookingPartnerHandoff,
 } from './bookingPartnerHandoff'
+import { resolveReviewedProductHandoff } from './ownerManagedProductHandoffMappings'
 
 export type PublicThailandProduct = {
   id: string
@@ -112,7 +112,10 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
 
     const shaped = toReadOnlyBokunCatalogProduct(product as BokunCatalogRecord)
     const reviewedEnrichment = await getReviewedEnrichmentByProductId(product.id)
-    const bookingPartnerHandoff = resolveOwnerManagedProfileHandoff(product.bokunActivityId)
+    const bookingPartnerHandoff = resolveReviewedProductHandoff({
+      publicProductId: product.id,
+      bokunActivityId: product.bokunActivityId,
+    })
 
     return {
       status: 'found',
