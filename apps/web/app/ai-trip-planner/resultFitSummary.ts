@@ -96,6 +96,15 @@ function matchingInterests(product: ResultFitProduct, interests: string[]) {
   return Array.from(new Set(matches)).slice(0, 2)
 }
 
+function matchingResultInterests(
+  products: AiTripSearchResponse['products'],
+  interests: string[],
+) {
+  const matches = products.flatMap(product => matchingInterests(product, interests))
+
+  return Array.from(new Set(matches)).slice(0, 3)
+}
+
 function shortTagList(tags: string[]) {
   const normalized = tags.map(tag => tag.trim()).filter(Boolean).slice(0, 2)
   if (normalized.length === 0) return null
@@ -109,6 +118,9 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
   const destination = normalizeText(response.intent?.destination) ?? 'Thailand'
   const duration = formatDays(response.intent?.days)
   const interests = summarizeInterests(response.intent?.interests ?? [])
+  const matchedInterests = summarizeInterests(
+    matchingResultInterests(response.products, response.intent?.interests ?? []),
+  )
   const cities = uniqueProductCities(response.products)
   const productCount = response.products.length
 
@@ -117,7 +129,7 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
     chips: [
       destination,
       duration,
-      interests ? `Interest signals: ${interests}` : null,
+      matchedInterests ? `Matched interests: ${matchedInterests}` : null,
       cities.length > 0 ? `Result cities: ${cities.join(', ')}` : null,
     ].filter((chip): chip is string => Boolean(chip)),
     points: [
