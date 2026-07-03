@@ -260,7 +260,24 @@ export function IntentParserDemo() {
                 <div className="rounded-[1.25rem] border border-[#e8dfd2] bg-white p-5">
                   <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b7280]">
-                    No Thailand experiences matched your current intent. Try adjusting the destination or interests.
+                    No Thailand experiences matched your current intent. Try one of these safer next searches:
+                  </p>
+                  <ul className="mt-4 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670] sm:grid-cols-2">
+                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
+                      Chiang Mai elephants and food
+                    </li>
+                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
+                      Bangkok food and canals
+                    </li>
+                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
+                      Phuket islands and local food
+                    </li>
+                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
+                      Pattaya beaches with easy pace
+                    </li>
+                  </ul>
+                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
+                    No product cards are shown until a real eligible product matches the confirmed intent.
                   </p>
                 </div>
               ) : searchState.status === 'ok' && searchState.products.length > 0 ? (
