@@ -10,6 +10,23 @@ function readAiTripPlannerSource(fileName: string) {
 }
 
 describe('AI trip planner public copy safety', () => {
+  it('positions the page as a visible Thailand AI trip planner MVP', () => {
+    const publicCopy = [
+      readAiTripPlannerSource('page.tsx'),
+      readAiTripPlannerSource('IntentParserDemo.tsx'),
+      readAiTripPlannerSource('AiSearchProductCard.tsx'),
+    ].join('\n')
+
+    expect(publicCopy).toMatch(/Thailand AI trip planner/i)
+    expect(publicCopy).toMatch(/Bangkok/i)
+    expect(publicCopy).toMatch(/Chiang Mai/i)
+    expect(publicCopy).toMatch(/Pattaya/i)
+    expect(publicCopy).toMatch(/Phuket/i)
+    expect(publicCopy).toMatch(/Search real Thailand experiences/i)
+    expect(publicCopy).toMatch(/View experience/i)
+    expect(publicCopy).toMatch(/href=\{detailHref\}/)
+  })
+
   it('keeps public planner copy free of backend, checkout, and payment wording', () => {
     const publicCopy = [
       readAiTripPlannerSource('page.tsx'),

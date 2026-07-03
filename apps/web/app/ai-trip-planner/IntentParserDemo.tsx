@@ -18,9 +18,10 @@ import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const examplePrompts = [
   'Chiang Mai 3 days food temples elephants, less crowded',
-  'Tokyo for 5 days, anime, food and local markets',
+  'Bangkok 3 days canals temples street food, relaxed pace',
   '清迈3天，大象，寺庙，美食，避开人多',
-  'Dubai tomorrow, luxury food, less crowded',
+  'Phuket 4 days islands beaches local food, avoid rushed schedule',
+  'Pattaya 2 days beaches food elephant day trip, easy pace',
 ]
 
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
