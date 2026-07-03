@@ -122,6 +122,12 @@ test.describe('Valid Chiang Mai flow', () => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
+    const resultSummary = page.getByLabel(/result fit summary/i)
+    await expect(resultSummary).toBeVisible()
+    await expect(resultSummary.getByText(/why these experiences match/i)).toBeVisible()
+    await expect(resultSummary.getByText(/Interest signals: elephants, temples, food/i)).toBeVisible()
+    await expect(resultSummary.getByText(/comparison-only product results/i)).toBeVisible()
+
     // Product cards are identified by their unique "View experience" CTA
     await expect(productCards(page)).toHaveCount(3)
   })
@@ -393,6 +399,12 @@ test.describe('Product card safety', () => {
     for (const term of forbidden) {
       expect(allText, `Found forbidden term: "${term}"`).not.toContain(term)
     }
+
+    const resultSummary = await page.getByLabel(/result fit summary/i).innerText()
+    expect(resultSummary.toLowerCase()).not.toContain('available now')
+    expect(resultSummary.toLowerCase()).not.toContain('instant confirmation')
+    expect(resultSummary.toLowerCase()).not.toContain('checkout')
+    expect(resultSummary.toLowerCase()).not.toContain('payment')
   })
 
   test('product cards identify results as read-only comparison matches', async ({ page }) => {
