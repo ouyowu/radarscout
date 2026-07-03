@@ -9,6 +9,7 @@ export type AiSearchProductCardProps = {
   detailHref: string
   retailPrice: string | null
   currency: string | null
+  fitReason?: string | null
 }
 
 export function AiSearchProductCard({
@@ -19,6 +20,7 @@ export function AiSearchProductCard({
   detailHref,
   retailPrice,
   currency,
+  fitReason,
 }: AiSearchProductCardProps) {
   const priceLabel = retailPrice
     ? `${currency ? `${currency} ` : ''}${retailPrice}`
@@ -42,6 +44,11 @@ export function AiSearchProductCard({
       <h3 className="mt-2 text-lg font-black leading-tight text-[#101820]">{title}</h3>
       {summary ? (
         <p className="mt-3 line-clamp-3 text-sm font-semibold leading-7 text-[#5a6670]">{summary}</p>
+      ) : null}
+      {fitReason ? (
+        <p className="mt-3 rounded-[1rem] border border-[#d8eadf] bg-[#f5fbf7] px-3 py-2 text-xs font-black leading-5 text-[#0f766e]">
+          {fitReason}
+        </p>
       ) : null}
       {tags.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">

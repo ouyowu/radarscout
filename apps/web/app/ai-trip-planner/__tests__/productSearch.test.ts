@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { canSearchFromConfirmed } from '../IntentParserDemo'
 import type { AiSearchProductCardProps } from '../AiSearchProductCard'
 import type { AiTripSearchResponse } from '../../api/ai-trip/search/route'
-import { buildResultFitSummary } from '../resultFitSummary'
+import { buildProductFitReason, buildResultFitSummary } from '../resultFitSummary'
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -140,6 +140,7 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       detailHref: '/tours/p1',
       retailPrice: '49.00',
       currency: 'USD',
+      fitReason: 'Why this fits: matches Chiang Mai and your interest in elephants.',
     }
 
     const keys = Object.keys(validProps)
@@ -173,6 +174,7 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       detailHref: '/tours/p1',
       retailPrice: '49.00',
       currency: 'USD',
+      fitReason: 'Why this fits: matches Chiang Mai and your interest in elephants.',
     }
 
     const keys = Object.keys(validProps)
@@ -326,5 +328,47 @@ describe('result fit summary (tests 38–40)', () => {
     expect(serialized).not.toMatch(/\bcommission\b/i)
     expect(serialized).not.toMatch(/rating/i)
     expect(serialized).not.toMatch(/review/i)
+  })
+})
+
+describe('product-level fit reason (tests 41–43)', () => {
+  it('builds a deterministic product reason from city and interest signals', () => {
+    const response = makeOkResponse()
+    const reason = buildProductFitReason(response.products[0], response.intent)
+
+    expect(reason).toBe('Why this fits: matches Chiang Mai and your interest in elephants.')
+  })
+
+  it('falls back to read-only comparison wording when there are no strong matches', () => {
+    const response = makeOkResponse({
+      intent: { destination: 'Bangkok', days: 3, interests: ['canals'] },
+      products: [{
+        ...makeOkResponse().products[0],
+        city: null,
+        title: 'Local culture walk',
+        summary: null,
+        tags: [],
+      }],
+    })
+    const reason = buildProductFitReason(response.products[0], response.intent)
+
+    expect(reason).toBe('Why this fits: included as a read-only Thailand experience comparison result.')
+  })
+
+  it('does not emit unsafe commerce, rating, or live-inventory language', () => {
+    const response = makeOkResponse()
+    const reason = buildProductFitReason(response.products[0], response.intent)
+
+    expect(reason).not.toMatch(/live availability/i)
+    expect(reason).not.toMatch(/available now/i)
+    expect(reason).not.toMatch(/instant confirmation/i)
+    expect(reason).not.toMatch(/\bcheckout\b/i)
+    expect(reason).not.toMatch(/\bpayment\b/i)
+    expect(reason).not.toMatch(/\bbooking\b/i)
+    expect(reason).not.toMatch(/partner rate/i)
+    expect(reason).not.toMatch(/supplier net rate/i)
+    expect(reason).not.toMatch(/\bcommission\b/i)
+    expect(reason).not.toMatch(/rating/i)
+    expect(reason).not.toMatch(/review/i)
   })
 })

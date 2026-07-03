@@ -14,7 +14,7 @@ import {
 import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
-import { buildResultFitSummary } from './resultFitSummary'
+import { buildProductFitReason, buildResultFitSummary } from './resultFitSummary'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const examplePrompts = [
@@ -311,6 +311,7 @@ export function IntentParserDemo() {
                         detailHref={product.detailHref}
                         retailPrice={product.retailPrice}
                         currency={product.currency}
+                        fitReason={buildProductFitReason(product, searchState.intent)}
                       />
                     ))}
                   </div>
