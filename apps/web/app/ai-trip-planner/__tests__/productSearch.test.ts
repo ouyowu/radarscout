@@ -331,7 +331,7 @@ describe('result fit summary (tests 38–40)', () => {
   })
 })
 
-describe('product-level fit reason (tests 41–43)', () => {
+describe('product-level fit reason (tests 41–45)', () => {
   it('builds a deterministic product reason from city and interest signals', () => {
     const response = makeOkResponse()
     const reason = buildProductFitReason(response.products[0], response.intent)
@@ -370,5 +370,35 @@ describe('product-level fit reason (tests 41–43)', () => {
     expect(reason).not.toMatch(/\bcommission\b/i)
     expect(reason).not.toMatch(/rating/i)
     expect(reason).not.toMatch(/review/i)
+  })
+
+  it('matches plural traveler interests to singular product wording', () => {
+    const response = makeOkResponse({
+      intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants'] },
+      products: [{
+        ...makeOkResponse().products[0],
+        title: 'Gentle Elephant Care Morning',
+        summary: 'Spend a calm morning learning about elephant care.',
+        tags: ['Animal care'],
+      }],
+    })
+    const reason = buildProductFitReason(response.products[0], response.intent)
+
+    expect(reason).toBe('Why this fits: matches Chiang Mai and your interest in elephants.')
+  })
+
+  it('explains safe food interest matches when product wording uses cooking or local food', () => {
+    const response = makeOkResponse({
+      intent: { destination: 'Chiang Mai', days: 3, interests: ['food'] },
+      products: [{
+        ...makeOkResponse().products[0],
+        title: 'Chiang Mai Cooking and Market Experience',
+        summary: 'A local food and cooking comparison option.',
+        tags: ['Cooking', 'Local food'],
+      }],
+    })
+    const reason = buildProductFitReason(response.products[0], response.intent)
+
+    expect(reason).toBe('Why this fits: matches Chiang Mai and your interest in food.')
   })
 })

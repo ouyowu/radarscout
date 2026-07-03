@@ -41,16 +41,57 @@ function normalizedTokens(values: string[]) {
   return values.map(value => value.trim().toLowerCase()).filter(Boolean)
 }
 
+const INTEREST_ALIASES: Record<string, string[]> = {
+  elephant: ['elephant', 'elephants', 'elephant care'],
+  elephants: ['elephant', 'elephants', 'elephant care'],
+  food: ['food', 'foods', 'cooking', 'cook', 'culinary', 'local food', 'market'],
+  cooking: ['cooking', 'cook', 'food', 'culinary', 'local food', 'market'],
+  temple: ['temple', 'temples', 'wat'],
+  temples: ['temple', 'temples', 'wat'],
+  nature: ['nature', 'forest', 'outdoor', 'waterfall', 'mountain'],
+  family: ['family', 'families', 'kids', 'children', 'child'],
+  beaches: ['beach', 'beaches', 'island', 'islands'],
+  beach: ['beach', 'beaches', 'island', 'islands'],
+}
+
+function singularCandidate(value: string) {
+  if (value.endsWith('ies') && value.length > 4) {
+    return `${value.slice(0, -3)}y`
+  }
+
+  if (value.endsWith('es') && value.length > 3) {
+    return value.slice(0, -2)
+  }
+
+  if (value.endsWith('s') && value.length > 3) {
+    return value.slice(0, -1)
+  }
+
+  return value
+}
+
+function interestVariants(interest: string) {
+  const normalized = interest.trim().toLowerCase()
+  if (!normalized) return []
+
+  const singular = singularCandidate(normalized)
+  const aliasKeys = [normalized, singular]
+  const aliases = aliasKeys.flatMap(key => INTEREST_ALIASES[key] ?? [])
+
+  return Array.from(new Set([normalized, singular, ...aliases].filter(Boolean)))
+}
+
 function matchingInterests(product: ResultFitProduct, interests: string[]) {
   const signals = normalizedTokens([
     product.title,
     product.summary ?? '',
     ...product.tags,
   ])
+  const signalText = signals.join(' ')
   const matches = interests
     .map(interest => interest.trim())
     .filter(Boolean)
-    .filter(interest => signals.some(signal => signal.includes(interest.toLowerCase())))
+    .filter(interest => interestVariants(interest).some(variant => signalText.includes(variant)))
 
   return Array.from(new Set(matches)).slice(0, 2)
 }
