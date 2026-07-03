@@ -5,15 +5,15 @@ import { IntentParserDemo } from './IntentParserDemo'
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'AI Private Trip Search | RadarScout',
+  title: 'Thailand AI Trip Planner | RadarScout',
   description:
-    'Describe a custom Thailand travel idea in one sentence. RadarScout understands trip intent locally, then supports read-only Thailand product search for comparison.',
+    'Plan Thailand experiences with RadarScout. Describe Bangkok, Chiang Mai, Pattaya, Phuket, or a wider Thailand route, then compare read-only product matches safely.',
   alternates: { canonical: `${base}/ai-trip-planner` },
   robots: { index: false, follow: false },
   openGraph: {
-    title: 'AI Private Trip Search | RadarScout',
+    title: 'Thailand AI Trip Planner | RadarScout',
     description:
-      'AI private trip search engine for custom Thailand ideas. Local intent parsing with read-only Thailand product search for comparison.',
+      'Thailand AI trip planner for guided discovery. Local intent parsing with read-only Thailand product search for comparison.',
     type: 'website',
     url: `${base}/ai-trip-planner`,
   },
@@ -66,6 +66,33 @@ const notConnected = [
   'Itinerary generation',
 ]
 
+const destinationStarters = [
+  {
+    city: 'Bangkok',
+    title: 'Bangkok city days',
+    body: 'Canals, temples, markets, food routes, and easier day-trip comparisons from Bangkok.',
+    prompt: 'Bangkok 3 days canals temples street food, relaxed pace',
+  },
+  {
+    city: 'Chiang Mai',
+    title: 'Chiang Mai elephant and food plans',
+    body: 'Elephant care, cooking, nature, temples, and family-friendly experience matching.',
+    prompt: 'Chiang Mai 3 days elephants cooking temples, family friendly',
+  },
+  {
+    city: 'Pattaya',
+    title: 'Pattaya day-trip ideas',
+    body: 'Beach-area day trips, local experiences, and nearby options with clearer planning fit.',
+    prompt: 'Pattaya 2 days beaches food elephant day trip, easy pace',
+  },
+  {
+    city: 'Phuket',
+    title: 'Phuket islands and nature',
+    body: 'Island days, beaches, boats, old town, food, and gentler outdoor experience ideas.',
+    prompt: 'Phuket 4 days islands beaches local food, avoid rushed schedule',
+  },
+]
+
 export default function AiTripPlannerPage() {
   return (
     <main className="min-h-screen bg-[#fbf8f3] text-[#111827]">
@@ -78,14 +105,14 @@ export default function AiTripPlannerPage() {
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
               <span className="inline-flex rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#f8d7bf]">
-                AI Private Trip Search
+                Thailand AI Trip Planner
               </span>
               <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-                AI private trip search engine for custom travel ideas
+                Plan Thailand experiences before choosing what to compare
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-                Describe your trip in one sentence. RadarScout understands your travel intent locally first, then can show read-only Thailand
-                product search results for comparison.
+                Describe Bangkok, Chiang Mai, Pattaya, Phuket, or a wider Thailand route. RadarScout understands your travel intent locally,
+                then shows read-only product matches for safe comparison.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -98,7 +125,7 @@ export default function AiTripPlannerPage() {
                   href="#planner-demo"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-white/10"
                 >
-                  Thailand live destination
+                  Browse destination starters
                 </Link>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -141,13 +168,49 @@ export default function AiTripPlannerPage() {
                 <div className="mt-6 rounded-2xl border border-dashed border-[#d9cab4] bg-white p-4">
                   <p className="text-sm font-semibold text-[#1E2D59]">Transparent planning mode</p>
                   <p className="mt-2 text-sm leading-7 text-[#6b7280]">
-                    This page demonstrates local trip intent parsing and comparison-only product results. Availability status and partner handoff
-                    integrations are not connected.
+                    This page demonstrates local trip intent parsing and comparison-only product results. Current details stay on product pages
+                    and booking partner surfaces.
                   </p>
                 </div>
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      <section id="planner-demo" className="bg-[#fcfaf6] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <span className="inline-flex rounded-full bg-[#D57C48] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
+              Thailand routes
+            </span>
+            <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
+              Start with a city, then refine the experience fit.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-[#6b7280]">
+              These starters are prompts for guided discovery. They do not claim current availability, trigger booking actions, or replace product-page
+              details.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {destinationStarters.map(item => (
+              <a
+                key={item.city}
+                href="#intent-demo"
+                className="group flex min-h-full flex-col rounded-[1.75rem] border border-[#ede6db] bg-white p-6 shadow-[0_20px_40px_rgba(17,24,39,0.05)] transition hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(17,24,39,0.08)]"
+              >
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a15d31]">{item.city}</span>
+                <h3 className="mt-4 text-2xl font-semibold text-[#1E2D59]">{item.title}</h3>
+                <p className="mt-4 flex-1 text-sm leading-7 text-[#6b7280]">{item.body}</p>
+                <p className="mt-5 rounded-2xl bg-[#f5efe8] p-4 text-xs font-semibold leading-6 text-[#4b5563]">
+                  Example: {item.prompt}
+                </p>
+                <span className="mt-5 inline-flex min-h-[44px] items-center text-sm font-semibold uppercase tracking-[0.14em] text-[#D57C48]">
+                  Use this route idea
+                </span>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -239,8 +302,8 @@ export default function AiTripPlannerPage() {
                 The booking-partner product catalog is connected for read-only comparison only
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
-                This page positions RadarScout as an AI private trip search engine. The current implementation understands trip intent locally
-                and can return comparison-only product results. Availability checks, final partner handoff, and reservation workflow stay disabled.
+                This page positions RadarScout as a Thailand AI trip planner. The current implementation understands trip intent locally
+                and can return comparison-only product results. Current details stay on product pages and booking partner surfaces.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {transparencyPoints.map(point => (
@@ -274,14 +337,14 @@ export default function AiTripPlannerPage() {
       <section className="bg-[#fbf8f3] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl rounded-[2rem] bg-[#f5efe8] p-8 text-center shadow-[0_24px_48px_rgba(17,24,39,0.05)] sm:p-12">
           <span className="inline-flex rounded-full bg-[#1E2D59] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
-            Planning shell only
+            Guarded planner MVP
           </span>
           <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
             Start with a custom trip idea, then compare Thailand experiences.
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
-            This workspace understands travel intent locally and keeps product search transparent. No form submission is connected. No
-            email capture is enabled. No reservation handoff flow is active.
+            This workspace understands travel intent locally and keeps product search transparent. No email capture is enabled and no booking
+            partner action happens from this planner page.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
