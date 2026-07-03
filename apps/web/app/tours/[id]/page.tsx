@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
-import { getPublicThailandProduct } from '@/lib/publicProducts/getPublicThailandProduct'
+import {
+  getPublicThailandProduct,
+  loadPublicThailandProductDetail,
+} from '@/lib/publicProducts/getPublicThailandProduct'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,18 +60,6 @@ type ProductDetail = {
   bookingPartnerHandoff?: BookingPartnerHandoff
 }
 
-type ProductDetailResponse = {
-  product: ProductDetail | null
-  meta?: {
-    source: 'signed-bokun-supplier-products'
-    inventoryScope: 'thailand-first'
-    bookingEnabled: false
-    availabilityEnabled: false
-    detailSupported: true
-  }
-  error?: string
-}
-
 type ProductDetailResult =
   | { status: 'found'; product: ProductDetail }
   | { status: 'not-found' }
@@ -117,35 +107,8 @@ export async function generateMetadata({ params }: TourDetailPageProps): Promise
   }
 }
 
-function getRequestOrigin() {
-  const headerStore = headers()
-  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
-  const proto = headerStore.get('x-forwarded-proto') ?? 'http'
-
-  if (host) return `${proto}://${host}`
-
-  return process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-}
-
 async function fetchProductDetail(id: string): Promise<ProductDetailResult> {
-  try {
-    const response = await fetch(`${getRequestOrigin()}/api/products/${encodeURIComponent(id)}`, {
-      cache: 'no-store',
-    })
-    const payload = await response.json() as ProductDetailResponse
-
-    if (response.status === 404 || !payload.product) {
-      return { status: 'not-found' }
-    }
-
-    if (!response.ok) {
-      return { status: 'error' }
-    }
-
-    return { status: 'found', product: payload.product }
-  } catch {
-    return { status: 'error' }
-  }
+  return loadPublicThailandProductDetail(id)
 }
 
 function productLocation(product: ProductDetail) {
@@ -377,7 +340,19 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
                 <p className="mt-3 text-xs font-bold leading-6 text-white/65">
                   Continue with a booking partner to review current details.
                 </p>
-              ) : null}
+              ) : (
+                <div className="mt-6 rounded-[1.5rem] border border-white/15 bg-white/10 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
+                    Planning-only detail
+                  </p>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                    RadarScout can help you compare this experience, but a verified booking partner handoff is not available yet.
+                  </p>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                    Use this page for planning and compare other experiences with verified handoff options.
+                  </p>
+                </div>
+              )}
             </div>
           </aside>
         </div>

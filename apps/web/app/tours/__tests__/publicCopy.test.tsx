@@ -15,6 +15,13 @@ vi.mock('next/headers', () => ({
   })),
 }))
 
+const productLoaderMock = vi.hoisted(() => ({
+  getPublicThailandProduct: vi.fn(),
+  loadPublicThailandProductDetail: vi.fn(),
+}))
+
+vi.mock('@/lib/publicProducts/getPublicThailandProduct', () => productLoaderMock)
+
 import ToursExperienceDiscoveryPage from '../page'
 import TourDetailPage from '../[id]/page'
 
@@ -42,6 +49,7 @@ function mockFetchJson(payload: unknown) {
 
 describe('tour public copy safety', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     vi.stubGlobal('React', React)
   })
 
@@ -85,7 +93,10 @@ describe('tour public copy safety', () => {
   })
 
   it('renders /tours/{id} without tourist-facing backend, rate, payment, or availability claims', async () => {
-    mockFetchJson({
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'found',
       product: {
         id: 'tour_without_price',
         title: 'Chiang Mai Elephant Care',
@@ -106,13 +117,6 @@ describe('tour public copy safety', () => {
         },
         reviewedEnrichment: null,
       },
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        detailSupported: true,
-      },
     })
 
     const element = await TourDetailPage({ params: { id: 'tour_without_price' } })
@@ -122,12 +126,19 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Price not listed')
     expect(normalizedMarkup).toContain('booking partner')
     expect(normalizedMarkup).toContain('trusted partner record')
+    expect(markup).toContain('Planning-only detail')
+    expect(markup).toContain('verified booking partner handoff is not available yet')
+    expect(markup).toContain('Use this page for planning and compare other experiences with verified handoff options')
     expect(markup).not.toContain('Check availability')
+    expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
 
   it('renders a verified product-specific booking partner handoff CTA on /tours/{id}', async () => {
-    mockFetchJson({
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'found',
       product: {
         id: 'tour_with_handoff',
         title: 'Chiang Mai Elephant Care',
@@ -155,13 +166,6 @@ describe('tour public copy safety', () => {
           verifiedBy: 'owner_managed_catalog',
         },
       },
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        detailSupported: true,
-      },
     })
 
     const element = await TourDetailPage({ params: { id: 'tour_with_handoff' } })
@@ -172,6 +176,7 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('target="_blank"')
     expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
     expect(markup).toContain('Continue with a booking partner')
+    expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
 })
