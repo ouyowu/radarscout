@@ -283,7 +283,7 @@ describe('regression — detailHref stays within /tours/ namespace (test 37)', (
   })
 })
 
-describe('result fit summary (tests 38–40)', () => {
+describe('result fit summary (tests 38–41)', () => {
   it('builds a deterministic explanation for successful product results', () => {
     const summary = buildResultFitSummary(makeOkResponse())
 
@@ -291,9 +291,33 @@ describe('result fit summary (tests 38–40)', () => {
     expect(summary?.heading).toBe('Why these experiences match')
     expect(summary?.chips).toContain('Chiang Mai')
     expect(summary?.chips).toContain('3 days')
-    expect(summary?.chips).toContain('Interest signals: elephants')
+    expect(summary?.chips).toContain('Matched interests: elephants')
     expect(summary?.points.join(' ')).toMatch(/real Thailand experience/i)
     expect(summary?.points.join(' ')).toMatch(/comparison-only product results/i)
+  })
+
+  it('summarizes only interests that are actually represented in product results', () => {
+    const summary = buildResultFitSummary(makeOkResponse({
+      intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants', 'food', 'canals'] },
+      products: [
+        {
+          ...makeOkResponse().products[0],
+          title: 'Gentle Elephant Care Morning',
+          summary: 'Spend a calm morning learning about elephant care.',
+          tags: ['Animal care'],
+        },
+        {
+          ...makeOkResponse().products[0],
+          id: 'prod_2',
+          title: 'Chiang Mai Cooking and Market Experience',
+          summary: 'A local food and cooking comparison option.',
+          tags: ['Cooking', 'Local food'],
+        },
+      ],
+    }))
+
+    expect(summary?.chips).toContain('Matched interests: elephants, food')
+    expect(summary?.chips).not.toContain('Matched interests: elephants, food, canals')
   })
 
   it('does not render a result fit summary for empty or unsupported responses', () => {
@@ -331,7 +355,7 @@ describe('result fit summary (tests 38–40)', () => {
   })
 })
 
-describe('product-level fit reason (tests 41–45)', () => {
+describe('product-level fit reason (tests 42–46)', () => {
   it('builds a deterministic product reason from city and interest signals', () => {
     const response = makeOkResponse()
     const reason = buildProductFitReason(response.products[0], response.intent)

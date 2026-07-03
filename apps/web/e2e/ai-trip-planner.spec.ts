@@ -125,7 +125,7 @@ test.describe('Valid Chiang Mai flow', () => {
     const resultSummary = page.getByLabel(/result fit summary/i)
     await expect(resultSummary).toBeVisible()
     await expect(resultSummary.getByText(/why these experiences match/i)).toBeVisible()
-    await expect(resultSummary.getByText(/Interest signals: elephants, temples, food/i)).toBeVisible()
+    await expect(resultSummary.getByText(/Matched interests: .*(elephants|temples|food)/i)).toBeVisible()
     await expect(resultSummary.getByText(/comparison-only product results/i)).toBeVisible()
 
     // Product cards are identified by their unique "View experience" CTA
