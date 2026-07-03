@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
-import { getPublicThailandProduct } from '@/lib/publicProducts/getPublicThailandProduct'
+import {
+  getPublicThailandProduct,
+  loadPublicThailandProductDetail,
+} from '@/lib/publicProducts/getPublicThailandProduct'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,18 +60,6 @@ type ProductDetail = {
   bookingPartnerHandoff?: BookingPartnerHandoff
 }
 
-type ProductDetailResponse = {
-  product: ProductDetail | null
-  meta?: {
-    source: 'signed-bokun-supplier-products'
-    inventoryScope: 'thailand-first'
-    bookingEnabled: false
-    availabilityEnabled: false
-    detailSupported: true
-  }
-  error?: string
-}
-
 type ProductDetailResult =
   | { status: 'found'; product: ProductDetail }
   | { status: 'not-found' }
@@ -117,35 +107,8 @@ export async function generateMetadata({ params }: TourDetailPageProps): Promise
   }
 }
 
-function getRequestOrigin() {
-  const headerStore = headers()
-  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
-  const proto = headerStore.get('x-forwarded-proto') ?? 'http'
-
-  if (host) return `${proto}://${host}`
-
-  return process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-}
-
 async function fetchProductDetail(id: string): Promise<ProductDetailResult> {
-  try {
-    const response = await fetch(`${getRequestOrigin()}/api/products/${encodeURIComponent(id)}`, {
-      cache: 'no-store',
-    })
-    const payload = await response.json() as ProductDetailResponse
-
-    if (response.status === 404 || !payload.product) {
-      return { status: 'not-found' }
-    }
-
-    if (!response.ok) {
-      return { status: 'error' }
-    }
-
-    return { status: 'found', product: payload.product }
-  } catch {
-    return { status: 'error' }
-  }
+  return loadPublicThailandProductDetail(id)
 }
 
 function productLocation(product: ProductDetail) {
