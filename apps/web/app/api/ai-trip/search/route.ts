@@ -15,6 +15,21 @@ export const dynamic = 'force-dynamic'
 
 const DEFAULT_TAKE = 6
 const MAX_TAKE = 12
+const MAX_INTEREST_SEARCH_TERMS = 8
+
+const INTEREST_SEARCH_ALIASES: Record<string, string[]> = {
+  elephant: ['elephants'],
+  elephants: ['elephant'],
+  temple: ['temples'],
+  temples: ['temple'],
+  food: ['meal', 'meals', 'lunch', 'dinner', 'dining', 'cuisine', 'khan toke', 'cooking'],
+  cooking: ['food', 'meal', 'lunch', 'dinner', 'dining', 'cuisine', 'khan toke'],
+  nature: ['trail', 'trekking', 'forest'],
+  beach: ['beaches', 'island', 'islands'],
+  beaches: ['beach', 'island', 'islands'],
+  canal: ['canals'],
+  canals: ['canal'],
+}
 
 const META = {
   productRetrievalEnabled: true,
@@ -46,6 +61,28 @@ function isCityDestination(destination: string): boolean {
   return destination.toLowerCase() !== 'thailand'
 }
 
+function getInterestSearchTerms(interests: string[]): string[] {
+  const terms: string[] = []
+  const seen = new Set<string>()
+
+  for (const interest of interests) {
+    const normalized = interest.trim().toLowerCase()
+    if (!normalized) continue
+
+    for (const term of [normalized, ...(INTEREST_SEARCH_ALIASES[normalized] ?? [])]) {
+      const normalizedTerm = term.trim().toLowerCase()
+      if (!normalizedTerm || seen.has(normalizedTerm)) continue
+
+      seen.add(normalizedTerm)
+      terms.push(normalizedTerm)
+
+      if (terms.length >= MAX_INTEREST_SEARCH_TERMS) return terms
+    }
+  }
+
+  return terms
+}
+
 async function queryEligibleCandidates(
   destination: string | null,
   interests: string[],
@@ -53,20 +90,29 @@ async function queryEligibleCandidates(
 ): Promise<CandidateQueryResult> {
   const city = destination && isCityDestination(destination) ? destination : null
 
-  // Primary: with interest keyword search if interests present
   if (interests.length > 0) {
-    const primary = await listAiEligibleThailandProducts({
-      city: city ?? undefined,
-      search: interests[0],
-      take,
-    })
-    if (primary.length > 0) return { candidates: primary, fallbackUsed: false }
+    const byId = new Map<string, AiProductCandidate>()
+
+    for (const term of getInterestSearchTerms(interests)) {
+      const matches = await listAiEligibleThailandProducts({
+        city: city ?? undefined,
+        search: term,
+        take,
+      })
+
+      for (const candidate of matches) {
+        if (!byId.has(candidate.id)) byId.set(candidate.id, candidate)
+        if (byId.size >= take) break
+      }
+
+      if (byId.size >= take) break
+    }
+
+    return { candidates: Array.from(byId.values()).slice(0, take), fallbackUsed: false }
   }
 
-  // Fallback: destination-only (no interest filter).
-  // fallbackUsed is true only when interests were present but primary miss occurred.
   const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
-  return { candidates: fallback, fallbackUsed: interests.length > 0 }
+  return { candidates: fallback, fallbackUsed: false }
 }
 
 export async function POST(request: NextRequest) {
