@@ -105,6 +105,16 @@ function matchingResultInterests(
   return Array.from(new Set(matches)).slice(0, 3)
 }
 
+function unmatchedRequestedInterests(interests: string[], matchedInterests: string[]) {
+  const matched = new Set(matchedInterests.map(interest => interest.trim().toLowerCase()))
+
+  return interests
+    .map(interest => interest.trim())
+    .filter(Boolean)
+    .filter(interest => !matched.has(interest.toLowerCase()))
+    .slice(0, 3)
+}
+
 function shortTagList(tags: string[]) {
   const normalized = tags.map(tag => tag.trim()).filter(Boolean).slice(0, 2)
   if (normalized.length === 0) return null
@@ -117,9 +127,12 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
 
   const destination = normalizeText(response.intent?.destination) ?? 'Thailand'
   const duration = formatDays(response.intent?.days)
-  const interests = summarizeInterests(response.intent?.interests ?? [])
-  const matchedInterests = summarizeInterests(
-    matchingResultInterests(response.products, response.intent?.interests ?? []),
+  const requestedInterests = response.intent?.interests ?? []
+  const interests = summarizeInterests(requestedInterests)
+  const matchedResultInterests = matchingResultInterests(response.products, requestedInterests)
+  const matchedInterests = summarizeInterests(matchedResultInterests)
+  const otherRequestedInterests = summarizeInterests(
+    unmatchedRequestedInterests(requestedInterests, matchedResultInterests),
   )
   const cities = uniqueProductCities(response.products)
   const productCount = response.products.length
@@ -130,12 +143,15 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
       destination,
       duration,
       matchedInterests ? `Matched interests: ${matchedInterests}` : null,
+      otherRequestedInterests ? `Other requested interests: ${otherRequestedInterests}` : null,
       cities.length > 0 ? `Result cities: ${cities.join(', ')}` : null,
     ].filter((chip): chip is string => Boolean(chip)),
     points: [
       `${productCount} real Thailand experience${productCount === 1 ? '' : 's'} matched the confirmed destination and trip idea.`,
-      interests
-        ? `The result set uses intent signals such as ${interests} before showing product cards.`
+      matchedInterests
+        ? 'Matched-interest labels are based on the returned product titles, summaries, and tags.'
+        : interests
+          ? 'Requested interests are kept separate when the returned cards do not clearly represent them.'
         : 'The result set uses the confirmed destination before showing product cards.',
       'These are comparison-only product results. Open product pages for current details and continue through the public partner handoff path.',
     ],

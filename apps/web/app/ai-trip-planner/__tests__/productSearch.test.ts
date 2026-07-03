@@ -317,7 +317,9 @@ describe('result fit summary (tests 38–41)', () => {
     }))
 
     expect(summary?.chips).toContain('Matched interests: elephants, food')
+    expect(summary?.chips).toContain('Other requested interests: canals')
     expect(summary?.chips).not.toContain('Matched interests: elephants, food, canals')
+    expect(summary?.points.join(' ')).not.toMatch(/uses intent signals such as elephants, food, canals/i)
   })
 
   it('does not render a result fit summary for empty or unsupported responses', () => {
