@@ -59,6 +59,18 @@ const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   },
 }
 
+const NO_MATCH_RESPONSE: AiTripSearchResponse = {
+  status: 'no_match',
+  intent: { destination: 'Pattaya', days: 2, interests: ['beach', 'food', 'elephants'] },
+  products: [],
+  meta: {
+    productRetrievalEnabled: true,
+    itineraryGenerationEnabled: false,
+    bookingEnabled: false,
+    availabilityEnabled: false,
+  },
+}
+
 const MIXED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   status: 'unsupported_destination',
   intent: { destination: 'Thailand and Singapore', days: 7, interests: [] },
@@ -222,6 +234,36 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     const pageText = (await page.locator('body').innerText()).toLowerCase()
     expect(pageText).not.toContain('chiang mai elephant sanctuary')
     expect(pageText).not.toContain('old city temple walk')
+  })
+})
+
+// ── No match guidance ─────────────────────────────────────────────────────────
+
+test.describe('No match guidance', () => {
+  test('no-match result gives safe actionable prompt guidance and zero product cards', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(NO_MATCH_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.fill('#trip-idea', 'Pattaya 2 days beach food elephant day trip')
+    await page.click('button[type="submit"]')
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByText('No matching Thailand experiences found')).toBeVisible()
+    await expect(page.getByText(/Try one of these safer next searches/i)).toBeVisible()
+    await expect(page.getByText(/Chiang Mai elephants and food/i)).toBeVisible()
+    await expect(page.getByText(/Bangkok food and canals/i)).toBeVisible()
+    await expect(page.getByText(/No product cards are shown until a real eligible product matches/i)).toBeVisible()
+    await expect(productCards(page)).toHaveCount(0)
+
+    const pageText = await page.locator('body').innerText()
+    expect(pageText).not.toMatch(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)
   })
 })
 
