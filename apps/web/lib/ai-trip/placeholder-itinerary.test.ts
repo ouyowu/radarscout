@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPlaceholderDaySlots } from './placeholder-itinerary'
+import { buildDeterministicPlanningOutline, buildPlaceholderDaySlots } from './placeholder-itinerary'
 
 describe('buildPlaceholderDaySlots', () => {
   it.each([null, undefined, 0, -1, 1.2, Number.NaN])(
@@ -20,7 +20,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.',
+          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
         ],
       },
       {
@@ -29,7 +29,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.',
+          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
         ],
       },
       {
@@ -38,7 +38,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No tours, suppliers, prices, availability, checkout, payment, or booking links are loaded.',
+          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
         ],
       },
     ])
@@ -74,6 +74,75 @@ describe('buildPlaceholderDaySlots', () => {
       expect(slot).not.toHaveProperty('paymentUrl')
       expect(slot).not.toHaveProperty('availabilitySlot')
       expect(slot.notes.join(' ')).not.toMatch(/real attraction/i)
+      expect(slot.notes.join(' ')).not.toMatch(/\bcheckout\b/i)
+      expect(slot.notes.join(' ')).not.toMatch(/\bpayment\b/i)
+      expect(slot.notes.join(' ')).not.toMatch(/\bbooking\b/i)
     }
+  })
+})
+
+describe('buildDeterministicPlanningOutline', () => {
+  it('returns null until destination and duration are confirmed', () => {
+    expect(buildDeterministicPlanningOutline({
+      destination: null,
+      durationDays: 3,
+      interests: ['food'],
+      foodPreferences: [],
+      pace: 'relaxed',
+      travelerType: 'family',
+      avoid: [],
+    })).toBeNull()
+
+    expect(buildDeterministicPlanningOutline({
+      destination: 'Chiang Mai',
+      durationDays: null,
+      interests: ['food'],
+      foodPreferences: [],
+      pace: 'relaxed',
+      travelerType: 'family',
+      avoid: [],
+    })).toBeNull()
+  })
+
+  it('builds a safe deterministic outline from confirmed intent', () => {
+    const outline = buildDeterministicPlanningOutline({
+      destination: 'Chiang Mai',
+      durationDays: 3,
+      interests: ['elephants', 'temples'],
+      foodPreferences: ['local food'],
+      pace: 'relaxed',
+      travelerType: 'family',
+      avoid: ['crowds'],
+    })
+
+    expect(outline).not.toBeNull()
+    expect(outline?.title).toBe('Suggested Chiang Mai planning outline')
+    expect(outline?.fitExplanation).toMatch(/3-day Chiang Mai plan/i)
+    expect(outline?.fitExplanation).toMatch(/elephant care/i)
+    expect(outline?.fitExplanation).toMatch(/relaxed pace/i)
+    expect(outline?.slots).toHaveLength(3)
+    expect(outline?.slots.map(slot => slot.label)).toEqual(['Start', 'Middle', 'Later'])
+  })
+
+  it('does not emit checkout, payment, booking, ratings, or fake availability claims', () => {
+    const outline = buildDeterministicPlanningOutline({
+      destination: 'Phuket',
+      durationDays: 4,
+      interests: ['beaches', 'food'],
+      foodPreferences: [],
+      pace: 'moderate',
+      travelerType: 'couple',
+      avoid: [],
+    })
+
+    const serialized = JSON.stringify(outline)
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/\bbooking\b/i)
+    expect(serialized).not.toMatch(/rating/i)
+    expect(serialized).not.toMatch(/review/i)
   })
 })

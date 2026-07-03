@@ -47,6 +47,19 @@ export type PlaceholderDaySlot = {
   notes: string[]
 }
 
+export type DeterministicPlanningSlot = {
+  label: 'Start' | 'Middle' | 'Later'
+  title: string
+  description: string
+}
+
+export type DeterministicPlanningOutline = {
+  title: string
+  fitExplanation: string
+  slots: DeterministicPlanningSlot[]
+  safetyNote: string
+}
+
 export type ItineraryContractResult = {
   status: ItineraryGenerationStatus
   placeholderDays: PlaceholderDaySlot[]

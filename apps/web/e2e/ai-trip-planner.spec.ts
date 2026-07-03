@@ -341,16 +341,16 @@ test.describe('Capability state', () => {
     await expect(aeRow.locator('span').last()).toHaveText('false')
   })
 
-  test('itinerary generation is disabled — Generate itinerary button is disabled, not clickable', async ({ page }) => {
+  test('deterministic planning outline appears without an itinerary generation CTA', async ({ page }) => {
     await page.goto('/ai-trip-planner')
     await page.fill('#trip-idea', 'Chiang Mai 3 days elephants')
     await page.click('button[type="submit"]')
     await page.getByRole('button', { name: /confirm trip intent/i }).click()
 
-    // The "Generate itinerary" button must be disabled
-    const generateBtn = page.getByRole('button', { name: /generate itinerary/i })
-    await expect(generateBtn).toBeVisible()
-    await expect(generateBtn).toBeDisabled()
+    await expect(page.getByText(/deterministic outline/i)).toBeVisible()
+    await expect(page.getByText(/suggested chiang mai planning outline/i)).toBeVisible()
+    await expect(page.getByText(/this outline is deterministic planning guidance/i)).toBeVisible()
+    await expect(page.getByRole('button', { name: /generate itinerary/i })).toHaveCount(0)
   })
 })
 
@@ -441,9 +441,9 @@ test.describe('Product card safety', () => {
   })
 })
 
-// ── Placeholder separation ────────────────────────────────────────────────────
+// ── Deterministic outline separation ───────────────────────────────────────────
 
-test.describe('Placeholder separation', () => {
+test.describe('Deterministic outline separation', () => {
   test.beforeEach(async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({
@@ -454,62 +454,58 @@ test.describe('Placeholder separation', () => {
     })
   })
 
-  test('placeholder itinerary does not contain real product cards', async ({ page }) => {
+  test('deterministic planning outline does not contain real product card CTAs', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    // Placeholder day cards are articles containing "Day N placeholder" text
-    const daySlots = page.locator('article').filter({ hasText: /day \d+ placeholder/i })
-    const slotCount = await daySlots.count()
+    const outlineSlots = page.locator('article').filter({ hasText: /anchor the day|compare nearby|shortlist real/i })
+    const slotCount = await outlineSlots.count()
     expect(slotCount).toBeGreaterThan(0)
 
-    // None of the placeholder day slots should have a "View experience" link
+    // None of the outline slots should have a "View experience" link.
     for (let i = 0; i < slotCount; i++) {
-      await expect(daySlots.nth(i).getByRole('link', { name: /view experience/i })).toHaveCount(0)
+      await expect(outlineSlots.nth(i).getByRole('link', { name: /view experience/i })).toHaveCount(0)
     }
   })
 
-  test('placeholder day cards do not contain product titles from the search', async ({ page }) => {
+  test('deterministic planning outline does not contain product titles from the search', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    const daySlots = page.locator('article').filter({ hasText: /day \d+ placeholder/i })
-    const texts = (await daySlots.allInnerTexts()).join(' ').toLowerCase()
+    const outlineSlots = page.locator('article').filter({ hasText: /anchor the day|compare nearby|shortlist real/i })
+    const texts = (await outlineSlots.allInnerTexts()).join(' ').toLowerCase()
 
-    // Product titles from the mock must not appear inside placeholder day cards
+    // Product titles from the mock must not appear inside deterministic outline cards.
     expect(texts).not.toContain('elephant sanctuary')
     expect(texts).not.toContain('temple walk')
     expect(texts).not.toContain('night bazaar food tour')
   })
 
-  test('real products are not inserted into placeholder day cards', async ({ page }) => {
+  test('real products are not inserted into deterministic outline cards', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    // Placeholder day articles show "Planning slot placeholder" heading
-    const daySlots = page.locator('article').filter({ hasText: /planning slot placeholder/i })
-    const slotCount = await daySlots.count()
+    const outlineSlots = page.locator('article').filter({ hasText: /anchor the day|compare nearby|shortlist real/i })
+    const slotCount = await outlineSlots.count()
     expect(slotCount).toBeGreaterThan(0)
 
-    // Each day slot must NOT contain product-specific content
+    // Each outline slot must NOT contain product-specific content.
     for (let i = 0; i < slotCount; i++) {
-      const slotText = (await daySlots.nth(i).innerText()).toLowerCase()
+      const slotText = (await outlineSlots.nth(i).innerText()).toLowerCase()
       expect(slotText).not.toContain('from usd')
       expect(slotText).not.toContain('view experience')
     }
   })
 
-  test('itinerary generation is disabled — Generate itinerary button is disabled after search', async ({ page }) => {
+  test('itinerary generation remains disabled after search without rendering a generator button', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    // The "Generate itinerary" placeholder button must be visible and disabled
-    const generateBtn = page.getByRole('button', { name: /generate itinerary/i })
-    await expect(generateBtn).toBeVisible()
-    await expect(generateBtn).toBeDisabled()
+    await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByRole('button', { name: /generate itinerary/i })).toHaveCount(0)
   })
 })
