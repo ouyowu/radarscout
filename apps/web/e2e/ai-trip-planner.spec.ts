@@ -130,6 +130,7 @@ test.describe('Valid Chiang Mai flow', () => {
 
     // Product cards are identified by their unique "View experience" CTA
     await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByText(/why this fits/i)).toHaveCount(3)
   })
 
   test('each product card has a public /tours/ detail link', async ({ page }) => {
@@ -420,6 +421,7 @@ test.describe('Product card safety', () => {
     for (let i = 0; i < 3; i++) {
       await expect(cards.nth(i).getByText(/comparison match/i)).toBeVisible()
       await expect(cards.nth(i).getByText(/read-only product result/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/why this fits/i)).toBeVisible()
     }
   })
 

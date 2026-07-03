@@ -6,6 +6,8 @@ export type ResultFitSummary = {
   points: string[]
 }
 
+export type ResultFitProduct = AiTripSearchResponse['products'][number]
+
 function normalizeText(value: string | null | undefined) {
   return value?.trim() || null
 }
@@ -35,6 +37,31 @@ function uniqueProductCities(products: AiTripSearchResponse['products']) {
   )).slice(0, 3)
 }
 
+function normalizedTokens(values: string[]) {
+  return values.map(value => value.trim().toLowerCase()).filter(Boolean)
+}
+
+function matchingInterests(product: ResultFitProduct, interests: string[]) {
+  const signals = normalizedTokens([
+    product.title,
+    product.summary ?? '',
+    ...product.tags,
+  ])
+  const matches = interests
+    .map(interest => interest.trim())
+    .filter(Boolean)
+    .filter(interest => signals.some(signal => signal.includes(interest.toLowerCase())))
+
+  return Array.from(new Set(matches)).slice(0, 2)
+}
+
+function shortTagList(tags: string[]) {
+  const normalized = tags.map(tag => tag.trim()).filter(Boolean).slice(0, 2)
+  if (normalized.length === 0) return null
+
+  return normalized.join(', ')
+}
+
 export function buildResultFitSummary(response: AiTripSearchResponse): ResultFitSummary | null {
   if (response.status !== 'ok' || response.products.length === 0) return null
 
@@ -60,4 +87,35 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
       'These are comparison-only product results. Open product pages for current details and continue through the public partner handoff path.',
     ],
   }
+}
+
+export function buildProductFitReason(
+  product: ResultFitProduct,
+  intent: AiTripSearchResponse['intent'],
+): string {
+  const destination = normalizeText(intent?.destination) ?? 'Thailand'
+  const productCity = normalizeText(product.city)
+  const cityMatchesDestination = productCity
+    ? productCity.toLowerCase() === destination.toLowerCase()
+    : false
+  const interestMatches = matchingInterests(product, intent?.interests ?? [])
+  const tagSummary = shortTagList(product.tags)
+
+  if (interestMatches.length > 0 && cityMatchesDestination) {
+    return `Why this fits: matches ${destination} and your interest in ${interestMatches.join(', ')}.`
+  }
+
+  if (interestMatches.length > 0) {
+    return `Why this fits: reflects your interest in ${interestMatches.join(', ')} for a Thailand experience comparison.`
+  }
+
+  if (cityMatchesDestination) {
+    return `Why this fits: matches the confirmed ${destination} destination for read-only comparison.`
+  }
+
+  if (tagSummary) {
+    return `Why this fits: uses product tags such as ${tagSummary} to support comparison.`
+  }
+
+  return 'Why this fits: included as a read-only Thailand experience comparison result.'
 }

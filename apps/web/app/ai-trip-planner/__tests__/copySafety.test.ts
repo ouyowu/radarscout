@@ -41,6 +41,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toContain('Reservation workflow')
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
+    expect(publicCopy).toContain('Why this fits')
     expect(publicCopy).toMatch(/transparent planning mode/i)
     expect(publicCopy).toMatch(/read-only Thailand product search/i)
     expect(publicCopy).toMatch(/comparison-only product results/i)
