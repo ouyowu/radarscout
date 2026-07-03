@@ -44,8 +44,8 @@ function normalizedTokens(values: string[]) {
 const INTEREST_ALIASES: Record<string, string[]> = {
   elephant: ['elephant', 'elephants', 'elephant care'],
   elephants: ['elephant', 'elephants', 'elephant care'],
-  food: ['food', 'foods', 'cooking', 'cook', 'culinary', 'local food', 'market'],
-  cooking: ['cooking', 'cook', 'food', 'culinary', 'local food', 'market'],
+  food: ['food', 'foods', 'cooking', 'cook', 'culinary', 'local food', 'market', 'meal', 'meals', 'lunch', 'dinner', 'dining', 'cuisine', 'khan toke'],
+  cooking: ['cooking', 'cook', 'food', 'culinary', 'local food', 'market', 'meal', 'meals', 'lunch', 'dinner', 'dining', 'cuisine', 'khan toke'],
   temple: ['temple', 'temples', 'wat'],
   temples: ['temple', 'temples', 'wat'],
   nature: ['nature', 'forest', 'outdoor', 'waterfall', 'mountain'],

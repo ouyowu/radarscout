@@ -322,6 +322,30 @@ describe('result fit summary (tests 38–41)', () => {
     expect(summary?.points.join(' ')).not.toMatch(/uses intent signals such as elephants, food, canals/i)
   })
 
+  it('recognizes meal, lunch, and dining terms as food matches in result summaries', () => {
+    const summary = buildResultFitSummary(makeOkResponse({
+      intent: { destination: 'Chiang Mai', days: 3, interests: ['food'] },
+      products: [
+        {
+          ...makeOkResponse().products[0],
+          title: 'Chiang Mai Traditional Khan Toke Meal & Cultural Performance',
+          summary: null,
+          tags: [],
+        },
+        {
+          ...makeOkResponse().products[0],
+          id: 'prod_2',
+          title: 'Chiang Mai Elephant Sanctuary with Lunch Day Tour',
+          summary: null,
+          tags: [],
+        },
+      ],
+    }))
+
+    expect(summary?.chips).toContain('Matched interests: food')
+    expect(summary?.chips).not.toContain('Other requested interests: food')
+  })
+
   it('does not render a result fit summary for empty or unsupported responses', () => {
     expect(buildResultFitSummary({
       status: 'no_match',
