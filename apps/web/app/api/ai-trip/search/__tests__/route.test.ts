@@ -251,9 +251,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products).toEqual([])
   })
 
-  // Test 14: Interest-specific no-match falls back to destination-only eligible products
-  it('interest search returning 0 results triggers destination-only fallback', async () => {
-    // First call (with search) returns 0; second call (without search) returns 1
+  // Test 14: Interest-specific retrieval tries safe aliases before returning no_match.
+  it('interest search tries singular aliases before returning products', async () => {
     listMock.listAiEligibleThailandProducts
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([makeCandidate()])
@@ -265,13 +264,24 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants cooking' }))
     const body = await res.json()
 
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
-    // First call had search, second did not
-    const firstCall = listMock.listAiEligibleThailandProducts.mock.calls[0][0]
-    const secondCall = listMock.listAiEligibleThailandProducts.mock.calls[1][0]
-    expect(firstCall.search).toBeTruthy()
-    expect(secondCall.search).toBeUndefined()
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls[0].search).toBe('elephants')
+    expect(calls[1].search).toBe('elephant')
+    expect(calls.every(options => options.search)).toBe(true)
     expect(body.status).toBe('ok')
+  })
+
+  it('interest searches do not fall back to unrelated destination-only products', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+
+    const res = await POST(makeRequest({ prompt: 'Pattaya 2 days elephant food beach' }))
+    const body = await res.json()
+
+    expect(body.status).toBe('no_match')
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls.length).toBeGreaterThan(1)
+    expect(calls.every(options => options.search)).toBe(true)
   })
 
   // Test 15: Response contains no rawJson or eligibility internals
@@ -487,37 +497,41 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     return JSON.parse(call[1] as string)
   }
 
-  it('interest primary hit: fallbackUsed=false, retrieval called once', async () => {
-    // Primary returns a candidate → early return, no fallback
+  it('interest primary hit: fallbackUsed=false, retrieval stays interest-scoped', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(1)
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls.length).toBeGreaterThan(0)
+    expect(calls.every(options => options.search)).toBe(true)
   })
 
-  it('interest primary miss with successful fallback: fallbackUsed=true, retrieval called twice', async () => {
+  it('interest primary miss with successful alias: fallbackUsed=false and no destination fallback', async () => {
     listMock.listAiEligibleThailandProducts
       .mockResolvedValueOnce([])              // primary miss
-      .mockResolvedValueOnce([makeCandidate()])  // fallback hit
+      .mockResolvedValueOnce([makeCandidate()])  // alias hit
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants cooking' }))
 
-    expect(getSearchLog().fallbackUsed).toBe(true)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
+    expect(getSearchLog().fallbackUsed).toBe(false)
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls[0].search).toBe('elephants')
+    expect(calls[1].search).toBe('elephant')
+    expect(calls.every(options => options.search)).toBe(true)
   })
 
-  it('interest primary miss with empty fallback: fallbackUsed=true even when fallback returns zero', async () => {
+  it('interest primary miss with empty aliases: fallbackUsed=false and no destination fallback', async () => {
     listMock.listAiEligibleThailandProducts
-      .mockResolvedValueOnce([])  // primary miss
-      .mockResolvedValueOnce([])  // fallback also empty
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
 
-    expect(getSearchLog().fallbackUsed).toBe(true)
+    expect(getSearchLog().fallbackUsed).toBe(false)
     expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
   })
 
