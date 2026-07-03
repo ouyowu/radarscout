@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { canSearchFromConfirmed } from '../IntentParserDemo'
 import type { AiSearchProductCardProps } from '../AiSearchProductCard'
 import type { AiTripSearchResponse } from '../../api/ai-trip/search/route'
+import { buildResultFitSummary } from '../resultFitSummary'
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -277,5 +278,53 @@ describe('regression — detailHref stays within /tours/ namespace (test 37)', (
     for (const p of res.products) {
       expect(p.detailHref).toMatch(/^\/tours\//)
     }
+  })
+})
+
+describe('result fit summary (tests 38–40)', () => {
+  it('builds a deterministic explanation for successful product results', () => {
+    const summary = buildResultFitSummary(makeOkResponse())
+
+    expect(summary).not.toBeNull()
+    expect(summary?.heading).toBe('Why these experiences match')
+    expect(summary?.chips).toContain('Chiang Mai')
+    expect(summary?.chips).toContain('3 days')
+    expect(summary?.chips).toContain('Interest signals: elephants')
+    expect(summary?.points.join(' ')).toMatch(/real Thailand experience/i)
+    expect(summary?.points.join(' ')).toMatch(/comparison-only product results/i)
+  })
+
+  it('does not render a result fit summary for empty or unsupported responses', () => {
+    expect(buildResultFitSummary({
+      status: 'no_match',
+      intent: { destination: 'Chiang Mai', days: 3, interests: ['surfing'] },
+      products: [],
+      meta: makeOkResponse().meta,
+    })).toBeNull()
+
+    expect(buildResultFitSummary({
+      status: 'unsupported_destination',
+      intent: { destination: 'Singapore', days: 3, interests: ['food'] },
+      products: [],
+      message: 'RadarScout currently searches Thailand experiences only.',
+      meta: makeOkResponse().meta,
+    })).toBeNull()
+  })
+
+  it('does not emit unsafe commerce, rating, or live-inventory language', () => {
+    const summary = buildResultFitSummary(makeOkResponse())
+    const serialized = JSON.stringify(summary)
+
+    expect(serialized).not.toMatch(/live availability/i)
+    expect(serialized).not.toMatch(/available now/i)
+    expect(serialized).not.toMatch(/instant confirmation/i)
+    expect(serialized).not.toMatch(/\bcheckout\b/i)
+    expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/\bbooking\b/i)
+    expect(serialized).not.toMatch(/partner rate/i)
+    expect(serialized).not.toMatch(/supplier net rate/i)
+    expect(serialized).not.toMatch(/\bcommission\b/i)
+    expect(serialized).not.toMatch(/rating/i)
+    expect(serialized).not.toMatch(/review/i)
   })
 })

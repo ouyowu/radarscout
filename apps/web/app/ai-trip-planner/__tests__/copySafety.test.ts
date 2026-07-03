@@ -33,11 +33,14 @@ describe('AI trip planner public copy safety', () => {
       readAiTripPlannerSource('IntentParserDemo.tsx'),
       readAiTripPlannerSource('IntentParserPanels.tsx'),
       readAiTripPlannerSource('ItineraryPlaceholderShell.tsx'),
+      readAiTripPlannerSource('resultFitSummary.ts'),
     ].join('\n')
 
     expect(publicCopy).toContain('booking-partner product catalog')
     expect(publicCopy).toContain('partner handoff')
     expect(publicCopy).toContain('Reservation workflow')
+    expect(publicCopy).toContain('Result fit summary')
+    expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toMatch(/transparent planning mode/i)
     expect(publicCopy).toMatch(/read-only Thailand product search/i)
     expect(publicCopy).toMatch(/comparison-only product results/i)

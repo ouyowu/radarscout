@@ -14,6 +14,7 @@ import {
 import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
+import { buildResultFitSummary } from './resultFitSummary'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const examplePrompts = [
@@ -69,6 +70,7 @@ export function IntentParserDemo() {
   const canConfirm = !hasMissingFields
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
+  const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
 
   function handleConfirmIntent() {
     if (!canConfirm) return
@@ -269,6 +271,34 @@ export function IntentParserDemo() {
                   <p className="mt-1 text-xs font-semibold text-[#6b7280]">
                     Comparison only. Reservation handoff and availability are not enabled.
                   </p>
+                  {resultFitSummary ? (
+                    <section
+                      aria-label="Result fit summary"
+                      className="mt-4 rounded-[1.25rem] border border-[#d8eadf] bg-white p-4"
+                    >
+                      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+                        Result fit summary
+                      </p>
+                      <h3 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#101820]">
+                        {resultFitSummary.heading}
+                      </h3>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {resultFitSummary.chips.map(chip => (
+                          <span
+                            key={chip}
+                            className="rounded-full bg-[#e7f5f2] px-3 py-1 text-xs font-black text-[#0f766e]"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                      <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670]">
+                        {resultFitSummary.points.map(point => (
+                          <li key={point}>{point}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
                   <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {searchState.products.map(product => (
                       <AiSearchProductCard
