@@ -568,6 +568,20 @@ test.describe('Product card safety', () => {
     }
   })
 
+  test('product cards explain the safe booking partner handoff step', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(3)
+
+    const cards = page.locator('article').filter({
+      has: page.getByRole('link', { name: /view details/i }),
+    })
+
+    for (let i = 0; i < 3; i++) {
+      await expect(cards.nth(i).getByText(/open the product page to review details and continue with the booking partner/i)).toBeVisible()
+    }
+  })
+
   test('product cards do not render rating or star rating', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
