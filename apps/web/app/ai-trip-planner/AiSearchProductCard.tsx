@@ -72,7 +72,10 @@ export function AiSearchProductCard({
           ))}
         </div>
       ) : null}
-      <div className="mt-auto pt-4 flex items-center justify-between gap-3">
+      <p className="mt-auto pt-4 text-xs font-bold leading-5 text-[#5a6670]">
+        Open the product page to review details and continue with the booking partner.
+      </p>
+      <div className="mt-3 flex items-center justify-between gap-3">
         {priceLabel ? (
           <p className="text-base font-black text-[#101820]">
             From {priceLabel}
