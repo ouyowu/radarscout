@@ -123,6 +123,16 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toBeVisible()
   })
 
+  test('AI planner results hash has a stable safe return target before search', async ({ page }) => {
+    await page.goto('/ai-trip-planner#ai-trip-results')
+
+    const resultsAnchor = page.locator('#ai-trip-results')
+
+    await expect(resultsAnchor).toBeVisible()
+    await expect(resultsAnchor).toContainText('Matching experiences appear here after you confirm a trip intent')
+    await expect(resultsAnchor).not.toContainText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)
+  })
+
   test('trip idea input shows a 600 character limit and prevents overlong prompts', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
