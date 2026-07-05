@@ -35,11 +35,11 @@ function formatList(values: string[]): string {
   return values.length > 0 ? values.join(', ') : 'None detected'
 }
 
-function CapabilityStatus({ label, enabled }: { label: string; enabled: boolean }) {
+function CapabilityStatus({ label, status }: { label: string; status: string }) {
   return (
     <div className="flex items-center justify-between gap-3 border border-[#d8eadf] bg-[#f0fbf5] px-4 py-3 text-sm font-black text-[#0f5132]">
       <span>{label}</span>
-      <span>{enabled ? 'Enabled' : 'Disabled'}</span>
+      <span>{status}</span>
     </div>
   )
 }
@@ -103,15 +103,24 @@ export function CapabilityStatusPanel({
   return (
     <section className="border border-[#d8eadf] bg-white p-4">
       <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#0f766e]">
-        Capability status
+        Planner safety status
       </h3>
       <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-        Product retrieval can turn on after local confirmation. Current status claims and booking partner actions stay disabled.
+        Product comparison can appear after local confirmation. Current product details and booking partner handoff stay on product pages.
       </p>
       <div className="mt-4 grid gap-3">
-        <CapabilityStatus label="Booking partner action" enabled={bookingEnabled} />
-        <CapabilityStatus label="Product comparison results" enabled={productRetrievalEnabled} />
-        <CapabilityStatus label="Current status claims" enabled={availabilityEnabled} />
+        <CapabilityStatus
+          label="Product comparison results"
+          status={productRetrievalEnabled ? 'Shown' : 'Not shown yet'}
+        />
+        <CapabilityStatus
+          label="Booking partner handoff"
+          status={bookingEnabled ? 'Shown' : 'Product page only'}
+        />
+        <CapabilityStatus
+          label="Current product details"
+          status={availabilityEnabled ? 'Shown' : 'Product page only'}
+        />
       </div>
     </section>
   )

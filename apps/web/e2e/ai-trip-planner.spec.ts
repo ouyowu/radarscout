@@ -100,12 +100,12 @@ async function confirmChiangMaiIntent(page: Page) {
 // Product cards are uniquely identified by the "View details" CTA link.
 const productCards = (page: Page) => page.getByRole('link', { name: /view details/i })
 
-// Capability status row — finds the div that has a DIRECT child span with the
+// Planner safety status row — finds the div that has a DIRECT child span with the
 // exact label text, then returns that div so we can check the value span.
 const capabilityRow = (page: Page, label: string) =>
   page
     .locator('section')
-    .filter({ has: page.getByRole('heading', { name: 'Capability status' }) })
+    .filter({ has: page.getByRole('heading', { name: 'Planner safety status' }) })
     .locator(`div:has(> span:text-is("${label}"))`)
 
 // ── Valid Chiang Mai flow ─────────────────────────────────────────────────────
@@ -660,16 +660,16 @@ test.describe('Capability state', () => {
     const confirmBtn = page.getByRole('button', { name: /confirm trip intent/i })
     await expect(confirmBtn).toBeEnabled()
 
-    // Before search: product comparison results show Disabled
+    // Before search: product comparison results are not shown yet.
     const prRow = capabilityRow(page, 'Product comparison results')
-    await expect(prRow.locator('span').last()).toHaveText('Disabled')
+    await expect(prRow.locator('span').last()).toHaveText('Not shown yet')
 
     await confirmBtn.click()
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    // After successful search: product comparison results show Enabled
-    await expect(prRow.locator('span').last()).toHaveText('Enabled')
+    // After successful search: product comparison results are shown.
+    await expect(prRow.locator('span').last()).toHaveText('Shown')
   })
 
   test('booking partner action remains disabled after successful search', async ({ page }) => {
@@ -685,11 +685,11 @@ test.describe('Capability state', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    const beRow = capabilityRow(page, 'Booking partner action')
-    await expect(beRow.locator('span').last()).toHaveText('Disabled')
+    const beRow = capabilityRow(page, 'Booking partner handoff')
+    await expect(beRow.locator('span').last()).toHaveText('Product page only')
   })
 
-  test('current status claims remain disabled after successful search', async ({ page }) => {
+  test('current product details remain on product pages after successful search', async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({
         status: 200,
@@ -702,8 +702,8 @@ test.describe('Capability state', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    const aeRow = capabilityRow(page, 'Current status claims')
-    await expect(aeRow.locator('span').last()).toHaveText('Disabled')
+    const aeRow = capabilityRow(page, 'Current product details')
+    await expect(aeRow.locator('span').last()).toHaveText('Product page only')
   })
 
   test('deterministic planning outline appears without an itinerary generation CTA', async ({ page }) => {

@@ -31,7 +31,7 @@ const differentiators = [
   },
   {
     title: 'Transparent planning mode',
-    body: 'This page can show comparison-only product results, while current details and booking partner actions stay outside the planner.',
+    body: 'This page can show comparison-only product results, while current product details and booking partner handoff stay on product pages.',
   },
 ]
 
@@ -49,22 +49,22 @@ const steps = [
   {
     label: 'Step 3',
     title: 'Search read-only Thailand experiences',
-    body: 'After local confirmation, RadarScout can show comparison-only product results without current status claims or booking partner actions.',
+    body: 'After local confirmation, RadarScout can show comparison-only product results while current product details and booking partner handoff stay on product pages.',
   },
 ]
 
 const transparencyPoints = [
   'No invented prices',
-  'No claimed current status',
+  'No claimed current product status',
   'No unsupported product links',
   'No fake products or suppliers',
 ]
 
 const notConnected = [
-  'Current status claims',
-  'Booking partner actions',
-  'External partner steps',
-  'Itinerary generation',
+  { label: 'Current product details', status: 'Product page only' },
+  { label: 'Booking partner handoff', status: 'Product page only' },
+  { label: 'External partner steps', status: 'Product page only' },
+  { label: 'Generated itinerary', status: 'Future stage' },
 ]
 
 const destinationStarters = [
@@ -308,16 +308,16 @@ export default function AiTripPlannerPage() {
             </div>
 
             <div className="rounded-[1.75rem] border border-white/12 bg-white/8 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f8d7bf]">What is not connected yet</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f8d7bf]">What stays outside this planner</p>
               <div className="mt-6 space-y-3">
                 {notConnected.map(item => (
                   <div
-                    key={item}
+                    key={item.label}
                     className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm"
                   >
-                    <span className="font-medium text-white/92">{item}</span>
+                    <span className="font-medium text-white/92">{item.label}</span>
                     <span className="rounded-full border border-white/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/72">
-                      Not connected
+                      {item.status}
                     </span>
                   </div>
                 ))}
@@ -336,8 +336,8 @@ export default function AiTripPlannerPage() {
             Start with a custom trip idea, then compare Thailand experiences.
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
-            This workspace understands travel intent locally and keeps product search transparent. No email capture is enabled and no booking
-            partner action happens from this planner page.
+            This workspace understands travel intent locally and keeps product search transparent. Email capture is not part of this page and no booking
+            partner handoff starts from this planner page.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a

@@ -440,7 +440,7 @@ export function IntentParserDemo() {
                         {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
                       </p>
                       <p className="mt-1 text-xs font-semibold text-[#6b7280]">
-                        Comparison only. Booking partner actions and current status claims are not enabled.
+                        Comparison only. Current product details and booking partner handoff stay on product pages.
                       </p>
                     </div>
                     <a
