@@ -195,7 +195,7 @@ export const DESTINATION_PARTNERS_PAGE_CONTENT: PartnerInterestPageContent = {
   doesNotReplace: [
     'Your destination strategy, supplier relationships, or local quality process.',
     'The booking partner or operator responsible for final traveler details.',
-    'An API integration; this stage is static interest collection and manual collaboration only.',
+    'A connected partner workspace; this stage starts with early conversations and manual collaboration only.',
   ],
   intake: [
     'Destination focus, traveler segments, and priority experience categories.',
