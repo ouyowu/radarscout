@@ -91,6 +91,8 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Price not listed')
     expect(markup).toContain('trusted partner records')
     expect(markup).toContain('Plan with RadarScout')
+    expect(markup).toContain('Non-Thailand destinations remain planning-only.')
+    expect(markup).not.toContain('Japan, France, and other selected destinations remain planning-only.')
     expectSafeTourCopy(markup)
   })
 
