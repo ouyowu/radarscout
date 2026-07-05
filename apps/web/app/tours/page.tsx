@@ -538,7 +538,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
 
       <EditorialBanner
         label="Coming soon destinations"
-        title="Japan, France, and other selected destinations remain planning-only."
+        title="Non-Thailand destinations remain planning-only."
         body="RadarScout does not claim current product coverage for every destination. More partner destinations will appear only after trusted product records are ready for comparison."
         href="/destinations"
         ctaLabel="View destination status"
