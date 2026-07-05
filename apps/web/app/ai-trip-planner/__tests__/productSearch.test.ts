@@ -4,9 +4,13 @@
  * vitest is Node-only (no jsdom). Tests cover extracted pure logic and
  * type-level contracts rather than DOM rendering.
  */
+import { renderToStaticMarkup } from 'react-dom/server'
+import { createElement } from 'react'
+import * as React from 'react'
 import { describe, expect, it } from 'vitest'
 import { canSearchFromConfirmed } from '../IntentParserDemo'
 import {
+  AiSearchProductCard,
   buildAiTripPlannerDetailHref,
   type AiSearchProductCardProps,
 } from '../AiSearchProductCard'
@@ -297,6 +301,30 @@ describe('AI planner source context for tour detail links', () => {
 
   it('keeps AI planner detail links inside the /tours namespace', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1')).toMatch(/^\/tours\//)
+  })
+})
+
+
+describe('AI search product card detail CTA accessibility', () => {
+  it('renders a 44px mobile tap target with a product-specific accessible label', () => {
+    ;(globalThis as typeof globalThis & { React: typeof React }).React = React
+
+    const markup = renderToStaticMarkup(
+      createElement(AiSearchProductCard, {
+        id: 'prod_1',
+        title: 'Elephant Sanctuary',
+        city: 'Chiang Mai',
+        summary: 'Half-day ethical elephant visit.',
+        tags: ['Elephants', 'Nature'],
+        detailHref: '/tours/prod_1',
+        retailPrice: '49.00',
+        currency: 'USD',
+      }),
+    )
+
+    expect(markup).toContain('min-h-[44px]')
+    expect(markup).toContain('aria-label="View details for Elephant Sanctuary"')
+    expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
   })
 })
 
