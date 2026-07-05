@@ -56,6 +56,17 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('booking partner')
   })
 
+  it('keeps homepage AI planning use cases focused on Thailand routes', () => {
+    expect(homepageSource).toContain('Plan 7 days in Thailand')
+    expect(homepageSource).toContain('Compare Bangkok and Chiang Mai day tours')
+    expect(homepageSource).toContain('Plan elephant care, cooking, and nature days')
+    expect(homepageSource).toContain('Prepare Pattaya or Phuket day-trip ideas')
+    expect(homepageSource).toContain('Find food, culture, transfers, and local Thailand activities')
+    expect(homepageSource).toContain('Match Thailand routes to realistic daily timing')
+    expect(homepageSource).not.toContain('Build an Austria + Germany + France route')
+    expect(homepageSource).not.toContain('Prepare a World Cup 2026 travel plan')
+  })
+
   it('exposes safe homepage entry points for B2B partner paths', () => {
     expect(homepageSource).toContain('<SupplierPartnerCTA showPartnerPathLinks />')
     expect(homepageVisibleCopySources).toContain("href: '/partners'")
