@@ -6,7 +6,7 @@ type WarmNewsletterFooterProps = {
 
 export function WarmNewsletterFooter({
   title = 'Get destination planning notes from RadarScout.',
-  body = 'For now, join by email. No automated marketing backend is connected in this UI component.',
+  body = 'For now, join by email. Automated marketing signup is not part of this page.',
   email = 'hello@radarscout.io',
 }: WarmNewsletterFooterProps) {
   return (

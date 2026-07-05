@@ -92,6 +92,8 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toMatch(/booking complete/i)
     expect(homepageVisibleCopySources).not.toMatch(/Bókun backend/i)
     expect(homepageVisibleCopySources).not.toMatch(/Bókun database/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bbackend\b/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bdatabase\b/i)
     expect(homepageVisibleCopySources).not.toMatch(/Bókun-powered/i)
     expect(homepageVisibleCopySources).not.toMatch(/partner rate/i)
     expect(homepageVisibleCopySources).not.toMatch(/supplier net rate/i)

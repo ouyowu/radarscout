@@ -29,6 +29,8 @@ const FORBIDDEN_TOUR_COPY = [
   /supplier rates/i,
   /display-only/i,
   /\bpreview\b/i,
+  /\bdatabase\b/i,
+  /\bbackend\b/i,
 ]
 
 function expectSafeTourCopy(markup: string) {

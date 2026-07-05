@@ -112,7 +112,7 @@ const faqItems = [
   {
     question: 'Is this page connected to a transaction flow?',
     answer:
-      'No. This page helps travelers compare details before they continue with a booking partner. It does not create a traveler request or write to the database.',
+      'No. This page helps travelers compare details before they continue with a booking partner. It does not create a traveler request or submit a form from this page.',
   },
   {
     question: 'Will RadarScout add more destinations?',

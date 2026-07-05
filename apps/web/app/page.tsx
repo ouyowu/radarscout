@@ -234,7 +234,7 @@ export default function LandingPage() {
       <FAQAccordion items={faqItems} title="RadarScout travel planning FAQ" />
       <WarmNewsletterFooter
         title="Follow RadarScout's destination rollout."
-        body="For now, email us for supplier partnerships, destination planning requests, and private tour questions. No automated newsletter backend is connected here."
+        body="For now, email us for supplier partnerships, destination planning requests, and private tour questions. Automated newsletter signup is not part of this page."
       />
     </main>
   )
