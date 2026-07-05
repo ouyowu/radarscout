@@ -23,7 +23,8 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toMatch(/Pattaya/i)
     expect(publicCopy).toMatch(/Phuket/i)
     expect(publicCopy).toMatch(/Search real Thailand experiences/i)
-    expect(publicCopy).toMatch(/View experience/i)
+    expect(publicCopy).toMatch(/View details/i)
+    expect(publicCopy).not.toMatch(/View experience/i)
     expect(publicCopy).toMatch(/href=\{detailHref\}/)
   })
 
