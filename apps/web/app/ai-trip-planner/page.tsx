@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { DestinationStarterCard } from './DestinationStarterCard'
 import { IntentParserDemo } from './IntentParserDemo'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
@@ -195,21 +196,13 @@ export default function AiTripPlannerPage() {
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {destinationStarters.map(item => (
-              <a
+              <DestinationStarterCard
                 key={item.city}
-                href="#intent-demo"
-                className="group flex min-h-full flex-col rounded-[1.75rem] border border-[#ede6db] bg-white p-6 shadow-[0_20px_40px_rgba(17,24,39,0.05)] transition hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(17,24,39,0.08)]"
-              >
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a15d31]">{item.city}</span>
-                <h3 className="mt-4 text-2xl font-semibold text-[#1E2D59]">{item.title}</h3>
-                <p className="mt-4 flex-1 text-sm leading-7 text-[#6b7280]">{item.body}</p>
-                <p className="mt-5 rounded-2xl bg-[#f5efe8] p-4 text-xs font-semibold leading-6 text-[#4b5563]">
-                  Example: {item.prompt}
-                </p>
-                <span className="mt-5 inline-flex min-h-[44px] items-center text-sm font-semibold uppercase tracking-[0.14em] text-[#D57C48]">
-                  Use this route idea
-                </span>
-              </a>
+                city={item.city}
+                title={item.title}
+                body={item.body}
+                prompt={item.prompt}
+              />
             ))}
           </div>
         </div>

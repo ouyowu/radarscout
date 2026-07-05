@@ -123,6 +123,18 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toBeVisible()
   })
 
+  test('destination starter fills the planner prompt and local summary', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+
+    await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
+    await expect(page.locator('dd').filter({ hasText: /^Bangkok$/ })).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^food, temples$/ })).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^local food$/ })).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^relaxed$/ })).toBeVisible()
+  })
+
   test('search CTA appears after confirming intent', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
