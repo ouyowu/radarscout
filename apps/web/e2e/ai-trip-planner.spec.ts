@@ -374,6 +374,7 @@ test.describe('Valid Chiang Mai flow', () => {
     for (let i = 0; i < count; i++) {
       const href = await links.nth(i).getAttribute('href')
       expect(href).toMatch(/^\/tours\//)
+      expect(href).toContain('source=ai-trip-planner')
     }
   })
 
