@@ -59,7 +59,8 @@ describe('parseTripIntent', () => {
     const result = parseTripIntent('I want to book and pay for Dubai tomorrow')
 
     expect(result.intent.destination).toBe('Dubai')
-    expect(result.warnings).toContain('booking/payment/availability request ignored')
+    expect(result.warnings).toContain('Final partner-step requests stay outside this planner')
+    expect(result.warnings.join(' ')).not.toMatch(/payment|availability/i)
     expect(result.bookingEnabled).toBe(false)
     expect(result.productRetrievalEnabled).toBe(false)
     expect(result.availabilityEnabled).toBe(false)
