@@ -268,7 +268,7 @@ export function IntentParserDemo() {
           </div>
         </div>
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary or start partner workflows.
+          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary or start a booking partner action.
         </p>
         {!hasPromptText ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
@@ -355,7 +355,7 @@ export function IntentParserDemo() {
                 Search real Thailand experiences
               </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
-                Returns real eligible products from trusted local operators. No partner workflow action or current-detail check.
+                Returns real eligible products from trusted local operators. No booking partner action or current status claim.
               </p>
             </div>
             <button
@@ -440,7 +440,7 @@ export function IntentParserDemo() {
                         {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
                       </p>
                       <p className="mt-1 text-xs font-semibold text-[#6b7280]">
-                        Comparison only. Partner workflows and current-detail checks are not enabled.
+                        Comparison only. Booking partner actions and current status claims are not enabled.
                       </p>
                     </div>
                     <a

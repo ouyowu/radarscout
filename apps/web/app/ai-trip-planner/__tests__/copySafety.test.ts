@@ -39,9 +39,9 @@ describe('AI trip planner public copy safety', () => {
       readAiTripPlannerSource('resultFitSummary.ts'),
     ].join('\n')
 
-    expect(publicCopy).toContain('partner product catalog')
-    expect(publicCopy).toContain('partner workflow')
-    expect(publicCopy).toContain('Partner workflow')
+    expect(publicCopy).toContain('Thailand experience catalog')
+    expect(publicCopy).toContain('booking partner action')
+    expect(publicCopy).toContain('current status claim')
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toContain('Why this fits')
@@ -64,6 +64,9 @@ describe('AI trip planner public copy safety', () => {
     expect(pageSource).not.toMatch(/availability/i)
     expect(publicCopy).not.toMatch(/availability checks/i)
     expect(publicCopy).not.toMatch(/availability check/i)
+    expect(publicCopy).not.toMatch(/current-detail checks/i)
+    expect(publicCopy).not.toMatch(/partner workflow/i)
+    expect(publicCopy).not.toMatch(/partner workflows/i)
     expect(publicCopy).not.toMatch(/reservation handoff/i)
     expect(publicCopy).not.toMatch(/Reservation workflow/i)
     expect(publicCopy).not.toMatch(/No fake availability/i)
