@@ -59,4 +59,13 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/Bókun-backed/i)
     expect(publicCopy).not.toMatch(/Bókun catalog/i)
   })
+
+  it('keeps product result cards compact on mobile after adding fit signals', () => {
+    const productCardSource = readAiTripPlannerSource('AiSearchProductCard.tsx')
+
+    expect(productCardSource).toContain('p-4 sm:p-5')
+    expect(productCardSource).toContain('mt-2 sm:mt-3')
+    expect(productCardSource).toContain('gap-1.5 sm:gap-2')
+    expect(productCardSource).toContain('px-2.5 py-1.5 sm:px-3 sm:py-2')
+  })
 })
