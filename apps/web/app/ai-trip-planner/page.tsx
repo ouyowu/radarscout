@@ -31,7 +31,7 @@ const differentiators = [
   },
   {
     title: 'Transparent planning mode',
-    body: 'This page can show comparison-only product results, while current details and final partner workflows stay outside the planner.',
+    body: 'This page can show comparison-only product results, while current details and booking partner actions stay outside the planner.',
   },
 ]
 
@@ -49,7 +49,7 @@ const steps = [
   {
     label: 'Step 3',
     title: 'Search read-only Thailand experiences',
-    body: 'After local confirmation, RadarScout can show comparison-only product results without current-detail checks or partner workflow actions.',
+    body: 'After local confirmation, RadarScout can show comparison-only product results without current status claims or booking partner actions.',
   },
 ]
 
@@ -61,9 +61,9 @@ const transparencyPoints = [
 ]
 
 const notConnected = [
-  'Current-detail checks',
-  'Final partner workflow',
-  'Partner workflow actions',
+  'Current status claims',
+  'Booking partner actions',
+  'External partner steps',
   'Itinerary generation',
 ]
 
@@ -292,7 +292,7 @@ export default function AiTripPlannerPage() {
                 Catalog transparency
               </span>
               <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-5xl">
-                The booking-partner product catalog is connected for read-only comparison only
+                The Thailand experience catalog is connected for read-only comparison only
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
                 This page positions RadarScout as a Thailand AI trip planner. The current implementation understands trip intent locally
