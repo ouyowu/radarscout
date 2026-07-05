@@ -40,8 +40,11 @@ describe('AI trip planner public copy safety', () => {
     ].join('\n')
 
     expect(publicCopy).toContain('Thailand experience catalog')
-    expect(publicCopy).toContain('booking partner action')
-    expect(publicCopy).toContain('current status claim')
+    expect(publicCopy).toContain('Booking partner handoff')
+    expect(publicCopy).toContain('Current product details')
+    expect(publicCopy).toContain('Planner safety status')
+    expect(publicCopy).toContain('Product page only')
+    expect(publicCopy).toContain('Shown')
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toContain('Why this fits')
@@ -75,6 +78,10 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/Raw structured JSON/i)
     expect(publicCopy).not.toMatch(/Raw JSON/i)
     expect(publicCopy).not.toMatch(/debugging/i)
+    expect(publicCopy).not.toMatch(/Capability status/i)
+    expect(publicCopy).not.toMatch(/Not connected/i)
+    expect(publicCopy).not.toMatch(/['"`]Enabled['"`]/i)
+    expect(publicCopy).not.toMatch(/['"`]Disabled['"`]/i)
   })
 
   it('keeps product result cards compact on mobile after adding fit signals', () => {
