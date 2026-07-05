@@ -37,11 +37,15 @@ describe('AI trip planner public copy safety', () => {
       readAiTripPlannerSource('IntentParserPanels.tsx'),
       readAiTripPlannerSource('ItineraryPlaceholderShell.tsx'),
       readAiTripPlannerSource('resultFitSummary.ts'),
+      readFileSync(join(process.cwd(), 'lib', 'ai-trip', 'placeholder-itinerary.ts'), 'utf8'),
     ].join('\n')
 
     expect(publicCopy).toContain('Thailand experience catalog')
     expect(publicCopy).toContain('Booking partner handoff')
     expect(publicCopy).toContain('Current product details')
+    expect(publicCopy).toContain('AI-generated itinerary')
+    expect(publicCopy).toContain('Suggested planning outline')
+    expect(publicCopy).toContain('rule-based planning guide')
     expect(publicCopy).toContain('Planner safety status')
     expect(publicCopy).toContain('Product page only')
     expect(publicCopy).toContain('Shown')
@@ -78,6 +82,8 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/Raw structured JSON/i)
     expect(publicCopy).not.toMatch(/Raw JSON/i)
     expect(publicCopy).not.toMatch(/debugging/i)
+    expect(publicCopy).not.toMatch(/Deterministic outline/i)
+    expect(publicCopy).not.toMatch(/deterministic planning guidance/i)
     expect(publicCopy).not.toMatch(/Capability status/i)
     expect(publicCopy).not.toMatch(/Not connected/i)
     expect(publicCopy).not.toMatch(/['"`]Enabled['"`]/i)

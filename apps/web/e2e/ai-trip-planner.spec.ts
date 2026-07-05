@@ -706,15 +706,15 @@ test.describe('Capability state', () => {
     await expect(aeRow.locator('span').last()).toHaveText('Product page only')
   })
 
-  test('deterministic planning outline appears without an itinerary generation CTA', async ({ page }) => {
+  test('suggested planning outline appears without an itinerary generation CTA', async ({ page }) => {
     await page.goto('/ai-trip-planner')
     await page.fill('#trip-idea', 'Chiang Mai 3 days elephants')
     await page.click('button[type="submit"]')
     await page.getByRole('button', { name: /confirm trip intent/i }).click()
 
-    await expect(page.getByText(/deterministic outline/i)).toBeVisible()
+    await expect(page.getByText(/suggested planning outline/i)).toBeVisible()
     await expect(page.getByText(/suggested chiang mai planning outline/i)).toBeVisible()
-    await expect(page.getByText(/this outline is deterministic planning guidance/i)).toBeVisible()
+    await expect(page.getByText(/this outline is a rule-based planning guide/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /generate itinerary/i })).toHaveCount(0)
   })
 })

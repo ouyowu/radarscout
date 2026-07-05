@@ -20,7 +20,7 @@ export function ItineraryPlaceholderShell({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.14em] text-[#a35c09]">
-            Deterministic outline
+            Suggested planning outline
           </p>
           <h3 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
             {outline.title}
