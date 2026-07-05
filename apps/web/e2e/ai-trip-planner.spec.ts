@@ -373,6 +373,36 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await expect(page.locator('#trip-idea')).toBeFocused()
     await expect(page.locator('#trip-idea')).toHaveValue('Singapore 3 days food')
   })
+
+  test('unsupported destination result offers safe Thailand search ideas', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(UNSUPPORTED_DESTINATION_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.fill('#trip-idea', 'Singapore 3 days food')
+    await page.click('button[type="submit"]')
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByText('Thailand-only search')).toBeVisible()
+    await expect(page.getByText(/Try one of these Thailand trip ideas/i)).toBeVisible()
+    await expect(page.getByRole('button', { name: /Chiang Mai elephants and food/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Bangkok food and canals/i })).toBeVisible()
+
+    await page.getByRole('button', { name: /Bangkok food and canals/i }).click()
+
+    await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days food canals')
+    await expect(page.getByText('Thailand-only search')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+
+    const pageText = await page.locator('body').innerText()
+    expect(pageText).not.toMatch(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)
+  })
 })
 
 // ── No match guidance ─────────────────────────────────────────────────────────
