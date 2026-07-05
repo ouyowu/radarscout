@@ -42,6 +42,7 @@ export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boole
 
 export function IntentParserDemo() {
   const [prompt, setPrompt] = useState(defaultPrompt)
+  const [parsedPrompt, setParsedPrompt] = useState(defaultPrompt)
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
   const [confirmed, setConfirmed] = useState<ConfirmedIntent | null>(null)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
@@ -55,11 +56,13 @@ export function IntentParserDemo() {
     setConfirmed(null)
     setSearchState(null)
     setStarterLoadedCity(null)
+    setParsedPrompt(prompt)
     setResult(parseTripIntent(prompt))
   }
 
   function useExamplePrompt(examplePrompt: string) {
     setPrompt(examplePrompt)
+    setParsedPrompt(examplePrompt)
     setConfirmed(null)
     setSearchState(null)
     setStarterLoadedCity(null)
@@ -69,6 +72,7 @@ export function IntentParserDemo() {
 
   function handleClearPrompt() {
     setPrompt('')
+    setParsedPrompt('')
     setConfirmed(null)
     setSearchState(null)
     setStarterLoadedCity(null)
@@ -85,6 +89,7 @@ export function IntentParserDemo() {
 
   const hasMissingFields = result.missingFields.length > 0
   const hasWarnings = result.warnings.length > 0
+  const isParsedPromptCurrent = prompt === parsedPrompt
   const duration = result.intent.durationDays
     ? `${result.intent.durationDays} day${result.intent.durationDays === 1 ? '' : 's'}${result.intent.durationNights ? ` / ${result.intent.durationNights} night${result.intent.durationNights === 1 ? '' : 's'}` : ''}`
     : null
@@ -92,7 +97,7 @@ export function IntentParserDemo() {
     result.intent.travelerType !== 'unspecified' ? result.intent.travelerType : null,
     result.intent.groupSize ? `group of ${result.intent.groupSize}` : null,
   ].filter(Boolean).join(' · ')
-  const canConfirm = !hasMissingFields
+  const canConfirm = isParsedPromptCurrent && !hasMissingFields
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
   const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
@@ -112,6 +117,7 @@ export function IntentParserDemo() {
       if (typeof detail?.prompt !== 'string' || detail.prompt.trim().length === 0) return
 
       setPrompt(detail.prompt)
+      setParsedPrompt(detail.prompt)
       setConfirmed(null)
       setSearchState(null)
       setStarterLoadedCity(typeof detail.city === 'string' && detail.city.trim().length > 0 ? detail.city : null)
@@ -260,7 +266,9 @@ export function IntentParserDemo() {
         </p>
         {!canConfirm ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
-            Destination and duration are required before this local confirmation can be saved.
+            {isParsedPromptCurrent
+              ? 'Destination and duration are required before this local confirmation can be saved.'
+              : 'Trip idea changed. Parse trip intent again before confirming.'}
           </p>
         ) : null}
       </form>

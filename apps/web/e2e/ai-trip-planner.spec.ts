@@ -136,6 +136,23 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('600 / 600 characters used')).toBeVisible()
   })
 
+  test('editing the trip idea requires parsing again before confirmation', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    const confirmBtn = page.getByRole('button', { name: /confirm trip intent/i })
+    await expect(confirmBtn).toBeEnabled()
+
+    await page.locator('#trip-idea').fill('Bangkok 3 days food canals relaxed pace')
+
+    await expect(page.getByText('Trip idea changed. Parse trip intent again before confirming.')).toBeVisible()
+    await expect(confirmBtn).toBeDisabled()
+
+    await page.click('button[type="submit"]')
+
+    await expect(page.getByText('Trip idea changed. Parse trip intent again before confirming.')).toHaveCount(0)
+    await expect(confirmBtn).toBeEnabled()
+  })
+
   test('destination starter fills the planner prompt and local summary', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
