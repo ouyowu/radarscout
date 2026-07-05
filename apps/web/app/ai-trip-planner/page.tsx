@@ -64,7 +64,7 @@ const notConnected = [
   { label: 'Current product details', status: 'Product page only' },
   { label: 'Booking partner handoff', status: 'Product page only' },
   { label: 'External partner steps', status: 'Product page only' },
-  { label: 'Generated itinerary', status: 'Future stage' },
+  { label: 'AI-generated itinerary', status: 'Future stage' },
 ]
 
 const destinationStarters = [

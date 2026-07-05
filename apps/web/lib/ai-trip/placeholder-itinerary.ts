@@ -4,7 +4,7 @@ import type { DeterministicPlanningOutline, PlaceholderDaySlot } from './itinera
 const MAX_PLACEHOLDER_DAYS = 7
 const PLACEHOLDER_NOTES = [
   'Experience slots will appear here after itinerary generation is implemented.',
-  'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
+  'No product, supplier, price, availability, final partner step, or partner handoff links are loaded.',
 ]
 
 export function buildPlaceholderDaySlots(
@@ -88,6 +88,6 @@ export function buildDeterministicPlanningOutline(
       },
     ],
     safetyNote:
-      'This outline is deterministic planning guidance. It does not check availability, complete partner workflows, or replace product-page details.',
+      'This outline is a rule-based planning guide. It does not check availability, complete partner steps, or replace product-page details.',
   }
 }

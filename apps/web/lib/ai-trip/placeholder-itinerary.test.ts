@@ -20,7 +20,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
+          'No product, supplier, price, availability, final partner step, or partner handoff links are loaded.',
         ],
       },
       {
@@ -29,7 +29,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
+          'No product, supplier, price, availability, final partner step, or partner handoff links are loaded.',
         ],
       },
       {
@@ -38,7 +38,7 @@ describe('buildPlaceholderDaySlots', () => {
         isPlaceholder: true,
         notes: [
           'Experience slots will appear here after itinerary generation is implemented.',
-          'No product, supplier, price, availability, final partner workflow, or partner handoff links are loaded.',
+          'No product, supplier, price, availability, final partner step, or partner handoff links are loaded.',
         ],
       },
     ])
