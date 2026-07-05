@@ -97,8 +97,8 @@ async function confirmChiangMaiIntent(page: Page) {
   await confirmBtn.click()
 }
 
-// Product cards are uniquely identified by the "View experience" CTA link.
-const productCards = (page: Page) => page.getByRole('link', { name: /view experience/i })
+// Product cards are uniquely identified by the "View details" CTA link.
+const productCards = (page: Page) => page.getByRole('link', { name: /view details/i })
 
 // Capability status row — finds the div that has a DIRECT child span with the
 // exact label text, then returns that div so we can check the value span.
@@ -140,7 +140,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(resultSummary.getByText(/Matched interests: .*(elephants|temples|food)/i)).toBeVisible()
     await expect(resultSummary.getByText(/comparison-only product results/i)).toBeVisible()
 
-    // Product cards are identified by their unique "View experience" CTA
+    // Product cards are identified by their unique "View details" CTA
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/why this fits/i)).toHaveCount(3)
   })
@@ -426,9 +426,9 @@ test.describe('Product card safety', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    // Collect text from all product card articles (identified by containing "View experience")
+    // Collect text from all product card articles (identified by containing "View details")
     const cards = page.locator('article').filter({
-      has: page.getByRole('link', { name: /view experience/i }),
+      has: page.getByRole('link', { name: /view details/i }),
     })
     const allText = (await cards.allInnerTexts()).join(' ').toLowerCase()
 
@@ -461,7 +461,7 @@ test.describe('Product card safety', () => {
     await expect(productCards(page)).toHaveCount(3)
 
     const cards = page.locator('article').filter({
-      has: page.getByRole('link', { name: /view experience/i }),
+      has: page.getByRole('link', { name: /view details/i }),
     })
     await expect(cards).toHaveCount(3)
 
@@ -482,7 +482,7 @@ test.describe('Product card safety', () => {
     await expect(productCards(page)).toHaveCount(3)
 
     const cards = page.locator('article').filter({
-      has: page.getByRole('link', { name: /view experience/i }),
+      has: page.getByRole('link', { name: /view details/i }),
     })
     const allText = (await cards.allInnerTexts()).join(' ').toLowerCase()
 
@@ -497,7 +497,7 @@ test.describe('Product card safety', () => {
     await expect(productCards(page)).toHaveCount(3)
 
     const cards = page.locator('article').filter({
-      has: page.getByRole('link', { name: /view experience/i }),
+      has: page.getByRole('link', { name: /view details/i }),
     })
     await expect(cards.getByRole('button', { name: /book now/i })).toHaveCount(0)
     await expect(cards.getByRole('button', { name: /checkout/i })).toHaveCount(0)
@@ -528,9 +528,9 @@ test.describe('Deterministic outline separation', () => {
     const slotCount = await outlineSlots.count()
     expect(slotCount).toBeGreaterThan(0)
 
-    // None of the outline slots should have a "View experience" link.
+    // None of the outline slots should have a "View details" link.
     for (let i = 0; i < slotCount; i++) {
-      await expect(outlineSlots.nth(i).getByRole('link', { name: /view experience/i })).toHaveCount(0)
+      await expect(outlineSlots.nth(i).getByRole('link', { name: /view details/i })).toHaveCount(0)
     }
   })
 
@@ -561,7 +561,7 @@ test.describe('Deterministic outline separation', () => {
     for (let i = 0; i < slotCount; i++) {
       const slotText = (await outlineSlots.nth(i).innerText()).toLowerCase()
       expect(slotText).not.toContain('from usd')
-      expect(slotText).not.toContain('view experience')
+      expect(slotText).not.toContain('view details')
     }
   })
 
