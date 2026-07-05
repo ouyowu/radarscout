@@ -168,6 +168,31 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Add a trip idea before parsing.')).toHaveCount(0)
   })
 
+  test('parsing trims outer whitespace before confirmation and product search', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.locator('#trip-idea').fill('  Chiang Mai 3 days elephants temples food  ')
+    await page.getByRole('button', { name: /parse trip intent/i }).click()
+
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants temples food')
+
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    expect(receivedPrompt).toBe('Chiang Mai 3 days elephants temples food')
+    await expect(productCards(page)).toHaveCount(3)
+  })
+
   test('destination starter fills the planner prompt and local summary', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 

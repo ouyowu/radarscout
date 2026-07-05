@@ -53,13 +53,15 @@ export function IntentParserDemo() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (prompt.trim().length === 0) return
+    const normalizedPrompt = prompt.trim()
+    if (normalizedPrompt.length === 0) return
 
     setConfirmed(null)
     setSearchState(null)
     setStarterLoadedCity(null)
-    setParsedPrompt(prompt)
-    setResult(parseTripIntent(prompt))
+    setPrompt(normalizedPrompt)
+    setParsedPrompt(normalizedPrompt)
+    setResult(parseTripIntent(normalizedPrompt))
   }
 
   function useExamplePrompt(examplePrompt: string) {
