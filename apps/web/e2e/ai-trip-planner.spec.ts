@@ -155,6 +155,27 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(searchBtn).toBeEnabled()
   })
 
+  test('destination starter helper can search the loaded trip idea after confirmation', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+    await page.getByRole('button', { name: /search loaded trip idea/i }).click()
+
+    expect(receivedPrompt).toBe('Bangkok 3 days canals temples street food, relaxed pace')
+    await expect(productCards(page)).toHaveCount(3)
+  })
+
   test('search CTA appears after confirming intent', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })

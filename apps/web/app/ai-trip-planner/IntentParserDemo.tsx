@@ -164,14 +164,26 @@ export function IntentParserDemo() {
             <p className="text-sm font-black leading-6 text-[#0f766e]">
               {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
             </p>
-            <button
-              type="button"
-              onClick={handleConfirmIntent}
-              disabled={!canConfirm}
-              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e] disabled:cursor-not-allowed disabled:border-[#c7beb1] disabled:text-[#9a9084]"
-            >
-              Confirm loaded trip intent
-            </button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleConfirmIntent}
+                disabled={!canConfirm}
+                className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e] disabled:cursor-not-allowed disabled:border-[#c7beb1] disabled:text-[#9a9084]"
+              >
+                Confirm loaded trip intent
+              </button>
+              {confirmed ? (
+                <button
+                  type="button"
+                  onClick={handleSearchProducts}
+                  disabled={!canSearch || isSearching}
+                  className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.12em] text-white disabled:cursor-not-allowed disabled:bg-[#c7beb1] disabled:text-[#9a9084]"
+                >
+                  {isSearching ? 'Searching…' : 'Search loaded trip idea'}
+                </button>
+              ) : null}
+            </div>
           </div>
         ) : null}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
