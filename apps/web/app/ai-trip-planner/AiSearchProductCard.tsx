@@ -27,8 +27,8 @@ export function AiSearchProductCard({
     : null
 
   return (
-    <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-5 shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
-      <div className="flex flex-wrap gap-2">
+    <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-4 sm:p-5 shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2">
         <span className="rounded-full bg-[#e7f5f2] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.1em] text-[#0f766e]">
           Comparison match
         </span>
@@ -37,31 +37,31 @@ export function AiSearchProductCard({
         </span>
       </div>
       {city ? (
-        <p className="mt-3 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+        <p className="mt-2 sm:mt-3 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
           {city}
         </p>
       ) : null}
       <h3 className="mt-2 text-lg font-black leading-tight text-[#101820]">{title}</h3>
       {summary ? (
-        <p className="mt-3 line-clamp-3 text-sm font-semibold leading-7 text-[#5a6670]">{summary}</p>
+        <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-[#5a6670] sm:mt-3 sm:leading-7">{summary}</p>
       ) : null}
       {fitReason ? (
-        <p className="mt-3 rounded-[1rem] border border-[#d8eadf] bg-[#f5fbf7] px-3 py-2 text-xs font-black leading-5 text-[#0f766e]">
+        <p className="mt-2 rounded-[1rem] border border-[#d8eadf] bg-[#f5fbf7] px-3 py-2 text-xs font-black leading-5 text-[#0f766e] sm:mt-3">
           {fitReason}
         </p>
       ) : null}
-      <div className="mt-3 rounded-[1rem] border border-[#e8dfd2] bg-[#fffdf7] px-3 py-3">
+      <div className="mt-2 rounded-[1rem] border border-[#e8dfd2] bg-[#fffdf7] px-3 py-2 sm:mt-3 sm:py-3">
         <p className="text-[0.68rem] font-black uppercase tracking-[0.12em] text-[#5a5147]">
           Fit checklist
         </p>
-        <ul className="mt-2 grid gap-2 text-xs font-black text-[#5a6670] sm:grid-cols-3">
-          <li className="rounded-full bg-white px-3 py-2">Destination fit</li>
-          <li className="rounded-full bg-white px-3 py-2">Interest fit</li>
-          <li className="rounded-full bg-white px-3 py-2">Comparison only</li>
+        <ul className="mt-2 grid gap-1.5 text-xs font-black text-[#5a6670] sm:grid-cols-3 sm:gap-2">
+          <li className="rounded-full bg-white px-2.5 py-1.5 sm:px-3 sm:py-2">Destination fit</li>
+          <li className="rounded-full bg-white px-2.5 py-1.5 sm:px-3 sm:py-2">Interest fit</li>
+          <li className="rounded-full bg-white px-2.5 py-1.5 sm:px-3 sm:py-2">Comparison only</li>
         </ul>
       </div>
       {tags.length > 0 ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
           {tags.slice(0, 4).map(tag => (
             <span
               key={tag}
