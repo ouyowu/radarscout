@@ -174,9 +174,17 @@ export function IntentParserDemo() {
               {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
             </p>
             {starterSearchFeedback ? (
-              <p className="text-sm font-semibold leading-6 text-[#3f6f5c]">
-                {starterSearchFeedback}
-              </p>
+              <div className="flex flex-col gap-2 text-sm font-semibold leading-6 text-[#3f6f5c]">
+                <p>{starterSearchFeedback}</p>
+                {searchState?.status === 'ok' && searchState.products.length > 0 ? (
+                  <a
+                    href="#ai-trip-results"
+                    className="font-black text-[#0f766e] underline decoration-[#0f766e]/30 underline-offset-4 hover:text-[#0b5f59]"
+                  >
+                    View matching experiences
+                  </a>
+                ) : null}
+              </div>
             ) : null}
             <div className="flex flex-col gap-2 sm:flex-row">
               <button
@@ -291,7 +299,7 @@ export function IntentParserDemo() {
       </section>
 
       {confirmed ? (
-        <section className="mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">
+        <section id="ai-trip-results" className="mt-6 scroll-mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.14em] text-[#1e2d59]">
