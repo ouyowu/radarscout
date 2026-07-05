@@ -356,12 +356,22 @@ export function IntentParserDemo() {
                 </div>
               ) : searchState.status === 'ok' && searchState.products.length > 0 ? (
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
-                    {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
-                  </p>
-                  <p className="mt-1 text-xs font-semibold text-[#6b7280]">
-                    Comparison only. Reservation handoff and availability are not enabled.
-                  </p>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+                        {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#6b7280]">
+                        Comparison only. Reservation handoff and availability are not enabled.
+                      </p>
+                    </div>
+                    <a
+                      href="#trip-idea"
+                      className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                    >
+                      Refine trip idea
+                    </a>
+                  </div>
                   {resultFitSummary ? (
                     <section
                       aria-label="Result fit summary"
