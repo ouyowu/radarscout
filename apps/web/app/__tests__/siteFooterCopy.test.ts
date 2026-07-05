@@ -13,7 +13,8 @@ describe('SiteFooter public copy safety', () => {
   })
 
   it('keeps footer positioning aligned with guided discovery boundaries', () => {
-    expect(siteFooterSource).toContain('AI-guided travel discovery for selected top destinations.')
+    expect(siteFooterSource).toContain('AI-guided Thailand travel discovery with safe booking partner handoff.')
+    expect(siteFooterSource).not.toMatch(/selected top destinations/i)
     expect(siteFooterSource).not.toMatch(/DMC Portal/i)
     expect(siteFooterSource).not.toMatch(/Bókun backend/i)
     expect(siteFooterSource).not.toMatch(/Bókun database/i)

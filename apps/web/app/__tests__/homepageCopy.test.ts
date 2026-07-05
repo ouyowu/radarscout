@@ -47,6 +47,14 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('trusted booking partner handoff')
   })
 
+  it('positions the homepage destination rollout as Thailand-first', () => {
+    expect(homepageSource).toContain('Thailand-first rollout')
+    expect(homepageSource).toContain('Thailand is live first. Other destinations stay planning-only.')
+    expect(homepageSource).toContain('Thailand first, then selected destinations')
+    expect(homepageSource).toContain('current product coverage on Thailand experiences')
+    expect(homepageSource).not.toContain('Selected top travel destinations, not worldwide noise.')
+  })
+
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
     expect(homepageSource).toContain('href="/chiang-mai/elephant-camp-finder"')
     expect(homepageSource).toContain('Plan a Chiang Mai elephant day')

@@ -39,7 +39,7 @@ const trustItems = [
   { label: 'Thailand focus', value: 'Guided experience discovery' },
   { label: 'Handoff boundary', value: 'Continue with a booking partner' },
   { label: 'Planning engine', value: 'AI itinerary matching' },
-  { label: 'Expansion model', value: 'Selected destinations, city by city' },
+  { label: 'Expansion model', value: 'Thailand first, then selected destinations' },
 ]
 
 const categories = [
@@ -164,14 +164,14 @@ export default function LandingPage() {
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                Featured destinations
+                Thailand-first rollout
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-                Selected top travel destinations, not worldwide noise.
+                Thailand is live first. Other destinations stay planning-only.
               </h2>
             </div>
             <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              RadarScout does not try to list every destination. We focus on high-demand travel countries where travelers can compare real local experiences and continue with a booking partner when ready.
+              RadarScout focuses current product coverage on Thailand experiences. Other destination pages help structure future routes while local partner coverage is reviewed city by city.
             </p>
           </div>
 
