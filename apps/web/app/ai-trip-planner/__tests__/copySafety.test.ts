@@ -99,6 +99,23 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/['"`]Disabled['"`]/i)
   })
 
+  it('makes the Thailand-only product matching boundary explicit', () => {
+    const publicCopy = [
+      readAiTripPlannerSource('page.tsx'),
+      readAiTripPlannerSource('IntentParserDemo.tsx'),
+    ].join('\n')
+
+    expect(publicCopy).toContain('Product matching is currently limited to Thailand experience records')
+    expect(publicCopy).toContain('Non-Thailand ideas can still be structured as planning text')
+    expect(publicCopy).toMatch(/product matching stays Thailand-only/i)
+    expect(publicCopy).not.toMatch(/global product matching/i)
+    expect(publicCopy).not.toMatch(/worldwide/i)
+    expect(publicCopy).not.toMatch(/any destination/i)
+    expect(publicCopy).not.toMatch(/all destinations/i)
+    expect(publicCopy).not.toMatch(/every destination/i)
+    expect(publicCopy).not.toMatch(/every country/i)
+  })
+
   it('keeps product result cards compact on mobile after adding fit signals', () => {
     const productCardSource = readAiTripPlannerSource('AiSearchProductCard.tsx')
 

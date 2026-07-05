@@ -248,6 +248,7 @@ export function IntentParserDemo() {
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">
             This planner understands your travel intent locally first. Product search appears only after local confirmation and remains comparison-only.
+            Product matching is currently limited to Thailand experience records.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
@@ -382,7 +383,7 @@ export function IntentParserDemo() {
                     </a>
                   </div>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b5d4d]">
-                    {searchState.message ?? 'RadarScout currently searches Thailand experiences only.'}
+                    {searchState.message ?? 'RadarScout currently searches Thailand experiences only. Non-Thailand ideas can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.'}
                   </p>
                   <p className="mt-4 text-sm font-semibold leading-6 text-[#6b5d4d]">
                     Try one of these Thailand trip ideas:
