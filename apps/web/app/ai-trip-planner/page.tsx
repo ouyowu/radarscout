@@ -113,7 +113,7 @@ export default function AiTripPlannerPage() {
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
                 Describe Bangkok, Chiang Mai, Pattaya, Phuket, or a wider Thailand route. RadarScout understands your travel intent locally,
-                then shows read-only product matches for safe comparison.
+                then shows read-only product matches for safe comparison. Product matching is currently limited to Thailand experience records.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -162,7 +162,8 @@ export default function AiTripPlannerPage() {
                   <div className="rounded-2xl bg-[#f5efe8] p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a15d31]">After confirmation</p>
                     <p className="mt-3 text-sm leading-7 text-[#4b5563]">
-                      Read-only Thailand product search after local confirmation, with results clearly marked as comparison-only.
+                      Read-only Thailand product search after local confirmation, with results clearly marked as comparison-only. Non-Thailand ideas
+                      can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.
                     </p>
                   </div>
                 </div>
@@ -191,7 +192,7 @@ export default function AiTripPlannerPage() {
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
               These starters are prompts for guided discovery. They do not claim current status, trigger partner actions, or replace product-page
-              details.
+              details. Non-Thailand ideas can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.
             </p>
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -275,7 +276,8 @@ export default function AiTripPlannerPage() {
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
               The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. No invented prices,
-              no claimed current status, and no unsupported product links are shown.
+              no claimed current status, and no unsupported product links are shown. Product matching is currently limited to Thailand experience
+              records.
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
@@ -296,7 +298,9 @@ export default function AiTripPlannerPage() {
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
                 This page positions RadarScout as a Thailand AI trip planner. The current implementation understands trip intent locally
-                and can return comparison-only product results. Current details stay on product pages and booking partner surfaces.
+                and can return comparison-only product results from Thailand experience records. Non-Thailand ideas can still be structured
+                as planning text, but product matching stays Thailand-only until coverage is reviewed. Current details stay on product pages
+                and booking partner surfaces.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {transparencyPoints.map(point => (
