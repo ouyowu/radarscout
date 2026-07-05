@@ -295,7 +295,7 @@ export function IntentParserDemo() {
             </h2>
           </div>
           <p className="text-sm font-semibold text-[#5a6670]">
-            Readable summary first. Raw JSON stays below for debugging.
+            Readable summary first. Structured trip details stay collapsed below for transparency.
           </p>
         </div>
 
