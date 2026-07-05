@@ -50,6 +50,16 @@ export function AiSearchProductCard({
           {fitReason}
         </p>
       ) : null}
+      <div className="mt-3 rounded-[1rem] border border-[#e8dfd2] bg-[#fffdf7] px-3 py-3">
+        <p className="text-[0.68rem] font-black uppercase tracking-[0.12em] text-[#5a5147]">
+          Fit checklist
+        </p>
+        <ul className="mt-2 grid gap-2 text-xs font-black text-[#5a6670] sm:grid-cols-3">
+          <li className="rounded-full bg-white px-3 py-2">Destination fit</li>
+          <li className="rounded-full bg-white px-3 py-2">Interest fit</li>
+          <li className="rounded-full bg-white px-3 py-2">Comparison only</li>
+        </ul>
+      </div>
       {tags.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {tags.slice(0, 4).map(tag => (
