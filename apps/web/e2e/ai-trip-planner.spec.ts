@@ -234,6 +234,7 @@ test.describe('Valid Chiang Mai flow', () => {
 
     await expect(page).toHaveURL(/#trip-idea$/)
     await expect(page.locator('#trip-idea')).toBeVisible()
+    await expect(page.locator('#trip-idea')).toBeFocused()
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
   })
 
@@ -349,6 +350,29 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     expect(pageText).not.toContain('chiang mai elephant sanctuary')
     expect(pageText).not.toContain('old city temple walk')
   })
+
+  test('unsupported destination result can jump back to refine the trip idea', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(UNSUPPORTED_DESTINATION_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.fill('#trip-idea', 'Singapore 3 days food')
+    await page.click('button[type="submit"]')
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByText('Thailand-only search')).toBeVisible()
+    await page.getByRole('link', { name: /refine trip idea/i }).click()
+
+    await expect(page).toHaveURL(/#trip-idea$/)
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Singapore 3 days food')
+  })
 })
 
 // ── No match guidance ─────────────────────────────────────────────────────────
@@ -383,6 +407,29 @@ test.describe('No match guidance', () => {
 
     const pageText = await page.locator('body').innerText()
     expect(pageText).not.toMatch(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)
+  })
+
+  test('no-match result can jump back to refine the trip idea', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(NO_MATCH_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.fill('#trip-idea', 'Pattaya 2 days beach food elephant day trip')
+    await page.click('button[type="submit"]')
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByText('No matching Thailand experiences found')).toBeVisible()
+    await page.getByRole('link', { name: /refine trip idea/i }).click()
+
+    await expect(page).toHaveURL(/#trip-idea$/)
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Pattaya 2 days beach food elephant day trip')
   })
 })
 

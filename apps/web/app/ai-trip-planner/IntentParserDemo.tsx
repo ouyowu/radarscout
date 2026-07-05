@@ -326,14 +326,30 @@ export function IntentParserDemo() {
             <div className="mt-6">
               {searchState.status === 'unsupported_destination' ? (
                 <div className="rounded-[1.25rem] border border-[#f3d6aa] bg-[#fff8e8] p-5">
-                  <p className="text-sm font-black text-[#a35c09]">Thailand-only search</p>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <p className="text-sm font-black text-[#a35c09]">Thailand-only search</p>
+                    <a
+                      href="#trip-idea"
+                      className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                    >
+                      Refine trip idea
+                    </a>
+                  </div>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b5d4d]">
                     {searchState.message ?? 'RadarScout currently searches Thailand experiences only.'}
                   </p>
                 </div>
               ) : searchState.status === 'no_match' ? (
                 <div className="rounded-[1.25rem] border border-[#e8dfd2] bg-white p-5">
-                  <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
+                    <a
+                      href="#trip-idea"
+                      className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                    >
+                      Refine trip idea
+                    </a>
+                  </div>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b7280]">
                     No Thailand experiences matched your current intent. Try one of these safer next searches:
                   </p>
