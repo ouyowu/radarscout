@@ -64,6 +64,8 @@ describe('public RadarScout copy safety', () => {
 
   it('does not expose inventory, rate, reservation, or Bókun-backend style copy in public UI sources', () => {
     expectNoForbiddenPublicCopy(publicCopySources)
+    expect(publicTourismRuntimeSources).not.toMatch(/\bbackend\b/i)
+    expect(publicTourismRuntimeSources).not.toMatch(/\bdatabase\b/i)
   })
 
   it('does not wire public planning components to internal Bókun APIs or net-rate style estimates', () => {
