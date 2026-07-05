@@ -135,6 +135,15 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('dd').filter({ hasText: /^relaxed$/ })).toBeVisible()
   })
 
+  test('destination starter focuses the trip idea field for immediate editing', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: /use chiang mai route idea/i }).click()
+
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants cooking temples, family friendly')
+  })
+
   test('destination starter shows a safe next-step helper after prefill', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
