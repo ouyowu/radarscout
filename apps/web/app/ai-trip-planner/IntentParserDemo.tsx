@@ -31,6 +31,10 @@ const noMatchNextSearches = [
   { label: 'Pattaya beaches with easy pace', prompt: 'Pattaya 2 days beaches easy pace' },
 ]
 
+function focusTripIdeaField() {
+  document.getElementById('trip-idea')?.focus()
+}
+
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
   return confirmed !== null
 }
@@ -59,6 +63,7 @@ export function IntentParserDemo() {
     setSearchState(null)
     setStarterLoadedCity(null)
     setResult(parseTripIntent(examplePrompt))
+    focusTripIdeaField()
   }
 
   function handlePromptChange(nextPrompt: string) {

@@ -144,6 +144,15 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants cooking temples, family friendly')
   })
 
+  test('example prompt chip focuses the trip idea field for immediate editing', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: 'Bangkok 3 days canals temples street food, relaxed pace', exact: true }).click()
+
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
+  })
+
   test('destination starter shows a safe next-step helper after prefill', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
@@ -405,6 +414,7 @@ test.describe('Unsupported destination flow (Singapore)', () => {
 
     await page.getByRole('button', { name: /Bangkok food and canals/i }).click()
 
+    await expect(page.locator('#trip-idea')).toBeFocused()
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days food canals')
     await expect(page.getByText('Thailand-only search')).toHaveCount(0)
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
@@ -440,6 +450,7 @@ test.describe('No match guidance', () => {
     await expect(productCards(page)).toHaveCount(0)
 
     await page.getByRole('button', { name: /Chiang Mai elephants and food/i }).click()
+    await expect(page.locator('#trip-idea')).toBeFocused()
     await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants food')
     await expect(page.getByText('No matching Thailand experiences found')).toHaveCount(0)
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
