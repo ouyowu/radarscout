@@ -29,17 +29,18 @@ describe('AI trip planner public copy safety', () => {
   })
 
   it('keeps public planner copy free of backend, checkout, and payment wording', () => {
+    const pageSource = readAiTripPlannerSource('page.tsx')
     const publicCopy = [
-      readAiTripPlannerSource('page.tsx'),
+      pageSource,
       readAiTripPlannerSource('IntentParserDemo.tsx'),
       readAiTripPlannerSource('IntentParserPanels.tsx'),
       readAiTripPlannerSource('ItineraryPlaceholderShell.tsx'),
       readAiTripPlannerSource('resultFitSummary.ts'),
     ].join('\n')
 
-    expect(publicCopy).toContain('booking-partner product catalog')
-    expect(publicCopy).toContain('partner handoff')
-    expect(publicCopy).toContain('Reservation workflow')
+    expect(publicCopy).toContain('partner product catalog')
+    expect(publicCopy).toContain('partner workflow')
+    expect(publicCopy).toContain('Partner workflow')
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toContain('Why this fits')
@@ -59,6 +60,13 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/create bookings/i)
     expect(publicCopy).not.toMatch(/Bókun-backed/i)
     expect(publicCopy).not.toMatch(/Bókun catalog/i)
+    expect(pageSource).not.toMatch(/availability/i)
+    expect(publicCopy).not.toMatch(/availability checks/i)
+    expect(publicCopy).not.toMatch(/availability check/i)
+    expect(publicCopy).not.toMatch(/reservation handoff/i)
+    expect(publicCopy).not.toMatch(/Reservation workflow/i)
+    expect(publicCopy).not.toMatch(/No fake availability/i)
+    expect(publicCopy).not.toMatch(/fake booking links/i)
   })
 
   it('keeps product result cards compact on mobile after adding fit signals', () => {

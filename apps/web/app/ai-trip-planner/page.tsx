@@ -31,7 +31,7 @@ const differentiators = [
   },
   {
     title: 'Transparent planning mode',
-    body: 'This page can show comparison-only product results, but availability checks, reservation handoff, and final partner workflows stay disabled.',
+    body: 'This page can show comparison-only product results, while current details and final partner workflows stay outside the planner.',
   },
 ]
 
@@ -49,21 +49,21 @@ const steps = [
   {
     label: 'Step 3',
     title: 'Search read-only Thailand experiences',
-    body: 'After local confirmation, RadarScout can show comparison-only product results without availability checks or reservation handoff.',
+    body: 'After local confirmation, RadarScout can show comparison-only product results without current-detail checks or partner workflow actions.',
   },
 ]
 
 const transparencyPoints = [
-  'No fake prices',
-  'No fake availability',
-  'No fake booking links',
+  'No invented prices',
+  'No claimed current status',
+  'No unsupported product links',
   'No fake products or suppliers',
 ]
 
 const notConnected = [
-  'Availability checks',
-  'Final partner handoff',
-  'Reservation workflow',
+  'Current-detail checks',
+  'Final partner workflow',
+  'Partner workflow actions',
   'Itinerary generation',
 ]
 
@@ -190,7 +190,7 @@ export default function AiTripPlannerPage() {
               Start with a city, then refine the experience fit.
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
-              These starters are prompts for guided discovery. They do not claim current availability, trigger booking actions, or replace product-page
+              These starters are prompts for guided discovery. They do not claim current status, trigger partner actions, or replace product-page
               details.
             </p>
           </div>
@@ -274,8 +274,8 @@ export default function AiTripPlannerPage() {
               Understand your travel intent locally before read-only product matching
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
-              The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. No fake prices,
-              no fake availability, and no fake reservation links are shown.
+              The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. No invented prices,
+              no claimed current status, and no unsupported product links are shown.
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
