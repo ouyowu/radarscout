@@ -11,7 +11,7 @@ type LocalConfirmationPanelProps = {
   confirmed: ConfirmedIntent | null
 }
 
-type MissingFieldsWarningsProps = {
+type PlannerNotesProps = {
   missingFields: string[]
   warnings: string[]
 }
@@ -33,6 +33,20 @@ function formatValue(value: string | number | null): string {
 
 function formatList(values: string[]): string {
   return values.length > 0 ? values.join(', ') : 'None detected'
+}
+
+function formatMissingField(field: string): string {
+  if (field === 'durationDays') return 'trip length'
+  if (field === 'destination') return 'destination'
+  return field
+}
+
+function formatPlannerNote(note: string): string {
+  if (note === 'empty prompt') return 'Add a trip idea to start planning.'
+  if (note === 'prompt truncated') return 'Your trip idea was shortened to fit the planner.'
+  if (note === 'ambiguous or missing destination') return 'Add a clearer Thailand destination.'
+  if (note === 'ambiguous or missing duration') return 'Add a trip length.'
+  return note
 }
 
 function CapabilityStatus({ label, status }: { label: string; status: string }) {
@@ -68,9 +82,11 @@ export function LocalConfirmationPanel({ confirmed }: LocalConfirmationPanelProp
   )
 }
 
-export function MissingFieldsWarnings({ missingFields, warnings }: MissingFieldsWarningsProps) {
+export function PlannerNotes({ missingFields, warnings }: PlannerNotesProps) {
   const hasMissingFields = missingFields.length > 0
   const hasWarnings = warnings.length > 0
+  const formattedMissingFields = missingFields.map(formatMissingField)
+  const formattedWarnings = warnings.map(formatPlannerNote)
 
   return (
     <section className="border border-[#f3d6aa] bg-[#fff8e8] p-4">
@@ -80,10 +96,10 @@ export function MissingFieldsWarnings({ missingFields, warnings }: MissingFields
       {hasMissingFields || hasWarnings ? (
         <div className="mt-3 space-y-3 text-sm font-semibold leading-6 text-[#6b5d4d]">
           {hasMissingFields ? (
-            <p>Missing fields: <span className="font-black text-[#101820]">{missingFields.join(', ')}</span></p>
+            <p>Add detail: <span className="font-black text-[#101820]">{formattedMissingFields.join(', ')}</span></p>
           ) : null}
           {hasWarnings ? (
-            <p>Notes: <span className="font-black text-[#101820]">{warnings.join(', ')}</span></p>
+            <p>Planning notes: <span className="font-black text-[#101820]">{formattedWarnings.join(', ')}</span></p>
           ) : null}
         </div>
       ) : (
