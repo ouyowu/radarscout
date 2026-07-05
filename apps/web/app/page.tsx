@@ -220,11 +220,11 @@ export default function LandingPage() {
             <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-ai-feature)]">AI planning use cases</p>
             <ul className="mt-5 grid gap-3 text-sm font-bold leading-7 text-[var(--color-text-secondary)] sm:grid-cols-2">
               <li>Plan 7 days in Thailand</li>
-              <li>Compare private day tours</li>
-              <li>Build an Austria + Germany + France route</li>
-              <li>Prepare a World Cup 2026 travel plan</li>
-              <li>Find food, culture, transfers, and local activities</li>
-              <li>Match routes to realistic daily timing</li>
+              <li>Compare Bangkok and Chiang Mai day tours</li>
+              <li>Plan elephant care, cooking, and nature days</li>
+              <li>Prepare Pattaya or Phuket day-trip ideas</li>
+              <li>Find food, culture, transfers, and local Thailand activities</li>
+              <li>Match Thailand routes to realistic daily timing</li>
             </ul>
           </div>
         </div>
