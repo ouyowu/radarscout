@@ -50,7 +50,8 @@ describe('public RadarScout copy safety', () => {
     expect(rootLayoutSource).toContain('Plan Thailand experiences with guided discovery')
     expect(rootLayoutSource).toContain('trusted booking partner handoff')
     expect(rootLayoutSource).toContain('continue with a trusted booking partner')
-    expect(destinationsPageSource).toContain('AI-guided private trip planning')
+    expect(destinationsPageSource).toContain('Thailand-first AI trip planning')
+    expect(destinationsPageSource).toContain('other routes remain planning-only')
     expect(destinationsPageSource).toContain('planning-only')
 
     const metadataSources = [rootLayoutSource, destinationsPageSource].join('\n')

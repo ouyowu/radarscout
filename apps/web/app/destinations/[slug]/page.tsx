@@ -28,7 +28,7 @@ export function generateMetadata({ params }: DestinationPageProps): Metadata {
 
   const title = destination.hasLiveInventory
     ? `${destination.name} AI Destination Portal | Focused Experience Coverage`
-    : `${destination.name} Travel Planning Guide | Partner Tours Coming Soon`
+    : `${destination.name} Travel Planning Guide | Planning-Only`
   const description = destination.hasLiveInventory
     ? `${destination.shortDescription} RadarScout highlights traveler-ready experience discovery with booking partner handoff.`
     : `${destination.shortDescription} Planning-only destination guide while RadarScout onboards trusted local suppliers.`
@@ -60,7 +60,7 @@ export default function DestinationPage({ params }: DestinationPageProps) {
   const related = relatedDestinations(destination.slug)
   const faqItems = [
     {
-      question: `Can I book ${destination.name} tours on RadarScout now?`,
+      question: `Can I compare ${destination.name} experiences on RadarScout now?`,
       answer: destination.hasLiveInventory
         ? 'Thailand currently has traveler-ready recommendations with booking partner handoff. RadarScout sends travelers to the partner page for final details.'
         : `Not yet. ${destination.name} is a planning-only destination while RadarScout onboards trusted local suppliers.`,
@@ -95,7 +95,10 @@ export default function DestinationPage({ params }: DestinationPageProps) {
       <AdventureHero
         eyebrow={destination.hasLiveInventory ? 'Focused destination portal' : 'Planning-only destination portal'}
         title={destination.heroTitle}
-        subtitle={`${destination.shortDescription} RadarScout helps compare experience types, route fit, travel style, time value, and private customization needs.`}
+        subtitle={destination.hasLiveInventory
+          ? `${destination.shortDescription} RadarScout helps compare experience types, route fit, travel style, time value, and private customization needs.`
+          : `${destination.shortDescription} This is a planning-only route guide; product recommendations stay off until trusted local supplier coverage is reviewed.`
+        }
         actions={[
           destination.hasLiveInventory
             ? { label: 'Explore Thailand experiences', href: '/tours' }
