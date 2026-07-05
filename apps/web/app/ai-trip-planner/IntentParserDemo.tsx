@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
 import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
@@ -77,6 +77,21 @@ export function IntentParserDemo() {
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
   const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
+
+  useEffect(() => {
+    function handleStarterPrompt(event: Event) {
+      const detail = (event as CustomEvent<{ prompt?: unknown }>).detail
+      if (typeof detail?.prompt !== 'string' || detail.prompt.trim().length === 0) return
+
+      setPrompt(detail.prompt)
+      setConfirmed(null)
+      setSearchState(null)
+      setResult(parseTripIntent(detail.prompt))
+    }
+
+    window.addEventListener('radarscout:ai-trip-starter', handleStarterPrompt)
+    return () => window.removeEventListener('radarscout:ai-trip-starter', handleStarterPrompt)
+  }, [])
 
   function handleConfirmIntent() {
     if (!canConfirm) return
