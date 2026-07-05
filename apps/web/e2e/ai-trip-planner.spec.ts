@@ -176,6 +176,24 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(productCards(page)).toHaveCount(3)
   })
 
+  test('destination starter helper shows result feedback after helper search', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+    await page.getByRole('button', { name: /search loaded trip idea/i }).click()
+
+    await expect(page.getByText('3 matching Thailand experiences found below.')).toBeVisible()
+    await expect(productCards(page)).toHaveCount(3)
+  })
+
   test('search CTA appears after confirming intent', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })

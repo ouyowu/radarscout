@@ -81,6 +81,15 @@ export function IntentParserDemo() {
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
   const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
+  const starterSearchFeedback = searchState
+    ? searchState.status === 'ok'
+      ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
+      : searchState.status === 'no_match'
+        ? 'No matching Thailand experiences found. Try a safer suggested search below.'
+        : searchState.status === 'unsupported_destination'
+          ? 'This starter search is limited to Thailand experiences.'
+          : 'Search did not complete. Try again with a clearer Thailand trip idea.'
+    : null
 
   useEffect(() => {
     function handleStarterPrompt(event: Event) {
@@ -164,6 +173,11 @@ export function IntentParserDemo() {
             <p className="text-sm font-black leading-6 text-[#0f766e]">
               {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
             </p>
+            {starterSearchFeedback ? (
+              <p className="text-sm font-semibold leading-6 text-[#3f6f5c]">
+                {starterSearchFeedback}
+              </p>
+            ) : null}
             <div className="flex flex-col gap-2 sm:flex-row">
               <button
                 type="button"
