@@ -262,6 +262,11 @@ test.describe('No match guidance', () => {
     await expect(page.getByText(/No product cards are shown until a real eligible product matches/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(0)
 
+    await page.getByRole('button', { name: /Chiang Mai elephants and food/i }).click()
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants food')
+    await expect(page.getByText('No matching Thailand experiences found')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+
     const pageText = await page.locator('body').innerText()
     expect(pageText).not.toMatch(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)
   })

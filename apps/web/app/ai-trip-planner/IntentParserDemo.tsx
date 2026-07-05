@@ -24,6 +24,12 @@ const examplePrompts = [
   'Phuket 4 days islands beaches local food, avoid rushed schedule',
   'Pattaya 2 days beaches food elephant day trip, easy pace',
 ]
+const noMatchNextSearches = [
+  { label: 'Chiang Mai elephants and food', prompt: 'Chiang Mai 3 days elephants food' },
+  { label: 'Bangkok food and canals', prompt: 'Bangkok 3 days food canals' },
+  { label: 'Phuket islands and local food', prompt: 'Phuket 4 days islands local food' },
+  { label: 'Pattaya beaches with easy pace', prompt: 'Pattaya 2 days beaches easy pace' },
+]
 
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
   return confirmed !== null
@@ -263,18 +269,17 @@ export function IntentParserDemo() {
                     No Thailand experiences matched your current intent. Try one of these safer next searches:
                   </p>
                   <ul className="mt-4 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670] sm:grid-cols-2">
-                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
-                      Chiang Mai elephants and food
-                    </li>
-                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
-                      Bangkok food and canals
-                    </li>
-                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
-                      Phuket islands and local food
-                    </li>
-                    <li className="rounded-2xl bg-[#f7f3ec] px-4 py-3">
-                      Pattaya beaches with easy pace
-                    </li>
+                    {noMatchNextSearches.map(nextSearch => (
+                      <li key={nextSearch.label}>
+                        <button
+                          type="button"
+                          onClick={() => useExamplePrompt(nextSearch.prompt)}
+                          className="min-h-[44px] w-full rounded-2xl bg-[#f7f3ec] px-4 py-3 text-left font-semibold leading-6 text-[#5a6670] hover:bg-[#ebe3d6] hover:text-[#101820] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                        >
+                          {nextSearch.label}
+                        </button>
+                      </li>
+                    ))}
                   </ul>
                   <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
                     No product cards are shown until a real eligible product matches the confirmed intent.
