@@ -106,7 +106,7 @@ export function CapabilityStatusPanel({
         Capability status
       </h3>
       <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-        Product retrieval can turn on after local confirmation. Availability checks and reservation handoff stay disabled.
+        Product retrieval can turn on after local confirmation. Current-detail checks and partner workflow actions stay disabled.
       </p>
       <div className="mt-4 grid gap-3">
         <CapabilityStatus label="bookingEnabled" enabled={bookingEnabled} />
