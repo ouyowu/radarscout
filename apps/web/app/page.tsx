@@ -82,7 +82,7 @@ const howItWorks = [
 
 const faqItems = [
   {
-    question: 'Is RadarScout a marketplace for every destination?',
+    question: 'How broad is RadarScout coverage today?',
     answer:
       'No. RadarScout is Thailand-first. Other destination pages stay planning-only until local partner coverage and handoff paths are reviewed.',
   },

@@ -92,9 +92,13 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('trusted partner records')
     expect(markup).toContain('Plan with RadarScout')
     expect(markup).toContain('Non-Thailand destinations remain planning-only.')
+    expect(markup).toContain('Why are some destinations still planning-only?')
     expect(markup).toContain('Additional destinations can move beyond planning-only after local supplier coverage')
+    expect(markup).toContain('keeps non-Thailand destinations planning-only until trusted product records are ready')
     expect(markup).not.toContain('Japan, France, and other selected destinations remain planning-only.')
     expect(markup).not.toContain('More selected high-demand destinations will be added')
+    expect(markup).not.toContain('Can I compare tours from every destination on this page?')
+    expect(markup).not.toContain('does not claim current product coverage for every destination')
     expectSafeTourCopy(markup)
   })
 

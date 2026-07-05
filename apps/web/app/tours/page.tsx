@@ -100,7 +100,7 @@ type FilterState = {
 
 const faqItems = [
   {
-    question: 'Can I compare tours from every destination on this page?',
+    question: 'Why are some destinations still planning-only?',
     answer:
       'No. Thailand is currently RadarScout’s first supported destination. Other destinations remain planning-only while trusted local product records are prepared.',
   },
@@ -539,7 +539,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
       <EditorialBanner
         label="Coming soon destinations"
         title="Non-Thailand destinations remain planning-only."
-        body="RadarScout does not claim current product coverage for every destination. More partner destinations will appear only after trusted product records are ready for comparison."
+        body="RadarScout keeps non-Thailand destinations planning-only until trusted product records are ready for comparison."
         href="/destinations"
         ctaLabel="View destination status"
       />

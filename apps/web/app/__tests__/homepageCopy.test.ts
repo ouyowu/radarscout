@@ -37,9 +37,10 @@ describe('homepage public copy safety', () => {
 
   it('does not use available-now wording in visible FAQ copy', () => {
     expect(homepageSource).not.toMatch(/available now/i)
-    expect(homepageSource).toContain('Is RadarScout a marketplace for every destination?')
+    expect(homepageSource).toContain('How broad is RadarScout coverage today?')
     expect(homepageSource).toContain('RadarScout is Thailand-first')
     expect(homepageSource).toContain('Other destination pages stay planning-only')
+    expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
   it('links to the AI trip planner with safe planning-first copy', () => {
