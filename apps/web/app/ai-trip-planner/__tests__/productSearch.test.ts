@@ -6,7 +6,10 @@
  */
 import { describe, expect, it } from 'vitest'
 import { canSearchFromConfirmed } from '../IntentParserDemo'
-import type { AiSearchProductCardProps } from '../AiSearchProductCard'
+import {
+  buildAiTripPlannerDetailHref,
+  type AiSearchProductCardProps,
+} from '../AiSearchProductCard'
 import type { AiTripSearchResponse } from '../../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary } from '../resultFitSummary'
 
@@ -280,6 +283,20 @@ describe('regression — detailHref stays within /tours/ namespace (test 37)', (
     for (const p of res.products) {
       expect(p.detailHref).toMatch(/^\/tours\//)
     }
+  })
+})
+
+describe('AI planner source context for tour detail links', () => {
+  it('adds an AI trip planner source parameter to tour detail links', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1')).toBe('/tours/prod_1?source=ai-trip-planner')
+  })
+
+  it('preserves existing detail query parameters when adding source context', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1?ref=card')).toBe('/tours/prod_1?ref=card&source=ai-trip-planner')
+  })
+
+  it('keeps AI planner detail links inside the /tours namespace', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1')).toMatch(/^\/tours\//)
   })
 })
 

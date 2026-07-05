@@ -25,7 +25,8 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toMatch(/Search real Thailand experiences/i)
     expect(publicCopy).toMatch(/View details/i)
     expect(publicCopy).not.toMatch(/View experience/i)
-    expect(publicCopy).toMatch(/href=\{detailHref\}/)
+    expect(publicCopy).toMatch(/buildAiTripPlannerDetailHref\(detailHref\)/)
+    expect(publicCopy).toMatch(/source=ai-trip-planner/)
   })
 
   it('keeps public planner copy free of backend, checkout, and payment wording', () => {

@@ -179,4 +179,44 @@ describe('tour public copy safety', () => {
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
+
+  it('renders safe AI trip planner return context when source is ai-trip-planner', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'found',
+      product: {
+        id: 'tour_from_ai_planner',
+        title: 'Chiang Mai Elephant Care',
+        city: 'Chiang Mai',
+        location: 'Mae Rim',
+        destination: 'Thailand',
+        imageUrl: null,
+        summary: null,
+        description: null,
+        retailPrice: null,
+        currency: null,
+        detailHref: '/tours/tour_from_ai_planner',
+        facts: {
+          duration: null,
+          meetingPoint: null,
+          pickupAvailable: false,
+          cancellationPolicy: null,
+        },
+        reviewedEnrichment: null,
+      },
+    })
+
+    const element = await TourDetailPage({
+      params: { id: 'tour_from_ai_planner' },
+      searchParams: { source: 'ai-trip-planner' },
+    })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('From AI Trip Planner')
+    expect(markup).toContain('Back to AI Trip Planner')
+    expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
+    expect(fetchMock).not.toHaveBeenCalled()
+    expectSafeTourCopy(markup)
+  })
 })

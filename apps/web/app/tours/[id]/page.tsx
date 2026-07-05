@@ -17,6 +17,9 @@ type TourDetailPageProps = {
   params: {
     id: string
   }
+  searchParams?: {
+    source?: string
+  }
 }
 
 type ProductFacts = {
@@ -217,7 +220,7 @@ function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
   )
 }
 
-export default async function TourDetailPage({ params }: TourDetailPageProps) {
+export default async function TourDetailPage({ params, searchParams }: TourDetailPageProps) {
   const result = await fetchProductDetail(params.id)
 
   if (result.status !== 'found') {
@@ -226,17 +229,26 @@ export default async function TourDetailPage({ params }: TourDetailPageProps) {
 
   const { product } = result
   const rows = factRows(product.facts)
+  const isFromAiTripPlanner = searchParams?.source === 'ai-trip-planner'
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <section className="bg-[var(--color-bg-primary)] px-4 py-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/tours"
             className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--color-border-light)] bg-white px-5 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
           >
             Back to tours
           </Link>
+          {isFromAiTripPlanner ? (
+            <Link
+              href="/ai-trip-planner#ai-trip-results"
+              className="inline-flex min-h-[44px] items-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-5 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e] transition hover:text-[#0b5f59]"
+            >
+              From AI Trip Planner · Back to AI Trip Planner
+            </Link>
+          ) : null}
         </div>
       </section>
 

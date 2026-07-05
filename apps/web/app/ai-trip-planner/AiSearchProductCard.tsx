@@ -12,6 +12,12 @@ export type AiSearchProductCardProps = {
   fitReason?: string | null
 }
 
+export function buildAiTripPlannerDetailHref(detailHref: string): string {
+  const separator = detailHref.includes('?') ? '&' : '?'
+
+  return `${detailHref}${separator}source=ai-trip-planner`
+}
+
 export function AiSearchProductCard({
   title,
   city,
@@ -84,7 +90,7 @@ export function AiSearchProductCard({
           <div />
         )}
         <Link
-          href={detailHref}
+          href={buildAiTripPlannerDetailHref(detailHref)}
           className="inline-flex min-h-[40px] items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
         >
           View details
