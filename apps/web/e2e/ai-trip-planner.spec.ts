@@ -153,6 +153,21 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(confirmBtn).toBeEnabled()
   })
 
+  test('empty trip idea disables parsing until the user enters text', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: /clear trip idea/i }).click()
+
+    const parseBtn = page.getByRole('button', { name: /parse trip intent/i })
+    await expect(parseBtn).toBeDisabled()
+    await expect(page.getByText('Add a trip idea before parsing.')).toBeVisible()
+
+    await page.locator('#trip-idea').fill('Chiang Mai 2 days elephants food')
+
+    await expect(parseBtn).toBeEnabled()
+    await expect(page.getByText('Add a trip idea before parsing.')).toHaveCount(0)
+  })
+
   test('destination starter fills the planner prompt and local summary', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 

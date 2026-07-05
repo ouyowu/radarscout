@@ -53,6 +53,8 @@ export function IntentParserDemo() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (prompt.trim().length === 0) return
+
     setConfirmed(null)
     setSearchState(null)
     setStarterLoadedCity(null)
@@ -89,6 +91,7 @@ export function IntentParserDemo() {
 
   const hasMissingFields = result.missingFields.length > 0
   const hasWarnings = result.warnings.length > 0
+  const hasPromptText = prompt.trim().length > 0
   const isParsedPromptCurrent = prompt === parsedPrompt
   const duration = result.intent.durationDays
     ? `${result.intent.durationDays} day${result.intent.durationDays === 1 ? '' : 's'}${result.intent.durationNights ? ` / ${result.intent.durationNights} night${result.intent.durationNights === 1 ? '' : 's'}` : ''}`
@@ -247,7 +250,8 @@ export function IntentParserDemo() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="submit"
-              className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)]"
+              disabled={!hasPromptText}
+              className="inline-flex min-h-[52px] items-center justify-center bg-[#101820] px-6 text-sm font-black uppercase tracking-[0.12em] text-white [clip-path:polygon(5%_0,100%_8%,95%_100%,0_92%)] disabled:cursor-not-allowed disabled:bg-[#c7beb1] disabled:text-[#9a9084]"
             >
               Parse trip intent
             </button>
@@ -264,7 +268,12 @@ export function IntentParserDemo() {
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
           Confirmation only saves this understanding in the current browser session. It does not generate an itinerary, check availability, or create reservation handoffs.
         </p>
-        {!canConfirm ? (
+        {!hasPromptText ? (
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
+            Add a trip idea before parsing.
+          </p>
+        ) : null}
+        {hasPromptText && !canConfirm ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
             {isParsedPromptCurrent
               ? 'Destination and duration are required before this local confirmation can be saved.'
