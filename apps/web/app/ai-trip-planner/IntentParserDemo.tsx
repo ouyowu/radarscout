@@ -66,6 +66,15 @@ export function IntentParserDemo() {
     focusTripIdeaField()
   }
 
+  function handleClearPrompt() {
+    setPrompt('')
+    setConfirmed(null)
+    setSearchState(null)
+    setStarterLoadedCity(null)
+    setResult(parseTripIntent(''))
+    focusTripIdeaField()
+  }
+
   function handlePromptChange(nextPrompt: string) {
     setPrompt(nextPrompt)
     setConfirmed(null)
@@ -172,6 +181,13 @@ export function IntentParserDemo() {
               {examplePrompt}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={handleClearPrompt}
+            className="border border-[#ded7ca] bg-white px-3 py-2 text-left text-xs font-black leading-5 text-[#5a5147] hover:border-[#a35c09] hover:text-[#a35c09]"
+          >
+            Clear trip idea
+          </button>
         </div>
         {starterLoadedCity ? (
           <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">

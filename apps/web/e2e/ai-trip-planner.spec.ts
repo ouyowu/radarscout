@@ -153,6 +153,22 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
   })
 
+  test('clear trip idea resets planner state and focuses the input', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+
+    await expect(page.getByText('Trip intent confirmed locally')).toBeVisible()
+
+    await page.getByRole('button', { name: /clear trip idea/i }).click()
+
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('')
+    await expect(page.getByText('Trip intent confirmed locally')).toHaveCount(0)
+    await expect(page.getByText('Bangkok route idea loaded')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeDisabled()
+  })
+
   test('destination starter shows a safe next-step helper after prefill', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
