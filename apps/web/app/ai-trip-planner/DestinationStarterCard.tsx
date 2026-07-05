@@ -11,6 +11,7 @@ export function DestinationStarterCard({ city, title, body, prompt }: Destinatio
   function handleUseStarter() {
     window.dispatchEvent(new CustomEvent('radarscout:ai-trip-starter', { detail: { city, prompt } }))
     document.getElementById('intent-demo')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById('trip-idea')?.focus()
   }
 
   return (
