@@ -469,6 +469,10 @@ test.describe('Product card safety', () => {
       await expect(cards.nth(i).getByText(/comparison match/i)).toBeVisible()
       await expect(cards.nth(i).getByText(/read-only product result/i)).toBeVisible()
       await expect(cards.nth(i).getByText(/why this fits/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/fit checklist/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/destination fit/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/interest fit/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/comparison only/i)).toBeVisible()
     }
   })
 
