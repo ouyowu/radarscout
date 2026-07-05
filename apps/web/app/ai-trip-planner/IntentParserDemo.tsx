@@ -288,14 +288,14 @@ export function IntentParserDemo() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
-              Local deterministic planner
+              Local planning summary
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
               Trip Intent Summary
             </h2>
           </div>
           <p className="text-sm font-semibold text-[#5a6670]">
-            Readable summary first. Structured trip details stay collapsed below for transparency.
+            Readable summary first. Trip details stay collapsed below for transparency.
           </p>
         </div>
 

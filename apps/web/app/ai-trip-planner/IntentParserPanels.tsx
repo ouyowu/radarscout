@@ -130,7 +130,7 @@ export function StructuredTripDetails({ parsedJson }: StructuredTripDetailsProps
   return (
     <details className="mt-5 border border-[#e8dfd2] bg-white p-4">
       <summary className="cursor-pointer text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">
-        Structured trip details
+        Trip details
       </summary>
       <pre className="mt-4 overflow-x-auto whitespace-pre-wrap text-xs font-semibold leading-6 text-[#101820]">
         {parsedJson}
