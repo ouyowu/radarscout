@@ -343,8 +343,9 @@ export function IntentParserDemo() {
         <RawJsonDetails parsedJson={parsedJson} />
       </section>
 
-      {confirmed ? (
-        <section id="ai-trip-results" className="mt-6 scroll-mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">
+      <section id="ai-trip-results" className="mt-6 scroll-mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">
+        {confirmed ? (
+          <>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.14em] text-[#1e2d59]">
@@ -503,8 +504,29 @@ export function IntentParserDemo() {
               ) : null}
             </div>
           ) : null}
-        </section>
-      ) : null}
+          </>
+        ) : (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.14em] text-[#1e2d59]">
+                Matching experiences
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.025em] text-[#101820]">
+                Matching experiences appear here after you confirm a trip intent
+              </h2>
+              <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+                This stable return point helps you get back from product details. Confirm a Thailand trip idea first, then search comparison-only product results.
+              </p>
+            </div>
+            <a
+              href="#trip-idea"
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e]"
+            >
+              Refine trip idea
+            </a>
+          </div>
+        )}
+      </section>
     </div>
   )
 }
