@@ -179,7 +179,13 @@ const faqItems = [
   },
 ]
 
-function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
+function UnavailableState({
+  status,
+  isFromAiTripPlanner,
+}: {
+  status: 'not-found' | 'error'
+  isFromAiTripPlanner: boolean
+}) {
   const title = status === 'not-found'
     ? 'This product detail is not available.'
     : 'Product details are temporarily unavailable.'
@@ -213,6 +219,14 @@ function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
             >
               Thailand destination
             </Link>
+            {isFromAiTripPlanner ? (
+              <Link
+                href="/ai-trip-planner#ai-trip-results"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-6 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e]"
+              >
+                Back to AI Trip Planner
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>
@@ -222,14 +236,14 @@ function UnavailableState({ status }: { status: 'not-found' | 'error' }) {
 
 export default async function TourDetailPage({ params, searchParams }: TourDetailPageProps) {
   const result = await fetchProductDetail(params.id)
+  const isFromAiTripPlanner = searchParams?.source === 'ai-trip-planner'
 
   if (result.status !== 'found') {
-    return <UnavailableState status={result.status} />
+    return <UnavailableState status={result.status} isFromAiTripPlanner={isFromAiTripPlanner} />
   }
 
   const { product } = result
   const rows = factRows(product.facts)
-  const isFromAiTripPlanner = searchParams?.source === 'ai-trip-planner'
 
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">

@@ -219,4 +219,24 @@ describe('tour public copy safety', () => {
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
+
+  it('keeps the AI trip planner return path when a sourced tour detail is unavailable', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'not-found',
+    })
+
+    const element = await TourDetailPage({
+      params: { id: 'missing_from_ai_planner' },
+      searchParams: { source: 'ai-trip-planner' },
+    })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('This product detail is not available.')
+    expect(markup).toContain('Back to AI Trip Planner')
+    expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
+    expect(fetchMock).not.toHaveBeenCalled()
+    expectSafeTourCopy(markup)
+  })
 })
