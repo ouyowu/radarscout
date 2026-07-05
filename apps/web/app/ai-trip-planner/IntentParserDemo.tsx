@@ -8,7 +8,7 @@ import {
   CapabilityStatusPanel,
   LocalConfirmationPanel,
   MissingFieldsWarnings,
-  RawJsonDetails,
+  StructuredTripDetails,
   type ConfirmedIntent,
 } from './IntentParserPanels'
 import { TripIntentSummary } from './TripIntentSummary'
@@ -340,7 +340,7 @@ export function IntentParserDemo() {
           />
         ) : null}
 
-        <RawJsonDetails parsedJson={parsedJson} />
+        <StructuredTripDetails parsedJson={parsedJson} />
       </section>
 
       <section id="ai-trip-results" className="mt-6 scroll-mt-6 border border-[#1e2d59]/20 bg-[#f7f9ff] p-5">
