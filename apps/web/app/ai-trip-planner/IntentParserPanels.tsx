@@ -22,7 +22,7 @@ type CapabilityStatusPanelProps = {
   availabilityEnabled: boolean
 }
 
-type RawJsonDetailsProps = {
+type StructuredTripDetailsProps = {
   parsedJson: string
 }
 
@@ -117,7 +117,7 @@ export function CapabilityStatusPanel({
   )
 }
 
-export function RawJsonDetails({ parsedJson }: RawJsonDetailsProps) {
+export function StructuredTripDetails({ parsedJson }: StructuredTripDetailsProps) {
   return (
     <details className="mt-5 border border-[#e8dfd2] bg-white p-4">
       <summary className="cursor-pointer text-sm font-black uppercase tracking-[0.12em] text-[#5a5147]">
