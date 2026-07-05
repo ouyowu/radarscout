@@ -45,6 +45,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toContain('Why this fits')
+    expect(publicCopy).toContain('Structured trip details')
     expect(publicCopy).toMatch(/transparent planning mode/i)
     expect(publicCopy).toMatch(/read-only Thailand product search/i)
     expect(publicCopy).toMatch(/comparison-only product results/i)
@@ -71,6 +72,9 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/Reservation workflow/i)
     expect(publicCopy).not.toMatch(/No fake availability/i)
     expect(publicCopy).not.toMatch(/fake booking links/i)
+    expect(publicCopy).not.toMatch(/Raw structured JSON/i)
+    expect(publicCopy).not.toMatch(/Raw JSON/i)
+    expect(publicCopy).not.toMatch(/debugging/i)
   })
 
   it('keeps product result cards compact on mobile after adding fit signals', () => {
