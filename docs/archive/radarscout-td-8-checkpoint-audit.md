@@ -1,5 +1,7 @@
 # TD-8 Checkpoint Audit
 
+Historical checkpoint only. This audit captured an early AI Trip Planner state and is archived outside the App Router tree so current public-copy and runtime scans do not treat stale notes as active UI/source guidance.
+
 Base reviewed: `origin/codex/travel-mvp-launch` at `0c86322 Refactor trip planner demo UI components`
 
 Scope reviewed:
