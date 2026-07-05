@@ -7,7 +7,7 @@ import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
 import {
   CapabilityStatusPanel,
   LocalConfirmationPanel,
-  MissingFieldsWarnings,
+  PlannerNotes,
   StructuredTripDetails,
   type ConfirmedIntent,
 } from './IntentParserPanels'
@@ -315,7 +315,7 @@ export function IntentParserDemo() {
 
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <LocalConfirmationPanel confirmed={confirmed} />
-          <MissingFieldsWarnings
+          <PlannerNotes
             missingFields={result.missingFields}
             warnings={result.warnings}
           />
