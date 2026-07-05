@@ -2,13 +2,21 @@
 
 Task: `TD-RADARSCOUT-DESTINATION-SCOPE-AUDIT-0`
 
-Status: docs-only audit
+Status: audit completed; copy guardrails implemented on `codex/travel-mvp-launch`
+
+Latest implementation status:
+
+- `TD-RADARSCOUT-DESTINATION-SCOPE-1-THAILAND-FIRST-COPY`: completed and merged.
+- `TD-RADARSCOUT-THAILAND-FIRST-PUBLIC-COPY-2`: completed and merged.
+- `TD-RADARSCOUT-COVERAGE-FAQ-COPY-3`: completed and merged.
+- Latest merged branch head at the time of this refresh: `c246bc0ceade38dbff7b722b6a391b73acb1f050`.
+- Production deploy for these copy guardrail changes remains a separate approval gate.
 
 ## Current state
 
 RadarScout is positioned as an AI-guided Thailand travel discovery and booking-partner handoff product, with Thailand as the first focused experience destination.
 
-The current destination system still contains a broader global destination planning layer:
+The current destination system still contains a broader destination planning layer:
 
 - `/destinations`
 - `/destinations/[slug]`
@@ -56,16 +64,23 @@ The current destination pages use guardrail copy that keeps the product boundary
 
 ## Remaining mismatch
 
-The main remaining product mismatch is not functionality; it is scope perception.
+The main product mismatch identified by this audit was not functionality; it was scope perception.
 
-RadarScout's target product direction is Thailand-first, but the presence of many generated non-Thailand destination pages can still make the product feel like a global travel portal if users enter through `/destinations`.
+RadarScout's target product direction is Thailand-first, but the presence of many generated non-Thailand destination pages could make the product feel broader than current product coverage if users enter through `/destinations`.
 
-This is safe only while non-Thailand pages remain clearly planning-only. It becomes risky if:
+This remains safe only while non-Thailand pages stay clearly planning-only. It becomes risky if:
 
 - non-Thailand pages are added to sitemap before product coverage exists;
 - non-Thailand pages use language that implies live products;
 - AI planner prompts imply global product matching;
 - homepage or navigation makes RadarScout sound like a broad worldwide OTA.
+
+Follow-up copy work has reduced that perception risk:
+
+- `/destinations` now uses explicit Thailand-first and planning-only wording.
+- Non-Thailand destination detail pages now state that product recommendations stay off until supplier coverage is reviewed.
+- Homepage and tours FAQ copy no longer frames RadarScout as a broad marketplace or every-destination product.
+- Supplier CTA copy now references trusted Thailand suppliers and future destination partners instead of broad selected destination coverage.
 
 ## SEO and sitemap status
 
@@ -83,6 +98,8 @@ This is aligned with the current safety strategy.
 
 ### 1. `TD-RADARSCOUT-DESTINATION-SCOPE-1-THAILAND-FIRST-COPY`
 
+Status: completed and merged.
+
 Polish `/destinations` and `/destinations/[slug]` copy so non-Thailand pages are unmistakably planning-only.
 
 Scope:
@@ -93,11 +110,31 @@ Scope:
 - no SEO index/follow opening;
 - no product data changes.
 
-Recommended changes:
+Completed changes:
 
-- make `/destinations` hero more explicitly Thailand-first;
-- reduce wording such as "selected high-demand travel countries" where it can feel like live global coverage;
-- add tests that non-Thailand destination pages contain planning-only copy and do not imply traveler-ready products.
+- made `/destinations` hero more explicitly Thailand-first;
+- reduced wording such as "selected high-demand travel countries" where it could feel like live broad coverage;
+- added tests that non-Thailand destination pages contain planning-only copy and do not imply traveler-ready products.
+
+### 1A. `TD-RADARSCOUT-THAILAND-FIRST-PUBLIC-COPY-2`
+
+Status: completed and merged.
+
+Cleaned remaining public runtime copy in homepage, tours, and supplier CTA surfaces:
+
+- removed broad "selected top/high-demand destination" phrasing from visible product-positioning copy;
+- reframed supplier CTA around trusted Thailand suppliers and future destination partners;
+- added regression tests for the old wording.
+
+### 1B. `TD-RADARSCOUT-COVERAGE-FAQ-COPY-3`
+
+Status: completed and merged.
+
+Cleaned FAQ prompts that could still suggest marketplace-style breadth:
+
+- homepage FAQ now asks "How broad is RadarScout coverage today?";
+- tours FAQ now asks "Why are some destinations still planning-only?";
+- tours destination banner now states that non-Thailand destinations stay planning-only until trusted product records are ready.
 
 ### 2. `TD-RADARSCOUT-DESTINATION-SCOPE-2-AI-PLANNER-THAILAND-BOUNDARY`
 
@@ -136,8 +173,8 @@ Do not:
 
 Recommended next task:
 
-`TD-RADARSCOUT-DESTINATION-SCOPE-1-THAILAND-FIRST-COPY`
+`TD-DEPLOY-DESTINATION-SCOPE-COPY-PRODUCTION`
 
 Reason:
 
-It is a low-risk copy/test task that improves product clarity without changing routing, SEO indexing, sitemap, product data, DB, Bókun, or booking behavior.
+The copy/test work is merged and validated, but production still needs an explicit deploy approval. Deployment should use merge SHA `c246bc0ceade38dbff7b722b6a391b73acb1f050` or a newer verified branch head if more safe work is merged before deployment.
