@@ -9,7 +9,8 @@ Latest implementation status:
 - `TD-RADARSCOUT-DESTINATION-SCOPE-1-THAILAND-FIRST-COPY`: completed and merged.
 - `TD-RADARSCOUT-THAILAND-FIRST-PUBLIC-COPY-2`: completed and merged.
 - `TD-RADARSCOUT-COVERAGE-FAQ-COPY-3`: completed and merged.
-- Latest merged branch head at the time of this refresh: `c246bc0ceade38dbff7b722b6a391b73acb1f050`.
+- `TD-RADARSCOUT-DESTINATION-SCOPE-2-AI-PLANNER-THAILAND-BOUNDARY`: completed and merged.
+- Latest merged branch head at the time of this refresh: `0a504eaa0bc16213dba4ccefe4d4291b492fd220`.
 - Production deploy for these copy guardrail changes remains a separate approval gate.
 
 ## Current state
@@ -81,6 +82,7 @@ Follow-up copy work has reduced that perception risk:
 - Non-Thailand destination detail pages now state that product recommendations stay off until supplier coverage is reviewed.
 - Homepage and tours FAQ copy no longer frames RadarScout as a broad marketplace or every-destination product.
 - Supplier CTA copy now references trusted Thailand suppliers and future destination partners instead of broad selected destination coverage.
+- AI Trip Planner copy now states that product matching is currently limited to Thailand experience records, while non-Thailand ideas can still be structured as planning text.
 
 ## SEO and sitemap status
 
@@ -138,14 +140,16 @@ Cleaned FAQ prompts that could still suggest marketplace-style breadth:
 
 ### 2. `TD-RADARSCOUT-DESTINATION-SCOPE-2-AI-PLANNER-THAILAND-BOUNDARY`
 
-Audit AI Trip Planner copy and no-match guidance so users understand current product matching is Thailand-only.
+Status: completed and merged.
 
-Scope:
+Audited and updated AI Trip Planner copy and no-match guidance so users understand current product matching is Thailand-only.
 
-- copy and tests only;
-- no LLM;
-- no product retrieval behavior change unless a test exposes misleading copy;
-- no booking partner behavior change.
+Completed changes:
+
+- added explicit public copy that product matching is currently limited to Thailand experience records;
+- clarified that non-Thailand ideas can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed;
+- added regression tests that block broad/global product-matching claims;
+- kept LLM, product retrieval behavior, booking partner behavior, SEO, sitemap, DB, schema, and env unchanged.
 
 ### 3. `TD-RADARSCOUT-DESTINATION-SCOPE-3-SITEMAP-GUARDRAIL-TESTS`
 
@@ -173,8 +177,10 @@ Do not:
 
 Recommended next task:
 
-`TD-DEPLOY-DESTINATION-SCOPE-COPY-PRODUCTION`
+`TD-RADARSCOUT-DESTINATION-SCOPE-3-SITEMAP-GUARDRAIL-TESTS`
 
 Reason:
 
-The copy/test work is merged and validated, but production still needs an explicit deploy approval. Deployment should use merge SHA `c246bc0ceade38dbff7b722b6a391b73acb1f050` or a newer verified branch head if more safe work is merged before deployment.
+The destination and AI Planner scope copy is now merged and validated. Production deploy still requires explicit approval for the latest merged SHA
+`0a504eaa0bc16213dba4ccefe4d4291b492fd220`, so the next automatic safe task should remain non-production: add or verify sitemap guardrail tests that prevent
+non-Thailand destination pages from being sitemap-expanded before an explicit SEO/content approval.
