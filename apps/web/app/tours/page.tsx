@@ -117,7 +117,7 @@ const faqItems = [
   {
     question: 'Will RadarScout add more destinations?',
     answer:
-      'Yes. More selected high-demand destinations will be added as supplier agreements and product connections are completed.',
+      'Yes. Additional destinations can move beyond planning-only after local supplier coverage and booking partner handoff paths are reviewed.',
   },
 ]
 

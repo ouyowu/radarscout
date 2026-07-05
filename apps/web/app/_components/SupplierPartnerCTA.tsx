@@ -19,7 +19,7 @@ const supplierPartnerMailtoBody = [
 
 export function SupplierPartnerCTA({
   title = 'Local tour operator or Thailand experience partner?',
-  body = 'RadarScout is onboarding trusted suppliers in selected top travel destinations for curated day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
+  body = 'RadarScout is onboarding trusted Thailand suppliers and future destination partners for curated day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
   email = 'hello@radarscout.io',
   showPartnerPathLinks = false,
 }: SupplierPartnerCTAProps) {
