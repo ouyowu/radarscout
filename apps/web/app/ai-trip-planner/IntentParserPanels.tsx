@@ -75,7 +75,7 @@ export function MissingFieldsWarnings({ missingFields, warnings }: MissingFields
   return (
     <section className="border border-[#f3d6aa] bg-[#fff8e8] p-4">
       <h3 className="text-sm font-black uppercase tracking-[0.12em] text-[#a35c09]">
-        Missing fields / warnings
+        Planner notes
       </h3>
       {hasMissingFields || hasWarnings ? (
         <div className="mt-3 space-y-3 text-sm font-semibold leading-6 text-[#6b5d4d]">
@@ -83,12 +83,12 @@ export function MissingFieldsWarnings({ missingFields, warnings }: MissingFields
             <p>Missing fields: <span className="font-black text-[#101820]">{missingFields.join(', ')}</span></p>
           ) : null}
           {hasWarnings ? (
-            <p>Warnings: <span className="font-black text-[#101820]">{warnings.join(', ')}</span></p>
+            <p>Notes: <span className="font-black text-[#101820]">{warnings.join(', ')}</span></p>
           ) : null}
         </div>
       ) : (
         <p className="mt-3 text-sm font-semibold leading-6 text-[#6b5d4d]">
-          No missing required fields or parser warnings detected.
+          This trip idea has enough detail for local planning.
         </p>
       )}
     </section>

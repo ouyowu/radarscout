@@ -255,7 +255,7 @@ export function parseTripIntent(prompt: string): ParseTripIntentResult {
   if (!intent.destination) warnings.push('ambiguous or missing destination')
   if (!intent.durationDays) warnings.push('ambiguous or missing duration')
   if (hasBookingRequest(normalizedPrompt)) {
-    warnings.push('booking/payment/availability request ignored')
+    warnings.push('Final partner-step requests stay outside this planner')
   }
 
   intent.missingFields = [
