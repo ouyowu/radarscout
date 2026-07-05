@@ -39,7 +39,7 @@ function CapabilityStatus({ label, enabled }: { label: string; enabled: boolean 
   return (
     <div className="flex items-center justify-between gap-3 border border-[#d8eadf] bg-[#f0fbf5] px-4 py-3 text-sm font-black text-[#0f5132]">
       <span>{label}</span>
-      <span>{enabled ? 'true' : 'false'}</span>
+      <span>{enabled ? 'Enabled' : 'Disabled'}</span>
     </div>
   )
 }
@@ -109,9 +109,9 @@ export function CapabilityStatusPanel({
         Product retrieval can turn on after local confirmation. Current status claims and booking partner actions stay disabled.
       </p>
       <div className="mt-4 grid gap-3">
-        <CapabilityStatus label="bookingEnabled" enabled={bookingEnabled} />
-        <CapabilityStatus label="productRetrievalEnabled" enabled={productRetrievalEnabled} />
-        <CapabilityStatus label="availabilityEnabled" enabled={availabilityEnabled} />
+        <CapabilityStatus label="Booking partner action" enabled={bookingEnabled} />
+        <CapabilityStatus label="Product comparison results" enabled={productRetrievalEnabled} />
+        <CapabilityStatus label="Current status claims" enabled={availabilityEnabled} />
       </div>
     </section>
   )
