@@ -12,10 +12,21 @@ export type AiSearchProductCardProps = {
   fitReason?: string | null
 }
 
-export function buildAiTripPlannerDetailHref(detailHref: string): string {
-  const separator = detailHref.includes('?') ? '&' : '?'
+const AI_TRIP_PLANNER_SOURCE_PARAM = 'source=ai-trip-planner'
 
-  return `${detailHref}${separator}source=ai-trip-planner`
+export function buildAiTripPlannerDetailHref(detailHref: string): string {
+  const [hrefWithoutHash, hash] = detailHref.split('#', 2)
+  const query = hrefWithoutHash.split('?', 2)[1] ?? ''
+  const params = new URLSearchParams(query)
+
+  if (params.get('source') === 'ai-trip-planner') {
+    return detailHref
+  }
+
+  const separator = hrefWithoutHash.includes('?') ? '&' : '?'
+  const hashSuffix = hash ? `#${hash}` : ''
+
+  return `${hrefWithoutHash}${separator}${AI_TRIP_PLANNER_SOURCE_PARAM}${hashSuffix}`
 }
 
 export function AiSearchProductCard({

@@ -299,6 +299,14 @@ describe('AI planner source context for tour detail links', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1?ref=card')).toBe('/tours/prod_1?ref=card&source=ai-trip-planner')
   })
 
+  it('does not duplicate an existing AI trip planner source parameter', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1?source=ai-trip-planner')).toBe('/tours/prod_1?source=ai-trip-planner')
+  })
+
+  it('preserves existing hash fragments after adding source context', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1?ref=card#details')).toBe('/tours/prod_1?ref=card&source=ai-trip-planner#details')
+  })
+
   it('keeps AI planner detail links inside the /tours namespace', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1')).toMatch(/^\/tours\//)
   })
