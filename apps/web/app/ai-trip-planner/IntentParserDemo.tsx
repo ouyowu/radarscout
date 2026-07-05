@@ -338,6 +338,22 @@ export function IntentParserDemo() {
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b5d4d]">
                     {searchState.message ?? 'RadarScout currently searches Thailand experiences only.'}
                   </p>
+                  <p className="mt-4 text-sm font-semibold leading-6 text-[#6b5d4d]">
+                    Try one of these Thailand trip ideas:
+                  </p>
+                  <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670] sm:grid-cols-2">
+                    {noMatchNextSearches.slice(0, 2).map(nextSearch => (
+                      <li key={nextSearch.label}>
+                        <button
+                          type="button"
+                          onClick={() => useExamplePrompt(nextSearch.prompt)}
+                          className="min-h-[44px] w-full rounded-2xl bg-[#fff0cf] px-4 py-3 text-left font-semibold leading-6 text-[#6b5d4d] hover:bg-[#f6dfae] hover:text-[#101820] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                        >
+                          {nextSearch.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ) : searchState.status === 'no_match' ? (
                 <div className="rounded-[1.25rem] border border-[#e8dfd2] bg-white p-5">
