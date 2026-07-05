@@ -18,7 +18,7 @@ export function SiteFooter() {
             Radar<span className="text-[var(--color-accent-orange-dark)]">Scout</span>
           </p>
           <p className="mt-2 max-w-xs text-sm font-semibold leading-6 text-[var(--color-text-secondary)]">
-            AI-guided travel discovery for selected top destinations.
+            AI-guided Thailand travel discovery with safe booking partner handoff.
           </p>
         </div>
 
