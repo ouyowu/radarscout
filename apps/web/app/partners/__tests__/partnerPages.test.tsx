@@ -228,6 +228,8 @@ describe('RadarScout partner interest pages', () => {
     expect(serialized).not.toMatch(/live availability/i)
     expect(serialized).not.toMatch(/\bcheckout\b/i)
     expect(serialized).not.toMatch(/\bpayment\b/i)
+    expect(serialized).not.toMatch(/API integration/i)
+    expect(serialized).not.toMatch(/static interest collection/i)
   })
 
   it.each(pages)('$route pre-fills safe source-specific mailto prompts', ({ content, sourceLabel }) => {
