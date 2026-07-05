@@ -12,7 +12,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: 'Destination Portal | RadarScout AI Travel Planning',
   description:
-    'Explore selected top travel destinations for AI-guided private trip planning. Thailand is RadarScout’s first focused experience destination while other destinations remain planning-only.',
+    'Explore Thailand-first AI trip planning with RadarScout. Thailand is the first focused experience destination while other routes remain planning-only.',
   alternates: { canonical: `${base}/destinations` },
 }
 
@@ -23,7 +23,7 @@ const trustItems = [
   { label: 'Focused now', value: 'Thailand' },
   { label: 'Planning pages', value: `${comingSoonDestinations.length} destinations` },
   { label: 'Handoff model', value: 'Booking partner handoff only' },
-  { label: 'Portal focus', value: 'Selected travel countries' },
+  { label: 'Portal focus', value: 'Thailand-first coverage' },
 ]
 
 const faqItems = [
@@ -54,8 +54,8 @@ export default function DestinationsPage() {
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
         eyebrow="Destination planning portal"
-        title="Selected travel destinations, planned city by city."
-        subtitle="Explore RadarScout destination pages for AI itinerary planning, private trip design, and curated partner-tour readiness across high-demand travel countries."
+        title="Thailand-first destination planning, with other routes planning-only."
+        subtitle="Explore RadarScout destination pages for Thailand-first AI itinerary planning, private trip design, and reviewed partner-tour readiness."
         actions={[
           { label: 'View Thailand tours', href: '/tours' },
           { label: 'Start AI planner', href: '/ai-trip-planner', variant: 'secondary' },
@@ -121,11 +121,11 @@ export default function DestinationsPage() {
                 Partner onboarding
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-                Planning guides for selected high-demand destinations.
+                Planning guides for future partner coverage.
               </h2>
             </div>
             <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-              These pages are intentionally marked as partner tours coming soon. They support SEO and trip planning while supplier agreements are completed.
+              These pages remain planning-only until local supplier coverage and booking partner handoff paths are reviewed.
             </p>
           </div>
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
