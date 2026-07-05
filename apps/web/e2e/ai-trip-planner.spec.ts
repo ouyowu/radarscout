@@ -123,6 +123,19 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toBeVisible()
   })
 
+  test('trip idea input shows a 600 character limit and prevents overlong prompts', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    const tripIdea = page.locator('#trip-idea')
+    await expect(tripIdea).toHaveAttribute('maxlength', '600')
+    await expect(page.getByText(/characters used/i)).toBeVisible()
+
+    await tripIdea.fill('Chiang Mai '.repeat(80))
+
+    await expect(tripIdea).toHaveValue(/^[\s\S]{600}$/)
+    await expect(page.getByText('600 / 600 characters used')).toBeVisible()
+  })
+
   test('destination starter fills the planner prompt and local summary', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 

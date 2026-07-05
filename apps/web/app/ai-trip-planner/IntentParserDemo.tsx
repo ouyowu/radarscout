@@ -17,6 +17,7 @@ import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary } from './resultFitSummary'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
+const promptMaxLength = 600
 const examplePrompts = [
   'Chiang Mai 3 days food temples elephants, less crowded',
   'Bangkok 3 days canals temples street food, relaxed pace',
@@ -165,11 +166,15 @@ export function IntentParserDemo() {
         <textarea
           id="trip-idea"
           rows={4}
+          maxLength={promptMaxLength}
           value={prompt}
           onChange={event => handlePromptChange(event.target.value)}
           placeholder="Chiang Mai 3 days food temples elephants, less crowded"
           className="mt-3 min-h-[140px] w-full resize-none border border-[#ded7ca] bg-[#fffdf7] px-4 py-4 text-base font-semibold leading-7 text-[#101820] outline-none focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20"
         />
+        <p className="mt-2 text-right text-xs font-black uppercase tracking-[0.12em] text-[#6b7280]">
+          {prompt.length} / {promptMaxLength} characters used
+        </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {examplePrompts.map(examplePrompt => (
             <button
