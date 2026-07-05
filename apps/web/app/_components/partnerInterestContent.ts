@@ -6,7 +6,7 @@ const MANUAL_REVIEW_NOTE =
 const MANUAL_NEXT_STEPS = [
   'We read your message and confirm the destination focus, audience, and public links.',
   'If the fit is relevant, we ask for any missing public experience details before considering a recommendation.',
-  'RadarScout checks traveler-facing links manually and asks only for public-safe details, not internal operations or inventory materials.',
+  'RadarScout checks traveler-facing links manually and asks only for public-safe details, not operating-process or inventory materials.',
   'Nothing is published, recommended, or represented as accepted without a separate manual check.',
 ]
 

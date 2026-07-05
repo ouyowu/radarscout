@@ -193,6 +193,7 @@ describe('RadarScout partner interest pages', () => {
     expect(content.nextSteps.join(' ')).toContain('public-safe details')
     expect(content.nextSteps.join(' ')).toContain('Nothing is published')
     expect(content.nextSteps.join(' ')).toContain('separate manual check')
+    expect(content.nextSteps.join(' ')).not.toMatch(/\binternal\b/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/private backend/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed placement/i)
     expect(content.nextSteps.join(' ')).not.toMatch(/guaranteed leads/i)
