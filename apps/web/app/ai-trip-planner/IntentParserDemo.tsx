@@ -41,6 +41,7 @@ export function IntentParserDemo() {
   const [confirmed, setConfirmed] = useState<ConfirmedIntent | null>(null)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [isSearching, setIsSearching] = useState(false)
+  const [starterLoadedCity, setStarterLoadedCity] = useState<string | null>(null)
 
   const parsedJson = useMemo(() => JSON.stringify(result, null, 2), [result])
 
@@ -48,6 +49,7 @@ export function IntentParserDemo() {
     event.preventDefault()
     setConfirmed(null)
     setSearchState(null)
+    setStarterLoadedCity(null)
     setResult(parseTripIntent(prompt))
   }
 
@@ -55,6 +57,7 @@ export function IntentParserDemo() {
     setPrompt(examplePrompt)
     setConfirmed(null)
     setSearchState(null)
+    setStarterLoadedCity(null)
     setResult(parseTripIntent(examplePrompt))
   }
 
@@ -62,6 +65,7 @@ export function IntentParserDemo() {
     setPrompt(nextPrompt)
     setConfirmed(null)
     setSearchState(null)
+    setStarterLoadedCity(null)
   }
 
   const hasMissingFields = result.missingFields.length > 0
@@ -80,12 +84,13 @@ export function IntentParserDemo() {
 
   useEffect(() => {
     function handleStarterPrompt(event: Event) {
-      const detail = (event as CustomEvent<{ prompt?: unknown }>).detail
+      const detail = (event as CustomEvent<{ city?: unknown, prompt?: unknown }>).detail
       if (typeof detail?.prompt !== 'string' || detail.prompt.trim().length === 0) return
 
       setPrompt(detail.prompt)
       setConfirmed(null)
       setSearchState(null)
+      setStarterLoadedCity(typeof detail.city === 'string' && detail.city.trim().length > 0 ? detail.city : null)
       setResult(parseTripIntent(detail.prompt))
     }
 
@@ -154,6 +159,11 @@ export function IntentParserDemo() {
             </button>
           ))}
         </div>
+        {starterLoadedCity ? (
+          <p className="mt-3 rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 text-sm font-black leading-6 text-[#0f766e]">
+            {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
+          </p>
+        ) : null}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">
             This planner understands your travel intent locally first. Product search appears only after local confirmation and remains comparison-only.

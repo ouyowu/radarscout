@@ -9,7 +9,7 @@ type DestinationStarterCardProps = {
 
 export function DestinationStarterCard({ city, title, body, prompt }: DestinationStarterCardProps) {
   function handleUseStarter() {
-    window.dispatchEvent(new CustomEvent('radarscout:ai-trip-starter', { detail: { prompt } }))
+    window.dispatchEvent(new CustomEvent('radarscout:ai-trip-starter', { detail: { city, prompt } }))
     document.getElementById('intent-demo')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 

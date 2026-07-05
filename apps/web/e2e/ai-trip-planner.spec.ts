@@ -135,6 +135,14 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('dd').filter({ hasText: /^relaxed$/ })).toBeVisible()
   })
 
+  test('destination starter shows a safe next-step helper after prefill', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+
+    await expect(page.getByText('Bangkok route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.')).toBeVisible()
+  })
+
   test('search CTA appears after confirming intent', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
