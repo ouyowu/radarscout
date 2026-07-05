@@ -160,9 +160,19 @@ export function IntentParserDemo() {
           ))}
         </div>
         {starterLoadedCity ? (
-          <p className="mt-3 rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 text-sm font-black leading-6 text-[#0f766e]">
-            {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
-          </p>
+          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-black leading-6 text-[#0f766e]">
+              {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
+            </p>
+            <button
+              type="button"
+              onClick={handleConfirmIntent}
+              disabled={!canConfirm}
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#0f766e] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e] disabled:cursor-not-allowed disabled:border-[#c7beb1] disabled:text-[#9a9084]"
+            >
+              Confirm loaded trip intent
+            </button>
+          </div>
         ) : null}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-6 text-[#5a6670]">

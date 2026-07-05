@@ -143,6 +143,18 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Bangkok route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.')).toBeVisible()
   })
 
+  test('destination starter helper can confirm the loaded trip intent', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+
+    await expect(page.getByText('Trip intent confirmed locally')).toBeVisible()
+    const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
+    await expect(searchBtn).toBeVisible()
+    await expect(searchBtn).toBeEnabled()
+  })
+
   test('search CTA appears after confirming intent', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     const searchBtn = page.getByRole('button', { name: /search real thailand experiences/i })
