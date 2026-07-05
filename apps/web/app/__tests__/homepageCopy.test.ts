@@ -37,7 +37,9 @@ describe('homepage public copy safety', () => {
 
   it('does not use available-now wording in visible FAQ copy', () => {
     expect(homepageSource).not.toMatch(/available now/i)
-    expect(homepageSource).toContain('Is RadarScout a marketplace with every country currently shown?')
+    expect(homepageSource).toContain('Is RadarScout a marketplace for every destination?')
+    expect(homepageSource).toContain('RadarScout is Thailand-first')
+    expect(homepageSource).toContain('Other destination pages stay planning-only')
   })
 
   it('links to the AI trip planner with safe planning-first copy', () => {
@@ -53,6 +55,18 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('Thailand first, then selected destinations')
     expect(homepageSource).toContain('current product coverage on Thailand experiences')
     expect(homepageSource).not.toContain('Selected top travel destinations, not worldwide noise.')
+    expect(homepageSource).not.toContain('selected high-demand travel destinations')
+    expect(homepageSource).not.toContain('selected top travel destinations')
+    expect(homepageSource).not.toContain('more selected high-demand destinations')
+    expect(homepageVisibleCopySources).not.toMatch(/selected top travel destinations/i)
+    expect(homepageVisibleCopySources).not.toMatch(/selected high-demand destinations/i)
+    expect(homepageVisibleCopySources).not.toMatch(/worldwide marketplace/i)
+  })
+
+  it('keeps supplier partner copy aligned with Thailand-first coverage', () => {
+    expect(homepageVisibleCopySources).toContain('onboarding trusted Thailand suppliers')
+    expect(homepageVisibleCopySources).toContain('future destination partners')
+    expect(homepageVisibleCopySources).not.toContain('onboarding trusted suppliers in selected top travel destinations')
   })
 
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {

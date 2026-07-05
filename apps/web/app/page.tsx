@@ -82,9 +82,9 @@ const howItWorks = [
 
 const faqItems = [
   {
-    question: 'Is RadarScout a marketplace with every country currently shown?',
+    question: 'Is RadarScout a marketplace for every destination?',
     answer:
-      'No. RadarScout focuses on selected high-demand travel destinations. Thailand is currently the first focused experience destination, and more destinations are added as local partner coverage improves.',
+      'No. RadarScout is Thailand-first. Other destination pages stay planning-only until local partner coverage and handoff paths are reviewed.',
   },
   {
     question: 'Where do recommended experiences come from?',
@@ -108,7 +108,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
         title="AI-guided Thailand Experience Planner"
-        subtitle="Plan private trips, compare local experiences, and discover day tours, transfers, food tours, and custom itinerary ideas across selected top travel destinations."
+        subtitle="Plan Thailand trips, compare local experiences, and discover day tours, transfers, food tours, and custom itinerary ideas with safe booking partner handoff."
         actions={[
           { label: 'Start planning with AI', href: '/ai-trip-planner' },
           { label: 'Compare Thailand experiences', href: '/tours', variant: 'secondary' },
@@ -208,7 +208,7 @@ export default function LandingPage() {
       <EditorialBanner
         label="Thailand guided discovery"
         title="Thailand is RadarScout's first focused experience destination."
-        body="Compare Thailand experiences while RadarScout expands local partner coverage into more selected high-demand destinations."
+        body="Compare Thailand experiences while RadarScout reviews local partner coverage before showing traveler-ready recommendations elsewhere."
         href="/tours"
         ctaLabel="Compare Thailand experiences"
       />
