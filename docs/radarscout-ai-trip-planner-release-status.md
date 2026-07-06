@@ -1,21 +1,28 @@
 # RadarScout AI Trip Planner Release Status
 
-Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-RELEASE-STATUS-2`
+Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-RELEASE-STATUS-3`
 
-Last updated: 2026-07-06
+Last updated: 2026-07-07
 
 ## Current release-candidate state
 
-Latest product-code candidate validated in this release-status checkpoint:
+Latest branch HEAD checked in this release-status checkpoint:
 
 ```text
-0301c9f492e0fb7e3495031fdb636eacc46befae
+f59b8b9e4d03fd43bc80781d211f9f163223fb41
+```
+
+Latest AI Trip Planner product-code candidate on the current branch:
+
+```text
+a196d8896c506f2cd0313b3cdceb78d75ed68922
 ```
 
 This SHA includes the safe AI Trip Planner result-flow, mobile UX, copy safety,
 return-path, protected-preview runbook, local preview-smoke helper, preview data
 readiness documentation, multi-interest search coverage, Thailand destination
-prefix normalization, compact prompt coverage, and preview-deploy guard work.
+prefix normalization, compact prompt coverage, preview-deploy guard work, homepage
+planner-entry copy clarification, and tightened result-state handoff copy.
 Before any production deploy, use the latest branch HEAD and re-run the deploy
 validation gate against that exact SHA.
 
@@ -135,32 +142,66 @@ Title: Allow compact AI trip interest prompts
 Merge SHA: 0301c9f492e0fb7e3495031fdb636eacc46befae
 Scope: product-code parser/search UI coverage for compact prompts such as Chiang Mai elephant food without combining destination and interest into an unsafe query
 Production deploy: no
+
+PR #441
+Title: Clarify homepage planner prompt boundary
+Merge SHA: ea5af075dee0167041dd791565c4bf3e47d1184f
+Scope: homepage prompt-link copy clarification so users know prompt links load the planner form only and real Thailand search starts after review and confirmation
+Production deploy: no
+
+PR #443
+Title: Refresh AI Trip Planner copy safety review
+Merge SHA: 85bcee2927f465582610cbd451af526c3147b301
+Scope: docs-only copy safety review refresh
+Production deploy: no
+
+PR #445
+Title: Tighten AI Trip Planner result copy
+Merge SHA: a196d8896c506f2cd0313b3cdceb78d75ed68922
+Scope: product-code result-state copy tightening while preserving comparison-only and product-page handoff boundaries
+Production deploy: no
+
+PR #450
+Title: Record latest preview quota blocker
+Merge SHA: f59b8b9e4d03fd43bc80781d211f9f163223fb41
+Scope: docs-only latest HEAD preview quota status
+Production deploy: no
 ```
 
 ## Latest validation evidence
 
-Latest local validation after PR #283:
+Latest local validation after PR #445:
 
 ```text
-Worktree: /private/tmp/radarscout-ai-trip-compact-prompt-e2e-1-postmerge
-HEAD: 0301c9f492e0fb7e3495031fdb636eacc46befae
+Worktree: /private/tmp/radarscout-ai-trip-result-copy-tighten-1-postmerge
+HEAD: a196d8896c506f2cd0313b3cdceb78d75ed68922
 
 Prisma generate: passed
-Full Vitest: passed, 58 files / 914 tests
-Playwright E2E: passed, 41/41
+Focused copySafety/productSearch Vitest: passed, 59 files / 932 tests
+AI Trip Planner Playwright E2E: passed, 54/54
+Full Playwright E2E: passed, 60/60
 TypeScript: clean
 Next build: passed
 git diff --check: clean
-Local same-SHA production smoke with preview DB: passed
 ```
 
-Latest branch status after PR #283:
+Latest branch status after PR #450:
 
 ```text
-origin/codex/travel-mvp-launch: 0301c9f492e0fb7e3495031fdb636eacc46befae
+origin/codex/travel-mvp-launch: f59b8b9e4d03fd43bc80781d211f9f163223fb41
 Fresh preview deployment: blocked by Vercel daily deployment quota
 Vercel error code: api-deployments-free-per-day
 Production deploy: not approved
+```
+
+Latest preview retry evidence:
+
+```text
+Worktree: /private/tmp/radarscout-latest-head-preview-retry-current
+Checked HEAD: bb35f368222f9d47c0bdfcc638958924749e4042
+Vercel project: ouyowus-projects / reddit-monitor
+Preview guard: passed
+Preview deploy: blocked by api-deployments-free-per-day
 ```
 
 Operational note:
@@ -366,14 +407,15 @@ The helper does not request, print, store, or commit secrets. Temporary
 
 ## Production gate
 
-Production has not been automatically updated with the latest release candidate.
+Production has not been automatically updated with the latest release candidate
+from this release-status checkpoint.
 
 Production deploy may be considered only after explicitly approving the exact
 latest `origin/codex/travel-mvp-launch` SHA to deploy. As of this checkpoint,
-the latest product-code candidate was:
+the latest checked branch HEAD was:
 
 ```text
-0301c9f492e0fb7e3495031fdb636eacc46befae
+f59b8b9e4d03fd43bc80781d211f9f163223fb41
 ```
 
 If production deploy is approved later, the deploy task should:
@@ -392,7 +434,7 @@ Recommended non-production tasks:
 ```text
 TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 After the Vercel daily deployment quota resets, create a fresh preview deployment
-from clean HEAD 0301c9f with `pnpm deploy:vercel-preview`,
+from the latest clean `origin/codex/travel-mvp-launch` HEAD,
 then run the local AI Trip protected-preview smoke helper against that deployment.
 
 TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
