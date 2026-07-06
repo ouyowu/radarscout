@@ -17,19 +17,19 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-366b0113da82cf910ef485e034f287ff7f1cc832
+444cfb17ab2871584b6785407fc20663e3b6d081
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-85e25156fdae83b367d324cc7389116d541cb547
+56b91395f97c32c53bb79c37bc0b3e3e97dece1a
 ```
 
-The commits after `85e25156fdae83b367d324cc7389116d541cb547` are docs-only status or decision records:
+The commits after `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` are docs-only status or decision records:
 
-- PR #378: refreshed active status after PR #377.
-- PR #379: recorded the traveler funnel analytics decision to postpone analytics implementation.
+- PR #381: documented the AI Trip production deploy candidate.
+- PR #382: refreshed active status after PR #380 and PR #381.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -41,8 +41,8 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - AI Trip product cards explain read-only comparison context.
 - Product-card detail CTAs include booking partner handoff context in accessible labels.
 - Sourced tour detail pages show AI Trip return context.
-- The AI Trip return link points back to the stable matching experiences section.
-- Sourced tour detail copy clarifies that no partner action or current status is stored on the page.
+- The AI Trip return link points back to the same AI Trip Planner results section.
+- Sourced tour detail copy clarifies that no partner action or current status is recorded on the page.
 
 The candidate does not add:
 
@@ -61,31 +61,42 @@ The candidate does not add:
 Clean post-merge validation was run against the product-code merge:
 
 ```text
-85e25156fdae83b367d324cc7389116d541cb547
+56b91395f97c32c53bb79c37bc0b3e3e97dece1a
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr377-postmerge
+/private/tmp/radarscout-pr380-postmerge-return-copy
 ```
 
 Results:
 
 - Prisma generate: passed.
-- Public copy / AI Trip Vitest coverage: passed.
-- Full Vitest as reached by the focused public-copy run: passed, 58 files / 921 tests.
-- AI Trip Playwright E2E: passed, 53 / 53 tests.
+- Public copy / tours Vitest coverage: passed, 58 files / 921 tests.
+- AI Trip Playwright E2E: passed.
 - TypeScript: passed.
-- Next build: passed after rerunning build separately from Playwright to avoid `.next` write contention.
+- Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The initial concurrent build run failed with a Next `PageNotFoundError` for `/_document`. The failure was caused by running Playwright and `next build` in parallel against the same `.next` directory. After removing `apps/web/.next` and rerunning `pnpm --filter @reddit-monitor/web build` separately, the build passed.
+The PR #380 validation updated only traveler-facing AI Trip return-context copy and the matching public-copy test. No app behavior, route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
 Preview deployment was attempted from a clean latest-head worktree using the RadarScout preview helper.
+
+Latest preview retry worktree:
+
+```text
+/private/tmp/radarscout-pr380-postmerge-return-copy
+```
+
+Latest preview retry SHA:
+
+```text
+56b91395f97c32c53bb79c37bc0b3e3e97dece1a
+```
 
 Vercel project:
 
