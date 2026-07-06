@@ -591,6 +591,33 @@ test.describe('Valid Chiang Mai flow', () => {
     }
   })
 
+  test('product detail links replace non-AI source parameters with AI Trip Planner source', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...OK_RESPONSE,
+          products: [
+            {
+              ...OK_RESPONSE.products[0],
+              detailHref: '/tours/prod_cm_1?source=homepage&ref=card',
+            },
+          ],
+        }),
+      })
+    })
+
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(1)
+
+    await expect(productCards(page).first()).toHaveAttribute(
+      'href',
+      '/tours/prod_cm_1?source=ai-trip-planner&ref=card',
+    )
+  })
+
   test('opening a product detail keeps the AI Trip Planner return path safe', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
