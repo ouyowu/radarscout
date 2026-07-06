@@ -40,6 +40,10 @@ Recent completed items:
 - sitemap guardrail post-merge preview passed;
 - traveler funnel analytics preview spec aligned with approved event names;
 - Plausible comparison documented because Vercel custom events are blocked by current Hobby plan.
+- AI Trip Planner result-flow release status documented;
+- mobile AI Trip Planner result-flow audit documented;
+- mobile AI Trip Planner successful-result spacing tightened through PR #263;
+- latest `codex/travel-mvp-launch` preview for AI Trip Planner result-flow polish passed.
 
 ## 4. Current blocked or deferred items
 
@@ -95,6 +99,7 @@ The current codebase already includes:
 - AI trip planner route;
 - read-only Thailand product search from confirmed trip intent;
 - comparison-only product result cards;
+- compact successful-result action and fit-summary spacing on mobile;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - tour detail no-handoff fallback copy;
 - static partner/supplier/destination partner pages;
@@ -107,43 +112,44 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-RESULTS-UX-AUDIT-0
+TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
 ```
 
 Type:
 
 ```text
-read-only production/preview observation + docs report
+read-only audit or narrow UX implementation after audit
 ```
 
 Goal:
 
-Audit the live AI trip planner user path from homepage to `/ai-trip-planner` to product detail pages.
+Audit and, only if needed, tighten the product-detail return path for travelers who arrive from `/ai-trip-planner` through `source=ai-trip-planner`.
 
 Questions to answer:
 
-- Can a traveler understand the difference between planning text and Thailand product results?
-- Is the confirm-then-search sequence clear?
-- Are comparison-only product cards understandable on mobile?
-- Is the product detail handoff path clear after opening a result?
-- Does the planner avoid unsafe wording and behavior?
-- Is there a narrow UX/code change worth doing next?
+- Does the tour detail page clearly preserve AI Trip Planner context?
+- Is the return path back to `/ai-trip-planner#ai-trip-results` visible and safe?
+- Does the page avoid implying booking, availability, payment, inventory, or Bókun backend behavior?
+- Is the handoff from planner result to product detail to booking partner understandable?
+- Is there a narrow copy or UI change worth doing next?
 
 Why this is the right next step:
 
 - analytics implementation is blocked by plan/vendor choice;
 - SEO opening is a hard approval gate;
 - several previously recommended B2B and tour-detail fallback tasks already exist in code;
-- the AI trip planner is the core product path and should be audited before adding more code.
+- the mobile results path has already been audited and tightened through PR #263;
+- the remaining core product path is the transition from AI Trip Planner results into tour detail pages.
 
 ## 7. Candidate follow-up tasks after audit
 
 Only after the audit identifies a concrete gap:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-RESULTS-UX-1
-TD-RADARSCOUT-AI-TRIP-PLANNER-MOBILE-TIGHTEN-1
+TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-1
 TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
+TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-PREVIEW-SMOKE
+TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
 TD-RADARSCOUT-SEO-READINESS-2-CHIANG-MAI-CONTROLLED-OPENING
 TD-RADARSCOUT-TRAVELER-FUNNEL-PLAUSIBLE-DECISION-2
 ```
@@ -157,4 +163,3 @@ Guardrails:
 - no DB/schema/env changes;
 - no SEO index/follow opening without explicit approval;
 - no ThaiEleHub/Shopify work.
-

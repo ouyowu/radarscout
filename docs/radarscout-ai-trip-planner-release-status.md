@@ -1,6 +1,6 @@
 # RadarScout AI Trip Planner Release Status
 
-Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-RELEASE-STATUS-0`
+Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-RELEASE-STATUS-1`
 
 Last updated: 2026-07-06
 
@@ -9,7 +9,7 @@ Last updated: 2026-07-06
 Current clean `codex/travel-mvp-launch` HEAD:
 
 ```text
-3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
+27b9ee535e6c576fae218211bdc547340177454c
 ```
 
 This HEAD includes the latest safe AI Trip Planner result-flow improvements:
@@ -19,6 +19,8 @@ This HEAD includes the latest safe AI Trip Planner result-flow improvements:
 - top-match detail action after successful product search
 - source-tagged product detail links using `source=ai-trip-planner`
 - mobile result-flow E2E coverage for result actions and horizontal overflow
+- compact successful-result action and fit-summary spacing on mobile
+- documented AI Trip Planner mobile results UX audit and release status updates
 
 ## Recent merged increments
 
@@ -52,23 +54,58 @@ Title: Add mobile AI trip planner results coverage
 Merge SHA: 3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
 Scope: mobile viewport E2E coverage for result actions and no horizontal overflow
 Production deploy: no
+
+PR #260
+Title: Document AI trip planner release status
+Merge SHA: 49b0a64f763d25ecb7f309db2d3ee0fbc22696a3
+Scope: docs-only release/status checkpoint after mobile result-flow coverage
+Production deploy: no
+
+PR #261
+Title: Document mobile AI trip results UX audit
+Merge SHA: 4e0bc5cae4d38c451d30c1e4f42f6a7abf16105c
+Scope: docs-only mobile result-flow UX audit
+Production deploy: no
+
+PR #262
+Title: Tighten mobile AI trip results spacing
+Merge SHA: dbbef5647a93611a79300b7463ed076335000edd
+Scope: mobile spacing polish for AI Trip Planner successful results
+Production deploy: no
+
+PR #263
+Title: Tighten AI trip planner mobile results header
+Merge SHA: 27b9ee535e6c576fae218211bdc547340177454c
+Scope: compact mobile result actions and fit summary; preserve source-tagged detail handoff
+Production deploy: no
 ```
 
 ## Preview evidence
 
-Latest product-flow preview checkpoint before the test-only PR #259:
+Latest post-merge preview checkpoint after PR #263:
 
 ```text
-Preview URL: https://reddit-monitor-gktqz8zi6-ouyowus-projects.vercel.app
-Deployment ID: dpl_5oPZKrQ58uJAr68reuAc7Ahqo2oV
+Preview URL: https://reddit-monitor-emb5c9a1l-ouyowus-projects.vercel.app
+Deployment ID: dpl_9JNy9R2R3V8VDCqK5EtWQ2Ceo9pr
 Target: preview
 Status: READY
 Production aliases: none
+Vercel Authentication: encountered
+Temporary share URL: generated for smoke only; not committed or persisted
 ```
 
-PR #259 is test-only and did not require a new Vercel preview deployment. Its
-mobile coverage was validated by Playwright against the same AI Trip Planner
-result-flow code.
+Preview smoke covered mobile and desktop AI Trip Planner successful-result flows:
+
+- page load 200 behind authenticated preview access;
+- title `Thailand AI Trip Planner | RadarScout`;
+- robots `noindex, nofollow`;
+- result actions visible;
+- `Results ready` status visible;
+- top-match detail link includes `source=ai-trip-planner`;
+- compact result fit summary class present;
+- 3 comparison product cards shown;
+- no horizontal overflow at 390px mobile width;
+- no unsafe visible copy or unsafe network calls observed.
 
 Previous preview checkpoints:
 
@@ -78,6 +115,9 @@ Deployment ID: dpl_9tf6xBVn3KSKzhMDwspUktNLAbB8
 
 PR #256 preview: https://reddit-monitor-me9tiex8w-ouyowus-projects.vercel.app
 Deployment ID: dpl_642TEzAmgV2ntdMpHu7Q8qmhWRZx
+
+PR #257 preview: https://reddit-monitor-gktqz8zi6-ouyowus-projects.vercel.app
+Deployment ID: dpl_5oPZKrQ58uJAr68reuAc7Ahqo2oV
 ```
 
 Vercel preview URLs may require Vercel authentication. Local same-SHA Playwright
@@ -182,13 +222,13 @@ Production has not been automatically updated with the latest clean HEAD.
 Production deploy may be considered only if explicitly approved for:
 
 ```text
-3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
+27b9ee535e6c576fae218211bdc547340177454c
 ```
 
 If production deploy is approved later, the deploy task should:
 
 1. create a fresh clean production worktree from `origin/codex/travel-mvp-launch`
-2. confirm HEAD equals `3d6f1e3a1ad6daee7e3105d49e929ddf30647afb`
+2. confirm HEAD equals `27b9ee535e6c576fae218211bdc547340177454c`
 3. run validation before deploy
 4. deploy with `npx vercel --prod --yes`
 5. run production smoke on `https://radarscout.io/ai-trip-planner`
@@ -200,18 +240,21 @@ Recommended non-production tasks:
 
 ```text
 TD-RADARSCOUT-AI-TRIP-PLANNER-MOBILE-RESULTS-UX-AUDIT-0
-Audit AI Trip Planner result flow on mobile and document any layout issues after PR #259 coverage.
+Completed by the mobile result-flow audit and follow-up PRs through #263.
 
-TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-0
-Review AI Trip Planner public copy after the recent result-flow increments.
+TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-1
+Review current AI Trip Planner public copy after PR #263 and confirm no unsafe travel, availability, booking, payment, rate, or Bókun backend wording appears.
 
-TD-RADARSCOUT-AI-TRIP-PLANNER-RESULTS-OBSERVATION-0
-Use local same-SHA smoke to inspect pending, ready, top-match, and product-card behavior.
+TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
+Audit and tighten the product-detail return path for users arriving from `source=ai-trip-planner`, without changing product matching or booking partner handoff behavior.
+
+TD-RADARSCOUT-AI-TRIP-PLANNER-RESULTS-OBSERVATION-1
+Run post-production observation only after an explicitly approved production deploy of the current merge SHA.
 ```
 
 Recommended production task only after explicit approval:
 
 ```text
 TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
-Deploy clean HEAD 3d6f1e3a1ad6daee7e3105d49e929ddf30647afb to production.
+Deploy clean HEAD 27b9ee535e6c576fae218211bdc547340177454c to production.
 ```
