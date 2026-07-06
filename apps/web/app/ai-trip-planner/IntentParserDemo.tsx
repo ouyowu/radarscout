@@ -552,6 +552,7 @@ export function IntentParserDemo() {
                   ) : null}
                   {routeStopOverview.length > 1 ? (
                     <section
+                      id="ai-trip-route-stop-overview"
                       aria-label="Route stop overview"
                       className="mt-3 rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:mt-4 sm:p-4"
                     >
@@ -587,9 +588,15 @@ export function IntentParserDemo() {
                             <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#101820]">
                               {group.city} results
                             </h4>
-                            <p className="text-xs font-black text-[#0f766e]">
-                              {group.count} comparison match{group.count === 1 ? '' : 'es'}
-                            </p>
+                            <div className="flex flex-wrap items-center gap-2 text-xs font-black text-[#0f766e]">
+                              <p>{group.count} comparison match{group.count === 1 ? '' : 'es'}</p>
+                              <a
+                                href="#ai-trip-route-stop-overview"
+                                className="rounded-full bg-white px-2.5 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                              >
+                                Back to route overview
+                              </a>
+                            </div>
                           </div>
                           <div className="mt-3 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                             {group.products.map(product => (
