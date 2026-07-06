@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-6`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-7`
 
 Updated: 2026-07-06
 
@@ -46,7 +46,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-0a00697021dc190304fec5be84e82e139162d550
+f77574a836b4ad4fd3336b96736cd18eef18f581
 ```
 
 Latest AI Trip product-code increments:
@@ -66,6 +66,7 @@ Latest AI Trip product-code increments:
 - PR #397: the successful-result top-match detail CTA accessible label now explains that the booking partner handoff continues from the product page.
 - PR #400: ordinary AI Trip product-card handoff copy now uses the same product-page-scoped boundary as the top-match CTA.
 - PR #409: AI Trip example prompt chips and the `Clear trip idea` chip now use 44px minimum tap targets.
+- PR #411: AI Trip intent summary mobile density is tighter.
 
 Latest tooling increment:
 
@@ -104,7 +105,8 @@ Latest status-doc increment:
 - PR #402 refreshed active status after PR #400 and documented the PR #400 preview quota blocker.
 - PR #403 recorded AI Trip deploy candidate status after PR #400 and PR #402.
 - PR #405 refreshed active status and the production deploy candidate after PR #402.
-- Current status update records latest-head validation for `0a00697021dc190304fec5be84e82e139162d550`, the fixed preview-link cleanup path, and the latest preview quota blocker.
+- PR #410 refreshed active status after PR #409.
+- Current status update records latest-head validation for `f77574a836b4ad4fd3336b96736cd18eef18f581`, the fixed preview-link cleanup path, and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -117,19 +119,19 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-after-pr409
+/private/tmp/radarscout-latest-after-pr411
 ```
 
-Validated latest branch HEAD after PR #409:
+Validated latest branch HEAD after PR #411:
 
 ```text
-0a00697021dc190304fec5be84e82e139162d550
+f77574a836b4ad4fd3336b96736cd18eef18f581
 ```
 
 Latest docs-only merge before this status refresh:
 
 ```text
-0a00697021dc190304fec5be84e82e139162d550
+f77574a836b4ad4fd3336b96736cd18eef18f581
 ```
 
 Validation results:
@@ -180,6 +182,7 @@ Meaning:
 - The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
 - The latest clean-head retry for `0a00697021dc190304fec5be84e82e139162d550` confirmed the preview wrapper now removes Vercel CLI `.env.local` / `.env*` side effects, passes the guard, and then fails only on the Vercel daily deployment quota.
+- The latest clean-head retry for `f77574a836b4ad4fd3336b96736cd18eef18f581` also passed cleanup and guard, then hit the same Vercel daily deployment quota.
 - This is not a code, TypeScript, test, or build failure.
 
 Recent preview evidence:
@@ -252,6 +255,7 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `0a00697021dc190304fec5be84e82e139162d550` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `f77574a836b4ad4fd3336b96736cd18eef18f581` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -261,7 +265,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #409, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #411, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
@@ -294,6 +298,7 @@ The current codebase already includes:
 - booking-partner handoff context in AI Trip product-card detail CTA accessible labels;
 - product-card handoff visible copy explicitly says the booking partner handoff continues from the product page;
 - AI Trip prompt chips use 44px minimum tap targets;
+- AI Trip intent summary uses tighter mobile spacing;
 - traveler-facing AI Trip return-context copy on sourced tour detail pages;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
