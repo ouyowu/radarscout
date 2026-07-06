@@ -26,12 +26,13 @@ Latest product-code merge included in this branch:
 08629a6410483db1a9975aa95d46899915747125
 ```
 
-The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include:
+The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product-copy increment plus docs-only status or decision records:
 
 - PR #389: recorded older preview smoke evidence for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
 - PR #391: corrected active status after PR #388 and clarified the latest-head preview quota blocker.
 - PR #392: archived active status after PR #391.
-- PR #394: added a successful-result next-step helper to the AI Trip Planner.
+- PR #393: recorded latest-head local validation after PR #392.
+- PR #394: added the compact AI Trip result next-step helper and tests.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -47,7 +48,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Sourced tour detail copy clarifies that no partner action or current status is recorded on the page.
 - Unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available sourced tour detail pages.
 - Unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results to compare other matches, and that no partner action or current status is recorded from the unavailable page.
-- Successful AI Trip results explain the next step: compare cards, open one product detail page, then continue with the booking partner only from that detail page.
+- Successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 
 The candidate does not add:
 
@@ -63,7 +64,7 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean post-merge validation was run after PR #394:
+Clean latest-head validation was run after PR #394:
 
 ```text
 08629a6410483db1a9975aa95d46899915747125
@@ -72,7 +73,7 @@ Clean post-merge validation was run after PR #394:
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr394-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr394
 ```
 
 Results:
@@ -85,7 +86,7 @@ Results:
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The latest validation includes PR #394's successful-result next-step copy and its regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #394's AI Trip next-step helper copy plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -94,13 +95,13 @@ Preview deployment was attempted from a clean latest-head worktree using the Rad
 Latest successful preview worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-preview-after-pr386
+/private/tmp/radarscout-ai-trip-latest-head-preview-retry
 ```
 
 Latest successful preview SHA:
 
 ```text
-7717e79f94909c5d350066364a5a5ffb7bf5d7d6
+6f79e2a7b62db98cbda297ed044cfef8682dcf37
 ```
 
 Vercel project:
@@ -125,21 +126,21 @@ Meaning:
 
 - Vercel project selection was correct.
 - The worktree guard passed.
-- The preview deployment for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6` reached `READY`.
+- The preview deployment for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY`.
 - Vercel Authentication protected the anonymous preview URL.
 - A temporary Vercel share URL was used for the read-only smoke helper and was not committed.
-- A later latest-head preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh preview evidence.
-- A later post-merge preview retry for `08629a6410483db1a9975aa95d46899915747125` also hit `api-deployments-free-per-day`.
+- That deployment metadata reported `gitDirty=1` because Vercel CLI wrote temporary local config before the deploy; the temporary worktree was cleaned afterward and the preview guard passed.
+- A later latest-head preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the clean local preview guard, then hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh clean-preview deployment evidence.
 
 Preview evidence:
 
 ```text
-Preview URL: https://reddit-monitor-rnac2afi7-ouyowus-projects.vercel.app
-Deployment ID: dpl_A8sLi6eAksSRFPbRLT1yWZvjLXJs
+Preview URL: https://reddit-monitor-7ansgu0cm-ouyowus-projects.vercel.app
+Deployment ID: dpl_Bb5ZTHK5Zx7q13BMG3TaLB8aD2d1
 Project: ouyowus-projects / reddit-monitor
 Target: preview / null
 Status: READY
-Protected-preview smoke: passed
+Protected-preview smoke: passed with dirty-metadata caveat
 ```
 
 AI Trip smoke result:
