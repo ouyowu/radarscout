@@ -403,8 +403,13 @@ test.describe('Valid Chiang Mai flow', () => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
+    await expect(page.getByLabel(/ai trip planner result actions/i)).toBeVisible()
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('link', { name: /open top match details/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: /open top match details/i })).toHaveAttribute(
+      'href',
+      /\/tours\/.*source=ai-trip-planner/,
+    )
     await expect(productCards(page).first()).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
 
