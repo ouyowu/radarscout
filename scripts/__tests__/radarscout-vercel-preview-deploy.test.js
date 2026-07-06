@@ -44,6 +44,23 @@ function runDeploy(cwd, args = [], env = {}) {
   })
 }
 
+function runRealDeployWithFakeNpx(cwd, fakeNpxSource) {
+  const binDir = fs.mkdtempSync(path.join(os.tmpdir(), "radarscout-fake-npx-"))
+  const fakeNpxPath = path.join(binDir, "npx")
+
+  fs.writeFileSync(fakeNpxPath, fakeNpxSource)
+  fs.chmodSync(fakeNpxPath, 0o755)
+
+  return spawnSync(process.execPath, [scriptPath], {
+    cwd,
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      PATH: `${binDir}${path.delimiter}${process.env.PATH}`,
+    },
+  })
+}
+
 test("dry-run deploy uses the approved Vercel scope after the preview guard passes", () => {
   const result = runDeploy(makeFixture())
 
@@ -79,4 +96,16 @@ test("fails when the linked project is not reddit-monitor", () => {
 
   assert.equal(result.status, 1)
   assert.match(result.stderr, /Wrong Vercel project projectName/)
+})
+
+test("prints a stable RadarScout quota message when Vercel deployment quota is exhausted", () => {
+  const result = runRealDeployWithFakeNpx(makeFixture(), `#!/usr/bin/env node
+console.error('Error: Resource is limited - try again in 24 hours (more than 100, code: "api-deployments-free-per-day").')
+process.exit(1)
+`)
+
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /api-deployments-free-per-day/)
+  assert.match(result.stderr, /RadarScout preview deploy is blocked by Vercel daily deployment quota/)
+  assert.match(result.stderr, /not a code, TypeScript, test, or build failure/)
 })
