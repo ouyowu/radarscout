@@ -67,7 +67,8 @@ Recent completed items:
 - Thailand route city-chip E2E coverage was added through PR #309.
 - AI Trip detail links were hardened to stay on safe internal `/tours` paths through PR #313.
 - AI Trip detail links now normalize existing non-AI `source` parameters to `source=ai-trip-planner` through PR #314.
-- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #314.
+- AI Trip detail source normalization E2E coverage was added through PR #319.
+- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #319.
 
 ## 4. Current blocked or deferred items
 
@@ -124,7 +125,7 @@ Decision:
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
 - latest production-deploy code candidate after PR #314 is `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`.
-- latest branch HEAD after PR #317 is `db286cce602bfd27645576b5878b0a249d1e0a12`.
+- latest branch HEAD after PR #319 is `0c368bbf683ab1ecf353c9462a80f59a37016a60`.
 
 ### Latest fresh preview deployment
 
@@ -132,7 +133,7 @@ Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `db286cce602bfd27645576b5878b0a249d1e0a12`;
+- latest `origin/codex/travel-mvp-launch`: `0c368bbf683ab1ecf353c9462a80f59a37016a60`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -141,6 +142,7 @@ Known state:
 - latest merged AI Trip app-code safety increment: PR #313, merge SHA `fc86b033be081497d22f6e3bef2b1f50a5011ac5`;
 - latest merged AI Trip app-code return-source increment: PR #314, merge SHA `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`;
 - latest merged AI Trip status-doc increment after PR #314: PR #317, merge SHA `db286cce602bfd27645576b5878b0a249d1e0a12`;
+- latest merged AI Trip test-only source-normalization increment: PR #319, merge SHA `0c368bbf683ab1ecf353c9462a80f59a37016a60`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -148,6 +150,7 @@ Known state:
 - PR #309 is test-only and extends AI Trip E2E coverage for Thailand route city chips;
 - clean local validation passed after PR #313 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #314 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
+- clean post-merge local validation passed after PR #319 with Prisma generate, AI Trip E2E, TypeScript, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -187,6 +190,7 @@ The current codebase already includes:
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip detail CTAs fallback to safe internal `/tours/{id}?source=ai-trip-planner` links if product detail hrefs are malformed or external;
 - AI Trip detail CTAs replace existing non-AI `source` parameters with `source=ai-trip-planner` instead of appending duplicate source values;
+- E2E coverage verifies product-card detail links preserve safe query params while replacing non-AI `source` values;
 - AI Trip Planner context card on sourced tour detail pages;
 - local protected-preview smoke helper for `/ai-trip-planner`;
 - tour detail no-handoff fallback copy;
