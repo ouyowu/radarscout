@@ -43,20 +43,23 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #358:
+Latest `origin/codex/travel-mvp-launch` after PR #361:
 
 ```text
-0969a78a957c43065fbd98bf48ee57bd9d8007e2
+2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d
 ```
 
 Latest AI Trip product-code increments:
 
 - PR #356: AI Trip Planner successful result action shows the top matched product title.
 - PR #357: AI Trip Planner refine links include clearer accessible context.
+- PR #361: deterministic planning outline links directly to the experience search section.
 
 Latest status-doc increment:
 
 - PR #358 refreshed the active status after the refine-link accessibility work.
+- PR #360 documented Vercel deployment quota handling.
+- This PR refreshes active status after PR #361.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -69,20 +72,20 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-active-status-preview-ready
+/private/tmp/radarscout-pr361-postmerge-outline-link
 ```
 
-Validated product-code SHA before the PR #358 docs-only merge:
+Validated product-code SHA after the PR #361 merge:
 
 ```text
-c3ca4131e735370624b9382e9aca2b61b47474ae
+2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d
 ```
 
 Validation results:
 
 - Prisma generate: passed.
-- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- aiTrip`): passed.
-- Targeted AI Trip Playwright flow (`e2e/ai-trip-planner.spec.ts:426 --workers=1`): passed.
+- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
+- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e -- e2e/ai-trip-planner.spec.ts`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
@@ -124,7 +127,8 @@ Recent preview evidence:
 
 - A preview for `5c9daf626f2156c4b8a049612c56c5f2b501d9e3` reached `READY`.
 - That preview URL was public-smoke blocked by Vercel Authentication.
-- The latest product-code head `c3ca4131e735370624b9382e9aca2b61b47474ae` has clean local validation, but no fresh Vercel preview yet because of the quota gate.
+- A latest-head retry after PR #359 confirmed the correct Vercel project and clean preview guard, then hit `api-deployments-free-per-day`.
+- The latest product-code head `2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d` has clean local validation, but no fresh Vercel preview yet because of the quota gate.
 
 ## 6. Production status
 
@@ -161,6 +165,7 @@ The current codebase already includes:
 - comparison-only product result cards;
 - compact successful-result action and fit-summary spacing on mobile;
 - top-match title in the successful result action;
+- deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip Planner context card on sourced tour detail pages;
 - local protected-preview smoke helper for `/ai-trip-planner`;
