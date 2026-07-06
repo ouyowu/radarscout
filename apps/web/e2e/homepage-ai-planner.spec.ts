@@ -28,7 +28,10 @@ test.describe('Homepage AI planner entry', () => {
     await expect(page.getByRole('heading', { name: 'AI-guided Thailand Experience Planner' })).toBeVisible()
     await expect(page.getByText('Tell RadarScout the kind of Thailand day you want.')).toBeVisible()
 
-    await expect(page.getByRole('link', { name: 'Start planning' })).toHaveAttribute('href', '/ai-trip-planner')
+    await expect(page.getByRole('link', { name: 'Start planning' })).toHaveAttribute(
+      'href',
+      '/ai-trip-planner#intent-demo',
+    )
     await expect(page.getByRole('link', { name: 'Plan a Chiang Mai elephant day' }).first()).toHaveAttribute(
       'href',
       '/chiang-mai/elephant-camp-finder',

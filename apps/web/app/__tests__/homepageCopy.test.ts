@@ -44,7 +44,7 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the AI trip planner with safe planning-first copy', () => {
-    expect(homepageSource).toContain("href: '/ai-trip-planner'")
+    expect(homepageSource).toContain("href: '/ai-trip-planner#intent-demo'")
     expect(homepageSource).toContain('Start planning')
     expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
     expect(homepageSource).toContain('Tell RadarScout the kind of Thailand day you want')

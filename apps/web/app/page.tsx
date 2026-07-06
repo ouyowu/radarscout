@@ -122,7 +122,7 @@ export default function LandingPage() {
         title="AI-guided Thailand Experience Planner"
         subtitle="Tell RadarScout the kind of Thailand day you want. Compare elephant care, food, nature, family-friendly, and city experiences before continuing with a booking partner."
         actions={[
-          { label: 'Start planning', href: '/ai-trip-planner' },
+          { label: 'Start planning', href: '/ai-trip-planner#intent-demo' },
           { label: 'Plan a Chiang Mai elephant day', href: '/chiang-mai/elephant-camp-finder', variant: 'secondary' },
         ]}
         trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
