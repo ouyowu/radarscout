@@ -92,6 +92,12 @@ const destinationStarters = [
     body: 'Island days, beaches, boats, old town, food, and gentler outdoor experience ideas.',
     prompt: 'Phuket 4 days islands beaches local food, avoid rushed schedule',
   },
+  {
+    city: 'Thailand',
+    title: 'Thailand multi-city route',
+    body: 'Bangkok, Chiang Mai, Phuket, food, temples, islands, and gentler experience comparisons across one Thailand plan.',
+    prompt: 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace',
+  },
 ]
 
 export default function AiTripPlannerPage() {
