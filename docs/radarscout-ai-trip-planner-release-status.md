@@ -9,14 +9,14 @@ Last updated: 2026-07-06
 Latest product-code candidate validated in this release-status checkpoint:
 
 ```text
-c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87
+f14a278058b13ae0a52624149b1c4dc4c9d5ab99
 ```
 
-This SHA includes the latest safe AI Trip Planner result-flow, mobile UX, copy
-safety, return-path, protected-preview runbook, and local preview-smoke helper
-work. Later docs-only merges may advance `origin/codex/travel-mvp-launch`
-without changing product behavior. Before any production deploy, use the latest
-branch HEAD and re-run the deploy validation gate against that exact SHA.
+This SHA includes the safe AI Trip Planner result-flow, mobile UX, copy safety,
+return-path, protected-preview runbook, local preview-smoke helper, preview data
+readiness documentation, multi-interest search coverage, and Thailand
+destination prefix normalization work. Before any production deploy, use the
+latest branch HEAD and re-run the deploy validation gate against that exact SHA.
 
 ## Recent merged increments
 
@@ -86,9 +86,78 @@ Title: Stabilize AI trip release status wording
 Merge SHA: 9bd0d825209cb2292f2b02e998ed667d9ff62c3d
 Scope: docs-only release status wording cleanup
 Production deploy: no
+
+PR #271
+Title: Update AI trip planner status after preview helper
+Merge SHA: 96dd4be5beff1e1b0bcf68e037fac6b723f626fe
+Scope: docs-only status update after protected-preview helper evidence
+Production deploy: no
+
+PR #273
+Title: Document AI trip preview data readiness
+Merge SHA: 0fd679b11fb66aa58211c4f624e17f708b4baa83
+Scope: docs-only preview data readiness report
+Production deploy: no
+
+PR #276
+Title: Document preview real data readiness check
+Merge SHA: f49824b53a8482cdb6f39abbb54841c98b5f13d3
+Scope: docs-only preview readiness follow-up
+Production deploy: no
+
+PR #278
+Title: Document AI trip real preview smoke
+Merge SHA: f2e9fb2d4c58ff6b457f21771b5fb18bc2d34ca4
+Scope: docs-only real preview smoke evidence
+Production deploy: no
+
+PR #279
+Title: Improve AI trip multi-interest search coverage
+Merge SHA: 30d1dbc5a95ba1579bcd28c87a777bee50a1cb76
+Scope: product-code search term ordering so later interests are searched before alias budget is exhausted
+Production deploy: no
+
+PR #280
+Title: Normalize AI trip Thailand destination prefixes
+Merge SHA: f14a278058b13ae0a52624149b1c4dc4c9d5ab99
+Scope: product-code destination normalization for Thailand-prefixed AI Trip prompts
+Production deploy: no
 ```
 
 ## Latest validation evidence
+
+Latest local validation after PR #279:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-search-partial-match-0-postmerge
+HEAD: 30d1dbc5a95ba1579bcd28c87a777bee50a1cb76
+
+Prisma generate: passed
+Full Vitest: passed, 909 tests
+Playwright E2E: passed, 40/40
+TypeScript: clean
+Next build: passed
+git diff --check: clean
+```
+
+Latest branch status after PR #280:
+
+```text
+origin/codex/travel-mvp-launch: f14a278058b13ae0a52624149b1c4dc4c9d5ab99
+Fresh preview deployment: blocked by Vercel daily deployment quota
+Vercel error code: api-deployments-free-per-day
+Production deploy: not approved
+```
+
+Operational note:
+
+```text
+An accidental Vercel project named
+radarscout-ai-trip-search-partial-match-0-postmerge
+was created while attempting a preview from a temporary worktree.
+It has been removed. Future preview deploys must explicitly link the worktree
+to ouyowus-projects / reddit-monitor before running npx vercel --yes.
+```
 
 Latest protected-preview helper validation after PR #268:
 
@@ -284,7 +353,7 @@ latest `origin/codex/travel-mvp-launch` SHA to deploy. As of this checkpoint,
 the latest product-code candidate was:
 
 ```text
-c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87
+f14a278058b13ae0a52624149b1c4dc4c9d5ab99
 ```
 
 If production deploy is approved later, the deploy task should:
@@ -301,9 +370,10 @@ If production deploy is approved later, the deploy task should:
 Recommended non-production tasks:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-LATEST-HEAD-PREVIEW-SMOKE-0
-Create a fresh preview deployment from clean HEAD c9b5406 and run the local
-AI Trip protected-preview smoke helper against that deployment.
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+After the Vercel daily deployment quota resets, create a fresh preview deployment
+from clean HEAD f14a278 and run the local AI Trip protected-preview smoke helper
+against that deployment.
 
 TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
 Read-only audit of preview product-data readiness for real product-detail smoke. Do not mutate DB/schema/env.
@@ -321,5 +391,6 @@ Recommended production task only after explicit approval:
 
 ```text
 TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
-Deploy clean HEAD c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87 to production.
+Deploy the exact latest approved merge SHA to production only after fresh preview
+or an explicitly approved equivalent validation gate passes.
 ```
