@@ -44,6 +44,10 @@ Recent completed items:
 - mobile AI Trip Planner result-flow audit documented;
 - mobile AI Trip Planner successful-result spacing tightened through PR #263;
 - latest `codex/travel-mvp-launch` preview for AI Trip Planner result-flow polish passed.
+- AI Trip Planner copy safety review documented through PR #265;
+- AI Trip Planner tour-detail return context tightened through PR #266;
+- protected Vercel preview bypass runbook documented through PR #267;
+- local `pnpm smoke:ai-trip-preview` helper added through PR #268 and verified against a protected preview share URL.
 
 ## 4. Current blocked or deferred items
 
@@ -101,6 +105,8 @@ The current codebase already includes:
 - comparison-only product result cards;
 - compact successful-result action and fit-summary spacing on mobile;
 - `/tours/{id}?source=ai-trip-planner` return context;
+- AI Trip Planner context card on sourced tour detail pages;
+- local protected-preview smoke helper for `/ai-trip-planner`;
 - tour detail no-handoff fallback copy;
 - static partner/supplier/destination partner pages;
 - B2B mailto-only manual intake guidance.
@@ -112,26 +118,26 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
+TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
 ```
 
 Type:
 
 ```text
-read-only audit or narrow UX implementation after audit
+read-only observation + docs report
 ```
 
 Goal:
 
-Audit and, only if needed, tighten the product-detail return path for travelers who arrive from `/ai-trip-planner` through `source=ai-trip-planner`.
+Audit why protected preview smoke can validate the mocked AI Trip Planner result UI but cannot currently verify real display-ready `/tours` rows on preview.
 
 Questions to answer:
 
-- Does the tour detail page clearly preserve AI Trip Planner context?
-- Is the return path back to `/ai-trip-planner#ai-trip-results` visible and safe?
-- Does the page avoid implying booking, availability, payment, inventory, or Bókun backend behavior?
-- Is the handoff from planner result to product detail to booking partner understandable?
-- Is there a narrow copy or UI change worth doing next?
+- Does `/tours` on preview intentionally show no display-ready rows?
+- Does `/api/ai-trip/search` on preview have the expected product-search behavior for seeded data?
+- Is the limitation only preview data state, not product UI behavior?
+- What evidence is required before relying on preview for real product-detail smoke?
+- Is a future preview seed/readiness task needed, and what gates should it have?
 
 Why this is the right next step:
 
@@ -139,7 +145,8 @@ Why this is the right next step:
 - SEO opening is a hard approval gate;
 - several previously recommended B2B and tour-detail fallback tasks already exist in code;
 - the mobile results path has already been audited and tightened through PR #263;
-- the remaining core product path is the transition from AI Trip Planner results into tour detail pages.
+- the AI Trip Planner to tour-detail return path has already been tightened through PR #266;
+- current preview smoke can validate UI with mocked search, but real preview `/tours` returned no display-ready rows during the last protected-preview check.
 
 ## 7. Candidate follow-up tasks after audit
 
@@ -149,6 +156,7 @@ Only after the audit identifies a concrete gap:
 TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-1
 TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
 TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-PREVIEW-SMOKE
+TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
 TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
 TD-RADARSCOUT-SEO-READINESS-2-CHIANG-MAI-CONTROLLED-OPENING
 TD-RADARSCOUT-TRAVELER-FUNNEL-PLAUSIBLE-DECISION-2

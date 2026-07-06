@@ -178,22 +178,53 @@ Do not solve preview smoke failures by:
 - changing `DATABASE_URL`, schema, or seed data unless explicitly scoped;
 - touching ThaiEleHub or Shopify.
 
-## Recommended future automation
+## Implemented local helper
 
-Recommended next implementation:
+RadarScout now includes a local helper:
 
 ```text
-TD-RADARSCOUT-PREVIEW-SMOKE-HELPER-0
+pnpm smoke:ai-trip-preview '<protected-preview-ai-trip-planner-url>'
 ```
 
-Scope:
+Implementation:
 
-- create a local-only smoke helper or documented script wrapper;
-- accept a preview URL;
-- request temporary Vercel access when available;
-- run the AI Trip Planner mocked result-flow smoke;
-- report title, robots, top-match link, card count, overflow, forbidden copy, and unsafe network findings;
-- do not commit secrets or temporary share URLs;
-- do not change deployment settings.
+```text
+scripts/radarscout-ai-trip-preview-smoke.js
+```
+
+Current verified behavior:
+
+```text
+Preview URL:
+https://reddit-monitor-1aie8r6e2-ouyowus-projects.vercel.app/ai-trip-planner
+
+Result:
+ok: true
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: []
+forbiddenMatches: []
+```
+
+The helper remains local/operator tooling. It does not request secrets, store
+temporary share URLs, change deployment settings, mutate data, or replace full
+validation.
+
+## Remaining preview limitation
+
+The helper intentionally mocks `/api/ai-trip/search` so UI smoke does not depend
+on preview database seed state.
+
+If a future task needs to prove real preview data behavior, use a separate
+read-only preview-data readiness task first:
+
+```text
+TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
+```
 
 This should remain optional tooling. It should not replace full E2E tests, build validation, or production smoke after explicitly approved production deploys.
