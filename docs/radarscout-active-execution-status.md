@@ -127,6 +127,64 @@ api-deployments-free-per-day
 
 This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
 
+## 0.2 Latest autonomous execution update — homepage CTA flow coverage
+
+Updated: 2026-07-06
+
+Latest merged HEAD:
+
+```text
+910c2df41a4ccbde39c472963671992de6222ada
+```
+
+Completed low-risk increments:
+
+- PR #428: added homepage prompt click-flow E2E coverage.
+- PR #429: homepage `Start planning` CTA now routes to `/ai-trip-planner#intent-demo`.
+
+Reason:
+
+- Prove homepage prompt chips prefill the AI Trip Planner form without auto-searching.
+- Land the primary homepage planning CTA closer to the planner input.
+- Preserve the same no-automatic-search and comparison-only planning boundary.
+
+Scope:
+
+- homepage CTA href;
+- homepage copy/unit test assertion;
+- homepage E2E assertions;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean worktree: `/private/tmp/radarscout-homepage-start-planning-anchor-0`.
+- Prisma generate: passed.
+- Focused homepage/sitemap/SEO Vitest coverage: passed, 58 files / 924 tests.
+- Homepage E2E: passed, 3 / 3 tests.
+- Full Playwright E2E: passed, 57 / 57 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview deploy wrapper passed cleanup and project guard.
+- Preview deploy is blocked by Vercel daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
+
 ## 2. Product boundary
 
 RadarScout is a Thailand-first AI-guided travel discovery and itinerary product.
