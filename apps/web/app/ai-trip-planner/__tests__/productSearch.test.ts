@@ -8,7 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { createElement } from 'react'
 import * as React from 'react'
 import { describe, expect, it } from 'vitest'
-import { canConfirmTripIntent, canSearchFromConfirmed } from '../IntentParserDemo'
+import { AI_TRIP_RESULTS_NEXT_STEP_COPY, canConfirmTripIntent, canSearchFromConfirmed } from '../IntentParserDemo'
 import {
   AiSearchProductCard,
   buildAiTripPlannerDetailHref,
@@ -384,6 +384,22 @@ describe('AI search product card detail CTA accessibility', () => {
     expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
     expect(markup).not.toContain('https://example.com')
     expect(markup).not.toContain('/checkout/prod_1')
+  })
+})
+
+describe('AI Trip successful results next-step copy', () => {
+  it('keeps the product-result next step clear and safely scoped', () => {
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('compare the cards')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('open one product detail page')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('booking partner')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/live availability/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/available now/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/instant confirmation/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/\bcheckout\b/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/\bpayment\b/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/partner rate/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/supplier net rate/i)
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/\bcommission\b/i)
   })
 })
 
