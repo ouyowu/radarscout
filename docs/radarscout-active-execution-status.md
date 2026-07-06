@@ -46,7 +46,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-1323a12f754126485c42cad4205a68308703a853
+c04b0399b03f8fcb479a1a44da744487c12267df
 ```
 
 Latest AI Trip product-code increments:
@@ -95,7 +95,7 @@ Latest status-doc increment:
 - PR #393 recorded latest-head local validation after PR #392.
 - PR #395 recorded PR #394 post-merge validation and the latest preview quota blocker.
 - PR #396 corrected the preview guard command and recorded the dirty-metadata caveat from the latest successful protected preview smoke.
-- This status refresh records PR #397 post-merge validation and the latest preview quota blocker.
+- Current status update records PR #397 post-merge validation, the earlier preview quota blocker, and the clean latest-head preview smoke pass after PR #398.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -120,7 +120,7 @@ Validated product-code SHA after PR #397:
 Latest docs-only merge before this status refresh:
 
 ```text
-1323a12f754126485c42cad4205a68308703a853
+c04b0399b03f8fcb479a1a44da744487c12267df
 ```
 
 Validation results:
@@ -156,15 +156,16 @@ passed
 Current latest-head result:
 
 ```text
-api-deployments-free-per-day
+READY and protected-preview smoke passed
 ```
 
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The latest-head deploy for `08629a6410483db1a9975aa95d46899915747125` failed because the current Vercel plan hit the daily deployment quota.
-- This is not a code, TypeScript, test, or build failure.
-- A previous preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and passed protected-preview smoke, but it does not include the PR #394 next-step helper copy.
+- The latest-head deploy for `c04b0399b03f8fcb479a1a44da744487c12267df` reached `READY`.
+- Vercel Authentication protected the anonymous preview URL, so a temporary Vercel share URL was generated for smoke only.
+- The share URL was not committed to source files, docs, tests, or PR bodies.
+- The protected-preview AI Trip smoke passed.
 
 Recent preview evidence:
 
@@ -215,6 +216,23 @@ Recent preview evidence:
 - A preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and protected-preview smoke passed, but Vercel metadata reported `gitDirty=1` because the Vercel CLI had written temporary local config before the deploy. The temporary worktree was cleaned afterward and the guard passed.
 - A clean latest-head manual preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `705337b4d557d1910ff9fd1a46393bed51f5e8ef` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head preview for `c04b0399b03f8fcb479a1a44da744487c12267df` reached `READY`:
+  - deployment ID: `dpl_CFw3GQE4Dasc6h7gFXaMPyz7xzs1`;
+  - preview URL: `https://reddit-monitor-5j4fonb66-ouyowus-projects.vercel.app`;
+  - target: preview / `null`;
+  - Vercel project: `ouyowus-projects / reddit-monitor`;
+  - deployment commit SHA: `c04b0399b03f8fcb479a1a44da744487c12267df`;
+  - production aliases: none observed.
+- Protected-preview AI Trip smoke passed against that deployment:
+  - status: 200;
+  - title: `Thailand AI Trip Planner | RadarScout`;
+  - robots: `noindex, nofollow`;
+  - top match href: `/tours/prod_cm_1?source=ai-trip-planner`;
+  - product card count: 3;
+  - result summary visible: true;
+  - mobile horizontal overflow: none;
+  - unsafe network calls: none;
+  - forbidden visible copy matches: none.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -225,7 +243,8 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #397, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview has passed after PR #398;
+- production deploy still requires explicit approval naming the exact latest branch HEAD.
 
 ## 7. Safety status
 

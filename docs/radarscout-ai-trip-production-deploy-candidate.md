@@ -17,7 +17,7 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD before this docs refresh:
 
 ```text
-1323a12f754126485c42cad4205a68308703a853
+c04b0399b03f8fcb479a1a44da744487c12267df
 ```
 
 Latest product-code merge included in this branch:
@@ -36,6 +36,7 @@ The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product
 - PR #395: recorded PR #394 validation and the preview quota blocker.
 - PR #396: recorded preview evidence with the dirty-metadata caveat.
 - PR #397: clarified the top-match detail CTA accessible label with product-page booking partner handoff context.
+- PR #398: recorded PR #397 validation status and kept production behind exact-SHA approval.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -99,13 +100,13 @@ Preview deployment was attempted from a clean latest-head worktree using the Rad
 Latest successful preview worktree:
 
 ```text
-/private/tmp/radarscout-ai-trip-latest-head-preview-retry
+/private/tmp/radarscout-latest-head-preview-after-pr398
 ```
 
 Latest successful preview SHA:
 
 ```text
-6f79e2a7b62db98cbda297ed044cfef8682dcf37
+c04b0399b03f8fcb479a1a44da744487c12267df
 ```
 
 Vercel project:
@@ -130,22 +131,21 @@ Meaning:
 
 - Vercel project selection was correct.
 - The worktree guard passed.
-- The preview deployment for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY`.
+- The preview deployment for `c04b0399b03f8fcb479a1a44da744487c12267df` reached `READY`.
 - Vercel Authentication protected the anonymous preview URL.
 - A temporary Vercel share URL was used for the read-only smoke helper and was not committed.
-- That deployment metadata reported `gitDirty=1` because Vercel CLI wrote temporary local config before the deploy; the temporary worktree was cleaned afterward and the preview guard passed.
-- A later latest-head preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the clean local preview guard, then hit `api-deployments-free-per-day`.
-- A later post-merge preview retry for `705337b4d557d1910ff9fd1a46393bed51f5e8ef` also passed the clean local preview guard, then hit `api-deployments-free-per-day`, so the current latest product-code head does not yet have fresh clean-preview deployment evidence.
+- The temporary worktree was cleaned afterward.
+- The current latest branch head now has fresh protected-preview smoke evidence.
 
 Preview evidence:
 
 ```text
-Preview URL: https://reddit-monitor-7ansgu0cm-ouyowus-projects.vercel.app
-Deployment ID: dpl_Bb5ZTHK5Zx7q13BMG3TaLB8aD2d1
+Preview URL: https://reddit-monitor-5j4fonb66-ouyowus-projects.vercel.app
+Deployment ID: dpl_CFw3GQE4Dasc6h7gFXaMPyz7xzs1
 Project: ouyowus-projects / reddit-monitor
 Target: preview / null
 Status: READY
-Protected-preview smoke: passed with dirty-metadata caveat
+Protected-preview smoke: passed
 ```
 
 AI Trip smoke result:
