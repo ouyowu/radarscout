@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #394:
+Latest `origin/codex/travel-mvp-launch` after PR #397 and PR #396:
 
 ```text
-08629a6410483db1a9975aa95d46899915747125
+1323a12f754126485c42cad4205a68308703a853
 ```
 
 Latest AI Trip product-code increments:
@@ -63,6 +63,7 @@ Latest AI Trip product-code increments:
 - PR #385: unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available tour detail pages.
 - PR #388: unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results and that no partner action or current status is recorded from the unavailable page.
 - PR #394: successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
+- PR #397: top-match product detail CTAs use safer assistive-label copy that keeps booking partner handoff scoped to the product detail page.
 
 Latest tooling increment:
 
@@ -93,7 +94,8 @@ Latest status-doc increment:
 - PR #392 archived AI Trip status after PR #391.
 - PR #393 recorded latest-head local validation after PR #392.
 - PR #395 recorded PR #394 post-merge validation and the latest preview quota blocker.
-- This status refresh corrects the preview guard command and records the dirty-metadata caveat from the latest successful protected preview smoke.
+- PR #396 corrected the preview guard command and recorded the dirty-metadata caveat from the latest successful protected preview smoke.
+- This status refresh records latest-head local validation after PR #397 and the current Vercel preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -106,25 +108,25 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-validation-after-pr394
+/private/tmp/radarscout-latest-head-validation-after-pr397
 ```
 
-Validated product-code SHA after PR #394:
+Validated latest-head SHA after PR #397 and PR #396:
 
 ```text
-08629a6410483db1a9975aa95d46899915747125
+1323a12f754126485c42cad4205a68308703a853
 ```
 
 Latest docs-only merge after validation:
 
 ```text
-6f79e2a7b62db98cbda297ed044cfef8682dcf37
+1323a12f754126485c42cad4205a68308703a853
 ```
 
 Validation results:
 
 - Prisma generate: passed.
-- AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 922 tests.
+- AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
 - Next build: passed.
@@ -160,7 +162,7 @@ api-deployments-free-per-day
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The latest-head deploy for `08629a6410483db1a9975aa95d46899915747125` failed because the current Vercel plan hit the daily deployment quota.
+- The latest-head deploy for `1323a12f754126485c42cad4205a68308703a853` failed because the current Vercel plan hit the daily deployment quota.
 - This is not a code, TypeScript, test, or build failure.
 - A previous preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and passed protected-preview smoke, but it does not include the PR #394 next-step helper copy.
 
@@ -212,6 +214,7 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`.
 - A preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and protected-preview smoke passed, but Vercel metadata reported `gitDirty=1` because the Vercel CLI had written temporary local config before the deploy. The temporary worktree was cleaned afterward and the guard passed.
 - A clean latest-head manual preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `1323a12f754126485c42cad4205a68308703a853` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -222,7 +225,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #394, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #397, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 

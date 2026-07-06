@@ -17,13 +17,13 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-08629a6410483db1a9975aa95d46899915747125
+1323a12f754126485c42cad4205a68308703a853
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-08629a6410483db1a9975aa95d46899915747125
+705337b4d557d1910ff9fd1a46393bed51f5e8ef
 ```
 
 The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product-copy increment plus docs-only status or decision records:
@@ -33,6 +33,8 @@ The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product
 - PR #392: archived active status after PR #391.
 - PR #393: recorded latest-head local validation after PR #392.
 - PR #394: added the compact AI Trip result next-step helper and tests.
+- PR #397: clarified the top-match product detail handoff label for assistive technology.
+- PR #396: corrected the latest preview status record after PR #397 merged.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -49,6 +51,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available sourced tour detail pages.
 - Unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results to compare other matches, and that no partner action or current status is recorded from the unavailable page.
 - Successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
+- Top-match product detail CTAs clarify that the booking partner handoff continues from the product detail page.
 
 The candidate does not add:
 
@@ -64,29 +67,29 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean latest-head validation was run after PR #394:
+Clean latest-head validation was run after PR #397 and PR #396:
 
 ```text
-08629a6410483db1a9975aa95d46899915747125
+1323a12f754126485c42cad4205a68308703a853
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-validation-after-pr394
+/private/tmp/radarscout-latest-head-validation-after-pr397
 ```
 
 Results:
 
 - Prisma generate: passed.
-- AI Trip focused Vitest coverage: passed, 58 files / 922 tests.
+- AI Trip focused Vitest coverage: passed, 58 files / 923 tests.
 - TypeScript: passed.
 - AI Trip Playwright E2E: passed, 53 tests.
 - Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The latest validation includes PR #394's AI Trip next-step helper copy plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #397's top-match handoff label plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -130,7 +133,7 @@ Meaning:
 - Vercel Authentication protected the anonymous preview URL.
 - A temporary Vercel share URL was used for the read-only smoke helper and was not committed.
 - That deployment metadata reported `gitDirty=1` because Vercel CLI wrote temporary local config before the deploy; the temporary worktree was cleaned afterward and the preview guard passed.
-- A later latest-head preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the clean local preview guard, then hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh clean-preview deployment evidence.
+- A later latest-head preview retry for `1323a12f754126485c42cad4205a68308703a853` passed the clean local preview guard, then hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh clean-preview deployment evidence.
 
 Preview evidence:
 
