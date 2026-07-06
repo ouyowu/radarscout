@@ -460,6 +460,13 @@ export function IntentParserDemo() {
                       Refine trip idea
                     </a>
                   </div>
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    className="mt-3 rounded-2xl border border-[#d8eadf] bg-white px-4 py-3 text-sm font-semibold leading-6 text-[#0f766e]"
+                  >
+                    Results ready. Review the comparison cards below, then open product details to continue with a booking partner.
+                  </p>
                   {resultFitSummary ? (
                     <section
                       aria-label="Result fit summary"
