@@ -18,6 +18,10 @@ function formatDays(days: number | null | undefined) {
   return `${days} day${days === 1 ? '' : 's'}`
 }
 
+function isThailandWideDestination(destination: string) {
+  return destination.trim().toLowerCase() === 'thailand'
+}
+
 function summarizeInterests(interests: string[]) {
   const normalized = interests
     .map(interest => interest.trim())
@@ -136,9 +140,12 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
   )
   const cities = uniqueProductCities(response.products)
   const productCount = response.products.length
+  const isThailandWide = isThailandWideDestination(destination)
 
   return {
-    heading: 'Why these experiences match',
+    heading: isThailandWide
+      ? 'How these experiences support your Thailand route'
+      : 'Why these experiences match',
     chips: [
       destination,
       duration,
@@ -146,15 +153,25 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
       otherRequestedInterests ? `Other requested interests: ${otherRequestedInterests}` : null,
       cities.length > 0 ? `Result cities: ${cities.join(', ')}` : null,
     ].filter((chip): chip is string => Boolean(chip)),
-    points: [
-      `${productCount} real Thailand experience${productCount === 1 ? '' : 's'} matched the confirmed destination and trip idea.`,
-      matchedInterests
-        ? 'Matched-interest labels are based on the returned product titles, summaries, and tags.'
-        : interests
-          ? 'Requested interests are kept separate when the returned cards do not clearly represent them.'
-        : 'The result set uses the confirmed destination before showing product cards.',
-      'These are comparison-only product results. Open product pages for current details and continue through the public partner handoff path.',
-    ],
+    points: isThailandWide
+      ? [
+        `${productCount} real Thailand experience${productCount === 1 ? '' : 's'} can be compared as possible route stops for the confirmed trip idea.`,
+        matchedInterests
+          ? 'Matched-interest labels are based on the returned product titles, summaries, and tags.'
+          : interests
+            ? 'Requested interests are kept separate when the returned cards do not clearly represent them.'
+            : 'The result set uses the confirmed Thailand route before showing product cards.',
+        'These are comparison-only route results. Open real Thailand product pages for current details and continue through the public partner handoff path.',
+      ]
+      : [
+        `${productCount} real Thailand experience${productCount === 1 ? '' : 's'} matched the confirmed destination and trip idea.`,
+        matchedInterests
+          ? 'Matched-interest labels are based on the returned product titles, summaries, and tags.'
+          : interests
+            ? 'Requested interests are kept separate when the returned cards do not clearly represent them.'
+            : 'The result set uses the confirmed destination before showing product cards.',
+        'These are comparison-only product results. Open product pages for current details and continue through the public partner handoff path.',
+      ],
   }
 }
 
