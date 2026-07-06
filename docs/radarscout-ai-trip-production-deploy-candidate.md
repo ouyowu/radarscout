@@ -17,21 +17,18 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-7c3b2d5711197a532e8f5de3a96e29af29b5249d
+4d2efeac1119833e68c3b221791b441eac67f792
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-56b91395f97c32c53bb79c37bc0b3e3e97dece1a
+bcb637c3cb542da83ead211a84856f18832d998d
 ```
 
-The commits after `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` are docs-only status or decision records:
+The commits after `bcb637c3cb542da83ead211a84856f18832d998d` are docs-only status or decision records:
 
-- PR #381: documented the AI Trip production deploy candidate.
-- PR #382: refreshed active status after PR #380 and PR #381.
-- PR #383: refreshed this production candidate record after PR #380.
-- PR #384: refreshed active status after PR #383.
+- PR #386: recorded local validation after PR #384.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -45,6 +42,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Sourced tour detail pages show AI Trip return context.
 - The AI Trip return link points back to the same AI Trip Planner results section.
 - Sourced tour detail copy clarifies that no partner action or current status is recorded on the page.
+- Unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available sourced tour detail pages.
 
 The candidate does not add:
 
@@ -63,27 +61,25 @@ The candidate does not add:
 Clean post-merge validation was run against the product-code merge:
 
 ```text
-56b91395f97c32c53bb79c37bc0b3e3e97dece1a
+bcb637c3cb542da83ead211a84856f18832d998d
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-local-validation-after-pr384
+/private/tmp/radarscout-pr385-postmerge
 ```
 
 Results:
 
 - Prisma generate: passed.
-- AI Trip Vitest focus: passed.
-- Tours Vitest focus: passed.
-- AI Trip Playwright E2E: passed.
+- Public copy / tours Vitest coverage: passed, 58 files / 921 tests.
 - TypeScript: passed.
 - Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The PR #380 validation updated only traveler-facing AI Trip return-context copy and the matching public-copy test. No app behavior, route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The PR #385 validation updated only the unavailable tour detail AI Trip return-button label and the matching public-copy test. No app behavior, route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -92,13 +88,13 @@ Preview deployment was attempted from a clean latest-head worktree using the Rad
 Latest preview retry worktree:
 
 ```text
-/private/tmp/radarscout-pr380-postmerge-return-copy
+/private/tmp/radarscout-pr385-postmerge
 ```
 
 Latest preview retry SHA:
 
 ```text
-7c3b2d5711197a532e8f5de3a96e29af29b5249d
+bcb637c3cb542da83ead211a84856f18832d998d
 ```
 
 Vercel project:
