@@ -123,6 +123,27 @@ describe('sitemap', () => {
     expect(urls).not.toContain(`${BASE}/destination-partners`)
   })
 
+  it('does not include destination pages until destination SEO expansion is explicitly approved', async () => {
+    listMock.listPublicThailandProducts.mockResolvedValue([])
+
+    const entries = await sitemap()
+    const urls = entries.map(e => e.url)
+
+    expect(urls).not.toContain(`${BASE}/destinations`)
+    expect(urls.some(url => url.includes('/destinations/'))).toBe(false)
+  })
+
+  it('keeps non-Thailand planning-only destination slugs out of the sitemap', async () => {
+    listMock.listPublicThailandProducts.mockResolvedValue([])
+
+    const entries = await sitemap()
+    const urls = entries.map(e => e.url)
+
+    expect(urls).not.toContain(`${BASE}/destinations/united-states`)
+    expect(urls).not.toContain(`${BASE}/destinations/canada`)
+    expect(urls).not.toContain(`${BASE}/destinations/japan`)
+  })
+
   it('keeps robots.txt behavior unchanged while sitemap is narrowed', () => {
     process.env.NEXT_PUBLIC_BASE_URL = BASE
 
