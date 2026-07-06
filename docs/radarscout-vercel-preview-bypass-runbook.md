@@ -70,6 +70,25 @@ Properties:
 
 Use the temporary share URL for browser smoke.
 
+Before creating a new preview deployment from a clean worktree, run the local
+preview guard:
+
+```bash
+pnpm guard:vercel-preview
+```
+
+The guard confirms:
+
+- the git worktree is clean;
+- `.vercel/project.json` points to `ouyowus-projects / reddit-monitor`;
+- the local worktree is not linked to an accidental temporary Vercel project;
+- `.env.local` is absent so preview uses Vercel Preview environment variables;
+- production deploy flags such as `--prod` are not being passed through the
+  preview path.
+
+Only run `npx vercel --yes` after this guard passes. If it fails, fix the local
+worktree or Vercel link first; do not deploy from the failed state.
+
 For UI-only result-flow validation, it is acceptable to mock `/api/ai-trip/search` in Playwright. This proves the deployed frontend shell and client-side result UI without depending on preview database seed state.
 
 Use real network only when the task explicitly requires verifying backend/data behavior.
@@ -180,7 +199,28 @@ Do not solve preview smoke failures by:
 
 ## Implemented local helper
 
-RadarScout now includes a local helper:
+RadarScout now includes local preview helpers:
+
+```text
+pnpm guard:vercel-preview
+```
+
+Implementation:
+
+```text
+scripts/radarscout-vercel-preview-guard.js
+```
+
+Purpose:
+
+```text
+Validate the local deploy worktree and Vercel project link before preview deploy.
+```
+
+The guard is intentionally local-only. It does not deploy, request secrets,
+change Vercel project settings, mutate data, or touch production aliases.
+
+RadarScout also includes the AI Trip smoke helper:
 
 ```text
 pnpm smoke:ai-trip-preview '<protected-preview-ai-trip-planner-url>'
