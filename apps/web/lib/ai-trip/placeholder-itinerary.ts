@@ -34,6 +34,10 @@ function destinationLabel(destination: string | null) {
   return destination ?? 'Thailand'
 }
 
+function isThailandWideDestination(destination: string) {
+  return destination.trim().toLowerCase() === 'thailand'
+}
+
 function buildFocusPhrase(intent: Pick<ConfirmedTripIntent, 'interests' | 'foodPreferences'>) {
   if (hasInterest(intent, 'elephant')) return 'elephant care and nature time'
   if (hasInterest(intent, 'food|cooking')) return 'local food and cooking-led experiences'
@@ -66,6 +70,32 @@ export function buildDeterministicPlanningOutline(
   const avoidNote = intent.avoid.length > 0
     ? ` while avoiding ${intent.avoid.slice(0, 2).join(' and ')}`
     : ''
+
+  if (isThailandWideDestination(destination)) {
+    return {
+      title: 'Suggested Thailand multi-city route outline',
+      fitExplanation: `A ${intent.durationDays}-day Thailand route can start with ${focus} ${pace}${avoidNote}, then compare Bangkok, Chiang Mai, Phuket, or other Thailand stops against real product pages.`,
+      slots: [
+        {
+          label: 'Start',
+          title: 'Start with Bangkok city context',
+          description: 'Use food, temples, canals, or arrival-day pacing to anchor the first comparison.',
+        },
+        {
+          label: 'Middle',
+          title: 'Compare Chiang Mai, Phuket, or nearby Thailand stops',
+          description: 'Use your confirmed interests to compare elephant care, cooking, beaches, culture, nature, or transfer fit across real Thailand product pages.',
+        },
+        {
+          label: 'Later',
+          title: 'Shortlist real Thailand product pages',
+          description: 'Use the product results below to open details, then continue only through the public partner handoff path.',
+        },
+      ],
+      safetyNote:
+        'This outline is a rule-based planning guide. It does not check availability, complete partner steps, or replace product-page details.',
+    }
+  }
 
   return {
     title: `Suggested ${destination} planning outline`,

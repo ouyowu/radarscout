@@ -124,6 +124,30 @@ describe('buildDeterministicPlanningOutline', () => {
     expect(outline?.slots.map(slot => slot.label)).toEqual(['Start', 'Middle', 'Later'])
   })
 
+  it('builds a Thailand-wide route outline for multi-city trip prompts', () => {
+    const outline = buildDeterministicPlanningOutline({
+      destination: 'Thailand',
+      durationDays: 7,
+      interests: ['food', 'temples', 'beaches'],
+      foodPreferences: [],
+      pace: 'relaxed',
+      travelerType: 'couple',
+      avoid: [],
+    })
+
+    expect(outline).not.toBeNull()
+    expect(outline?.title).toBe('Suggested Thailand multi-city route outline')
+    expect(outline?.fitExplanation).toMatch(/7-day Thailand route/i)
+    expect(outline?.fitExplanation).toMatch(/Bangkok/i)
+    expect(outline?.fitExplanation).toMatch(/Chiang Mai/i)
+    expect(outline?.fitExplanation).toMatch(/Phuket/i)
+    expect(outline?.slots.map(slot => slot.title)).toEqual([
+      'Start with Bangkok city context',
+      'Compare Chiang Mai, Phuket, or nearby Thailand stops',
+      'Shortlist real Thailand product pages',
+    ])
+  })
+
   it('does not emit checkout, payment, booking, ratings, or fake availability claims', () => {
     const outline = buildDeterministicPlanningOutline({
       destination: 'Phuket',
