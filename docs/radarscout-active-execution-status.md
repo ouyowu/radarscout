@@ -19,6 +19,58 @@ Default rules:
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
 
+## 0. Latest autonomous execution update — homepage AI planner E2E coverage
+
+Updated: 2026-07-06
+
+Latest merged HEAD:
+
+```text
+bc01a76919b1f52018c095069615e92b06fbdaba
+```
+
+Completed low-risk test-only increments:
+
+- PR #422: added homepage AI planner entry Playwright smoke coverage.
+- PR #424: corrected the prompt-chip href expectation to match the existing safe `?idea=` prefill behavior.
+
+Scope:
+
+- test-only;
+- no app runtime behavior change;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean source snapshot: `/private/tmp/radarscout-homepage-ai-planner-e2e-0-final-postmerge`.
+- Clean git worktree: `/private/tmp/radarscout-homepage-ai-planner-e2e-0-final-worktree`.
+- Prisma generate: passed.
+- Focused homepage/sitemap/SEO Vitest coverage: passed, 58 files / 924 tests.
+- Full Vitest: passed, 58 files / 924 tests.
+- Playwright E2E: passed, 56 / 56 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed in clean git worktree.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview deploy wrapper passed local cleanup and project guard.
+- Preview deploy is blocked by Vercel daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This is not a code, TypeScript, test, build, or project-linking failure.
+
 ## 2. Product boundary
 
 RadarScout is a Thailand-first AI-guided travel discovery and itinerary product.
