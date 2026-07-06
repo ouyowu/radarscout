@@ -9,20 +9,21 @@ Last updated: 2026-07-07
 Latest branch HEAD checked in this release-status checkpoint:
 
 ```text
-f59b8b9e4d03fd43bc80781d211f9f163223fb41
+e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
 Latest AI Trip Planner product-code candidate on the current branch:
 
 ```text
-a196d8896c506f2cd0313b3cdceb78d75ed68922
+e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
 This SHA includes the safe AI Trip Planner result-flow, mobile UX, copy safety,
 return-path, protected-preview runbook, local preview-smoke helper, preview data
 readiness documentation, multi-interest search coverage, Thailand destination
 prefix normalization, compact prompt coverage, preview-deploy guard work, homepage
-planner-entry copy clarification, and tightened result-state handoff copy.
+planner-entry copy clarification, tightened result-state handoff copy, and positive
+AI Trip boundary copy.
 Before any production deploy, use the latest branch HEAD and re-run the deploy
 validation gate against that exact SHA.
 
@@ -166,9 +167,30 @@ Title: Record latest preview quota blocker
 Merge SHA: f59b8b9e4d03fd43bc80781d211f9f163223fb41
 Scope: docs-only latest HEAD preview quota status
 Production deploy: no
+
+PR #453
+Title: Use positive AI Trip boundary copy
+Merge SHA: e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
+Scope: product-code copy polish replacing hard negative transparency badges with positive boundary labels while preserving comparison-only, Thailand-only, and product-page handoff boundaries
+Production deploy: no
 ```
 
 ## Latest validation evidence
+
+Latest local validation after PR #453:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-positive-boundary-copy-postmerge
+HEAD: e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
+
+Prisma generate: passed
+Focused copySafety Vitest: passed, 59 files / 932 tests
+AI Trip Planner Playwright E2E: passed, 54/54
+Full Playwright E2E: passed, 60/60
+TypeScript: clean
+Next build: passed
+git diff --check: clean
+```
 
 Latest local validation after PR #451:
 
@@ -201,20 +223,20 @@ Next build: passed
 git diff --check: clean
 ```
 
-Latest branch status after PR #450:
+Latest branch status after PR #453:
 
 ```text
-origin/codex/travel-mvp-launch: f59b8b9e4d03fd43bc80781d211f9f163223fb41
+origin/codex/travel-mvp-launch: e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 Fresh preview deployment: blocked by Vercel daily deployment quota
 Vercel error code: api-deployments-free-per-day
 Production deploy: not approved
 ```
 
-Latest preview retry evidence:
+Latest preview retry evidence after PR #453:
 
 ```text
-Worktree: /private/tmp/radarscout-latest-head-preview-retry-current
-Checked HEAD: bb35f368222f9d47c0bdfcc638958924749e4042
+Worktree: /private/tmp/radarscout-ai-trip-positive-boundary-copy-postmerge
+Checked HEAD: e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 Vercel project: ouyowus-projects / reddit-monitor
 Preview guard: passed
 Preview deploy: blocked by api-deployments-free-per-day
@@ -431,7 +453,7 @@ latest `origin/codex/travel-mvp-launch` SHA to deploy. As of this checkpoint,
 the latest checked branch HEAD was:
 
 ```text
-f59b8b9e4d03fd43bc80781d211f9f163223fb41
+e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
 If production deploy is approved later, the deploy task should:
