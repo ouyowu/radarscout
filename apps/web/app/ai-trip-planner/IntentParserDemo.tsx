@@ -517,6 +517,12 @@ export function IntentParserDemo() {
                       >
                         Open top match details
                       </a>
+                      <a
+                        href="#ai-trip-comparison-results"
+                        className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-5 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e]"
+                      >
+                        Review comparison cards
+                      </a>
                     </div>
                     <p
                       role="status"
@@ -579,67 +585,73 @@ export function IntentParserDemo() {
                       </div>
                     </section>
                   ) : null}
-                  {routeStopGroups.length > 1 ? (
-                    <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4">
-                      {routeStopGroups.map(group => (
-                        <section
-                          key={group.city}
-                          id={buildRouteStopGroupId(group.city)}
-                          aria-label={`${group.city} result group`}
-                          className="scroll-mt-6 rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
-                        >
-                          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                            <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#101820]">
-                              {group.city} results
-                            </h4>
-                            <div className="flex flex-wrap items-center gap-2 text-xs font-black text-[#0f766e]">
-                              <p>{group.count} comparison match{group.count === 1 ? '' : 'es'}</p>
-                              <a
-                                href="#ai-trip-route-stop-overview"
-                                aria-label={`Back to route overview from ${group.city} results`}
-                                className="inline-flex min-h-[44px] items-center rounded-full bg-white px-3 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
-                              >
-                                Back to route overview
-                              </a>
+                  <section
+                    id="ai-trip-comparison-results"
+                    aria-label="AI Trip comparison cards"
+                    className="mt-3 scroll-mt-6 sm:mt-4"
+                  >
+                    {routeStopGroups.length > 1 ? (
+                      <div className="grid gap-3 sm:gap-4">
+                        {routeStopGroups.map(group => (
+                          <section
+                            key={group.city}
+                            id={buildRouteStopGroupId(group.city)}
+                            aria-label={`${group.city} result group`}
+                            className="scroll-mt-6 rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
+                          >
+                            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                              <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#101820]">
+                                {group.city} results
+                              </h4>
+                              <div className="flex flex-wrap items-center gap-2 text-xs font-black text-[#0f766e]">
+                                <p>{group.count} comparison match{group.count === 1 ? '' : 'es'}</p>
+                                <a
+                                  href="#ai-trip-route-stop-overview"
+                                  aria-label={`Back to route overview from ${group.city} results`}
+                                  className="inline-flex min-h-[44px] items-center rounded-full bg-white px-3 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                                >
+                                  Back to route overview
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                          <div className="mt-3 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-                            {group.products.map(product => (
-                              <AiSearchProductCard
-                                key={product.id}
-                                id={product.id}
-                                title={product.title}
-                                city={product.city}
-                                summary={product.summary}
-                                tags={product.tags}
-                                detailHref={product.detailHref}
-                                retailPrice={product.retailPrice}
-                                currency={product.currency}
-                                fitReason={buildProductFitReason(product, searchState.intent)}
-                              />
-                            ))}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-                      {searchState.products.map(product => (
-                        <AiSearchProductCard
-                          key={product.id}
-                          id={product.id}
-                          title={product.title}
-                          city={product.city}
-                          summary={product.summary}
-                          tags={product.tags}
-                          detailHref={product.detailHref}
-                          retailPrice={product.retailPrice}
-                          currency={product.currency}
-                          fitReason={buildProductFitReason(product, searchState.intent)}
-                        />
-                      ))}
-                    </div>
-                  )}
+                            <div className="mt-3 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                              {group.products.map(product => (
+                                <AiSearchProductCard
+                                  key={product.id}
+                                  id={product.id}
+                                  title={product.title}
+                                  city={product.city}
+                                  summary={product.summary}
+                                  tags={product.tags}
+                                  detailHref={product.detailHref}
+                                  retailPrice={product.retailPrice}
+                                  currency={product.currency}
+                                  fitReason={buildProductFitReason(product, searchState.intent)}
+                                />
+                              ))}
+                            </div>
+                          </section>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        {searchState.products.map(product => (
+                          <AiSearchProductCard
+                            key={product.id}
+                            id={product.id}
+                            title={product.title}
+                            city={product.city}
+                            summary={product.summary}
+                            tags={product.tags}
+                            detailHref={product.detailHref}
+                            retailPrice={product.retailPrice}
+                            currency={product.currency}
+                            fitReason={buildProductFitReason(product, searchState.intent)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
                 </div>
               ) : searchState.status === 'error' ? (
                 <div className="rounded-[1.25rem] border border-[#fde8e8] bg-white p-5">
