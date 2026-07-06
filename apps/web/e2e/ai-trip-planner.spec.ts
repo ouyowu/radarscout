@@ -294,6 +294,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Result cities: Bangkok, Chiang Mai, Phuket')).toBeVisible()
     await expect(page.getByLabel(/route stop overview/i)).toBeVisible()
     await expect(page.getByLabel(/route stop overview/i)).toHaveClass(/scroll-mt-6/)
+    await expect(page.getByText(/choose a city chip to jump to that result group/i)).toBeVisible()
     await expect(page.getByText('Bangkok: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Phuket: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Chiang Mai: 1 comparison match')).toBeVisible()
