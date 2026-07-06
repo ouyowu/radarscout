@@ -20,6 +20,49 @@ const forbiddenVisibleCopy = [
   'fake ratings',
 ]
 
+const homepagePromptSearchResponse = {
+  status: 'ok',
+  intent: { destination: 'Chiang Mai', days: null, interests: ['elephants'] },
+  products: [
+    {
+      id: 'prod_cm_1',
+      title: 'Chiang Mai Elephant Sanctuary',
+      city: 'Chiang Mai',
+      summary: 'A gentle elephant care comparison option for Chiang Mai.',
+      tags: ['Elephants', 'Nature'],
+      detailHref: '/tours/prod_cm_1',
+      retailPrice: '49.00',
+      currency: 'USD',
+    },
+    {
+      id: 'prod_cm_2',
+      title: 'Old City Temple Walk',
+      city: 'Chiang Mai',
+      summary: 'A guided walk through historic temples of the old city.',
+      tags: ['Temples', 'Culture'],
+      detailHref: '/tours/prod_cm_2',
+      retailPrice: '29.00',
+      currency: 'USD',
+    },
+    {
+      id: 'prod_cm_3',
+      title: 'Night Bazaar Food Tour',
+      city: 'Chiang Mai',
+      summary: 'Street food sampling at the Chiang Mai Night Bazaar.',
+      tags: ['Food', 'Local'],
+      detailHref: '/tours/prod_cm_3',
+      retailPrice: null,
+      currency: null,
+    },
+  ],
+  meta: {
+    productRetrievalEnabled: true,
+    itineraryGenerationEnabled: false,
+    bookingEnabled: false,
+    availabilityEnabled: false,
+  },
+}
+
 test.describe('Homepage AI planner entry', () => {
   test('shows safe AI-guided planning copy and routes users to planner pages', async ({ page }) => {
     await page.goto('/')
@@ -106,6 +149,46 @@ test.describe('Homepage AI planner entry', () => {
     await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
     expect(searchRequestCount).toBe(0)
+  })
+
+  test('homepage prompt chip can confirm and search real Thailand comparison cards safely', async ({
+    page,
+  }) => {
+    let searchRequestCount = 0
+    const prompt = 'Gentle elephant day in Chiang Mai'
+
+    await page.route('/api/ai-trip/search', async route => {
+      searchRequestCount += 1
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(homepagePromptSearchResponse),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByRole('link', { name: prompt }).click()
+
+    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
+    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
+    expect(searchRequestCount).toBe(0)
+
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await expect(page.getByRole('button', { name: /search real thailand experiences/i })).toBeEnabled()
+    expect(searchRequestCount).toBe(0)
+
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(page.getByRole('link', { name: /review comparison cards/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: /view details/i })).toHaveCount(3)
+    await expect(page.locator('#ai-trip-comparison-results')).toBeVisible()
+    expect(searchRequestCount).toBe(1)
+
+    const pageText = await page.locator('body').innerText()
+    for (const term of forbiddenVisibleCopy) {
+      expect(pageText.toLowerCase(), `Found forbidden homepage results term: "${term}"`).not.toContain(term.toLowerCase())
+    }
   })
 
   test('Start planning opens the AI Trip Planner form without automatic product search', async ({ page }) => {
