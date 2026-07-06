@@ -108,7 +108,13 @@ async function queryEligibleCandidates(
       if (byId.size >= take) break
     }
 
-    return { candidates: Array.from(byId.values()).slice(0, take), fallbackUsed: false }
+    const interestMatches = Array.from(byId.values()).slice(0, take)
+    if (interestMatches.length > 0) {
+      return { candidates: interestMatches, fallbackUsed: false }
+    }
+
+    const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
+    return { candidates: fallback, fallbackUsed: true }
   }
 
   const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
