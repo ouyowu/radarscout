@@ -62,7 +62,7 @@ Latest AI Trip product-code increments:
 - PR #380: sourced tour detail pages use more traveler-facing AI Trip return-context copy.
 - PR #385: unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available tour detail pages.
 - PR #388: unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results and that no partner action or current status is recorded from the unavailable page.
-- PR #394: successful AI Trip results show a compact next-step helper explaining that travelers compare cards, open one product detail page, and continue with the booking partner only from that detail page.
+- PR #394: successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 
 Latest tooling increment:
 
@@ -91,7 +91,9 @@ Latest status-doc increment:
 - PR #389 recorded preview smoke passing for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
 - PR #391 corrected active status after PR #388 and the latest-head preview retry.
 - PR #392 archived AI Trip status after PR #391.
-- This status refresh records PR #394 post-merge validation and the latest preview quota blocker.
+- PR #393 recorded latest-head local validation after PR #392.
+- PR #395 recorded PR #394 post-merge validation and the latest preview quota blocker.
+- This status refresh corrects the preview guard command and records the dirty-metadata caveat from the latest successful protected preview smoke.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -104,7 +106,7 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr394-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr394
 ```
 
 Validated product-code SHA after PR #394:
@@ -116,7 +118,7 @@ Validated product-code SHA after PR #394:
 Latest docs-only merge after validation:
 
 ```text
-710771e725493cdb56e80dbf38738555c1fc3a3d
+6f79e2a7b62db98cbda297ed044cfef8682dcf37
 ```
 
 Validation results:
@@ -140,7 +142,7 @@ ouyowus-projects / reddit-monitor
 Preview deployment guard:
 
 ```text
-pnpm deploy:vercel-preview
+pnpm guard:vercel-preview
 ```
 
 Guard result:
@@ -158,9 +160,9 @@ api-deployments-free-per-day
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The latest-head deploy for `e677d50fe8bae620ed738a144727b7fef535e3de` failed because the current Vercel plan hit the daily deployment quota.
+- The latest-head deploy for `08629a6410483db1a9975aa95d46899915747125` failed because the current Vercel plan hit the daily deployment quota.
 - This is not a code, TypeScript, test, or build failure.
-- A previous preview for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6` reached `READY` and passed protected-preview smoke, but it does not include the PR #388 unavailable-page copy.
+- A previous preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and passed protected-preview smoke, but it does not include the PR #394 next-step helper copy.
 
 Recent preview evidence:
 
@@ -208,7 +210,8 @@ Recent preview evidence:
   - unsafe network calls: none;
   - forbidden visible copy matches: none.
 - A clean latest-head manual preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`.
-- A clean post-merge manual preview retry for `08629a6410483db1a9975aa95d46899915747125` hit `api-deployments-free-per-day`.
+- A preview for `6f79e2a7b62db98cbda297ed044cfef8682dcf37` reached `READY` and protected-preview smoke passed, but Vercel metadata reported `gitDirty=1` because the Vercel CLI had written temporary local config before the deploy. The temporary worktree was cleaned afterward and the guard passed.
+- A clean latest-head manual preview retry for `08629a6410483db1a9975aa95d46899915747125` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
