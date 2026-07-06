@@ -118,6 +118,7 @@ Known state:
 - `npx vercel --prod --yes` was blocked by Vercel quota with `api-deployments-free-per-day`;
 - `npx vercel promote dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b --yes` was also blocked by the same quota;
 - a latest-head preview retry after PR #317 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
+- a latest-head preview retry after PR #321 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - no production deployment or alias change completed.
 
 Decision:
@@ -162,6 +163,7 @@ Known state:
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
 - latest fresh Vercel preview, production deploy, and production promotion attempts are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
+- latest PR #321 preview retry is also blocked by the same Vercel quota after passing the local preview guard.
 
 Decision:
 
