@@ -137,4 +137,35 @@ test.describe('Homepage AI planner entry', () => {
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
     expect(searchRequestCount).toBe(0)
   })
+
+  test('Chiang Mai planner CTA opens the deterministic planner section without Bókun API calls', async ({
+    page,
+  }) => {
+    let bokunRequestCount = 0
+
+    await page.route(/\/api\/bokun/, async route => {
+      bokunRequestCount += 1
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Bókun API should not be called from homepage planner CTA smoke' }),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Plan a Chiang Mai elephant day' }).first().click()
+
+    await expect(page).toHaveURL('/chiang-mai/elephant-camp-finder#plan-with-radarscout')
+    await expect(page.locator('#plan-with-radarscout')).toBeVisible()
+    await expect(page.getByText('Plan with RadarScout')).toBeVisible()
+    await expect(page.getByText('Your planner picks')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'See matching experiences' }).first()).toBeVisible()
+
+    const pageText = await page.locator('body').innerText()
+    for (const term of forbiddenVisibleCopy) {
+      expect(pageText.toLowerCase(), `Found forbidden Chiang Mai CTA term: "${term}"`).not.toContain(term.toLowerCase())
+    }
+
+    expect(bokunRequestCount).toBe(0)
+  })
 })
