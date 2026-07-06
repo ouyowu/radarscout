@@ -1245,6 +1245,18 @@ test.describe('Product card safety', () => {
     }
   })
 
+  test('product detail CTAs include booking partner handoff context in their accessible name', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(
+      page.getByRole('link', {
+        name: /view details for chiang mai elephant sanctuary, then continue with booking partner/i,
+      }),
+    ).toHaveAttribute('href', /\/tours\/.*source=ai-trip-planner/)
+    await expect(page.getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('product cards do not render rating or star rating', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
