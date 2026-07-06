@@ -224,7 +224,7 @@ function UnavailableState({
                 href="/ai-trip-planner#ai-trip-results"
                 className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-6 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e]"
               >
-                Back to AI Trip Planner
+                Back to AI Trip Planner results
               </Link>
             ) : null}
           </div>
