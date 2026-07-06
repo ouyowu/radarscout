@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #391:
+Latest `origin/codex/travel-mvp-launch` after PR #394:
 
 ```text
-3ce46c4b0da1e45884b8534690595d53b233e059
+08629a6410483db1a9975aa95d46899915747125
 ```
 
 Latest AI Trip product-code increments:
@@ -62,6 +62,7 @@ Latest AI Trip product-code increments:
 - PR #380: sourced tour detail pages use more traveler-facing AI Trip return-context copy.
 - PR #385: unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available tour detail pages.
 - PR #388: unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results and that no partner action or current status is recorded from the unavailable page.
+- PR #394: successful AI Trip results show a compact next-step helper explaining that travelers compare cards, open one product detail page, and continue with the booking partner only from that detail page.
 
 Latest tooling increment:
 
@@ -90,12 +91,12 @@ Latest status-doc increment:
 - PR #389 recorded preview smoke passing for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
 - PR #391 corrected active status after PR #388 and the latest-head preview retry.
 - PR #392 archived AI Trip status after PR #391.
-- This PR records latest-head local validation after PR #392.
+- This status refresh records PR #394 post-merge validation and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
 ```text
-none
+none at the start of this status refresh
 ```
 
 ## 4. Latest validation evidence
@@ -103,13 +104,13 @@ none
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-validation-after-pr391
+/private/tmp/radarscout-pr394-postmerge
 ```
 
-Validated latest-head SHA before this docs-only update:
+Validated product-code SHA after PR #394:
 
 ```text
-3ce46c4b0da1e45884b8534690595d53b233e059
+08629a6410483db1a9975aa95d46899915747125
 ```
 
 Latest docs-only merge after validation:
@@ -121,10 +122,9 @@ Latest docs-only merge after validation:
 Validation results:
 
 - Prisma generate: passed.
-- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
-- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
-- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
+- AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 922 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
+- AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
 - Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
@@ -208,6 +208,7 @@ Recent preview evidence:
   - unsafe network calls: none;
   - forbidden visible copy matches: none.
 - A clean latest-head manual preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `08629a6410483db1a9975aa95d46899915747125` hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -218,7 +219,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #388, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #394, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
