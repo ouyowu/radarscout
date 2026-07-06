@@ -45,9 +45,22 @@ describe('homepage public copy safety', () => {
 
   it('links to the AI trip planner with safe planning-first copy', () => {
     expect(homepageSource).toContain("href: '/ai-trip-planner'")
-    expect(homepageSource).toContain('Start planning with AI')
+    expect(homepageSource).toContain('Start planning')
     expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
     expect(homepageSource).toContain('trusted booking partner handoff')
+  })
+
+  it('shows safe homepage planning prompt examples linked to the AI trip planner', () => {
+    expect(homepageSource).toContain('Start with your travel style')
+    expect(homepageSource).toContain('Try a Thailand planning idea')
+    expect(homepageSource).toContain('Use these examples to begin guided discovery')
+    expect(homepageSource).toContain('Gentle elephant day in Chiang Mai')
+    expect(homepageSource).toContain('Family-friendly Thailand experience')
+    expect(homepageSource).toContain('Cooking and local food day')
+    expect(homepageSource).toContain('Nature day trip from Chiang Mai')
+    expect(homepageSource).toContain('Bangkok or Pattaya elephant day')
+    expect(homepageSource).toContain('href="/ai-trip-planner"')
+    expect(homepageSource).not.toContain('prefilled prompt')
   })
 
   it('positions the homepage destination rollout as Thailand-first', () => {
