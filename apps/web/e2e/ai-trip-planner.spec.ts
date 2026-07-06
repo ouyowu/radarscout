@@ -407,6 +407,10 @@ test.describe('Valid Chiang Mai flow', () => {
 
     // While the delayed mock resolves, button should be disabled and show "Searching…"
     await expect(page.getByRole('button', { name: /searching/i })).toBeDisabled()
+    await expect(page.getByRole('status')).toContainText(
+      'Searching read-only Thailand experience records',
+    )
+    await expect(page.getByRole('status')).toContainText('no partner action is running')
 
     // After mock resolves, product cards appear
     await expect(productCards(page)).toHaveCount(3)

@@ -368,6 +368,15 @@ export function IntentParserDemo() {
               {isSearching ? 'Searching…' : 'Search real Thailand experiences'}
             </button>
           </div>
+          {isSearching ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="mt-3 rounded-2xl border border-[#d8eadf] bg-white px-4 py-3 text-sm font-semibold leading-6 text-[#0f766e]"
+            >
+              Searching read-only Thailand experience records. This can take a few seconds; no partner action is running.
+            </p>
+          ) : null}
 
           {searchState ? (
             <div className="mt-6">
