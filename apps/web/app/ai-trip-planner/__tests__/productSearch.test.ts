@@ -8,7 +8,12 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { createElement } from 'react'
 import * as React from 'react'
 import { describe, expect, it } from 'vitest'
-import { AI_TRIP_RESULTS_NEXT_STEP_COPY, canConfirmTripIntent, canSearchFromConfirmed } from '../IntentParserDemo'
+import {
+  AI_TRIP_RESULTS_NEXT_STEP_COPY,
+  buildAiTripTopMatchDetailAriaLabel,
+  canConfirmTripIntent,
+  canSearchFromConfirmed,
+} from '../IntentParserDemo'
 import {
   AiSearchProductCard,
   buildAiTripPlannerDetailHref,
@@ -400,6 +405,22 @@ describe('AI Trip successful results next-step copy', () => {
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/partner rate/i)
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/supplier net rate/i)
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/\bcommission\b/i)
+  })
+})
+
+describe('AI Trip top-match detail CTA accessibility', () => {
+  it('explains that booking partner handoff happens from the product page', () => {
+    const label = buildAiTripTopMatchDetailAriaLabel('Gentle Elephant Care')
+
+    expect(label).toBe('Open top match details for Gentle Elephant Care, then continue with the booking partner from that product page')
+    expect(label).not.toMatch(/live availability/i)
+    expect(label).not.toMatch(/available now/i)
+    expect(label).not.toMatch(/instant confirmation/i)
+    expect(label).not.toMatch(/\bcheckout\b/i)
+    expect(label).not.toMatch(/\bpayment\b/i)
+    expect(label).not.toMatch(/partner rate/i)
+    expect(label).not.toMatch(/supplier net rate/i)
+    expect(label).not.toMatch(/\bcommission\b/i)
   })
 })
 
