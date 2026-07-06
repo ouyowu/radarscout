@@ -33,12 +33,51 @@ function summarizeInterests(interests: string[]) {
   return normalized.join(', ')
 }
 
-function uniqueProductCities(products: AiTripSearchResponse['products']) {
-  return Array.from(new Set(
+export function orderCityEntriesBySourceText<T extends { city: string }>(
+  entries: T[],
+  sourceText: string | null | undefined,
+) {
+  const normalizedSource = sourceText?.trim().toLowerCase() ?? ''
+  if (!normalizedSource) return entries
+
+  return entries
+    .map((entry, index) => {
+      const normalizedCity = entry.city.trim().toLowerCase()
+
+      return {
+        entry,
+        index,
+        sourcePosition: normalizedCity ? normalizedSource.indexOf(normalizedCity) : -1,
+      }
+    })
+    .sort((a, b) => {
+      const aHasSourcePosition = a.sourcePosition >= 0
+      const bHasSourcePosition = b.sourcePosition >= 0
+
+      if (aHasSourcePosition && bHasSourcePosition && a.sourcePosition !== b.sourcePosition) {
+        return a.sourcePosition - b.sourcePosition
+      }
+
+      if (aHasSourcePosition !== bHasSourcePosition) {
+        return aHasSourcePosition ? -1 : 1
+      }
+
+      return a.index - b.index
+    })
+    .map(({ entry }) => entry)
+}
+
+function uniqueProductCities(
+  products: AiTripSearchResponse['products'],
+  sourceText?: string,
+) {
+  const cities = Array.from(new Set(
     products
       .map(product => normalizeText(product.city))
       .filter((city): city is string => Boolean(city)),
-  )).slice(0, 3)
+  )).map(city => ({ city }))
+
+  return orderCityEntriesBySourceText(cities, sourceText).map(entry => entry.city).slice(0, 3)
 }
 
 function normalizedTokens(values: string[]) {
@@ -126,7 +165,10 @@ function shortTagList(tags: string[]) {
   return normalized.join(', ')
 }
 
-export function buildResultFitSummary(response: AiTripSearchResponse): ResultFitSummary | null {
+export function buildResultFitSummary(
+  response: AiTripSearchResponse,
+  sourceText?: string,
+): ResultFitSummary | null {
   if (response.status !== 'ok' || response.products.length === 0) return null
 
   const destination = normalizeText(response.intent?.destination) ?? 'Thailand'
@@ -138,7 +180,7 @@ export function buildResultFitSummary(response: AiTripSearchResponse): ResultFit
   const otherRequestedInterests = summarizeInterests(
     unmatchedRequestedInterests(requestedInterests, matchedResultInterests),
   )
-  const cities = uniqueProductCities(response.products)
+  const cities = uniqueProductCities(response.products, sourceText)
   const productCount = response.products.length
   const isThailandWide = isThailandWideDestination(destination)
 

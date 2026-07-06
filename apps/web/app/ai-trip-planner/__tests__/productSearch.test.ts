@@ -478,6 +478,39 @@ describe('result fit summary (tests 38–41)', () => {
     expect(summary?.points.join(' ')).toMatch(/real Thailand product pages/i)
   })
 
+  it('orders Thailand route result cities by the traveler prompt when available', () => {
+    const summary = buildResultFitSummary(makeOkResponse({
+      intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+      products: [
+        {
+          ...makeOkResponse().products[0],
+          title: 'Bangkok Temple and Local Food Walk',
+          city: 'Bangkok',
+          summary: 'Compare temples, markets, and local food for a Bangkok route start.',
+          tags: ['Temples', 'Local food'],
+        },
+        {
+          ...makeOkResponse().products[0],
+          id: 'prod_2',
+          title: 'Phuket Beach and Island Day',
+          city: 'Phuket',
+          summary: 'A beach and island comparison option for a Thailand route.',
+          tags: ['Beaches', 'Island'],
+        },
+        {
+          ...makeOkResponse().products[0],
+          id: 'prod_3',
+          title: 'Chiang Mai Elephant Sanctuary',
+          city: 'Chiang Mai',
+          summary: 'A gentle elephant care comparison option for the northern route stop.',
+          tags: ['Elephants', 'Nature'],
+        },
+      ],
+    }), 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches')
+
+    expect(summary?.chips).toContain('Result cities: Bangkok, Chiang Mai, Phuket')
+  })
+
   it('does not render a result fit summary for empty or unsupported responses', () => {
     expect(buildResultFitSummary({
       status: 'no_match',
