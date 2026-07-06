@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #389:
+Latest `origin/codex/travel-mvp-launch` after PR #391:
 
 ```text
-e677d50fe8bae620ed738a144727b7fef535e3de
+3ce46c4b0da1e45884b8534690595d53b233e059
 ```
 
 Latest AI Trip product-code increments:
@@ -88,12 +88,12 @@ Latest status-doc increment:
 - PR #386 recorded latest-head local validation after PR #384.
 - PR #387 corrected active status after PR #385 and PR #386.
 - PR #389 recorded preview smoke passing for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
-- This PR corrects active status after PR #388 and the latest-head preview retry.
+- PR #391 corrected active status after PR #388 and the latest-head preview retry.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
 ```text
-none except this status refresh PR
+none
 ```
 
 ## 4. Latest validation evidence
@@ -113,7 +113,7 @@ e6c1cf7d6600322d759a994ad6f857c4a42411fd
 Latest docs-only merge after validation:
 
 ```text
-e677d50fe8bae620ed738a144727b7fef535e3de
+3ce46c4b0da1e45884b8534690595d53b233e059
 ```
 
 Validation results:
