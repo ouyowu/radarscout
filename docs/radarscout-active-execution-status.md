@@ -115,6 +115,7 @@ Known state:
 - production page still returns 200 and keeps `noindex, nofollow`;
 - `npx vercel --prod --yes` was blocked by Vercel quota with `api-deployments-free-per-day`;
 - `npx vercel promote dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b --yes` was also blocked by the same quota;
+- a latest-head preview retry after PR #317 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - no production deployment or alias change completed.
 
 Decision:
@@ -122,7 +123,8 @@ Decision:
 - do not keep retrying deployment while Vercel returns `api-deployments-free-per-day`;
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
-- latest production-deploy candidate after PR #314 is `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`.
+- latest production-deploy code candidate after PR #314 is `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`.
+- latest branch HEAD after PR #317 is `db286cce602bfd27645576b5878b0a249d1e0a12`.
 
 ### Latest fresh preview deployment
 
@@ -130,7 +132,7 @@ Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`;
+- latest `origin/codex/travel-mvp-launch`: `db286cce602bfd27645576b5878b0a249d1e0a12`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -138,6 +140,7 @@ Known state:
 - latest merged AI Trip test-only increment: PR #309, merge SHA `636f6d67a45b434071463a0b7d4b475ff27838a9`;
 - latest merged AI Trip app-code safety increment: PR #313, merge SHA `fc86b033be081497d22f6e3bef2b1f50a5011ac5`;
 - latest merged AI Trip app-code return-source increment: PR #314, merge SHA `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`;
+- latest merged AI Trip status-doc increment after PR #314: PR #317, merge SHA `db286cce602bfd27645576b5878b0a249d1e0a12`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -152,7 +155,7 @@ Known state:
 - targeted Thailand route summary smoke passed on the same preview with `How these experiences support your Thailand route`, `possible route stops`, `Result cities: Bangkok, Phuket`, no unsafe network requests, no forbidden copy matches, and no mobile horizontal overflow;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
-- latest fresh Vercel preview and production/promote attempts for the current branch are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
+- latest fresh Vercel preview, production deploy, and production promotion attempts are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
 
 Decision:
 
