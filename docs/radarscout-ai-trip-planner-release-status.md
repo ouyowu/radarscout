@@ -4,17 +4,19 @@ Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-RELEASE-STATUS-2`
 
 Last updated: 2026-07-06
 
-## Current clean branch state
+## Current release-candidate state
 
-Current clean `codex/travel-mvp-launch` HEAD:
+Latest product-code candidate validated in this release-status checkpoint:
 
 ```text
 c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87
 ```
 
-This HEAD includes the latest safe AI Trip Planner result-flow, mobile UX, copy
+This SHA includes the latest safe AI Trip Planner result-flow, mobile UX, copy
 safety, return-path, protected-preview runbook, and local preview-smoke helper
-work.
+work. Later docs-only merges may advance `origin/codex/travel-mvp-launch`
+without changing product behavior. Before any production deploy, use the latest
+branch HEAD and re-run the deploy validation gate against that exact SHA.
 
 ## Recent merged increments
 
@@ -179,9 +181,11 @@ The helper does not request, print, store, or commit secrets. Temporary
 
 ## Production gate
 
-Production has not been automatically updated with the latest clean HEAD.
+Production has not been automatically updated with the latest release candidate.
 
-Production deploy may be considered only if explicitly approved for:
+Production deploy may be considered only after explicitly approving the exact
+latest `origin/codex/travel-mvp-launch` SHA to deploy. As of this checkpoint,
+the latest product-code candidate was:
 
 ```text
 c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87
@@ -190,7 +194,7 @@ c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87
 If production deploy is approved later, the deploy task should:
 
 1. create a fresh clean production worktree from `origin/codex/travel-mvp-launch`
-2. confirm HEAD equals `c9b5406bceb91b1582ef46f8b6b2d5e7b5f42a87`
+2. confirm HEAD equals the explicitly approved SHA
 3. run validation before deploy
 4. deploy with `npx vercel --prod --yes`
 5. run production smoke on `https://radarscout.io/ai-trip-planner`
