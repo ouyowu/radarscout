@@ -321,6 +321,10 @@ describe('AI planner source context for tour detail links', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1?source=ai-trip-planner')).toBe('/tours/prod_1?source=ai-trip-planner')
   })
 
+  it('replaces any existing non-AI source parameter with the AI trip planner source parameter', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1?source=homepage&ref=card')).toBe('/tours/prod_1?source=ai-trip-planner&ref=card')
+  })
+
   it('preserves existing hash fragments after adding source context', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1?ref=card#details')).toBe('/tours/prod_1?ref=card&source=ai-trip-planner#details')
   })

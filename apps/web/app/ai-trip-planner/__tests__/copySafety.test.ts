@@ -26,7 +26,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toMatch(/View details/i)
     expect(publicCopy).not.toMatch(/View experience/i)
     expect(publicCopy).toMatch(/buildAiTripPlannerDetailHref\(detailHref, id\)/)
-    expect(publicCopy).toMatch(/source=ai-trip-planner/)
+    expect(publicCopy).toMatch(/params\.set\('source', 'ai-trip-planner'\)/)
   })
 
   it('keeps public planner copy free of backend, checkout, and payment wording', () => {
