@@ -309,6 +309,59 @@ Preview status:
 - Clean latest-head preview deployment reached `READY`.
 - Protected-preview smoke passed.
 
+## 0.6 Latest autonomous execution update — homepage prompt results E2E merged
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+0fbfa21161526647012cc38d5939a3142eab3808
+```
+
+Completed low-risk increments:
+
+- PR #437: added homepage prompt results-flow E2E coverage.
+
+Reason:
+
+- Prove a homepage prompt chip can open AI Trip Planner, confirm the prefilled intent, and render safe Thailand comparison cards.
+- Confirm the flow remains comparison-only and does not trigger booking, checkout, payment, Bókun API, or live-availability behavior.
+
+Scope:
+
+- homepage E2E coverage only;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-pr437-postmerge`.
+- Prisma generate: passed.
+- Focused homepage E2E: passed, 6 / 6 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check HEAD~1..HEAD`: passed.
+- Worktree status: clean.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview deploy wrapper passed cleanup and project guard.
+- Fresh preview deployment for `0fbfa21161526647012cc38d5939a3142eab3808` is blocked by Vercel daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
+
 ## 2. Product boundary
 
 RadarScout is a Thailand-first AI-guided travel discovery and itinerary product.
@@ -336,7 +389,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-83cca4bc333f8384282d89255873f3c44ae26ceb
+0fbfa21161526647012cc38d5939a3142eab3808
 ```
 
 Latest AI Trip and homepage product-code increments:
@@ -366,6 +419,7 @@ Latest AI Trip and homepage product-code increments:
 - PR #431: homepage Chiang Mai planner CTA routes directly to the deterministic planner section.
 - PR #432: homepage `Start planning` click-flow E2E verifies form visibility, default prompt state, enabled intent confirmation, and no automatic product search.
 - PR #433: AI Trip Planner shows a safe landing guidance note when users arrive from homepage deep links.
+- PR #437: homepage prompt chip E2E verifies safe intent confirmation and comparison-card rendering from the homepage flow.
 
 Latest tooling increment:
 
@@ -409,7 +463,8 @@ Latest status-doc increment:
 - PR #415 refreshed active status after PR #413.
 - PR #417 documented the homepage AI planner concept.
 - PR #434 refreshed active status after PR #433 and recorded the prior preview quota blocker.
-- Current status update records the clean protected-preview smoke pass for `83cca4bc333f8384282d89255873f3c44ae26ceb`.
+- PR #436 recorded the clean protected-preview smoke pass for `83cca4bc333f8384282d89255873f3c44ae26ceb`.
+- Current status update records post-merge validation for PR #437 and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -422,27 +477,28 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr434-postmerge
+/private/tmp/radarscout-pr437-postmerge
 ```
 
-Validated latest branch HEAD after PR #434:
+Validated latest branch HEAD after PR #437:
 
 ```text
-83cca4bc333f8384282d89255873f3c44ae26ceb
+0fbfa21161526647012cc38d5939a3142eab3808
 ```
 
 Latest merge before this status refresh:
 
 ```text
-83cca4bc333f8384282d89255873f3c44ae26ceb
+0fbfa21161526647012cc38d5939a3142eab3808
 ```
 
 Validation results:
 
-- PR #433 product-code validation already passed before PR #434.
-- PR #434 docs validation (`git diff --check HEAD~1..HEAD`): passed.
-- Vercel preview build: passed.
-- Protected-preview smoke: passed.
+- Prisma generate: passed.
+- Focused homepage E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/homepage-ai-planner.spec.ts`): passed, 6 / 6 tests.
+- TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
+- Next build: passed.
+- `git diff --check HEAD~1..HEAD`: passed.
 - Worktree status: clean.
 
 ## 5. Latest preview status
@@ -456,7 +512,7 @@ ouyowus-projects / reddit-monitor
 Current latest-head result:
 
 ```text
-PR #434 latest-head protected preview smoke passed
+PR #437 post-merge local validation passed; latest-head preview is blocked by Vercel daily deployment quota
 ```
 
 Meaning:
@@ -469,6 +525,10 @@ Meaning:
 - Latest preview deployment reached `READY` for merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb`.
 - Protected-preview smoke confirmed homepage CTA, prompt-chip, and landing-helper flows.
 - No production aliases were attached.
+- Latest validated post-merge HEAD after PR #437: `0fbfa21161526647012cc38d5939a3142eab3808`.
+- The latest local E2E suite covers homepage prompt-chip, `Start planning` CTA, Chiang Mai CTA, landing-helper, and prompt-to-results flows.
+- The latest E2E suite confirmed homepage prompt results flow renders safe comparison cards without automatic booking, checkout, payment, or Bókun API behavior.
+- Fresh preview deployment for `0fbfa21161526647012cc38d5939a3142eab3808` is blocked by Vercel quota error `api-deployments-free-per-day`.
 - The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
@@ -569,6 +629,7 @@ Recent preview evidence:
   - automatic `/api/ai-trip/search` requests: 0;
   - mobile horizontal overflow: none;
   - forbidden visible copy matches: 0.
+- A clean latest-head manual preview retry for `0fbfa21161526647012cc38d5939a3142eab3808` passed local cleanup and the Vercel preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -580,7 +641,9 @@ Decision:
 - do not treat quota failures as product-code failures;
 - latest-head PR #433 local validation passed;
 - latest-head PR #434 protected preview smoke passed;
-- production deploy remains blocked until the operator explicitly approves deploying merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb` with the clean preview evidence.
+- latest-head PR #437 local validation passed;
+- fresh preview deployment for PR #437 is currently blocked by Vercel daily deployment quota;
+- production deploy remains blocked until the operator explicitly approves an exact merge SHA.
 
 ## 7. Safety status
 
@@ -604,6 +667,7 @@ The current codebase already includes:
 - homepage primary `Start planning` CTA routes to `/ai-trip-planner#intent-demo`;
 - homepage Chiang Mai CTA routes to `/chiang-mai/elephant-camp-finder#plan-with-radarscout`;
 - AI Trip Planner shows a landing guidance note for homepage deep-link entry before real product search;
+- homepage prompt-chip E2E confirms intent confirmation can render safe Thailand comparison cards;
 - Chiang Mai deterministic chat planner;
 - itinerary summary;
 - compact mobile summary;
@@ -636,24 +700,24 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-LANDING-HELPER-PRODUCTION-GATE
+TD-RADARSCOUT-HOMEPAGE-PROMPT-RESULTS-PREVIEW-RETRY
 ```
 
 Type:
 
 ```text
-production approval gate or explicit skip-to-next-product-task decision
+preview smoke after Vercel quota reset
 ```
 
 Goal:
 
-Decide whether to production deploy merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb` after clean protected-preview smoke, or skip production for now and continue with another non-production product task.
+Retry a clean latest-head preview deployment for merge SHA `0fbfa21161526647012cc38d5939a3142eab3808`, then smoke the homepage prompt-to-results flow on the protected preview.
 
 Why this is the right next step:
 
 - latest product-code changes are already merged;
 - latest product-code head has clean local validation;
-- latest branch head has clean protected-preview smoke;
+- Vercel preview deployment is blocked by quota, not code behavior;
 - production deploy still requires explicit approval for the exact merge SHA.
 
 ## 10. Candidate follow-up tasks after preview
