@@ -17,7 +17,7 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-e677d50fe8bae620ed738a144727b7fef535e3de
+3ce46c4b0da1e45884b8534690595d53b233e059
 ```
 
 Latest product-code merge included in this branch:
@@ -29,6 +29,7 @@ e6c1cf7d6600322d759a994ad6f857c4a42411fd
 The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` are docs-only status or decision records:
 
 - PR #389: recorded older preview smoke evidence for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
+- PR #391: corrected active status after PR #388 and clarified the latest-head preview quota blocker.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -123,7 +124,7 @@ Meaning:
 - The preview deployment for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6` reached `READY`.
 - Vercel Authentication protected the anonymous preview URL.
 - A temporary Vercel share URL was used for the read-only smoke helper and was not committed.
-- A later latest-head preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh preview evidence.
+- A later latest-head preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`, so the current latest branch head does not yet have fresh preview evidence. PR #391 was docs-only and did not change app behavior after that retry.
 
 Preview evidence:
 
