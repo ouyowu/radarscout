@@ -592,6 +592,7 @@ export function IntentParserDemo() {
                               <p>{group.count} comparison match{group.count === 1 ? '' : 'es'}</p>
                               <a
                                 href="#ai-trip-route-stop-overview"
+                                aria-label={`Back to route overview from ${group.city} results`}
                                 className="inline-flex min-h-[44px] items-center rounded-full bg-white px-3 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
                               >
                                 Back to route overview
