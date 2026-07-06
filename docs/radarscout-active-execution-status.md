@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #361:
+Latest `origin/codex/travel-mvp-launch` after PR #363:
 
 ```text
-2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d
+5b0c447aa715e8d0d60fa9c7d07c7debede971ee
 ```
 
 Latest AI Trip product-code increments:
@@ -59,7 +59,8 @@ Latest status-doc increment:
 
 - PR #358 refreshed the active status after the refine-link accessibility work.
 - PR #360 documented Vercel deployment quota handling.
-- This PR refreshes active status after PR #361.
+- PR #363 refreshed active status after PR #361.
+- This PR records the PR #361 Vercel preview evidence.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -128,7 +129,20 @@ Recent preview evidence:
 - A preview for `5c9daf626f2156c4b8a049612c56c5f2b501d9e3` reached `READY`.
 - That preview URL was public-smoke blocked by Vercel Authentication.
 - A latest-head retry after PR #359 confirmed the correct Vercel project and clean preview guard, then hit `api-deployments-free-per-day`.
-- The latest product-code head `2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d` has clean local validation, but no fresh Vercel preview yet because of the quota gate.
+- The PR #361 GitHub-triggered preview deployment reached `READY`:
+  - deployment ID: `dpl_9UhfrZemwViWhLYMdBdt4zXQx5qG`;
+  - preview URL: `https://reddit-monitor-aq4kz9v0o-ouyowus-projects.vercel.app`;
+  - deployed commit: `b8af9476bf0ffa814033c8929cf50d725e1f5d3b`;
+  - target: preview / `null`;
+  - production aliases: none observed.
+- Anonymous Playwright smoke against that preview is blocked by Vercel Authentication.
+- Authenticated Vercel fetch for `/ai-trip-planner` returned 200 with:
+  - title `Thailand AI Trip Planner | RadarScout`;
+  - robots `noindex, nofollow`;
+  - AI Trip Planner static page content;
+  - safe public copy.
+- The latest product-code head `2d26323c8d7a5bbfe30cad18fc0107637cb6cb5d` has clean local dynamic validation.
+- A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
