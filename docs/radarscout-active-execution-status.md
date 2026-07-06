@@ -71,6 +71,62 @@ api-deployments-free-per-day
 
 This is not a code, TypeScript, test, build, or project-linking failure.
 
+## 0.1 Latest autonomous execution update — homepage prompt anchor
+
+Updated: 2026-07-06
+
+Latest merged HEAD:
+
+```text
+8ca6cd9797cd8f62e56cb7fb0a0edf66efa09284
+```
+
+Completed low-risk product increment:
+
+- PR #426: homepage AI planner prompt chips now route to `/ai-trip-planner?idea=...#intent-demo`.
+
+Reason:
+
+- Preserve the safe URL idea prefill behavior.
+- Land users closer to the AI Trip Planner form after clicking a homepage prompt chip.
+- Avoid automatic search, API calls, booking behavior, or any live availability implication.
+
+Scope:
+
+- homepage link target helper;
+- homepage copy/unit test assertion;
+- homepage E2E assertion;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no production deploy;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean worktree: `/private/tmp/radarscout-homepage-prompt-anchor-postmerge`.
+- Prisma generate: passed.
+- Focused homepage/sitemap/SEO Vitest coverage: passed, 58 files / 924 tests.
+- Playwright E2E: passed, 56 / 56 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed before validation in the clean worktree.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview deploy wrapper passed cleanup and project guard.
+- Preview deploy is blocked by Vercel daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
+
 ## 2. Product boundary
 
 RadarScout is a Thailand-first AI-guided travel discovery and itinerary product.
