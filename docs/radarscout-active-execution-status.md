@@ -247,6 +247,68 @@ api-deployments-free-per-day
 
 This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
 
+## 0.5 Latest autonomous execution update — homepage CTA protected preview passed
+
+Updated: 2026-07-06
+
+Latest merged HEAD:
+
+```text
+83cca4bc333f8384282d89255873f3c44ae26ceb
+```
+
+Completed low-risk increments:
+
+- PR #434: refreshed active execution status after homepage CTA and AI Trip landing-helper validation.
+- Latest clean preview deployment reached `READY`.
+- Protected-preview smoke passed for homepage CTA, prompt-chip, and AI Trip landing-helper flows.
+
+Reason:
+
+- Record that the prior Vercel quota blocker has cleared for the latest docs/status head.
+- Confirm homepage deep links and AI Trip landing guidance work on a protected preview deployment.
+- Keep production deployment behind explicit merge-SHA approval.
+
+Scope:
+
+- status documentation only;
+- protected preview smoke only;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-pr434-postmerge`.
+- PR #434 docs validation: `git diff --check HEAD~1..HEAD` passed.
+- Preview deployment: `READY`.
+- Deployment ID: `dpl_6n1JTZ6MtTW9vbjD8vcxCq3EiNT4`.
+- Preview URL: `https://reddit-monitor-oa2z7xtxa-ouyowus-projects.vercel.app`.
+- Deployment commit SHA: `83cca4bc333f8384282d89255873f3c44ae26ceb`.
+- Vercel project: `ouyowus-projects / reddit-monitor`.
+- Target: preview / `null`.
+- Production aliases: none observed.
+- Protected-preview smoke passed:
+  - homepage title correct;
+  - homepage `Start planning` links to `/ai-trip-planner#intent-demo`;
+  - homepage Chiang Mai CTA links to `/chiang-mai/elephant-camp-finder#plan-with-radarscout`;
+  - prompt chip links to `/ai-trip-planner?idea=...#intent-demo`;
+  - prompt-chip flow shows landing guidance and no automatic `/api/ai-trip/search`;
+  - `Start planning` flow shows landing guidance and no automatic `/api/ai-trip/search`;
+  - mobile width has no horizontal overflow;
+  - forbidden visible homepage copy matches: 0.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Clean latest-head preview deployment reached `READY`.
+- Protected-preview smoke passed.
+
 ## 2. Product boundary
 
 RadarScout is a Thailand-first AI-guided travel discovery and itinerary product.
@@ -274,7 +336,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-e21f638e00a654758ed02b3d2d6a50c2da0caf7e
+83cca4bc333f8384282d89255873f3c44ae26ceb
 ```
 
 Latest AI Trip and homepage product-code increments:
@@ -346,7 +408,8 @@ Latest status-doc increment:
 - PR #412 refreshed active status after PR #411.
 - PR #415 refreshed active status after PR #413.
 - PR #417 documented the homepage AI planner concept.
-- Current status update records post-merge validation for `e21f638e00a654758ed02b3d2d6a50c2da0caf7e` and the Vercel preview quota blocker after PR #432 / PR #433.
+- PR #434 refreshed active status after PR #433 and recorded the prior preview quota blocker.
+- Current status update records the clean protected-preview smoke pass for `83cca4bc333f8384282d89255873f3c44ae26ceb`.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -359,29 +422,27 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-active-status-homepage-e2e-1
+/private/tmp/radarscout-pr434-postmerge
 ```
 
-Validated latest branch HEAD after PR #433:
+Validated latest branch HEAD after PR #434:
 
 ```text
-e21f638e00a654758ed02b3d2d6a50c2da0caf7e
+83cca4bc333f8384282d89255873f3c44ae26ceb
 ```
 
 Latest merge before this status refresh:
 
 ```text
-e21f638e00a654758ed02b3d2d6a50c2da0caf7e
+83cca4bc333f8384282d89255873f3c44ae26ceb
 ```
 
 Validation results:
 
-- Prisma generate: passed.
-- Focused homepage E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/homepage-ai-planner.spec.ts`): passed, 4 / 4 tests.
-- Full Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 58 / 58 tests.
-- TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
-- Next build: passed.
-- `git diff --check`: passed.
+- PR #433 product-code validation already passed before PR #434.
+- PR #434 docs validation (`git diff --check HEAD~1..HEAD`): passed.
+- Vercel preview build: passed.
+- Protected-preview smoke: passed.
 - Worktree status: clean.
 
 ## 5. Latest preview status
@@ -395,7 +456,7 @@ ouyowus-projects / reddit-monitor
 Current latest-head result:
 
 ```text
-PR #433 latest-head preview deployment is blocked by Vercel daily deployment quota
+PR #434 latest-head protected preview smoke passed
 ```
 
 Meaning:
@@ -405,8 +466,9 @@ Meaning:
 - Latest validated post-merge HEAD after PR #433: `e21f638e00a654758ed02b3d2d6a50c2da0caf7e`.
 - The latest local E2E suite covers homepage prompt-chip, `Start planning` CTA, and landing-helper flows.
 - The latest E2E suite confirmed homepage deep-link flows do not call `/api/ai-trip/search` automatically.
-- Fresh preview deployment failed with Vercel quota error `api-deployments-free-per-day`.
-- No production aliases were attached because deployment creation did not complete.
+- Latest preview deployment reached `READY` for merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb`.
+- Protected-preview smoke confirmed homepage CTA, prompt-chip, and landing-helper flows.
+- No production aliases were attached.
 - The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
@@ -490,7 +552,23 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `3ac1068ead0681db3578c38fd9422672982b0f98` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `e2f9b3c821af1dd02d2e56f12cfe69c425d86cd9` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
-- A clean latest-head manual preview retry for `e21f638e00a654758ed02b3d2d6a50c2da0caf7e` is the next preview gate once Vercel deployment quota resets.
+- A clean latest-head preview for `83cca4bc333f8384282d89255873f3c44ae26ceb` reached `READY`:
+  - deployment ID: `dpl_6n1JTZ6MtTW9vbjD8vcxCq3EiNT4`;
+  - preview URL: `https://reddit-monitor-oa2z7xtxa-ouyowus-projects.vercel.app`;
+  - target: preview / `null`;
+  - Vercel project: `ouyowus-projects / reddit-monitor`;
+  - deployment commit SHA: `83cca4bc333f8384282d89255873f3c44ae26ceb`;
+  - production aliases: none observed.
+- Protected-preview homepage CTA smoke passed against that deployment:
+  - status: passed;
+  - title: `RadarScout | AI-guided Thailand Experience Planner`;
+  - homepage `Start planning` CTA href: `/ai-trip-planner#intent-demo`;
+  - Chiang Mai CTA href: `/chiang-mai/elephant-camp-finder#plan-with-radarscout`;
+  - prompt-chip flow shows planner landing guidance;
+  - `Start planning` flow shows planner landing guidance;
+  - automatic `/api/ai-trip/search` requests: 0;
+  - mobile horizontal overflow: none;
+  - forbidden visible copy matches: 0.
 
 ## 6. Production status
 
@@ -501,8 +579,8 @@ Decision:
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
 - latest-head PR #433 local validation passed;
-- fresh preview deployment is currently blocked by Vercel daily deployment quota;
-- production deploy remains blocked until the operator explicitly approves deploying merge SHA `e21f638e00a654758ed02b3d2d6a50c2da0caf7e` with the known quota limitation and clean local validation evidence.
+- latest-head PR #434 protected preview smoke passed;
+- production deploy remains blocked until the operator explicitly approves deploying merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb` with the clean preview evidence.
 
 ## 7. Safety status
 
@@ -558,26 +636,25 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-HOMEPAGE-CTA-FLOW-PREVIEW-RETRY
+TD-RADARSCOUT-AI-TRIP-LANDING-HELPER-PRODUCTION-GATE
 ```
 
 Type:
 
 ```text
-preview smoke after Vercel quota reset
+production approval gate or explicit skip-to-next-product-task decision
 ```
 
 Goal:
 
-Retry a clean latest-head preview deployment for merge SHA `e21f638e00a654758ed02b3d2d6a50c2da0caf7e`, then smoke the homepage CTA, prompt-chip, and landing-helper flows on the protected preview.
+Decide whether to production deploy merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb` after clean protected-preview smoke, or skip production for now and continue with another non-production product task.
 
 Why this is the right next step:
 
 - latest product-code changes are already merged;
 - latest product-code head has clean local validation;
-- Vercel preview deployment is blocked by quota, not code behavior;
-- production deploy still requires explicit approval for the exact merge SHA;
-- the next reliable non-production gate is to retry preview after the quota resets.
+- latest branch head has clean protected-preview smoke;
+- production deploy still requires explicit approval for the exact merge SHA.
 
 ## 10. Candidate follow-up tasks after preview
 
