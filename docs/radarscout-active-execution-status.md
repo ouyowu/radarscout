@@ -61,7 +61,9 @@ Recent completed items:
 - Thailand multi-city route fallback suggestion was added to unsupported-destination and no-match flows through PR #297.
 - Thailand multi-city route example prompt was added to the AI Trip Planner input area through PR #301.
 - Thailand-wide result summaries now use route-comparison wording through PR #302.
-- Latest clean local validation and protected Vercel preview smoke passed for the current AI Trip candidate after PR #302.
+- AI Trip active status was refreshed after route-summary work through PR #304.
+- Thailand route-summary E2E coverage was added through PR #307.
+- Latest clean local validation passed for the current AI Trip candidate after PR #307.
 
 ## 4. Current blocked or deferred items
 
@@ -111,12 +113,14 @@ Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `56ebefaa646d972fa92b925282f842fdd71609fc`;
+- latest `origin/codex/travel-mvp-launch`: `812d803603f518b7236b42b06b3cc8676c0171b8`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
+- latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
+- clean local validation passed after PR #307 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -124,10 +128,13 @@ Known state:
 - targeted Thailand route summary smoke passed on the same preview with `How these experiences support your Thailand route`, `possible route stops`, `Result cities: Bangkok, Phuket`, no unsafe network requests, no forbidden copy matches, and no mobile horizontal overflow;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
+- latest fresh Vercel preview attempts for the current branch are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
 
 Decision:
 
-- latest AI Trip app-code increment has clean local validation and latest-head protected preview smoke evidence;
+- latest AI Trip app-code increment has clean local validation and previous latest-head protected preview smoke evidence;
+- latest AI Trip test-only increment has clean post-merge local validation;
+- new preview deployment should be retried after Vercel quota resets or plan capacity changes;
 - production deploy remains gated by explicit approval for a merge SHA.
 
 ## 5. Already-present product surfaces
@@ -144,6 +151,7 @@ The current codebase already includes:
 - Thailand multi-city route example prompt chip;
 - Thailand multi-city route starter;
 - Thailand-wide route-comparison result summary wording;
+- E2E coverage for Thailand-wide route-comparison result summary wording;
 - five-card desktop destination starter layout;
 - read-only Thailand product search from confirmed trip intent;
 - comparison-only product result cards;
@@ -162,27 +170,29 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-RESULT-FLOW-PRODUCTION-GATE
+TD-RADARSCOUT-AI-TRIP-PREVIEW-QUOTA-RETRY-0
 ```
 
 Type:
 
 ```text
-production approval gate
+preview retry / smoke
 ```
 
 Goal:
 
-Wait for explicit user approval before deploying the latest validated AI Trip
-result-flow candidate to production. If approved, deploy the exact approved SHA
-from a clean worktree and run production smoke on `/ai-trip-planner`.
+After Vercel preview deployment quota resets, create a fresh clean preview
+deployment from the latest `codex/travel-mvp-launch` SHA and smoke-test
+`/ai-trip-planner` before considering any production approval gate.
 
 Why this is the right next step:
 
 - latest product-code changes are merged;
-- clean local validation passed;
-- latest-head protected preview smoke passed;
+- latest test-only coverage is merged;
+- clean post-merge local validation passed;
 - production deploy is still a hard approval gate.
+- fresh preview is currently blocked only by Vercel quota and should be retried
+  before asking for production approval.
 
 ## 7. Candidate follow-up tasks after audit
 
