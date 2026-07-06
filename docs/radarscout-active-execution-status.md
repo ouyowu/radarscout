@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #373:
+Latest `origin/codex/travel-mvp-launch` after PR #374:
 
 ```text
-5e91c09ed52b474696fb84339205f8276ebbe734
+d6babc364d4f826e9302799dc08274dc6a48d70a
 ```
 
 Latest AI Trip product-code increments:
@@ -73,7 +73,8 @@ Latest status-doc increment:
 - PR #367 refreshed active status after PR #366.
 - PR #369 refreshed active status after PR #368.
 - PR #371 refreshed active status after PR #370.
-- This PR refreshes active status after PR #372 and PR #373.
+- PR #374 refreshed active status after PR #372 and PR #373.
+- This PR records the latest local validation after PR #373.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -86,13 +87,13 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr372-postmerge-card-cta-context
+/private/tmp/radarscout-pr373-postmerge
 ```
 
-Validated product-code SHA after the PR #372 merge:
+Validated product/tooling SHA after the PR #373 merge:
 
 ```text
-03991696b94e31f110374e93877fa99abf1034cb
+5e91c09ed52b474696fb84339205f8276ebbe734
 ```
 
 Validation results:
@@ -102,6 +103,8 @@ Validation results:
 - Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
+- Vercel preview wrapper tests (`pnpm test:vercel-preview-deploy`): passed.
+- Vercel preview guard tests (`pnpm test:vercel-preview-guard`): passed.
 - `git diff --check`: passed.
 - Worktree status: clean before the docs-only status update.
 
@@ -154,7 +157,8 @@ Recent preview evidence:
   - robots `noindex, nofollow`;
   - AI Trip Planner static page content;
   - safe public copy.
-- The PR #372 product-code head `03991696b94e31f110374e93877fa99abf1034cb` has clean local dynamic validation.
+- The PR #373 product/tooling head `5e91c09ed52b474696fb84339205f8276ebbe734` has clean local dynamic validation.
+- PR #374 was docs-only after that validation.
 - A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `90658452fff5f0a5db3f18ce9be500428eef2058` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `8ae92f753a0bc31c97b865be1cbd157e5c13c648` also hit `api-deployments-free-per-day`.
