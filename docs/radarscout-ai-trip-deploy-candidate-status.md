@@ -9,7 +9,7 @@ Updated: 2026-07-06
 Latest `origin/codex/travel-mvp-launch` checked for this status:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 This head includes:
@@ -19,15 +19,16 @@ This head includes:
 - Vercel preview cleanup fixed for the current `.env*` Vercel CLI behavior through PR #407;
 - AI Trip prompt-chip tap targets increased through PR #409;
 - AI Trip intent summary mobile density tightened through PR #411;
+- AI Trip product-card action rows can wrap on mobile through PR #413;
 - prior AI Trip result-flow, top-match, route-stop, return-path, and preview-smoke documentation updates.
 
 ## Local validation evidence
 
-Latest validation after PR #411:
+Latest validation after PR #413:
 
 ```text
-Validated SHA: f77574a836b4ad4fd3336b96736cd18eef18f581
-Worktree: /private/tmp/radarscout-latest-after-pr411
+Validated SHA: b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
+Worktree: /private/tmp/radarscout-latest-after-pr413
 ```
 
 Results:
@@ -66,10 +67,10 @@ Protected-preview smoke result:
 - Unsafe network calls: none observed.
 - Forbidden visible copy matches: none observed.
 
-Latest fresh preview attempt after PR #411:
+Latest fresh preview attempt after PR #413:
 
 ```text
-Attempted SHA: f77574a836b4ad4fd3336b96736cd18eef18f581
+Attempted SHA: b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 Result: blocked by Vercel daily deployment quota
 Error code: api-deployments-free-per-day
 ```
@@ -77,7 +78,7 @@ Error code: api-deployments-free-per-day
 Interpretation:
 
 - The current latest branch head has clean local validation.
-- The latest successful preview does not include the PR #400 product-card copy update, the PR #407 preview cleanup fix, the PR #409 tap-target update, or the PR #411 intent-summary density update.
+- The latest successful preview does not include the PR #400 product-card copy update, the PR #407 preview cleanup fix, the PR #409 tap-target update, the PR #411 intent-summary density update, or the PR #413 product-card action wrapping update.
 - The latest failed preview attempt confirms the preview wrapper cleans Vercel CLI `.env.local` / `.env*` link side effects and passes the local preview guard before hitting Vercel quota.
 - The remaining blocker is operational quota, not a code, build, TypeScript, test, DB, Bókun, or SEO failure.
 
@@ -90,7 +91,7 @@ Do not production deploy unless the operator explicitly approves an exact merge 
 Recommended deploy candidate if the operator accepts the known preview limitation:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 Safer default:

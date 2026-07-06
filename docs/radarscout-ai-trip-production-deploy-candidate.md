@@ -17,13 +17,13 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD before this docs refresh:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product-copy increment plus docs-only status or decision records:
@@ -48,6 +48,8 @@ The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product
 - PR #409: increased AI Trip example prompt and clear-button tap targets.
 - PR #410: refreshed active status after PR #409.
 - PR #411: tightened AI Trip intent summary mobile density.
+- PR #412: refreshed active status after PR #411.
+- PR #413: allowed AI Trip product-card action rows to wrap on mobile while preserving the product-detail CTA tap target.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -68,6 +70,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Ordinary AI Trip product-card copy uses the same product-page-scoped booking partner handoff boundary.
 - AI Trip prompt chips and the `Clear trip idea` chip use 44px minimum tap targets.
 - AI Trip intent summary spacing is tighter on mobile.
+- AI Trip product-card action rows wrap on mobile while preserving the detail CTA tap target.
 
 The candidate does not add:
 
@@ -83,16 +86,16 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean latest-head validation was run after PR #411:
+Clean latest-head validation was run after PR #413:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-after-pr411
+/private/tmp/radarscout-latest-after-pr413
 ```
 
 Results:
@@ -106,7 +109,7 @@ Results:
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The latest validation includes PR #400's product-card handoff copy, PR #407's preview cleanup fix, PR #409's prompt-chip tap-target change, and PR #411's intent-summary density change plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #400's product-card handoff copy, PR #407's preview cleanup fix, PR #409's prompt-chip tap-target change, PR #411's intent-summary density change, and PR #413's product-card action wrapping change plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -180,7 +183,7 @@ forbiddenMatches: []
 Latest preview retry for the current branch HEAD:
 
 ```text
-f77574a836b4ad4fd3336b96736cd18eef18f581
+b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
 ```
 
 Result:
