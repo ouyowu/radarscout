@@ -77,8 +77,8 @@ preview deploy wrapper:
 pnpm deploy:vercel-preview
 ```
 
-The wrapper runs the preview guard first, then calls Vercel with the approved
-scope. The guard confirms:
+The wrapper runs the safe cleanup helper, then the preview guard, then calls
+Vercel with the approved scope. The guard confirms:
 
 - the git worktree is clean;
 - `.vercel/project.json` points to `ouyowus-projects / reddit-monitor`;
@@ -92,7 +92,8 @@ wrapper fails, fix the local worktree or Vercel link first; do not deploy from
 the failed state.
 
 If `npx vercel link --yes --project reddit-monitor --scope ouyowus-projects`
-creates `.env.local` or appends duplicate Vercel ignore entries, run:
+creates `.env.local` or appends duplicate Vercel ignore entries, the wrapper now
+runs the safe cleanup helper before the guard. You can also run it manually:
 
 ```bash
 pnpm fix:vercel-preview-link
@@ -234,17 +235,15 @@ scripts/radarscout-vercel-preview-link-cleanup.js
 Purpose:
 
 ```text
-Validate the local deploy worktree and Vercel project link, then run the preview
-deployment with the approved Vercel scope.
-Clean Vercel CLI preview-link side effects before the guard runs.
+Clean Vercel CLI preview-link side effects, validate the local deploy worktree
+and Vercel project link, then run the preview deployment with the approved
+Vercel scope.
 ```
 
-The guard is intentionally local-only. The wrapper only continues to deployment
-after the guard passes. Neither helper requests secrets, changes Vercel project
-settings, mutates data, or touches production aliases.
-
-The cleanup helper is also local-only. It does not deploy, request secrets,
-change Vercel project settings, mutate data, or touch production aliases.
+The guard is intentionally local-only. The wrapper runs the safe cleanup helper
+before the guard and only continues to deployment after the guard passes. These
+helpers do not request secrets, change Vercel project settings, mutate data, or
+touch production aliases.
 
 RadarScout also includes the AI Trip smoke helper:
 
