@@ -123,6 +123,12 @@ pnpm --filter @reddit-monitor/web exec next start -p 3456
 pnpm smoke:ai-trip-local http://localhost:3456/ai-trip-planner
 ```
 
+Or run the full local production-build smoke in one command:
+
+```bash
+pnpm smoke:ai-trip-local:production
+```
+
 The helper:
 
 - refuses RadarScout production domains;
