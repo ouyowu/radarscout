@@ -55,6 +55,35 @@ const COMPACT_CHIANG_MAI_RESPONSE: AiTripSearchResponse = {
 const THAILAND_ROUTE_RESPONSE: AiTripSearchResponse = {
   ...OK_RESPONSE,
   intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+  products: [
+    {
+      ...OK_RESPONSE.products[0],
+      id: 'prod_bkk_1',
+      title: 'Bangkok Temple and Local Food Walk',
+      city: 'Bangkok',
+      summary: 'Compare temples, markets, and local food for a Bangkok route start.',
+      tags: ['Temples', 'Local food'],
+      detailHref: '/tours/prod_bkk_1',
+    },
+    {
+      ...OK_RESPONSE.products[1],
+      id: 'prod_hkt_1',
+      title: 'Phuket Beach and Island Day',
+      city: 'Phuket',
+      summary: 'A beach and island comparison option for a Thailand route.',
+      tags: ['Beaches', 'Island'],
+      detailHref: '/tours/prod_hkt_1',
+    },
+    {
+      ...OK_RESPONSE.products[2],
+      id: 'prod_cm_1',
+      title: 'Chiang Mai Elephant Sanctuary',
+      city: 'Chiang Mai',
+      summary: 'A gentle elephant care comparison option for the northern route stop.',
+      tags: ['Elephants', 'Nature'],
+      detailHref: '/tours/prod_cm_1',
+    },
+  ],
 }
 
 const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
@@ -260,6 +289,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText(/7-day Thailand route/i)).toBeVisible()
     await expect(page.getByText('Compare Chiang Mai, Phuket, or nearby Thailand stops')).toBeVisible()
     await expect(page.getByText('How these experiences support your Thailand route')).toBeVisible()
+    await expect(page.getByText('Result cities: Bangkok, Phuket, Chiang Mai')).toBeVisible()
     await expect(page.getByText(/possible route stops for the confirmed trip idea/i)).toBeVisible()
     await expect(page.getByText(/comparison-only route results/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
