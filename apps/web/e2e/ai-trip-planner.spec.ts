@@ -52,6 +52,11 @@ const COMPACT_CHIANG_MAI_RESPONSE: AiTripSearchResponse = {
   products: OK_RESPONSE.products.slice(0, 1),
 }
 
+const THAILAND_ROUTE_RESPONSE: AiTripSearchResponse = {
+  ...OK_RESPONSE,
+  intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+}
+
 const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   status: 'unsupported_destination',
   intent: { destination: 'Singapore', days: 3, interests: ['food'] },
@@ -227,12 +232,13 @@ test.describe('Valid Chiang Mai flow', () => {
   test('Thailand route starter fills and searches a multi-city planner prompt safely', async ({ page }) => {
     let receivedPrompt: string | null = null
 
+    await page.unroute('/api/ai-trip/search')
     await page.route('/api/ai-trip/search', async route => {
       receivedPrompt = route.request().postDataJSON().prompt
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(OK_RESPONSE),
+        body: JSON.stringify(THAILAND_ROUTE_RESPONSE),
       })
     })
 
@@ -253,6 +259,9 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Suggested Thailand multi-city route outline')).toBeVisible()
     await expect(page.getByText(/7-day Thailand route/i)).toBeVisible()
     await expect(page.getByText('Compare Chiang Mai, Phuket, or nearby Thailand stops')).toBeVisible()
+    await expect(page.getByText('How these experiences support your Thailand route')).toBeVisible()
+    await expect(page.getByText(/possible route stops for the confirmed trip idea/i)).toBeVisible()
+    await expect(page.getByText(/comparison-only route results/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
