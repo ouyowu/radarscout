@@ -297,6 +297,18 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByLabel(/Bangkok result group/i)).toContainText('Bangkok Temple and Local Food Walk')
     await expect(page.getByLabel(/Phuket result group/i)).toContainText('Phuket Beach and Island Day')
     await expect(page.getByLabel(/Chiang Mai result group/i)).toContainText('Chiang Mai Elephant Sanctuary')
+    await expect(page.getByLabel(/Bangkok result group/i).getByRole('link', { name: /view details/i })).toHaveAttribute(
+      'href',
+      '/tours/prod_bkk_1?source=ai-trip-planner',
+    )
+    await expect(page.getByLabel(/Phuket result group/i).getByRole('link', { name: /view details/i })).toHaveAttribute(
+      'href',
+      '/tours/prod_hkt_1?source=ai-trip-planner',
+    )
+    await expect(page.getByLabel(/Chiang Mai result group/i).getByRole('link', { name: /view details/i })).toHaveAttribute(
+      'href',
+      '/tours/prod_cm_1?source=ai-trip-planner',
+    )
     await expect(page.getByText(/possible route stops for the confirmed trip idea/i)).toBeVisible()
     await expect(page.getByText(/comparison-only route results/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
