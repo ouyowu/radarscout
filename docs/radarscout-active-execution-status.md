@@ -68,7 +68,8 @@ Recent completed items:
 - AI Trip detail links were hardened to stay on safe internal `/tours` paths through PR #313.
 - AI Trip detail links now normalize existing non-AI `source` parameters to `source=ai-trip-planner` through PR #314.
 - AI Trip detail source normalization E2E coverage was added through PR #319.
-- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #319.
+- AI Trip multi-city results now show a compact route stop overview through PR #321.
+- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #321.
 
 ## 4. Current blocked or deferred items
 
@@ -124,8 +125,8 @@ Decision:
 - do not keep retrying deployment while Vercel returns `api-deployments-free-per-day`;
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
-- latest production-deploy code candidate after PR #314 is `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`.
-- latest branch HEAD after PR #319 is `0c368bbf683ab1ecf353c9462a80f59a37016a60`.
+- latest production-deploy code candidate after PR #321 is `b0a612d566616428d639e0411302cb495651b30e`.
+- latest branch HEAD after PR #321 is `b0a612d566616428d639e0411302cb495651b30e`.
 
 ### Latest fresh preview deployment
 
@@ -133,7 +134,7 @@ Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `0c368bbf683ab1ecf353c9462a80f59a37016a60`;
+- latest `origin/codex/travel-mvp-launch`: `b0a612d566616428d639e0411302cb495651b30e`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -143,6 +144,7 @@ Known state:
 - latest merged AI Trip app-code return-source increment: PR #314, merge SHA `a59efe81c222d6c86b819b30e73fc4bcdac5e45d`;
 - latest merged AI Trip status-doc increment after PR #314: PR #317, merge SHA `db286cce602bfd27645576b5878b0a249d1e0a12`;
 - latest merged AI Trip test-only source-normalization increment: PR #319, merge SHA `0c368bbf683ab1ecf353c9462a80f59a37016a60`;
+- latest merged AI Trip app-code route-stop overview increment: PR #321, merge SHA `b0a612d566616428d639e0411302cb495651b30e`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -151,6 +153,7 @@ Known state:
 - clean local validation passed after PR #313 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #314 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #319 with Prisma generate, AI Trip E2E, TypeScript, and `git diff --check`;
+- clean post-merge local validation passed after PR #321 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -180,6 +183,7 @@ The current codebase already includes:
 - compact AI Trip example prompt chip;
 - Thailand multi-city route example prompt chip;
 - Thailand multi-city route starter;
+- multi-city route stop overview for returned AI Trip product cards;
 - Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand route city-chip visibility;
