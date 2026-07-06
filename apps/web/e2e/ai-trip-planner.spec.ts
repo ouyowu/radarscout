@@ -251,6 +251,8 @@ test.describe('Valid Chiang Mai flow', () => {
 
     await page.getByRole('button', { name: /use bangkok route idea/i }).click()
 
+    await expect(page.getByTestId('ai-trip-intent-summary')).toHaveClass(/gap-2/)
+    await expect(page.getByTestId('ai-trip-intent-summary')).toHaveClass(/sm:gap-3/)
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
     await expect(page.locator('dd').filter({ hasText: /^Bangkok$/ })).toBeVisible()
     await expect(page.locator('dd').filter({ hasText: /^food, temples$/ })).toBeVisible()
