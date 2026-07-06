@@ -91,6 +91,20 @@ Do not call `npx vercel --yes` directly from RadarScout preview worktrees. If th
 wrapper fails, fix the local worktree or Vercel link first; do not deploy from
 the failed state.
 
+If `npx vercel link --yes --project reddit-monitor --scope ouyowus-projects`
+creates `.env.local` or appends duplicate Vercel ignore entries, run:
+
+```bash
+pnpm fix:vercel-preview-link
+```
+
+The cleanup helper is local-only. It removes `.env.local` and restores
+`.gitignore` only when the `.gitignore` diff is limited to Vercel CLI additions
+such as `.env.local` or `.vercel`. It refuses broader `.gitignore` changes so
+operator or user edits are not silently discarded.
+
+After cleanup, run `pnpm deploy:vercel-preview` again.
+
 For UI-only result-flow validation, it is acceptable to mock `/api/ai-trip/search` in Playwright. This proves the deployed frontend shell and client-side result UI without depending on preview database seed state.
 
 Use real network only when the task explicitly requires verifying backend/data behavior.
@@ -206,6 +220,7 @@ RadarScout now includes local preview helpers:
 ```text
 pnpm guard:vercel-preview
 pnpm deploy:vercel-preview
+pnpm fix:vercel-preview-link
 ```
 
 Implementation:
@@ -213,6 +228,7 @@ Implementation:
 ```text
 scripts/radarscout-vercel-preview-guard.js
 scripts/radarscout-vercel-preview-deploy.js
+scripts/radarscout-vercel-preview-link-cleanup.js
 ```
 
 Purpose:
@@ -220,11 +236,15 @@ Purpose:
 ```text
 Validate the local deploy worktree and Vercel project link, then run the preview
 deployment with the approved Vercel scope.
+Clean Vercel CLI preview-link side effects before the guard runs.
 ```
 
 The guard is intentionally local-only. The wrapper only continues to deployment
 after the guard passes. Neither helper requests secrets, changes Vercel project
 settings, mutates data, or touches production aliases.
+
+The cleanup helper is also local-only. It does not deploy, request secrets,
+change Vercel project settings, mutate data, or touch production aliases.
 
 RadarScout also includes the AI Trip smoke helper:
 
