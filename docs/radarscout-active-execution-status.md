@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #386:
+Latest `origin/codex/travel-mvp-launch` after PR #387:
 
 ```text
-4d2efeac1119833e68c3b221791b441eac67f792
+7717e79f94909c5d350066364a5a5ffb7bf5d7d6
 ```
 
 Latest AI Trip product-code increments:
@@ -85,7 +85,8 @@ Latest status-doc increment:
 - PR #383 refreshed the AI Trip production deploy candidate after the latest return-copy validation.
 - PR #384 refreshed active status after PR #383 and the latest preview-quota retry.
 - PR #386 recorded latest-head local validation after PR #384.
-- This PR corrects active status after PR #385 and PR #386.
+- PR #387 corrected active status after PR #385 and PR #386.
+- This PR records latest-head preview smoke passing after PR #387.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -98,16 +99,10 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr385-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr386
 ```
 
-Validated product-code SHA after PR #385:
-
-```text
-bcb637c3cb542da83ead211a84856f18832d998d
-```
-
-Latest docs-only merge after validation:
+Validated latest-head SHA before the preview evidence update:
 
 ```text
 4d2efeac1119833e68c3b221791b441eac67f792
@@ -116,7 +111,9 @@ Latest docs-only merge after validation:
 Validation results:
 
 - Prisma generate: passed.
-- Public copy / tours Vitest coverage (`pnpm --filter @reddit-monitor/web test -- publicCopy`): passed, 58 files / 921 tests.
+- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
+- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
+- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
@@ -142,17 +139,19 @@ Guard result:
 passed
 ```
 
-Current blocker:
+Current result:
 
 ```text
-api-deployments-free-per-day
+preview READY; protected-preview smoke passed
 ```
 
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The deploy failed because the current Vercel plan hit the daily deployment quota.
-- This is not a code, TypeScript, test, or build failure.
+- The deployment reached `READY`.
+- Vercel Authentication protected the preview from anonymous smoke.
+- A temporary Vercel share URL was used for the read-only AI Trip smoke helper.
+- The temporary share token was not committed to source files or docs.
 
 Recent preview evidence:
 
@@ -184,6 +183,21 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `444cfb17ab2871584b6785407fc20663e3b6d081` also hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `7c3b2d5711197a532e8f5de3a96e29af29b5249d` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `bcb637c3cb542da83ead211a84856f18832d998d` also hit `api-deployments-free-per-day`.
+- A clean latest-head preview for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6` reached `READY`:
+  - deployment ID: `dpl_A8sLi6eAksSRFPbRLT1yWZvjLXJs`;
+  - preview URL: `https://reddit-monitor-rnac2afi7-ouyowus-projects.vercel.app`;
+  - target: preview / `null`;
+  - Vercel project: `ouyowus-projects / reddit-monitor`.
+- Protected-preview AI Trip smoke passed against that deployment:
+  - status: 200;
+  - title: `Thailand AI Trip Planner | RadarScout`;
+  - robots: `noindex, nofollow`;
+  - top match href: `/tours/prod_cm_1?source=ai-trip-planner`;
+  - product card count: 3;
+  - result summary visible: true;
+  - mobile horizontal overflow: none;
+  - unsafe network calls: none;
+  - forbidden visible copy matches: none.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -194,7 +208,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- retry preview after the Vercel deployment quota resets, after plan capacity changes, or after an approved protected-preview/share smoke path is available.
+- the latest AI Trip preview gate has passed, but production deploy remains blocked until explicit approval for the exact merge SHA.
 
 ## 7. Safety status
 
