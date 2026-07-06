@@ -33,10 +33,11 @@ export function buildAiTripPlannerDetailHref(detailHref: string, productId?: str
     return trimmedHref
   }
 
-  const separator = hrefWithoutHash.includes('?') ? '&' : '?'
+  params.set('source', 'ai-trip-planner')
+  const nextQuery = params.toString()
   const hashSuffix = hash ? `#${hash}` : ''
 
-  return `${hrefWithoutHash}${separator}${AI_TRIP_PLANNER_SOURCE_PARAM}${hashSuffix}`
+  return `${hrefWithoutHash.split('?', 2)[0]}${nextQuery ? `?${nextQuery}` : ''}${hashSuffix}`
 }
 
 export function AiSearchProductCard({
