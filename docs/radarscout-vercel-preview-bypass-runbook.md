@@ -74,6 +74,20 @@ For UI-only result-flow validation, it is acceptable to mock `/api/ai-trip/searc
 
 Use real network only when the task explicitly requires verifying backend/data behavior.
 
+Local helper:
+
+```bash
+pnpm smoke:ai-trip-preview 'https://<preview-host>.vercel.app/ai-trip-planner?_vercel_share=<temporary-token>'
+```
+
+The helper:
+
+- refuses `radarscout.io` and `www.radarscout.io`;
+- requires a `.vercel.app` preview hostname;
+- normalizes the path to `/ai-trip-planner`;
+- mocks `/api/ai-trip/search`;
+- reports title, robots, top-match href, product card count, result summary visibility, horizontal overflow, forbidden copy, and unsafe network calls.
+
 ## AI Trip Planner preview smoke checklist
 
 For `/ai-trip-planner`, verify:
