@@ -101,8 +101,8 @@ pnpm fix:vercel-preview-link
 
 The cleanup helper is local-only. It removes `.env.local` and restores
 `.gitignore` only when the `.gitignore` diff is limited to Vercel CLI additions
-such as `.env.local` or `.vercel`. It refuses broader `.gitignore` changes so
-operator or user edits are not silently discarded.
+such as `.env*`, `.env.local`, or `.vercel`. It refuses broader `.gitignore`
+changes so operator or user edits are not silently discarded.
 
 After cleanup, run `pnpm deploy:vercel-preview` again.
 

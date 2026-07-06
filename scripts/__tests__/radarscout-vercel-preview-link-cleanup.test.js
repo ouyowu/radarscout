@@ -44,6 +44,20 @@ test("removes .env.local and restores safe Vercel .gitignore additions", () => {
   assert.equal(execFileSync("git", ["status", "--short"], { cwd, encoding: "utf8" }).trim(), "")
 })
 
+test("restores the .env wildcard added by current Vercel CLI link", () => {
+  const cwd = makeFixture()
+  fs.writeFileSync(path.join(cwd, ".env.local"), "DATABASE_URL=redacted\n")
+  fs.appendFileSync(path.join(cwd, ".gitignore"), ".env*\n")
+
+  const result = runCleanup(cwd)
+
+  assert.equal(result.status, 0)
+  assert.match(result.stdout, /removed \.env\.local/)
+  assert.match(result.stdout, /restored \.gitignore Vercel CLI additions/)
+  assert.equal(fs.existsSync(path.join(cwd, ".env.local")), false)
+  assert.equal(execFileSync("git", ["status", "--short"], { cwd, encoding: "utf8" }).trim(), "")
+})
+
 test("removes .env.local when .gitignore does not need cleanup", () => {
   const cwd = makeFixture()
   fs.writeFileSync(path.join(cwd, ".env.local"), "DATABASE_URL=redacted\n")

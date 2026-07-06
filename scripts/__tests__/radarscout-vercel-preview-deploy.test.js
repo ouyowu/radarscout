@@ -90,6 +90,21 @@ test("cleans safe Vercel link side effects before running the preview guard", ()
   assert.equal(execFileSync("git", ["status", "--short"], { cwd, encoding: "utf8" }).trim(), "")
 })
 
+test("cleans current Vercel CLI .env wildcard before running the preview guard", () => {
+  const cwd = makeFixture()
+  fs.writeFileSync(path.join(cwd, ".env.local"), "DATABASE_URL=redacted\n")
+  fs.appendFileSync(path.join(cwd, ".gitignore"), ".env*\n")
+
+  const result = runDeploy(cwd)
+
+  assert.equal(result.status, 0)
+  assert.match(result.stdout, /removed \.env\.local/)
+  assert.match(result.stdout, /restored \.gitignore Vercel CLI additions/)
+  assert.match(result.stdout, /npx vercel --yes --scope ouyowus-projects/)
+  assert.equal(fs.existsSync(path.join(cwd, ".env.local")), false)
+  assert.equal(execFileSync("git", ["status", "--short"], { cwd, encoding: "utf8" }).trim(), "")
+})
+
 test("refuses non-Vercel .gitignore changes during automatic cleanup", () => {
   const cwd = makeFixture()
   fs.appendFileSync(path.join(cwd, ".gitignore"), "coverage/\n")

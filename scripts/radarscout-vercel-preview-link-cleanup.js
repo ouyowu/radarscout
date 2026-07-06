@@ -5,6 +5,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 
 const SAFE_GITIGNORE_ADDITIONS = new Set([
+  ".env*",
   ".env.local",
   ".vercel",
   ".vercel/",
