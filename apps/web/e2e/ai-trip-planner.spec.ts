@@ -300,6 +300,36 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
   })
 
+  test('Thailand example prompt chip can confirm and search safely', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page
+      .getByRole('button', { name: 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace', exact: true })
+      .click()
+
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
+
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await expect(page.getByText('Suggested Thailand multi-city route outline')).toBeVisible()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('compact example prompt chip can confirm and search safely', async ({ page }) => {
     let receivedPrompt: string | null = null
 

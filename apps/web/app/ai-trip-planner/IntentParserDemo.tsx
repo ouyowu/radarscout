@@ -25,6 +25,7 @@ const examplePrompts = [
   '清迈3天，大象，寺庙，美食，避开人多',
   'Phuket 4 days islands beaches local food, avoid rushed schedule',
   'Pattaya 2 days beaches food elephant day trip, easy pace',
+  'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace',
 ]
 const noMatchNextSearches = [
   { label: 'Chiang Mai elephants and food', prompt: 'Chiang Mai 3 days elephants food' },
