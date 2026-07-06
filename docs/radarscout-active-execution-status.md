@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #381:
+Latest `origin/codex/travel-mvp-launch` after PR #383:
 
 ```text
-c1652cee16e2670e1dd019a9399554f6cabdee7f
+6f5ecadc77498f4e35d561d090e95d1f7c60b5c4
 ```
 
 Latest AI Trip product-code increments:
@@ -80,7 +80,9 @@ Latest status-doc increment:
 - PR #378 refreshed active status after PR #377.
 - PR #379 recorded the traveler funnel analytics vendor decision.
 - PR #381 documented the AI Trip production deploy candidate and kept production behind explicit approval.
-- This PR refreshes active status after PR #380 and PR #381.
+- PR #382 refreshed active status after PR #380 and PR #381.
+- PR #383 refreshed the AI Trip production deploy candidate after the latest return-copy validation.
+- This PR refreshes active status after PR #383 and the latest preview-quota retry.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -93,7 +95,7 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr380-postmerge-return-copy
+/private/tmp/radarscout-pr381-postmerge
 ```
 
 Validated product-code SHA after the PR #380 merge:
@@ -105,7 +107,7 @@ Validated product-code SHA after the PR #380 merge:
 Latest docs-only merge after validation:
 
 ```text
-c1652cee16e2670e1dd019a9399554f6cabdee7f
+6f5ecadc77498f4e35d561d090e95d1f7c60b5c4
 ```
 
 Validation results:
@@ -177,6 +179,7 @@ Recent preview evidence:
 - A clean post-merge manual preview retry for `85e25156fdae83b367d324cc7389116d541cb547` also hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `bafb4ca1173d4f1dea39d69779ee65c57b7c105c` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` also hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `444cfb17ab2871584b6785407fc20663e3b6d081` also hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
