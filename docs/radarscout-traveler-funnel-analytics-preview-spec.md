@@ -15,6 +15,21 @@ Related completed documents:
 - `docs/radarscout-conversion-funnel-audit.md`
 - `docs/radarscout-traveler-funnel-analytics-plan.md`
 - `docs/radarscout-traveler-funnel-analytics-tool-selection.md`
+- `docs/radarscout-analytics-instrumentation-spec.md`
+
+Official Vercel docs refreshed on 2026-07-06:
+
+- Vercel Web Analytics quickstart: `https://vercel.com/docs/analytics/quickstart`
+- Vercel custom events: `https://vercel.com/docs/analytics/custom-events`
+- Vercel analytics package configuration: `https://vercel.com/docs/analytics/package`
+- Vercel Web Analytics privacy policy: `https://vercel.com/docs/analytics/privacy-policy`
+
+Current official-doc takeaways:
+
+- Next.js App Router integration uses `@vercel/analytics/next` and an `Analytics` component in the root layout.
+- Custom events use `track()` from `@vercel/analytics`.
+- Vercel documentation currently marks custom events as available on Enterprise and Pro plans, so plan availability must be confirmed before implementation.
+- Web Analytics is described as cookie-free and anonymized, but RadarScout still needs an event allowlist and `beforeSend` filtering before any implementation.
 
 Current recommendation:
 
@@ -29,7 +44,7 @@ Do not implement analytics until this preview spec is reviewed and a separate im
 Future implementation task:
 
 ```text
-TD-RADARSCOUT-TRAVELER-FUNNEL-ANALYTICS-PREVIEW-2
+TD-RADARSCOUT-ANALYTICS-FUNNEL-2-IMPLEMENT-LOW-RISK-TRACKING
 ```
 
 Objective:
@@ -65,16 +80,22 @@ The initial preview implementation should include only these events:
 
 | Event | Trigger | Required properties |
 | --- | --- | --- |
-| `homepage_finder_cta_click` | User clicks homepage CTA to the finder. | `source_path`, `destination_path`, `cta_label`, `surface` |
-| `planner_start` | User selects the first planner chip. | `page_path`, `destination`, `first_step_key`, `choice_key` |
-| `planner_choice_select` | User selects or changes a planner chip. | `step_key`, `choice_key`, `selection_mode`, `destination` |
-| `planner_submit` | User clicks `See matching experiences`. | `destination`, `selected_style_key`, `selected_group_key`, `selected_time_key`, `selected_preference_keys`, `submit_surface` |
-| `itinerary_summary_view` | Suggested day summary renders after submit. | `destination`, `summary_variant_key`, `selected_style_key`, `selected_time_key` |
-| `recommendation_card_impression` | Recommendation cards render after submit. | `destination`, `recommendation_key`, `rank`, `match_context`, `external_handoff_available` |
-| `external_handoff_click` | User clicks external `Check availability`. | `destination`, `recommendation_key`, `cta_label`, `handoff_source`, `external_domain_category` |
-| `planner_reset` | User clicks `Reset planner`. | `destination`, `had_submitted`, `selected_step_count` |
+| `homepage_finder_entry_clicked` | User clicks homepage `Plan with RadarScout` link. | `destination`, `surface`, `cta_id` |
+| `finder_planner_choice_selected` | User selects or changes a planner chip. | `destination`, `step_id`, `choice_id`, `selection_mode` |
+| `finder_planner_reset_clicked` | User clicks `Reset planner`. | `destination`, `selected_step_count` |
+| `finder_matching_experiences_clicked` | User clicks `See matching experiences`. | `destination`, `style_id`, `group_id`, `time_id`, `preference_count` |
+| `finder_recommendations_rendered` | Recommendation cards render after planner submission. | `destination`, `result_count`, `top_card_category`, `has_summary` |
+| `booking_partner_handoff_clicked` | User clicks a `Check availability` recommendation CTA. | `destination`, `card_position`, `recommendation_category`, `handoff_type` |
+
+Optional event:
+
+| Event | Trigger | Required properties |
+| --- | --- | --- |
+| `finder_planner_viewed` | Planner section becomes visible. | `destination`, `surface` |
 
 Do not add B2B events in this implementation. B2B analytics has its own plan.
+
+Do not use older draft event names such as `homepage_finder_cta_click`, `planner_start`, `planner_choice_select`, `planner_submit`, `itinerary_summary_view`, `recommendation_card_impression`, `external_handoff_click`, or `planner_reset`.
 
 ## 5. Event payload rules
 
@@ -148,14 +169,13 @@ Do not touch:
 
 Add or update tests proving:
 
-- homepage CTA tracking uses only `homepage_finder_cta_click`;
-- planner start tracking fires only after first chip selection;
-- planner chip tracking uses normalized keys only;
-- planner submit tracking includes selected keys only;
-- itinerary summary tracking does not include generated text;
-- recommendation card impression tracking uses stable recommendation keys only;
-- external handoff tracking does not include full external URL;
-- reset tracking contains only coarse state;
+- homepage CTA tracking uses only `homepage_finder_entry_clicked`;
+- planner chip tracking uses `finder_planner_choice_selected` with normalized keys only;
+- matching action tracking uses `finder_matching_experiences_clicked` and includes selected keys only;
+- recommendation render tracking uses `finder_recommendations_rendered` with stable recommendation keys only;
+- optional planner-view tracking uses `finder_planner_viewed` without user text or generated copy;
+- external handoff tracking uses `booking_partner_handoff_clicked` and does not include full external URL;
+- reset tracking uses `finder_planner_reset_clicked` and contains only coarse state;
 - no forbidden property keys are present in event payload builders;
 - no `/api/bokun` call is introduced;
 - no OpenAI or LLM call is introduced;
