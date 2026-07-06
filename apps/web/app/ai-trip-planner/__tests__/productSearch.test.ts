@@ -8,13 +8,14 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { createElement } from 'react'
 import * as React from 'react'
 import { describe, expect, it } from 'vitest'
-import { canSearchFromConfirmed } from '../IntentParserDemo'
+import { canConfirmTripIntent, canSearchFromConfirmed } from '../IntentParserDemo'
 import {
   AiSearchProductCard,
   buildAiTripPlannerDetailHref,
   type AiSearchProductCardProps,
 } from '../AiSearchProductCard'
 import type { AiTripSearchResponse } from '../../api/ai-trip/search/route'
+import { parseTripIntent } from '../../../lib/ai-trip/parse-intent'
 import { buildProductFitReason, buildResultFitSummary } from '../resultFitSummary'
 
 // ---- helpers ----------------------------------------------------------------
@@ -67,6 +68,23 @@ describe('canSearchFromConfirmed (test 21–22)', () => {
   // Test 22: Search CTA becomes enabled after valid Thailand intent confirmation
   it('returns true when intent has been confirmed', () => {
     expect(canSearchFromConfirmed(makeConfirmed())).toBe(true)
+  })
+})
+
+describe('canConfirmTripIntent', () => {
+  it('allows compact destination plus interest prompts without requiring duration', () => {
+    const parsed = parseTripIntent('Chiang Mai elephants')
+
+    expect(canConfirmTripIntent(parsed, true)).toBe(true)
+  })
+
+  it('still blocks stale parsed prompts and destination-only prompts without trip detail', () => {
+    const destinationOnly = parseTripIntent('Chiang Mai')
+    const withDuration = parseTripIntent('Chiang Mai 3 days')
+
+    expect(canConfirmTripIntent(destinationOnly, true)).toBe(false)
+    expect(canConfirmTripIntent(withDuration, false)).toBe(false)
+    expect(canConfirmTripIntent(withDuration, true)).toBe(true)
   })
 })
 

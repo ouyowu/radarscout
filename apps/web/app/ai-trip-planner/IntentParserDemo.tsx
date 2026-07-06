@@ -40,6 +40,12 @@ export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boole
   return confirmed !== null
 }
 
+export function canConfirmTripIntent(result: ParseTripIntentResult, isParsedPromptCurrent: boolean): boolean {
+  return isParsedPromptCurrent &&
+    Boolean(result.intent.destination) &&
+    (Boolean(result.intent.durationDays) || result.intent.interests.length > 0)
+}
+
 export function IntentParserDemo() {
   const [prompt, setPrompt] = useState(defaultPrompt)
   const [parsedPrompt, setParsedPrompt] = useState(defaultPrompt)
@@ -102,7 +108,7 @@ export function IntentParserDemo() {
     result.intent.travelerType !== 'unspecified' ? result.intent.travelerType : null,
     result.intent.groupSize ? `group of ${result.intent.groupSize}` : null,
   ].filter(Boolean).join(' · ')
-  const canConfirm = isParsedPromptCurrent && !hasMissingFields
+  const canConfirm = canConfirmTripIntent(result, isParsedPromptCurrent)
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
   const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
@@ -279,7 +285,7 @@ export function IntentParserDemo() {
         {hasPromptText && !canConfirm ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
             {isParsedPromptCurrent
-              ? 'Destination and duration are required before this local confirmation can be saved.'
+              ? 'Add a clearer Thailand destination plus a trip length or interest before this local confirmation can be saved.'
               : 'Trip idea changed. Parse trip intent again before confirming.'}
           </p>
         ) : null}
