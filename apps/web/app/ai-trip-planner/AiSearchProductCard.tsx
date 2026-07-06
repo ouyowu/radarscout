@@ -107,9 +107,9 @@ export function AiSearchProductCard({
       <p className="mt-auto pt-4 text-xs font-bold leading-5 text-[#5a6670]">
         Open the product page to review details; booking partner handoff continues from that product page.
       </p>
-      <div className="mt-3 flex items-center justify-between gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         {priceLabel ? (
-          <p className="text-base font-black text-[#101820]">
+          <p className="min-w-0 text-base font-black text-[#101820]">
             From {priceLabel}
           </p>
         ) : (
@@ -118,7 +118,7 @@ export function AiSearchProductCard({
         <Link
           href={buildAiTripPlannerDetailHref(detailHref, id)}
           aria-label={`View details for ${title}, then continue with the booking partner from that product page`}
-          className="inline-flex min-h-[44px] items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+          className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
         >
           View details
         </Link>
