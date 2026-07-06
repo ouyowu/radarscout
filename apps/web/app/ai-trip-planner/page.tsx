@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { DestinationStarterCard } from './DestinationStarterCard'
 import { IntentParserDemo } from './IntentParserDemo'
 
@@ -287,7 +288,9 @@ export default function AiTripPlannerPage() {
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
-            <IntentParserDemo />
+            <Suspense fallback={<div className="mt-10 max-w-5xl border border-[#ded7ca] bg-white p-6 text-sm font-semibold text-[#5a5147]">Loading trip planner…</div>}>
+              <IntentParserDemo />
+            </Suspense>
           </div>
         </div>
       </section>

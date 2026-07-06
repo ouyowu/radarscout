@@ -1,6 +1,7 @@
 'use client'
 
 import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
 import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
@@ -51,6 +52,14 @@ function buildRouteStopGroupId(city: string) {
   return `ai-trip-result-group-${slug || 'unknown'}`
 }
 
+function getInitialPromptFromSearch(searchParams: ReturnType<typeof useSearchParams>) {
+  const idea = searchParams.get('idea')?.trim()
+
+  if (!idea) return defaultPrompt
+
+  return idea.slice(0, promptMaxLength)
+}
+
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
   return confirmed !== null
 }
@@ -66,6 +75,8 @@ export function buildAiTripTopMatchDetailAriaLabel(title: string): string {
 }
 
 export function IntentParserDemo() {
+  const searchParams = useSearchParams()
+  const initialPromptFromSearch = getInitialPromptFromSearch(searchParams)
   const [prompt, setPrompt] = useState(defaultPrompt)
   const [parsedPrompt, setParsedPrompt] = useState(defaultPrompt)
   const [result, setResult] = useState<ParseTripIntentResult>(() => parseTripIntent(defaultPrompt))
@@ -180,6 +191,17 @@ export function IntentParserDemo() {
     window.addEventListener('radarscout:ai-trip-starter', handleStarterPrompt)
     return () => window.removeEventListener('radarscout:ai-trip-starter', handleStarterPrompt)
   }, [])
+
+  useEffect(() => {
+    if (initialPromptFromSearch === defaultPrompt) return
+
+    setPrompt(initialPromptFromSearch)
+    setParsedPrompt(initialPromptFromSearch)
+    setConfirmed(null)
+    setSearchState(null)
+    setStarterLoadedCity(null)
+    setResult(parseTripIntent(initialPromptFromSearch))
+  }, [initialPromptFromSearch])
 
   function handleConfirmIntent() {
     if (!canConfirm) return

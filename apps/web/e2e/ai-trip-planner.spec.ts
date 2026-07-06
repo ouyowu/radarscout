@@ -166,6 +166,29 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toBeVisible()
   })
 
+  test('URL idea parameter prefills the trip idea without searching automatically', async ({ page }) => {
+    let searchRequestCount = 0
+
+    await page.unroute('/api/ai-trip/search')
+    await page.route('/api/ai-trip/search', async route => {
+      searchRequestCount += 1
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner?idea=Pattaya%202%20days%20beaches%20food%20elephant%20day%20trip%2C%20easy%20pace')
+
+    await expect(page.locator('#trip-idea')).toHaveValue('Pattaya 2 days beaches food elephant day trip, easy pace')
+    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^Pattaya$/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    await expect(productCards(page)).toHaveCount(0)
+    expect(searchRequestCount).toBe(0)
+  })
+
   test('AI planner results hash has a stable safe return target before search', async ({ page }) => {
     await page.goto('/ai-trip-planner#ai-trip-results')
 
