@@ -686,6 +686,7 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await expect(page.getByRole('button', { name: /Bangkok food and canals/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /Phuket islands and local food/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /Pattaya beaches with easy pace/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Thailand multi-city route', exact: true })).toBeVisible()
 
     await page.getByRole('button', { name: /Bangkok food and canals/i }).click()
 
@@ -721,6 +722,7 @@ test.describe('No match guidance', () => {
     await expect(page.getByText(/Try one of these safer next searches/i)).toBeVisible()
     await expect(page.getByText(/Chiang Mai elephants and food/i)).toBeVisible()
     await expect(page.getByText(/Bangkok food and canals/i)).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Thailand multi-city route', exact: true })).toBeVisible()
     await expect(page.getByText(/No product cards are shown until a real eligible product matches/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(0)
 

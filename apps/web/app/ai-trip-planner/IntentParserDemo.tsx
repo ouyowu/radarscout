@@ -31,6 +31,7 @@ const noMatchNextSearches = [
   { label: 'Bangkok food and canals', prompt: 'Bangkok 3 days food canals' },
   { label: 'Phuket islands and local food', prompt: 'Phuket 4 days islands local food' },
   { label: 'Pattaya beaches with easy pace', prompt: 'Pattaya 2 days beaches easy pace' },
+  { label: 'Thailand multi-city route', prompt: 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace' },
 ]
 
 function focusTripIdeaField() {
