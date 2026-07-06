@@ -309,7 +309,7 @@ Preview status:
 - Clean latest-head preview deployment reached `READY`.
 - Protected-preview smoke passed.
 
-## 0.6 Latest autonomous execution update — homepage prompt results E2E merged
+## 0.6 Latest autonomous execution update — homepage-to-planner result-flow E2E coverage
 
 Updated: 2026-07-07
 
@@ -319,18 +319,23 @@ Latest merged HEAD:
 0fbfa21161526647012cc38d5939a3142eab3808
 ```
 
-Completed low-risk increments:
+Completed low-risk test-only increments:
 
-- PR #437: added homepage prompt results-flow E2E coverage.
+- PR #435: added homepage Chiang Mai planner CTA click-flow E2E coverage.
+- PR #437: added homepage prompt-chip to AI Trip Planner results E2E coverage.
 
 Reason:
 
-- Prove a homepage prompt chip can open AI Trip Planner, confirm the prefilled intent, and render safe Thailand comparison cards.
-- Confirm the flow remains comparison-only and does not trigger booking, checkout, payment, Bókun API, or live-availability behavior.
+- Prove the homepage Chiang Mai CTA lands on `/chiang-mai/elephant-camp-finder#plan-with-radarscout`.
+- Prove that the deterministic Chiang Mai planner section is visible after the homepage CTA click.
+- Prove that the Chiang Mai CTA flow does not automatically call `/api/bokun`.
+- Prove that a homepage prompt chip can safely prefill the AI Trip Planner, wait for intent confirmation, then search real Thailand comparison cards.
+- Keep product search explicitly user-triggered and preserve the no automatic search boundary.
 
 Scope:
 
-- homepage E2E coverage only;
+- Playwright E2E coverage only;
+- no app runtime behavior change;
 - no production deploy;
 - no SEO `index,follow` opening;
 - no sitemap or robots change;
@@ -342,25 +347,29 @@ Scope:
 
 Validation evidence:
 
-- Clean post-merge worktree: `/private/tmp/radarscout-pr437-postmerge`.
+- Clean PR #435 post-merge worktree: `/private/tmp/radarscout-homepage-chiang-mai-click-e2e-0-postmerge`.
+- Clean PR #437 post-merge worktree: `/private/tmp/radarscout-homepage-prompt-results-e2e-0-postmerge`.
 - Prisma generate: passed.
-- Focused homepage E2E: passed, 6 / 6 tests.
+- Homepage E2E after PR #435: passed, 5 / 5 tests.
+- Full Playwright E2E after PR #435: passed, 59 / 59 tests.
+- Homepage E2E after PR #437: passed, 6 / 6 tests.
+- Full Playwright E2E after PR #437: passed, 60 / 60 tests.
 - TypeScript: passed.
 - Next build: passed.
-- `git diff --check HEAD~1..HEAD`: passed.
+- `git diff --check`: passed.
 - Worktree status: clean.
 
 Preview status:
 
 - Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
 - Preview deploy wrapper passed cleanup and project guard.
-- Fresh preview deployment for `0fbfa21161526647012cc38d5939a3142eab3808` is blocked by Vercel daily deployment quota:
+- Preview deploy is currently blocked by Vercel daily deployment quota:
 
 ```text
 api-deployments-free-per-day
 ```
 
-This remains an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
+This is an external Vercel quota blocker, not a code, test, TypeScript, build, or project-linking failure.
 
 ## 2. Product boundary
 
@@ -419,7 +428,8 @@ Latest AI Trip and homepage product-code increments:
 - PR #431: homepage Chiang Mai planner CTA routes directly to the deterministic planner section.
 - PR #432: homepage `Start planning` click-flow E2E verifies form visibility, default prompt state, enabled intent confirmation, and no automatic product search.
 - PR #433: AI Trip Planner shows a safe landing guidance note when users arrive from homepage deep links.
-- PR #437: homepage prompt chip E2E verifies safe intent confirmation and comparison-card rendering from the homepage flow.
+- PR #435: homepage Chiang Mai planner CTA click-flow E2E verifies the deterministic planner section and no automatic `/api/bokun` call.
+- PR #437: homepage prompt-chip E2E verifies safe prefill, user-confirmed search, and real Thailand comparison cards.
 
 Latest tooling increment:
 
@@ -464,7 +474,7 @@ Latest status-doc increment:
 - PR #417 documented the homepage AI planner concept.
 - PR #434 refreshed active status after PR #433 and recorded the prior preview quota blocker.
 - PR #436 recorded the clean protected-preview smoke pass for `83cca4bc333f8384282d89255873f3c44ae26ceb`.
-- Current status update records post-merge validation for PR #437 and the latest preview quota blocker.
+- Current status update records post-merge validation for `0fbfa21161526647012cc38d5939a3142eab3808` and the latest Vercel preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -477,7 +487,7 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr437-postmerge
+/private/tmp/radarscout-homepage-prompt-results-e2e-0-postmerge
 ```
 
 Validated latest branch HEAD after PR #437:
@@ -495,10 +505,11 @@ Latest merge before this status refresh:
 Validation results:
 
 - Prisma generate: passed.
-- Focused homepage E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/homepage-ai-planner.spec.ts`): passed, 6 / 6 tests.
+- Focused homepage E2E: passed, 6 / 6 tests.
+- Full Playwright E2E: passed, 60 / 60 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
-- `git diff --check HEAD~1..HEAD`: passed.
+- `git diff --check`: passed.
 - Worktree status: clean.
 
 ## 5. Latest preview status
@@ -512,23 +523,21 @@ ouyowus-projects / reddit-monitor
 Current latest-head result:
 
 ```text
-PR #437 post-merge local validation passed; latest-head preview is blocked by Vercel daily deployment quota
+PR #437 post-merge preview deployment is blocked by Vercel daily deployment quota
 ```
 
 Meaning:
 
 - Vercel linked to the correct project: `ouyowus-projects / reddit-monitor`.
-- PR #432 post-merge deploy wrapper passed cleanup and project guard before PR #433.
-- Latest validated post-merge HEAD after PR #433: `e21f638e00a654758ed02b3d2d6a50c2da0caf7e`.
-- The latest local E2E suite covers homepage prompt-chip, `Start planning` CTA, and landing-helper flows.
-- The latest E2E suite confirmed homepage deep-link flows do not call `/api/ai-trip/search` automatically.
+- Latest validated post-merge HEAD after PR #437: `0fbfa21161526647012cc38d5939a3142eab3808`.
+- The latest local E2E suite covers homepage prompt-chip, prompt-to-results, `Start planning` CTA, Chiang Mai planner CTA, and landing-helper flows.
+- The latest E2E suite confirmed homepage deep-link flows do not call `/api/ai-trip/search` automatically before user confirmation.
+- The latest E2E suite confirmed the homepage Chiang Mai CTA does not automatically call `/api/bokun`.
+- The latest E2E suite confirmed a homepage prompt chip can reach real Thailand comparison cards after user confirmation and explicit search.
 - Latest preview deployment reached `READY` for merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb`.
 - Protected-preview smoke confirmed homepage CTA, prompt-chip, and landing-helper flows.
+- Fresh preview deployment for merge SHA `0fbfa21161526647012cc38d5939a3142eab3808` is currently blocked by Vercel daily deployment quota.
 - No production aliases were attached.
-- Latest validated post-merge HEAD after PR #437: `0fbfa21161526647012cc38d5939a3142eab3808`.
-- The latest local E2E suite covers homepage prompt-chip, `Start planning` CTA, Chiang Mai CTA, landing-helper, and prompt-to-results flows.
-- The latest E2E suite confirmed homepage prompt results flow renders safe comparison cards without automatic booking, checkout, payment, or Bókun API behavior.
-- Fresh preview deployment for `0fbfa21161526647012cc38d5939a3142eab3808` is blocked by Vercel quota error `api-deployments-free-per-day`.
 - The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
@@ -629,7 +638,8 @@ Recent preview evidence:
   - automatic `/api/ai-trip/search` requests: 0;
   - mobile horizontal overflow: none;
   - forbidden visible copy matches: 0.
-- A clean latest-head manual preview retry for `0fbfa21161526647012cc38d5939a3142eab3808` passed local cleanup and the Vercel preview guard, then hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `2d9b3d6a0b526921503ce3c8992e7f89827eec83` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `0fbfa21161526647012cc38d5939a3142eab3808` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -639,11 +649,10 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head PR #433 local validation passed;
-- latest-head PR #434 protected preview smoke passed;
 - latest-head PR #437 local validation passed;
-- fresh preview deployment for PR #437 is currently blocked by Vercel daily deployment quota;
-- production deploy remains blocked until the operator explicitly approves an exact merge SHA.
+- latest protected-preview smoke is clean for merge SHA `83cca4bc333f8384282d89255873f3c44ae26ceb`;
+- fresh preview deployment for merge SHA `0fbfa21161526647012cc38d5939a3142eab3808` is currently blocked by Vercel quota;
+- production deploy remains blocked until the operator explicitly approves an exact merge SHA with the known preview evidence or quota limitation.
 
 ## 7. Safety status
 
@@ -666,8 +675,9 @@ The current codebase already includes:
 - homepage prompt chips safely prefill `/ai-trip-planner?idea=...` without automatic search or API calls;
 - homepage primary `Start planning` CTA routes to `/ai-trip-planner#intent-demo`;
 - homepage Chiang Mai CTA routes to `/chiang-mai/elephant-camp-finder#plan-with-radarscout`;
+- homepage E2E covers prompt-chip prefill through confirmed real Thailand comparison-card results;
+- homepage E2E covers Chiang Mai CTA handoff into the deterministic planner section without automatic Bókun API calls;
 - AI Trip Planner shows a landing guidance note for homepage deep-link entry before real product search;
-- homepage prompt-chip E2E confirms intent confirmation can render safe Thailand comparison cards;
 - Chiang Mai deterministic chat planner;
 - itinerary summary;
 - compact mobile summary;
@@ -700,7 +710,7 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-HOMEPAGE-PROMPT-RESULTS-PREVIEW-RETRY
+TD-RADARSCOUT-HOMEPAGE-FLOW-PREVIEW-RETRY
 ```
 
 Type:
@@ -711,21 +721,22 @@ preview smoke after Vercel quota reset
 
 Goal:
 
-Retry a clean latest-head preview deployment for merge SHA `0fbfa21161526647012cc38d5939a3142eab3808`, then smoke the homepage prompt-to-results flow on the protected preview.
+Retry a clean latest-head preview deployment for merge SHA `0fbfa21161526647012cc38d5939a3142eab3808`, then smoke the homepage prompt-to-results and Chiang Mai CTA flows on the protected preview.
 
 Why this is the right next step:
 
 - latest product-code changes are already merged;
 - latest product-code head has clean local validation;
-- Vercel preview deployment is blocked by quota, not code behavior;
-- production deploy still requires explicit approval for the exact merge SHA.
+- latest fresh preview deployment is blocked by Vercel quota, not code behavior;
+- production deploy still requires explicit approval for the exact merge SHA;
+- the next reliable non-production gate is to retry preview after quota reset.
 
 ## 10. Candidate follow-up tasks after preview
 
 Only after the production gate is resolved or explicitly skipped:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PRODUCTION-DEPLOY-CANDIDATE
+TD-RADARSCOUT-HOMEPAGE-FLOW-PRODUCTION-GATE
 TD-RADARSCOUT-SEO-READINESS-2-CHIANG-MAI-CONTROLLED-OPENING
 TD-RADARSCOUT-TRAVELER-FUNNEL-PLAUSIBLE-DECISION-2
 ```
