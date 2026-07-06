@@ -397,8 +397,7 @@ describe('AI search product card detail CTA accessibility', () => {
 
 describe('AI Trip successful results next-step copy', () => {
   it('keeps the product-result next step clear and safely scoped', () => {
-    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('compare the cards')
-    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('open one product detail page')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('Current details stay on product pages')
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('booking partner')
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/live availability/i)
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/available now/i)

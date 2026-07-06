@@ -52,7 +52,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toContain('Result fit summary')
     expect(publicCopy).toContain('Why these experiences match')
     expect(publicCopy).toContain('Why this fits')
-    expect(publicCopy).toContain('Next step: compare the cards')
+    expect(publicCopy).toContain('Current details stay on product pages')
     expect(publicCopy).toContain('Planner form loaded')
     expect(publicCopy).toContain('Product search only runs after you choose to search real Thailand experiences')
     expect(publicCopy).toContain('Local planning summary')

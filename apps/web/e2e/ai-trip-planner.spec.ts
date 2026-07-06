@@ -480,6 +480,8 @@ test.describe('Valid Chiang Mai flow', () => {
 
     expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
     await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(page.getByRole('status')).toContainText('Compare the cards below')
+    await expect(page.getByText('Current details stay on product pages; booking partner handoff starts there.')).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/start with chiang mai elephant sanctuary, then compare the remaining cards below/i)).toBeVisible()
     await expect(page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })).toHaveAttribute(
@@ -678,7 +680,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
     await expect(page.getByRole('status')).toContainText('Results ready')
-    await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+    await expect(page.getByRole('status')).toContainText('booking partner handoff')
     await expect(page.getByTestId('ai-trip-result-action-panel')).toHaveClass(/sm:flex-wrap/)
     const topMatchLink = page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })
     await expect(topMatchLink).toBeVisible()
@@ -739,7 +741,7 @@ test.describe('Valid Chiang Mai flow', () => {
 
     expect(receivedPrompt).toBe('Chiang Mai elephants')
     await expect(page.getByRole('status')).toContainText('Results ready')
-    await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+    await expect(page.getByRole('status')).toContainText('booking partner handoff')
     await expect(productCards(page)).toHaveCount(1)
     await expect(page.getByLabel(/result fit summary/i)).toContainText(/Matched interests: elephants/i)
     await expect(page.getByText(/Chiang Mai Elephants/)).toHaveCount(0)
