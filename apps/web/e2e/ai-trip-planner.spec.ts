@@ -450,6 +450,10 @@ test.describe('Valid Chiang Mai flow', () => {
     expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })).toHaveAttribute(
+      'href',
+      '/tours/prod_cm_1?source=ai-trip-planner',
+    )
     await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
 
