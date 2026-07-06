@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-3`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-4`
 
 Updated: 2026-07-06
 
@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #368:
+Latest `origin/codex/travel-mvp-launch` after PR #370:
 
 ```text
-8ae92f753a0bc31c97b865be1cbd157e5c13c648
+05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440
 ```
 
 Latest AI Trip product-code increments:
@@ -56,6 +56,7 @@ Latest AI Trip product-code increments:
 - PR #361: deterministic planning outline links directly to the experience search section.
 - PR #366: successful AI Trip searches include a direct `Review comparison cards` jump to the real product comparison-card area.
 - PR #368: AI Trip product cards label each result's matched route stop.
+- PR #370: loaded route search feedback can jump directly to the comparison-card area.
 
 Latest status-doc increment:
 
@@ -65,7 +66,8 @@ Latest status-doc increment:
 - PR #364 recorded the PR #361 Vercel preview evidence.
 - PR #365 documented the AI Trip release-gate decision while preview deploys remain quota-limited.
 - PR #367 refreshed active status after PR #366.
-- This PR refreshes active status after PR #368.
+- PR #369 refreshed active status after PR #368.
+- This PR refreshes active status after PR #370.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -78,20 +80,20 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr368-postmerge-route-context
+/private/tmp/radarscout-pr370-postmerge
 ```
 
-Validated product-code SHA after the PR #368 merge:
+Validated product-code SHA after the PR #370 merge:
 
 ```text
-8ae92f753a0bc31c97b865be1cbd157e5c13c648
+05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440
 ```
 
 Validation results:
 
 - Prisma generate: passed.
 - AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
-- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e -- e2e/ai-trip-planner.spec.ts`): passed.
+- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
@@ -146,10 +148,11 @@ Recent preview evidence:
   - robots `noindex, nofollow`;
   - AI Trip Planner static page content;
   - safe public copy.
-- The PR #368 product-code head `8ae92f753a0bc31c97b865be1cbd157e5c13c648` has clean local dynamic validation.
+- The PR #370 product-code head `05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440` has clean local dynamic validation.
 - A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `90658452fff5f0a5db3f18ce9be500428eef2058` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `8ae92f753a0bc31c97b865be1cbd157e5c13c648` also hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440` also hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -188,6 +191,7 @@ The current codebase already includes:
 - top-match title in the successful result action;
 - direct `Review comparison cards` jump after successful AI Trip product search;
 - matched-route-stop labels on AI Trip product cards;
+- loaded route search feedback can jump directly to comparison cards;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip Planner context card on sourced tour detail pages;
