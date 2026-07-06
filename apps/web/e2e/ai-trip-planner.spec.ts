@@ -315,6 +315,37 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
 
+  test('mobile Thailand route results keep city groups visible without horizontal overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+
+    await page.unroute('/api/ai-trip/search')
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(THAILAND_ROUTE_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use thailand route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+    await page.getByRole('button', { name: /search loaded trip idea/i }).click()
+
+    await expect(page.getByLabel(/route stop overview/i)).toBeVisible()
+    await expect(page.getByLabel(/Bangkok result group/i)).toContainText('Bangkok Temple and Local Food Walk')
+    await expect(page.getByLabel(/Phuket result group/i)).toContainText('Phuket Beach and Island Day')
+    await expect(page.getByLabel(/Chiang Mai result group/i)).toContainText('Chiang Mai Elephant Sanctuary')
+    await expect(productCards(page)).toHaveCount(3)
+
+    const viewport = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+
+    expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
+  })
+
   test('destination starters fit as one desktop row without horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/ai-trip-planner')
