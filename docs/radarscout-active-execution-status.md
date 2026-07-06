@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-11`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-12`
 
 Updated: 2026-07-07
 
@@ -18,6 +18,85 @@ Default rules:
 - use preview smoke for app changes when Vercel capacity allows;
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
+
+## 0. Latest autonomous execution update — AI Trip positive boundary copy
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+d6fa83cd7858dc466a9708a1fbcb27dc53eec4af
+```
+
+Completed low-risk increments:
+
+- PR #453: replaced hard negative AI Trip Planner transparency badges with positive boundary labels.
+- PR #454: recorded PR #453 validation evidence and updated the AI Trip release gate status.
+
+Current AI Trip public boundary labels:
+
+```text
+Read-only comparison
+Product-page details
+Thailand-only matching
+Reviewed coverage first
+```
+
+Scope:
+
+- AI Trip Planner public copy;
+- AI Trip Planner copy-safety regression tests;
+- AI Trip Planner release-status documentation;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-ai-trip-positive-boundary-copy-postmerge`.
+- Prisma generate: passed.
+- Focused copySafety Vitest coverage: passed, 59 files / 932 tests.
+- AI Trip Planner Playwright E2E: passed, 54 / 54 tests.
+- Full Playwright E2E: passed, 60 / 60 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview guard passed after cleaning Vercel CLI generated `.env.local` and `.gitignore` side effects from the temporary worktree.
+- Preview deploy reached Vercel but remains blocked by daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This is an external Vercel quota blocker, not a code, TypeScript, test, build,
+project-linking, or production-deploy failure.
+
+Production gate:
+
+Production deploy can be considered only if explicitly approved for merge SHA:
+
+```text
+d6fa83cd7858dc466a9708a1fbcb27dc53eec4af
+```
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run it only after Vercel deployment quota resets. Until then, continue only
+with local/testable or docs-only RadarScout work.
 
 ## 0. Latest autonomous execution update — latest HEAD preview retry
 
