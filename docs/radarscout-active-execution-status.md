@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-4`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-5`
 
 Updated: 2026-07-06
 
@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #370:
+Latest `origin/codex/travel-mvp-launch` after PR #373:
 
 ```text
-05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440
+5e91c09ed52b474696fb84339205f8276ebbe734
 ```
 
 Latest AI Trip product-code increments:
@@ -57,6 +57,7 @@ Latest AI Trip product-code increments:
 - PR #366: successful AI Trip searches include a direct `Review comparison cards` jump to the real product comparison-card area.
 - PR #368: AI Trip product cards label each result's matched route stop.
 - PR #370: loaded route search feedback can jump directly to the comparison-card area.
+- PR #372: AI Trip product-card detail CTAs clarify that details are reviewed before booking partner handoff.
 
 Latest status-doc increment:
 
@@ -67,7 +68,9 @@ Latest status-doc increment:
 - PR #365 documented the AI Trip release-gate decision while preview deploys remain quota-limited.
 - PR #367 refreshed active status after PR #366.
 - PR #369 refreshed active status after PR #368.
-- This PR refreshes active status after PR #370.
+- PR #371 refreshed active status after PR #370.
+- PR #373 clarified the local Vercel preview deploy wrapper's quota-blocker output.
+- This PR refreshes active status after PR #372 and PR #373.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -80,13 +83,13 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr370-postmerge
+/private/tmp/radarscout-pr373-postmerge
 ```
 
-Validated product-code SHA after the PR #370 merge:
+Validated latest SHA after the PR #373 merge:
 
 ```text
-05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440
+5e91c09ed52b474696fb84339205f8276ebbe734
 ```
 
 Validation results:
@@ -96,6 +99,8 @@ Validation results:
 - Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
+- Vercel preview wrapper tests (`pnpm test:vercel-preview-deploy`): passed.
+- Vercel preview guard tests (`pnpm test:vercel-preview-guard`): passed.
 - `git diff --check`: passed.
 - Worktree status: clean before the docs-only status update.
 
@@ -148,11 +153,13 @@ Recent preview evidence:
   - robots `noindex, nofollow`;
   - AI Trip Planner static page content;
   - safe public copy.
-- The PR #370 product-code head `05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440` has clean local dynamic validation.
+- The latest head `5e91c09ed52b474696fb84339205f8276ebbe734` has clean local dynamic validation.
 - A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `90658452fff5f0a5db3f18ce9be500428eef2058` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `8ae92f753a0bc31c97b865be1cbd157e5c13c648` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440` also hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `c3c7319aa1b6c7685cb35a6fae17431cbd5d8838` also hit `api-deployments-free-per-day`.
+- PR #373 updated the preview deploy wrapper so future quota failures emit a stable RadarScout message that this is a Vercel deployment quota gate, not a code/test/build failure.
 
 ## 6. Production status
 
@@ -192,6 +199,7 @@ The current codebase already includes:
 - direct `Review comparison cards` jump after successful AI Trip product search;
 - matched-route-stop labels on AI Trip product cards;
 - loaded route search feedback can jump directly to comparison cards;
+- product-card detail CTAs clarify the reviewed-detail step before booking partner handoff;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip Planner context card on sourced tour detail pages;
