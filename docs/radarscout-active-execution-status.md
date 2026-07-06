@@ -89,6 +89,8 @@ Latest status-doc increment:
 - PR #387 corrected active status after PR #385 and PR #386.
 - PR #389 recorded preview smoke passing for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
 - PR #391 corrected active status after PR #388 and the latest-head preview retry.
+- PR #392 archived AI Trip status after PR #391.
+- This PR records latest-head local validation after PR #392.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -101,25 +103,27 @@ none
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr388-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr391
 ```
 
-Validated product-code SHA after PR #388:
-
-```text
-e6c1cf7d6600322d759a994ad6f857c4a42411fd
-```
-
-Latest docs-only merge after validation:
+Validated latest-head SHA before this docs-only update:
 
 ```text
 3ce46c4b0da1e45884b8534690595d53b233e059
 ```
 
+Latest docs-only merge after validation:
+
+```text
+710771e725493cdb56e80dbf38738555c1fc3a3d
+```
+
 Validation results:
 
 - Prisma generate: passed.
-- Public copy / tours Vitest coverage (`pnpm --filter @reddit-monitor/web test -- publicCopy`): passed, 58 files / 921 tests.
+- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
+- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
+- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
