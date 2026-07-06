@@ -17,7 +17,7 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-4d2efeac1119833e68c3b221791b441eac67f792
+7717e79f94909c5d350066364a5a5ffb7bf5d7d6
 ```
 
 Latest product-code merge included in this branch:
@@ -29,6 +29,7 @@ bcb637c3cb542da83ead211a84856f18832d998d
 The commits after `bcb637c3cb542da83ead211a84856f18832d998d` are docs-only status or decision records:
 
 - PR #386: recorded local validation after PR #384.
+- PR #387: corrected status after PR #385 and PR #386.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -58,43 +59,45 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean post-merge validation was run against the product-code merge:
+Clean latest-head validation was run after PR #386:
 
 ```text
-bcb637c3cb542da83ead211a84856f18832d998d
+4d2efeac1119833e68c3b221791b441eac67f792
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr385-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr386
 ```
 
 Results:
 
 - Prisma generate: passed.
-- Public copy / tours Vitest coverage: passed, 58 files / 921 tests.
+- AI Trip Vitest focus: passed.
+- Tours Vitest focus: passed.
+- AI Trip Playwright E2E: passed.
 - TypeScript: passed.
 - Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The PR #385 validation updated only the unavailable tour detail AI Trip return-button label and the matching public-copy test. No app behavior, route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #385's unavailable tour detail AI Trip return-button label alignment plus docs-only PR #386. No app behavior, route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed after the PR #385 copy alignment.
 
 ## 4. Preview status
 
 Preview deployment was attempted from a clean latest-head worktree using the RadarScout preview helper.
 
-Latest preview retry worktree:
+Latest preview worktree:
 
 ```text
-/private/tmp/radarscout-pr385-postmerge
+/private/tmp/radarscout-latest-head-preview-after-pr386
 ```
 
-Latest preview retry SHA:
+Latest preview SHA:
 
 ```text
-bcb637c3cb542da83ead211a84856f18832d998d
+7717e79f94909c5d350066364a5a5ffb7bf5d7d6
 ```
 
 Vercel project:
@@ -109,20 +112,46 @@ Guard result:
 passed
 ```
 
-Current blocker:
+Current preview result:
 
 ```text
-api-deployments-free-per-day
+READY and protected-preview smoke passed
 ```
 
 Meaning:
 
 - Vercel project selection was correct.
 - The worktree guard passed.
-- The deploy failed because the Vercel account hit the daily deployment quota.
-- This is not a code, TypeScript, test, or build failure.
+- The preview deployment reached `READY`.
+- Vercel Authentication protected the anonymous preview URL.
+- A temporary Vercel share URL was used for the read-only smoke helper and was not committed.
 
-Production deployment should ideally wait for fresh preview evidence after quota reset. If the operator chooses to proceed without a fresh preview, that should be an explicit production approval decision naming the merge SHA and acknowledging the preview quota blocker.
+Preview evidence:
+
+```text
+Preview URL: https://reddit-monitor-rnac2afi7-ouyowus-projects.vercel.app
+Deployment ID: dpl_A8sLi6eAksSRFPbRLT1yWZvjLXJs
+Project: ouyowus-projects / reddit-monitor
+Target: preview / null
+Status: READY
+Protected-preview smoke: passed
+```
+
+AI Trip smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: []
+forbiddenMatches: []
+```
+
+Production deployment remains gated on explicit approval naming the latest merge SHA.
 
 ## 5. Production approval gate
 
