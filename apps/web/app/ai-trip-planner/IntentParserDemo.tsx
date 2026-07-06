@@ -554,7 +554,7 @@ export function IntentParserDemo() {
                     <section
                       id="ai-trip-route-stop-overview"
                       aria-label="Route stop overview"
-                      className="mt-3 rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:mt-4 sm:p-4"
+                      className="mt-3 scroll-mt-6 rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:mt-4 sm:p-4"
                     >
                       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
                         Route stop overview
@@ -582,7 +582,7 @@ export function IntentParserDemo() {
                           key={group.city}
                           id={buildRouteStopGroupId(group.city)}
                           aria-label={`${group.city} result group`}
-                          className="rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
+                          className="scroll-mt-6 rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
                         >
                           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                             <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#101820]">
