@@ -170,6 +170,22 @@ Production deploy: no
 
 ## Latest validation evidence
 
+Latest local validation after PR #451:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-release-status-refresh-postmerge-current
+HEAD: ef096bc08745b90f92685b6e05f17f14ee25ef24
+
+Prisma generate: passed
+Focused copySafety Vitest: passed, 59 files / 932 tests
+Focused productSearch Vitest: passed, 59 files / 932 tests
+AI Trip Planner Playwright E2E: passed, 54/54
+Full Playwright E2E: passed, 60/60
+TypeScript: clean
+Next build: passed
+git diff --check: clean
+```
+
 Latest local validation after PR #445:
 
 ```text
