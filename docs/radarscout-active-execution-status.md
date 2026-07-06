@@ -59,7 +59,7 @@ Recent completed items:
 - Thailand multi-city route starter was added through PR #288.
 - AI Trip destination starter grid was tightened to fit five desktop cards through PR #289.
 - Thailand multi-city route fallback suggestion was added to unsupported-destination and no-match flows through PR #297.
-- Latest clean local validation for the current AI Trip release gate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
+- Latest clean local validation and protected Vercel preview smoke passed for the current AI Trip release gate.
 
 ## 4. Current blocked or deferred items
 
@@ -105,23 +105,26 @@ Decision:
 
 ### Latest fresh preview deployment
 
-Status: temporarily blocked by Vercel quota.
+Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `5c778710ca0f2061b2cf38a795e7a3f0fdea51ee`;
+- latest `origin/codex/travel-mvp-launch`: `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e`;
 - latest merged AI Trip app-code increment: PR #297, merge SHA `5c778710ca0f2061b2cf38a795e7a3f0fdea51ee`;
-- latest merged AI Trip status-doc increment: PR #293, merge SHA `7c1a5f1558d2ac63f229837784d472f00e6d1ce3`;
+- latest merged AI Trip status-doc increment: PR #298, merge SHA `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
-- Vercel returned `api-deployments-free-per-day` when attempting a fresh preview;
+- Vercel PR preview deployment `https://reddit-monitor-qp4o01w65-ouyowus-projects.vercel.app` completed successfully for PR #298 head `58c0b89c4f47f183a1eddd205b5683cfbc0eafa4`;
+- PR #298 head and merge commit `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e` have the same tree hash `2b86ef7de933477c02ee2f47c3041f9b5fe2a37d`;
+- protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
+- manual CLI deployment still returned `api-deployments-free-per-day`, but the GitHub-integrated PR preview was available and verified;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
 
 Decision:
 
-- do not treat the Vercel quota error as a product-code failure;
-- retry latest-head preview smoke only after the deployment quota resets;
-- do not production deploy the latest AI Trip increments until a fresh preview or equivalent approved validation gate passes.
+- do not treat the manual Vercel quota error as a product-code failure;
+- the current AI Trip release gate has equivalent latest-tree preview smoke evidence;
+- production deploy remains gated by explicit approval for a merge SHA.
 
 ## 5. Already-present product surfaces
 
@@ -153,30 +156,30 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
 ```
 
 Type:
 
 ```text
-preview smoke after Vercel quota reset
+production deployment gate
 ```
 
 Goal:
 
-Create a clean latest-head preview from `origin/codex/travel-mvp-launch`, confirm
-the Vercel project is `ouyowus-projects / reddit-monitor`, and run the protected
-AI Trip preview smoke helper against `/ai-trip-planner`.
+If explicitly approved by the user for merge SHA `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e`,
+create a clean production worktree, run validation, deploy to production, and
+smoke-test `/ai-trip-planner`.
 
 Why this is the right next step:
 
-- the latest product-code changes are already merged;
-- local validation is not a substitute for the final preview smoke gate;
-- Vercel quota, not code behavior, is currently blocking the fresh preview;
-- the next reliable gate is to retry preview deployment after quota reset.
+- latest product-code changes are merged;
+- clean local validation passed;
+- protected preview smoke passed against the same tree as the latest merge commit;
+- production deployment is the remaining gate, and it requires explicit approval.
 
-If Vercel quota remains blocked, continue only with local/docs/read-only tasks that
-do not require preview deployment or production changes.
+If production deploy is not approved, continue only with local/docs/read-only tasks
+that do not require preview deployment or production changes.
 
 ## 7. Candidate follow-up tasks after audit
 
