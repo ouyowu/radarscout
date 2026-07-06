@@ -634,6 +634,23 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText(/why this fits/i)).toHaveCount(3)
   })
 
+  test('successful search can jump directly to comparison cards', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    const comparisonCardsLink = page.getByRole('link', { name: /review comparison cards/i })
+
+    await expect(comparisonCardsLink).toBeVisible()
+    await expect(comparisonCardsLink).toHaveAttribute('href', '#ai-trip-comparison-results')
+
+    await comparisonCardsLink.click()
+
+    await expect(page).toHaveURL(/#ai-trip-comparison-results$/)
+    await expect(page.locator('#ai-trip-comparison-results')).toBeVisible()
+    await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('compact Chiang Mai interest prompt searches without combining destination and interest', async ({ page }) => {
     let receivedPrompt: string | null = null
 
