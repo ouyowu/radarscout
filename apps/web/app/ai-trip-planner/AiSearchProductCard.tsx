@@ -117,7 +117,7 @@ export function AiSearchProductCard({
         )}
         <Link
           href={buildAiTripPlannerDetailHref(detailHref, id)}
-          aria-label={`View details for ${title}`}
+          aria-label={`View details for ${title}, then continue with booking partner`}
           className="inline-flex min-h-[44px] items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
         >
           View details
