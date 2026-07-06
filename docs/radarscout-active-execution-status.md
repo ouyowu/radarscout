@@ -43,21 +43,25 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch`:
+Latest `origin/codex/travel-mvp-launch` after PR #358:
 
 ```text
-c3ca4131e735370624b9382e9aca2b61b47474ae
+0969a78a957c43065fbd98bf48ee57bd9d8007e2
 ```
 
-Latest merged AI Trip increments:
+Latest AI Trip product-code increments:
 
 - PR #356: AI Trip Planner successful result action shows the top matched product title.
 - PR #357: AI Trip Planner refine links include clearer accessible context.
 
-Open PRs against `codex/travel-mvp-launch`:
+Latest status-doc increment:
+
+- PR #358 refreshed the active status after the refine-link accessibility work.
+
+Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
 ```text
-none
+none except this status refresh PR
 ```
 
 ## 4. Latest validation evidence
@@ -68,7 +72,7 @@ Clean worktree:
 /private/tmp/radarscout-active-status-preview-ready
 ```
 
-Validated SHA:
+Validated product-code SHA before the PR #358 docs-only merge:
 
 ```text
 c3ca4131e735370624b9382e9aca2b61b47474ae
@@ -82,7 +86,7 @@ Validation results:
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
-- Worktree status: clean after validation.
+- Worktree status: clean before the docs-only status update.
 
 ## 5. Latest preview status
 
@@ -120,7 +124,7 @@ Recent preview evidence:
 
 - A preview for `5c9daf626f2156c4b8a049612c56c5f2b501d9e3` reached `READY`.
 - That preview URL was public-smoke blocked by Vercel Authentication.
-- The latest head `c3ca4131e735370624b9382e9aca2b61b47474ae` has clean local validation, but no fresh Vercel preview yet because of the quota gate.
+- The latest product-code head `c3ca4131e735370624b9382e9aca2b61b47474ae` has clean local validation, but no fresh Vercel preview yet because of the quota gate.
 
 ## 6. Production status
 
@@ -187,7 +191,7 @@ Create a clean latest-head preview from `origin/codex/travel-mvp-launch`, confir
 Why this is the right next step:
 
 - latest product-code changes are already merged;
-- latest head has clean local validation;
+- latest product-code head has clean local validation;
 - preview deployment is currently blocked by Vercel quota, not code;
 - production deploy should remain blocked until preview evidence is available.
 
