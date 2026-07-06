@@ -46,7 +46,10 @@ test.describe('Homepage AI planner entry', () => {
     ]
 
     for (const chip of promptChips) {
-      await expect(page.getByRole('link', { name: chip })).toHaveAttribute('href', '/ai-trip-planner')
+      await expect(page.getByRole('link', { name: chip })).toHaveAttribute(
+        'href',
+        new RegExp('^/ai-trip-planner\\?idea='),
+      )
     }
 
     const pageText = await page.locator('body').innerText()
