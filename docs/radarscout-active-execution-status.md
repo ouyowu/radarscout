@@ -58,6 +58,7 @@ Recent completed items:
 - Compact example prompt chip `Chiang Mai elephants` was added through PR #287.
 - Thailand multi-city route starter was added through PR #288.
 - AI Trip destination starter grid was tightened to fit five desktop cards through PR #289.
+- Thailand multi-city route fallback suggestion was added to unsupported-destination and no-match flows through PR #297.
 - Latest clean local validation for the current AI Trip release gate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
 
 ## 4. Current blocked or deferred items
@@ -108,10 +109,10 @@ Status: temporarily blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `7c1a5f1558d2ac63f229837784d472f00e6d1ce3`;
-- latest merged AI Trip app-code increment: PR #289, merge SHA `af249530be2df862566be8c7023c7531418a8588`;
+- latest `origin/codex/travel-mvp-launch`: `5c778710ca0f2061b2cf38a795e7a3f0fdea51ee`;
+- latest merged AI Trip app-code increment: PR #297, merge SHA `5c778710ca0f2061b2cf38a795e7a3f0fdea51ee`;
 - latest merged AI Trip status-doc increment: PR #293, merge SHA `7c1a5f1558d2ac63f229837784d472f00e6d1ce3`;
-- clean local validation passed after PR #289 and after the current release-gate docs refresh;
+- clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - Vercel returned `api-deployments-free-per-day` when attempting a fresh preview;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
