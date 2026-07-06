@@ -12,7 +12,8 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r --if-present test",
     "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "smoke:ai-trip-preview": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-preview-smoke.js"
   },
   "engines": {
     "node": ">=20",
