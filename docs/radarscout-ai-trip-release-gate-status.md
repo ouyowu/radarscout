@@ -15,7 +15,7 @@ origin/codex/travel-mvp-launch
 Latest checked branch HEAD:
 
 ```text
-d65966717cde3725486fffcae273667301836d31
+5fc5e617ab19ca910966f9142c7fc04f5532441d
 ```
 
 Latest application-code candidate in this branch:
@@ -25,7 +25,8 @@ e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
 The latest overall branch HEAD is newer because docs-only status updates were
-merged after the application-code candidate.
+merged after the application-code candidate and a tooling-only local smoke helper
+was added after those status updates.
 
 ## Current product candidate
 
@@ -87,8 +88,8 @@ runner flake, not a product-code failure.
 Latest clean preview retry:
 
 ```text
-Worktree: /private/tmp/radarscout-ai-trip-latest-head-preview-2
-HEAD: d65966717cde3725486fffcae273667301836d31
+Worktree: /private/tmp/radarscout-ai-trip-latest-head-preview-3
+HEAD: 5fc5e617ab19ca910966f9142c7fc04f5532441d
 Project: ouyowus-projects / reddit-monitor
 Guard: pnpm guard:vercel-preview passed
 Command: npx vercel --yes
@@ -129,6 +130,30 @@ The helper:
 - mocks `/api/ai-trip/search`;
 - checks title, robots, result cards, safe source parameter, mobile overflow,
   unsafe network requests, and forbidden public copy.
+
+Latest helper evidence:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-local-smoke-helper-0-postmerge
+HEAD: 5fc5e617ab19ca910966f9142c7fc04f5532441d
+Script tests: passed, 8/8
+Next build: passed
+Local production smoke: passed
+```
+
+Latest local production smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
 
 ## Production drift
 
@@ -171,7 +196,7 @@ If the operator accepts the known preview-quota limitation, the current latest
 exact SHA for a production approval would be:
 
 ```text
-d65966717cde3725486fffcae273667301836d31
+5fc5e617ab19ca910966f9142c7fc04f5532441d
 ```
 
 ## Safety boundaries still active
