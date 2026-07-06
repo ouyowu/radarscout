@@ -107,6 +107,29 @@ failure.
 
 Do not run production deploy to bypass this blocker.
 
+## Local fallback smoke helper
+
+When Vercel preview deploy is blocked by quota, use a local production-build
+smoke helper as supporting evidence. This does not replace a real Vercel preview
+smoke, but it validates the built frontend shell with the same read-only
+AI Trip browser flow.
+
+Start a local production build/server, then run:
+
+```bash
+pnpm --filter @reddit-monitor/web build
+pnpm --filter @reddit-monitor/web exec next start -p 3456
+pnpm smoke:ai-trip-local http://localhost:3456/ai-trip-planner
+```
+
+The helper:
+
+- refuses RadarScout production domains;
+- accepts only `localhost` or `127.0.0.1`;
+- mocks `/api/ai-trip/search`;
+- checks title, robots, result cards, safe source parameter, mobile overflow,
+  unsafe network requests, and forbidden public copy.
+
 ## Production drift
 
 Observed production URLs:

@@ -17,6 +17,7 @@
     "deploy:vercel-preview": "node scripts/radarscout-vercel-preview-deploy.js",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
+    "smoke:ai-trip-local": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-local-smoke.js",
     "smoke:ai-trip-preview": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-preview-smoke.js",
     "fix:vercel-preview-link": "node scripts/radarscout-vercel-preview-link-cleanup.js"
   },
