@@ -80,7 +80,9 @@ Recent completed items:
 - AI Trip route results now follow traveler prompt order through PR #342.
 - AI Trip route stop overview now clarifies that city chips jump to their matching result groups through PR #344.
 - A safer RadarScout preview deploy wrapper was added through PR #345.
-- Latest clean local validation passed for the current AI Trip candidate after PR #345.
+- AI Trip route result group back links now include city-specific accessible labels through PR #349.
+- Product-enrichment coverage route types were corrected through PR #350, clearing the prior TypeScript baseline note.
+- Latest clean local validation passed for the current AI Trip candidate after PR #349 and PR #350.
 
 ## 4. Current blocked or deferred items
 
@@ -139,9 +141,9 @@ Decision:
 - do not keep retrying deployment while Vercel returns `api-deployments-free-per-day`;
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
-- latest production-deploy branch candidate is `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`.
-- latest merged AI Trip app-code candidate is PR #344, merge SHA `528e6a2da2daa834b3e5de6f9bf72578ce6a0789`.
-- latest branch HEAD after PR #345 is `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`.
+- latest production-deploy branch candidate is `135318093708cb2f0c8291f5544918954f872802`.
+- latest merged AI Trip app-code candidate is PR #349, merge SHA `13d639fad91b78f29bd66b9e448733e01e0bea61`.
+- latest branch HEAD after PR #350 is `135318093708cb2f0c8291f5544918954f872802`.
 
 ### Latest fresh preview deployment
 
@@ -149,7 +151,7 @@ Status: prior preview passed; latest-head preview blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`;
+- latest `origin/codex/travel-mvp-launch`: `135318093708cb2f0c8291f5544918954f872802`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -174,6 +176,9 @@ Known state:
 - latest merged AI Trip app-code route-order increment: PR #342, merge SHA `a78e667bd000d3a0c39e09283ca9b3f5fb309656`;
 - latest merged AI Trip app-code route-overview helper increment: PR #344, merge SHA `528e6a2da2daa834b3e5de6f9bf72578ce6a0789`;
 - latest merged preview tooling increment: PR #345, merge SHA `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`;
+- latest merged active-status correction: PR #348, merge SHA `c9148e653dd7db890f548578fa07826edb6b1113`;
+- latest merged AI Trip app-code route-backlink accessibility increment: PR #349, merge SHA `13d639fad91b78f29bd66b9e448733e01e0bea61`;
+- latest merged TypeScript baseline correction: PR #350, merge SHA `135318093708cb2f0c8291f5544918954f872802`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -194,7 +199,8 @@ Known state:
 - clean latest-head local validation passed after PR #342 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #344 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean latest-head local validation passed after PR #345 with Prisma generate, preview-wrapper tests, AI Trip Vitest, AI Trip E2E rerun after one dev-server reset, Next build, and `git diff --check`;
-- `pnpm --filter @reddit-monitor/web exec tsc --noEmit` currently has a base-branch baseline failure in `apps/web/app/api/internal/product-enrichment/coverage/route.ts`; PR #345 did not touch that route.
+- clean post-merge local validation passed after PR #349 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
+- PR #350 corrected the prior TypeScript baseline failure in `apps/web/app/api/internal/product-enrichment/coverage/route.ts`.
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -215,6 +221,8 @@ Known state:
 - latest PR #342 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
 - latest PR #344 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
 - latest PR #345 preview-wrapper candidate has not received a fresh Vercel preview because the same quota gate remains active.
+- latest PR #349 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
+- latest PR #350 TypeScript correction has not received a fresh Vercel preview because the same quota gate remains active.
 
 Decision:
 
@@ -245,6 +253,7 @@ The current codebase already includes:
 - compact mobile deterministic planning outline cards;
 - route result ordering that follows the traveler prompt where possible;
 - route overview helper copy that tells travelers city chips jump to matching result groups;
+- city-specific accessible labels on city result group back links;
 - safer `pnpm preview:radarscout` wrapper for Vercel Preview deploy attempts;
 - Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand-wide route-comparison result summary wording;
@@ -292,7 +301,7 @@ Why this is the right next step:
 - latest test-only coverage is merged;
 - clean post-merge local validation passed;
 - previous protected preview smoke passed for the app-code candidate;
-- PR #324 still needs a fresh latest-head preview once quota permits;
+- latest HEAD still needs a fresh latest-head preview once quota permits;
 - production still serves the older page without route-summary copy;
 - preview and production deployment attempts are currently blocked only by
   Vercel quota;
