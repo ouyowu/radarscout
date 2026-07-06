@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-2`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-3`
 
 Updated: 2026-07-06
 
@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #366:
+Latest `origin/codex/travel-mvp-launch` after PR #368:
 
 ```text
-90658452fff5f0a5db3f18ce9be500428eef2058
+8ae92f753a0bc31c97b865be1cbd157e5c13c648
 ```
 
 Latest AI Trip product-code increments:
@@ -55,6 +55,7 @@ Latest AI Trip product-code increments:
 - PR #357: AI Trip Planner refine links include clearer accessible context.
 - PR #361: deterministic planning outline links directly to the experience search section.
 - PR #366: successful AI Trip searches include a direct `Review comparison cards` jump to the real product comparison-card area.
+- PR #368: AI Trip product cards label each result's matched route stop.
 
 Latest status-doc increment:
 
@@ -63,7 +64,8 @@ Latest status-doc increment:
 - PR #363 refreshed active status after PR #361.
 - PR #364 recorded the PR #361 Vercel preview evidence.
 - PR #365 documented the AI Trip release-gate decision while preview deploys remain quota-limited.
-- This PR refreshes active status after PR #366.
+- PR #367 refreshed active status after PR #366.
+- This PR refreshes active status after PR #368.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -76,13 +78,13 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr366-postmerge-card-jump
+/private/tmp/radarscout-pr368-postmerge-route-context
 ```
 
-Validated product-code SHA after the PR #366 merge:
+Validated product-code SHA after the PR #368 merge:
 
 ```text
-90658452fff5f0a5db3f18ce9be500428eef2058
+8ae92f753a0bc31c97b865be1cbd157e5c13c648
 ```
 
 Validation results:
@@ -144,9 +146,10 @@ Recent preview evidence:
   - robots `noindex, nofollow`;
   - AI Trip Planner static page content;
   - safe public copy.
-- The PR #366 product-code head `90658452fff5f0a5db3f18ce9be500428eef2058` has clean local dynamic validation.
+- The PR #368 product-code head `8ae92f753a0bc31c97b865be1cbd157e5c13c648` has clean local dynamic validation.
 - A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `90658452fff5f0a5db3f18ce9be500428eef2058` also hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `8ae92f753a0bc31c97b865be1cbd157e5c13c648` also hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -184,6 +187,7 @@ The current codebase already includes:
 - compact successful-result action and fit-summary spacing on mobile;
 - top-match title in the successful result action;
 - direct `Review comparison cards` jump after successful AI Trip product search;
+- matched-route-stop labels on AI Trip product cards;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip Planner context card on sourced tour detail pages;
