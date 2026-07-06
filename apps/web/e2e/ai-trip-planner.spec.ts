@@ -405,6 +405,7 @@ test.describe('Valid Chiang Mai flow', () => {
 
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('link', { name: /open top match details/i })).toBeVisible()
+    await expect(page.getByLabel(/result fit summary/i)).toHaveClass(/p-3/)
     await expect(productCards(page).first()).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
 
