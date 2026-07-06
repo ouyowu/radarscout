@@ -1080,7 +1080,24 @@ test.describe('Capability state', () => {
     await expect(page.getByText(/suggested planning outline/i)).toBeVisible()
     await expect(page.getByText(/suggested chiang mai planning outline/i)).toBeVisible()
     await expect(page.getByText(/this outline is a rule-based planning guide/i)).toBeVisible()
+    await expect(page.getByRole('link', { name: /continue to experience search/i })).toHaveAttribute(
+      'href',
+      '#ai-trip-results',
+    )
     await expect(page.getByRole('button', { name: /generate itinerary/i })).toHaveCount(0)
+  })
+
+  test('suggested planning outline can jump to the experience search section', async ({ page }) => {
+    await page.goto('/ai-trip-planner')
+    await page.fill('#trip-idea', 'Chiang Mai 3 days elephants')
+    await page.click('button[type="submit"]')
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+
+    await page.getByRole('link', { name: /continue to experience search/i }).click()
+
+    await expect(page).toHaveURL(/#ai-trip-results$/)
+    await expect(page.getByRole('heading', { name: /search real thailand experiences/i })).toBeVisible()
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
 })
 

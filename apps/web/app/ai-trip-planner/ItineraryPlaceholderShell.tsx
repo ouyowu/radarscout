@@ -51,9 +51,17 @@ export function ItineraryPlaceholderShell({
         ))}
       </div>
 
-      <p className="mt-3 text-sm font-semibold leading-5 text-[#5a6670] sm:mt-4 sm:leading-6">
-        {outline.safetyNote}
-      </p>
+      <div className="mt-3 flex flex-col gap-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm font-semibold leading-5 text-[#5a6670] sm:leading-6">
+          {outline.safetyNote}
+        </p>
+        <a
+          href="#ai-trip-results"
+          className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e]"
+        >
+          Continue to experience search
+        </a>
+      </div>
     </section>
   )
 }
