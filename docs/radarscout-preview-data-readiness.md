@@ -1,6 +1,6 @@
 # RadarScout Preview Data Readiness Audit
 
-Task: `TD-RADARSCOUT-PREVIEW-DATA-READINESS-0`
+Task: `TD-RADARSCOUT-PREVIEW-DATA-READINESS-CURRENT-0`
 
 Date: 2026-07-06
 
@@ -8,13 +8,13 @@ Mode: read-only observation and docs report
 
 ## 1. Purpose
 
-This audit explains why RadarScout can currently smoke-test the deployed AI Trip
-Planner UI on protected Vercel previews with a mocked product-search response,
-but should not yet rely on preview deployments for real product-detail found-state
-smoke.
+This audit explains the current state of RadarScout Preview data for real
+DB-backed AI Trip Planner and `/tours/{id}` smoke tests.
 
-The core question is whether the remaining gap is product UI behavior or preview
-data readiness.
+The key question is no longer whether Preview has any database configuration.
+It does. The current question is whether the latest deployed preview can prove
+real product-search and product-detail behavior using the current preview seed
+data.
 
 ## 2. Scope and boundaries
 
@@ -23,7 +23,7 @@ This task did not:
 - deploy anything;
 - modify app code;
 - mutate preview or production data;
-- read or change environment variables;
+- read or change environment variable values;
 - run Prisma migrations;
 - change schema;
 - call the Bókun API;
@@ -35,30 +35,68 @@ Read-only sources checked:
 - `docs/radarscout-active-execution-status.md`
 - `docs/radarscout-ai-trip-planner-release-status.md`
 - `docs/radarscout-vercel-preview-bypass-runbook.md`
+- `docs/radarscout-ai-trip-planner-production-readiness.md`
 - `scripts/radarscout-ai-trip-preview-smoke.js`
-- `apps/web/app/tours/page.tsx`
-- `apps/web/app/tours/[id]/page.tsx`
-- `apps/web/app/api/products/route.ts`
 - `apps/web/app/api/ai-trip/search/route.ts`
+- `apps/web/app/tours/[id]/page.tsx`
 - `apps/web/lib/aiProducts/listAiEligibleThailandProducts.ts`
 - `apps/web/lib/aiProducts/buildAiProductContext.ts`
 - `apps/web/lib/publicProducts/getPublicThailandProduct.ts`
+- `apps/web/lib/publicProducts/ownerManagedProductHandoffMappings.ts`
 
-## 3. Current behavior summary
+## 3. Current Vercel Preview environment status
 
-The current AI Trip Planner preview helper:
+Vercel project:
 
-- loads a protected Vercel preview URL through a temporary share URL;
-- normalizes the path to `/ai-trip-planner`;
-- mocks `POST /api/ai-trip/search`;
-- verifies the deployed frontend shell and result UI;
-- confirms the top-match link includes `source=ai-trip-planner`;
-- confirms no horizontal overflow, forbidden copy, or unsafe network calls.
+```text
+ouyowus-projects / reddit-monitor
+```
 
-This is intentionally a UI smoke helper. It does not validate preview database
-seed state.
+Read-only `vercel env ls` currently shows:
 
-## 4. Real data dependency map
+```text
+DATABASE_URL: configured for Preview
+DATABASE_URL: configured for Production
+```
+
+No environment values were pulled or printed.
+
+This supersedes older Preview DB docs that recorded Preview `DATABASE_URL` as
+missing.
+
+## 4. Preview DB read-only result
+
+Credential source:
+
+```text
+macOS Keychain item: radarscout-preview-database-url
+```
+
+The database URL was not printed.
+
+The query used `BEGIN READ ONLY` and selected only aggregate counts and safe
+public-facing fields for preview seed products. It did not select `rawJson`,
+rates, commission, backend URLs, supplier private fields, credentials, customer
+data, or booking data.
+
+Preview DB result:
+
+```text
+total_products: 2
+active_products: 2
+active_with_supplier: 2
+likely_thailand_display_candidates: 2
+reviewed_enrichment_rows: 0
+```
+
+Seed products present:
+
+| id | title | city | location | bokunActivityId | active | supplierIdPresent |
+| --- | --- | --- | --- | --- | --- | --- |
+| `preview-tour-handoff-1232729` | Preview Chiang Mai Elephant Care Morning | Chiang Mai | Chiang Mai, Thailand | `1232729` | true | true |
+| `preview-tour-no-handoff-999999999` | Preview Chiang Mai Local Nature Experience | Chiang Mai | Chiang Mai, Thailand | `999999999` | true | true |
+
+## 5. Real data dependency map
 
 Real product result smoke depends on these read paths:
 
@@ -92,40 +130,88 @@ The found-state tour detail page requires a matching active product row with:
 - Thailand-eligible title/city/location;
 - enough safe public fields to render the page.
 
-If preview has no such rows, the UI correctly falls back to a no-display-ready
-or unavailable product-detail state.
+## 6. Protected-preview runtime evidence
 
-## 5. Evidence collected
-
-### Existing preview evidence
-
-The latest documented protected preview helper run passed against:
+Checked existing protected preview:
 
 ```text
-Preview URL: https://reddit-monitor-1aie8r6e2-ouyowus-projects.vercel.app/ai-trip-planner
-Helper: pnpm smoke:ai-trip-preview
-Status: passed
+https://reddit-monitor-1aie8r6e2-ouyowus-projects.vercel.app
 ```
 
-The helper reported:
+This preview is not the latest branch HEAD. A fresh preview deployment from the
+latest HEAD was attempted but blocked by Vercel daily deployment quota:
 
 ```text
-status: 200
-title: Thailand AI Trip Planner | RadarScout
-robots: noindex, nofollow
-topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
-productCardCount: 3
-resultSummaryVisible: true
-noHorizontalOverflow: true
-unsafeNetwork: []
-forbiddenMatches: []
+api-deployments-free-per-day
 ```
 
-During the PR #266 preview smoke, protected preview `/tours` loaded but returned
-no display-ready product rows. The unavailable sourced detail path was smoke
-tested, while found-state sourced detail behavior remained covered by unit tests.
+Existing protected preview results:
 
-### Production read-only comparison
+```text
+/ai-trip-planner page load: 200
+/tours/preview-tour-handoff-1232729?source=ai-trip-planner: rendered seed product detail
+unsafe network calls: none observed
+```
+
+The seed tour detail rendered:
+
+```text
+Preview Chiang Mai Elephant Care Morning
+```
+
+This proves the existing protected preview can read the Preview DB for at least
+one seeded `/tours/{id}` page.
+
+## 7. Current gaps
+
+### Existing preview AI search returns no-match for seeded data
+
+Observed real `POST /api/ai-trip/search` responses on the existing protected
+preview:
+
+```text
+Prompt: Chiang Mai elephants
+Result: no_match
+Product count: 0
+
+Prompt: 3 days in Chiang Mai with elephants and food
+Result: no_match
+Product count: 0
+
+Prompt: Thailand elephants
+Result: no_match
+Product count: 0
+```
+
+Most likely causes:
+
+- the existing preview deployment is stale relative to the latest branch;
+- a fresh preview deploy is currently blocked by Vercel daily deployment quota;
+- the seed data is minimal and has no reviewed enrichment rows;
+- search behavior depends on exact destination and interest parsing.
+
+This is not evidence that the latest branch code is broken. Same-SHA local E2E
+and build validation passed.
+
+### Preview seed tour detail does not show `Check availability`
+
+`/tours/preview-tour-handoff-1232729` rendered the seed product detail, but did
+not render `Check availability`.
+
+Reason in current code:
+
+```text
+ownerManagedProductHandoffMappings: []
+```
+
+The resolver requires an explicitly reviewed public product ID to owner-managed
+Bókun ID mapping before it will show a public booking partner handoff on a DB
+product detail page.
+
+This is intentional. It prevents a preview seed row from being treated as an
+approved production handoff mapping.
+
+## 8. Production read-only comparison
 
 A read-only public production API check against:
 
@@ -133,7 +219,7 @@ A read-only public production API check against:
 https://radarscout.io/api/products?destination=thailand&take=3
 ```
 
-returned:
+previously returned:
 
 ```text
 status: 200
@@ -144,42 +230,31 @@ source: signed-bokun-supplier-products
 inventoryScope: thailand-first
 ```
 
-This confirms production currently has display-ready rows for the public product
-API, but it does not prove preview has equivalent data.
+This confirms production has display-ready rows for the public product API, but
+it does not prove preview has equivalent search behavior.
 
-## 6. Readiness assessment
+## 9. Readiness assessment
 
 Classification:
 
 ```text
-Preview data readiness: not yet proven
-Product UI behavior: covered by unit tests and mocked preview smoke
-Production public product API: read-only rows observed
-Preview real product-detail found-state smoke: blocked until preview has verified display-ready rows
+Preview DATABASE_URL: configured
+Preview DB seed rows: present
+Preview tour detail found-state: partially proven on existing protected preview
+Preview AI search real-data result: not proven
+Preview DB-backed Check availability handoff: intentionally not approved
+Fresh latest-preview deployment: blocked by Vercel daily deploy quota
+Product UI behavior: covered by unit tests and mocked protected-preview smoke
 ```
 
-The likely limitation is preview data state or preview access, not the AI Trip
-Planner frontend shell.
+The remaining limitation is not basic Preview DB availability. It is a
+combination of fresh preview deployment quota, minimal preview seed data, and
+the intentionally empty reviewed handoff mapping list.
 
-The current helper is still useful and should remain in use because it proves:
+## 10. Required evidence before relying on preview real-data smoke
 
-- deployed `/ai-trip-planner` UI loads behind protected preview access;
-- result UI can render returned products safely;
-- source-tagged detail links are generated;
-- forbidden copy and unsafe network calls are absent in the mocked flow.
-
-It does not prove:
-
-- preview DB has active Thailand product rows;
-- preview DB has reviewed enrichment rows;
-- preview DB has reviewed handoff mappings;
-- real `/api/ai-trip/search` returns products on preview;
-- a real preview `/tours/{id}?source=ai-trip-planner` route reaches found state.
-
-## 7. Required evidence before relying on preview real-data smoke
-
-Before using preview for real product-detail found-state smoke, collect this
-evidence on a protected preview URL with temporary Vercel share access:
+After the Vercel deploy quota resets, collect this evidence on a fresh protected
+preview URL with temporary Vercel share access:
 
 ```text
 GET /tours
@@ -189,52 +264,77 @@ GET /api/products?destination=thailand&take=3
 Expected: 200, products.length > 0, bookingEnabled false, availabilityEnabled false.
 
 POST /api/ai-trip/search
-Payload: safe Thailand prompt such as "Chiang Mai 3 days elephants temples food"
+Payload: safe Thailand prompt such as "3 days in Chiang Mai with elephants and food"
 Expected: status ok, products.length > 0, detailHref values point to /tours/{id}.
 
-GET /tours/{id}?source=ai-trip-planner
-Expected: found-state product detail, AI Trip Planner context visible, robots noindex,nofollow.
+GET /tours/preview-tour-handoff-1232729?source=ai-trip-planner
+Expected: found-state product detail and AI Trip Planner context visible.
+
+GET /tours/preview-tour-no-handoff-999999999?source=ai-trip-planner
+Expected: found-state product detail and planning-only fallback visible.
 ```
 
 All checks must remain read-only and must not print secrets or persist temporary
 share URLs.
 
-## 8. Recommended next task
+## 11. Recommended next tasks
 
-Recommended next task:
+Recommended after Vercel deploy quota resets:
 
 ```text
-TD-RADARSCOUT-PREVIEW-DATA-READINESS-1
+TD-RADARSCOUT-AI-TRIP-PLANNER-LATEST-HEAD-PREVIEW-SMOKE-1
 ```
 
 Goal:
 
-Run a protected-preview read-only real-data smoke against a fresh preview
-deployment and document whether preview has display-ready rows.
+- deploy latest `origin/codex/travel-mvp-launch` to Vercel Preview;
+- generate a temporary share URL;
+- run `pnpm smoke:ai-trip-preview`;
+- run one real-network `/api/ai-trip/search` check against seeded Preview DB;
+- run both seeded `/tours/{id}?source=ai-trip-planner` smoke checks.
 
-Boundaries:
+Recommended before any DB-backed `Check availability` implementation:
 
-- no DB writes;
-- no migrations;
-- no seed changes;
-- no schema/env changes;
-- no Bókun API calls;
-- no checkout/payment/booking submission;
-- no production deploy;
-- no ThaiEleHub or Shopify work.
+```text
+TD-RADARSCOUT-TOUR-DETAIL-HANDOFF-MAPPING-1C-FIRST-APPROVED-MAPPING
+```
 
-If preview still has zero display-ready rows, the next task should be a separate
-preview seed/readiness plan. That plan must define the exact rows needed and stop
-before any DB mutation unless explicitly approved.
+Only start this after a reviewed evidence packet identifies a real production
+public product ID and matching owner-managed Bókun ID. Do not use preview seed
+IDs as production mapping evidence.
 
-## 9. Status
+## 12. Status
 
 Current status:
 
 ```text
 AI Trip Planner mocked preview smoke: ready
-Production public product API rows: observed
-Preview real-data readiness: not proven
-Preview found-state product-detail smoke: not yet reliable
-Blockers: none for UI release evidence; preview data evidence still needed
+Preview DATABASE_URL: configured
+Preview DB seed rows: present
+Preview tour detail found-state: partially proven
+Preview AI search real-data readiness: not proven
+Preview DB-backed handoff readiness: intentionally gated by empty mapping list
+Blockers: Vercel daily deploy quota for fresh preview
 ```
+
+## 13. Guardrail confirmation
+
+This task did not:
+
+- write to the database;
+- run migrations;
+- change Prisma schema;
+- change environment variables;
+- print database credentials;
+- read `.env.production`;
+- select `rawJson`;
+- select supplier private fields;
+- select rates or commission;
+- call Bókun API;
+- edit or sync Bókun products;
+- add checkout, payment, cart, booking submission, live availability, or
+  inventory behavior;
+- change robots metadata;
+- add `/tours/{id}` to sitemap;
+- deploy preview or production;
+- touch ThaiEleHub or Shopify files.
