@@ -35,10 +35,25 @@ export type CoverageData = {
   cities: CityRow[]
 }
 
+type CityCountRow = {
+  city: string | null
+  _count: {
+    _all: number
+  }
+}
+
 const BASE_WHERE = {
   active: true,
   supplierId: { not: null as string | null },
   city: { in: THAILAND_CITIES },
+}
+
+function countByCity(rows: CityCountRow[]) {
+  return new Map(
+    rows
+      .filter((row): row is CityCountRow & { city: string } => typeof row.city === 'string')
+      .map(row => [row.city, row._count._all]),
+  )
 }
 
 export async function GET(request: NextRequest) {
@@ -67,10 +82,11 @@ export async function GET(request: NextRequest) {
       }),
     ])
 
-    const reviewedMap = new Map(reviewedByCity.map(r => [r.city, r._count._all]))
+    const totalsMap = countByCity(totalsByCity)
+    const reviewedMap = countByCity(reviewedByCity)
 
     const cities: CityRow[] = THAILAND_CITIES.map(city => {
-      const total = totalsByCity.find(r => r.city === city)?._count._all ?? 0
+      const total = totalsMap.get(city) ?? 0
       const reviewed = reviewedMap.get(city) ?? 0
       const missing = total - reviewed
       const pct = total > 0 ? Math.round((reviewed / total) * 1000) / 10 : 0
