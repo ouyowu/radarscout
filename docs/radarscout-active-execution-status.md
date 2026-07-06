@@ -63,7 +63,8 @@ Recent completed items:
 - Thailand-wide result summaries now use route-comparison wording through PR #302.
 - AI Trip active status was refreshed after route-summary work through PR #304.
 - Thailand route-summary E2E coverage was added through PR #307.
-- Latest clean local validation passed for the current AI Trip candidate after PR #307.
+- Thailand route result-city chip E2E coverage was added through PR #309.
+- Latest clean local validation passed for the current AI Trip candidate after PR #309.
 
 ## 4. Current blocked or deferred items
 
@@ -113,14 +114,15 @@ Status: passed.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `812d803603f518b7236b42b06b3cc8676c0171b8`;
+- latest `origin/codex/travel-mvp-launch`: `636f6d67a45b434071463a0b7d4b475ff27838a9`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
-- latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
+- latest merged AI Trip test-only increment: PR #309, merge SHA `636f6d67a45b434071463a0b7d4b475ff27838a9`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #307 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
+- clean local validation passed after PR #309 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -152,6 +154,7 @@ The current codebase already includes:
 - Thailand multi-city route starter;
 - Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand-wide route-comparison result summary wording;
+- E2E coverage for Thailand-wide route result-city chip rendering;
 - five-card desktop destination starter layout;
 - read-only Thailand product search from confirmed trip intent;
 - comparison-only product result cards;
