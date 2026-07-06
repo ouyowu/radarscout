@@ -8,6 +8,7 @@ import {
   getPublicThailandProduct,
   loadPublicThailandProductDetail,
 } from '@/lib/publicProducts/getPublicThailandProduct'
+import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
 
 export const dynamic = 'force-dynamic'
 
@@ -99,7 +100,7 @@ export async function generateMetadata({ params }: TourDetailPageProps): Promise
     title: `${title} | RadarScout Thailand Tours`,
     description,
     alternates: { canonical },
-    robots: { index: false, follow: false },
+    robots: getTourDetailRobots(product.id),
     openGraph: {
       title,
       description,

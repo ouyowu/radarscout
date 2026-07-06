@@ -13,6 +13,7 @@ const productLoaderMock = vi.hoisted(() => ({
 vi.mock('@/lib/publicProducts/getPublicThailandProduct', () => productLoaderMock)
 
 import { generateMetadata } from '../page'
+import { isTourDetailSeoCandidate } from '@/lib/publicProducts/tourDetailSeoCandidates'
 
 const GENERIC_TITLE = 'Thailand Tour Detail | RadarScout'
 const GENERIC_DESCRIPTION = 'Explore curated Thailand travel experiences from trusted local operators, with a secure booking handoff.'
@@ -140,6 +141,15 @@ describe('generateMetadata — tours/[id]/page', () => {
 
     const meta = await generateMetadata({ params: { id: 'prod_abc' } })
 
+    expect(meta.robots).toMatchObject({ index: false, follow: false })
+  })
+
+  it('eligible product is not an SEO candidate unless explicitly allowlisted', async () => {
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct())
+
+    const meta = await generateMetadata({ params: { id: 'prod_abc' } })
+
+    expect(isTourDetailSeoCandidate('prod_abc')).toBe(false)
     expect(meta.robots).toMatchObject({ index: false, follow: false })
   })
 })

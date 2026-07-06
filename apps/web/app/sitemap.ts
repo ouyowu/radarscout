@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { listTourDetailSeoCandidates } from '@/lib/publicProducts/tourDetailSeoCandidates'
 
 const routes = [
   ['', 'weekly', 1.0],
@@ -21,5 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   }))
 
-  return staticRoutes
+  const tourDetailCandidates: MetadataRoute.Sitemap = listTourDetailSeoCandidates().map(candidate => ({
+    url: `${base}${candidate.expectedCanonicalPath}`,
+    lastModified: new Date(candidate.approvedAt),
+    changeFrequency: 'weekly',
+    priority: 0.5,
+  }))
+
+  return [...staticRoutes, ...tourDetailCandidates]
 }
