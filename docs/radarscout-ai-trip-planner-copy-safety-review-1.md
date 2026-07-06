@@ -2,54 +2,96 @@
 
 Task: `TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-1`
 
-Date: 2026-07-06
+Date: 2026-07-07
 
-Scope: docs-only review of RadarScout AI Trip Planner public copy and related regression coverage.
+## 1. Scope
 
-## 1. Reviewed surfaces
+This review covers the current RadarScout AI Trip Planner and related homepage entry copy.
 
-- `apps/web/app/ai-trip-planner/page.tsx`
-- `apps/web/app/ai-trip-planner/IntentParserDemo.tsx`
-- `apps/web/app/ai-trip-planner/IntentParserPanels.tsx`
-- `apps/web/app/ai-trip-planner/AiSearchProductCard.tsx`
-- `apps/web/app/ai-trip-planner/resultFitSummary.ts`
-- `apps/web/lib/ai-trip/placeholder-itinerary.ts`
-- `apps/web/app/api/ai-trip/search/route.ts`
-- `apps/web/e2e/ai-trip-planner.spec.ts`
-- `apps/web/app/ai-trip-planner/__tests__/copySafety.test.ts`
-- `apps/web/app/ai-trip-planner/__tests__/productSearch.test.ts`
+Reviewed surfaces:
 
-## 2. Current public copy posture
+- `/ai-trip-planner` page metadata and visible copy;
+- AI Trip Planner prompt, confirmation, search, result, no-match, and unsupported-destination copy;
+- AI Trip Planner product comparison card copy;
+- homepage AI Trip Planner prompt entry copy;
+- tour-detail return context used from `source=ai-trip-planner`;
+- copy-safety tests that protect the public planner boundary.
 
-The AI Trip Planner public copy remains inside the approved boundary:
+This task is docs-only. It does not change app code, deploy, alter SEO state, write database records, change schema or environment variables, call Bókun, add checkout behavior, or touch ThaiEleHub/Shopify files.
 
-- product results are described as `comparison-only`;
-- product search appears only after local confirmation;
-- current product details and handoff stay on product pages;
-- booking partner language is used only for handoff context;
-- Thailand-wide route wording is framed as route comparison, not booking;
-- non-Thailand ideas remain planning-only.
+## 2. Current safe product boundary
 
-The current wording supports the product direction without implying live inventory, payment, checkout, confirmation, or direct booking behavior.
+The current planner copy consistently describes RadarScout as a Thailand-first guided discovery product.
 
-## 3. Safe wording found
+The strongest existing boundary phrases are:
 
-Examples of currently safe wording:
+- `Product matching is currently limited to Thailand experience records.`
+- `Product search appears only after local confirmation and remains comparison-only.`
+- `No booking partner action or current status claim.`
+- `Current product details and booking partner handoff stay on product pages.`
+- `No product, supplier, price, availability, final partner step, or partner handoff links are loaded.`
+- `Prompt links load the planner form only. Real Thailand experience search starts after you review and confirm your trip intent.`
 
-- `comparison-only product results`
-- `comparison-only route results`
-- `Open product pages for current details`
-- `continue through the public partner handoff path`
-- `current product details and booking partner handoff stay on product pages`
-- `No booking partner action or current status claim`
-- `This planner understands your travel intent locally first`
-- `Returns real eligible products from trusted local operators`
+This is the right public stance for the current product because it separates:
 
-These phrases preserve the separation between RadarScout planning/recommendation and external booking partner actions.
+- planning and comparison owned by RadarScout;
+- current operating details and booking partner handoff owned by product/detail or partner surfaces;
+- unsupported destination ideas from real product matching.
 
-## 4. Forbidden copy audit
+## 3. Protected wording status
 
-Reviewed visible AI Trip Planner source areas and tests for:
+The current public planner surfaces are covered by tests against the main unsafe public-copy classes:
+
+- live availability claims;
+- available-now claims;
+- instant confirmation claims;
+- checkout/payment wording in planner/product result cards;
+- partner-rate, supplier-net-rate, and commission wording;
+- Bókun backend/database/powered-by wording;
+- fake ratings or review implications.
+
+Existing source and test coverage already verifies that AI Trip Planner product cards are comparison-only and do not include checkout, payment, booking, rating, live-availability, partner-rate, supplier-net-rate, or commission fields.
+
+## 4. Remaining UX/copy risk
+
+The current copy is safe, but it is becoming dense. The planner now repeats the same boundary in several places:
+
+- homepage prompt section;
+- AI Trip Planner hero;
+- destination starter section;
+- intent parser helper;
+- confirmation panel;
+- search capability card;
+- result feedback;
+- product cards;
+- deterministic outline.
+
+The risk is not unsafe claims. The risk is friction:
+
+- users may understand the product is safe, but not quickly understand the main action;
+- multiple boundary messages may make the planner feel defensive;
+- result-state copy can compete with comparison cards on mobile;
+- some labels use internal/product-language phrasing such as `read-only product search`, which is accurate but less traveler-friendly.
+
+## 5. Recommended copy direction
+
+Keep the safety boundary, but make the traveler path simpler:
+
+1. `Describe your Thailand trip idea.`
+2. `Review the detected intent.`
+3. `Search matching Thailand experiences.`
+4. `Open a product page for details and booking partner handoff.`
+
+Preferred public wording:
+
+- `Search matching Thailand experiences`
+- `Comparison-only results`
+- `Open product details`
+- `Continue with a booking partner`
+- `Current details stay on product pages`
+- `Thailand product matching only`
+
+Avoid adding or reintroducing:
 
 - `live availability`
 - `available now`
@@ -63,61 +105,82 @@ Reviewed visible AI Trip Planner source areas and tests for:
 - `partner rate`
 - `supplier net rate`
 - `commission`
-- `fake reviews`
-- `fake ratings`
+- fake ratings or fake reviews
 
-Result:
+## 6. Concrete gap to implement next
 
-- no unsafe tourist-facing AI Trip Planner copy was found;
-- forbidden terms appear in test assertions, safety guardrails, or parser-deny logic where appropriate;
-- public product-card and result-summary copy does not expose backend, rate, payment, checkout, or live-availability claims.
+The clearest next product task is a small copy/UX tightening pass on the AI Trip Planner result state, not a new feature.
 
-## 5. Current regression coverage
-
-Existing coverage is strong for the current release stage:
-
-- public planner copy safety test checks backend, checkout, and payment wording;
-- product-search unit tests verify product card props do not include checkout, payment, booking, availability, rating, or review fields;
-- result fit summary tests reject commerce, rating, and live-inventory wording;
-- placeholder itinerary tests reject checkout, payment, booking, ratings, and fake availability claims;
-- E2E coverage verifies no live availability, checkout, payment, booking-complete, or instant-confirmation copy in key flows;
-- E2E coverage now includes Thailand route summary wording and Thailand route result-city chip rendering.
-
-## 6. Risk notes
-
-Current risk level: low.
-
-Remaining risks are operational rather than copy-specific:
-
-- production still serves an older AI Trip Planner until Vercel deployment quota allows deployment;
-- fresh preview deployment is also blocked by Vercel quota;
-- future copy changes should continue to update both unit and E2E guardrails when adding visible planner text.
-
-## 7. Recommended next task
-
-Recommended next safe task:
+Recommended next implementation:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PRODUCTION-QUOTA-RETRY-0
+TD-RADARSCOUT-AI-TRIP-RESULT-COPY-TIGHTEN-1
 ```
 
-Run only after the Vercel deployment quota resets or project plan capacity changes.
+Goal:
 
-If deployment remains blocked, continue with local-only work:
+Make the AI Trip Planner result-state copy shorter and more traveler-readable while preserving the same safety boundary.
+
+Suggested scope:
+
+- tighten the successful-result helper copy near comparison cards;
+- keep the `Comparison only` boundary;
+- keep `Current product details and booking partner handoff stay on product pages`;
+- avoid changing product matching logic;
+- avoid changing CTA/handoff behavior;
+- update copy-safety and E2E assertions for the revised copy.
+
+Candidate copy:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-DETAIL-RETURN-PATH-1
+Results ready. Compare the cards below, then open a product page for current details and booking partner handoff.
 ```
 
-That task should be scoped to local tests or docs unless a clean preview deployment becomes available.
+This can replace or consolidate longer nearby result helper text if the UI currently repeats the same idea.
 
-## 8. Safety confirmations
+## 7. Safety gates for the next implementation
 
-- No app code changed in this review.
-- No production deploy.
-- No SEO index/follow opening.
-- No LLM/OpenAI integration.
-- No Bókun API/edit/sync.
-- No booking/checkout/payment/submission behavior.
-- No DB/schema/env changes.
-- ThaiEleHub and Shopify files untouched.
+The next implementation must keep these gates:
+
+- no production deploy without explicit approval;
+- no SEO index/follow opening;
+- no sitemap or robots changes;
+- no Bókun API/edit/sync;
+- no checkout/payment/cart/booking submission;
+- no live availability/inventory behavior;
+- no DB/schema/env changes;
+- no LLM/OpenAI integration;
+- no ThaiEleHub/Shopify files.
+
+Required validation:
+
+```bash
+pnpm --filter @reddit-monitor/db exec prisma generate
+pnpm --filter @reddit-monitor/web test -- copySafety
+pnpm --filter @reddit-monitor/web test -- productSearch
+pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts
+pnpm --filter @reddit-monitor/web test:e2e
+pnpm --filter @reddit-monitor/web exec tsc --noEmit
+pnpm --filter @reddit-monitor/web build
+git diff --check
+```
+
+## 8. Decision
+
+RadarScout's current AI Trip Planner public copy is safe enough to keep moving forward behind the existing preview and production gates.
+
+Do not broaden this into LLM, booking, inventory, Bókun API, checkout, or SEO-opening work.
+
+Recommended next task:
+
+```text
+TD-RADARSCOUT-AI-TRIP-RESULT-COPY-TIGHTEN-1
+```
+
+If Vercel preview quota resets first, run:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+before considering any production deploy for latest app-code changes.
