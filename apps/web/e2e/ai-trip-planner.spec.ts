@@ -1241,7 +1241,7 @@ test.describe('Product card safety', () => {
     })
 
     for (let i = 0; i < 3; i++) {
-      await expect(cards.nth(i).getByText(/open the product page to review details and continue with the booking partner/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/open the product page to review details; booking partner handoff continues from that product page/i)).toBeVisible()
     }
   })
 
@@ -1251,7 +1251,7 @@ test.describe('Product card safety', () => {
 
     await expect(
       page.getByRole('link', {
-        name: /view details for chiang mai elephant sanctuary, then continue with booking partner/i,
+        name: /view details for chiang mai elephant sanctuary, then continue with the booking partner from that product page/i,
       }),
     ).toHaveAttribute('href', /\/tours\/.*source=ai-trip-planner/)
     await expect(page.getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
