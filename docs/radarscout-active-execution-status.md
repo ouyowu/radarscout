@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-5`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-6`
 
 Updated: 2026-07-06
 
@@ -46,7 +46,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Latest AI Trip product-code increments:
@@ -65,10 +65,14 @@ Latest AI Trip product-code increments:
 - PR #394: successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 - PR #397: the successful-result top-match detail CTA accessible label now explains that the booking partner handoff continues from the product page.
 - PR #400: ordinary AI Trip product-card handoff copy now uses the same product-page-scoped boundary as the top-match CTA.
+- PR #409: AI Trip example prompt chips and the `Clear trip idea` chip now use 44px minimum tap targets.
 
 Latest tooling increment:
 
 - PR #373: Vercel preview deploy helper reports the daily deployment quota blocker more clearly.
+- PR #404: Vercel preview link cleanup helper was added.
+- PR #406: preview deploy wrapper runs cleanup before the guard.
+- PR #407: preview cleanup accepts the current Vercel CLI `.env*` gitignore addition.
 
 Latest status-doc increment:
 
@@ -98,7 +102,9 @@ Latest status-doc increment:
 - PR #396 corrected the preview guard command and recorded the dirty-metadata caveat from the latest successful protected preview smoke.
 - PR #401 recorded the clean protected-preview smoke pass for `c04b0399b03f8fcb479a1a44da744487c12267df`.
 - PR #402 refreshed active status after PR #400 and documented the PR #400 preview quota blocker.
-- Current status update records latest-head validation for `8c344b1233c0b2ed6e2053dbb592842640aeb876` and the latest preview quota blocker.
+- PR #403 recorded AI Trip deploy candidate status after PR #400 and PR #402.
+- PR #405 refreshed active status and the production deploy candidate after PR #402.
+- Current status update records latest-head validation for `0a00697021dc190304fec5be84e82e139162d550`, the fixed preview-link cleanup path, and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -111,24 +117,25 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-after-pr402
+/private/tmp/radarscout-latest-after-pr409
 ```
 
-Validated latest branch HEAD after PR #402:
+Validated latest branch HEAD after PR #409:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Latest docs-only merge before this status refresh:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Validation results:
 
 - Prisma generate: passed.
+- Vercel preview cleanup/deploy helper tests (`node --test scripts/__tests__/radarscout-vercel-preview-link-cleanup.test.js scripts/__tests__/radarscout-vercel-preview-deploy.test.js`): passed, 13 tests.
 - AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
@@ -172,6 +179,7 @@ Meaning:
 - The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
 - The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
+- The latest clean-head retry for `0a00697021dc190304fec5be84e82e139162d550` confirmed the preview wrapper now removes Vercel CLI `.env.local` / `.env*` side effects, passes the guard, and then fails only on the Vercel daily deployment quota.
 - This is not a code, TypeScript, test, or build failure.
 
 Recent preview evidence:
@@ -243,6 +251,7 @@ Recent preview evidence:
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 - A clean latest-head manual preview retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `0a00697021dc190304fec5be84e82e139162d550` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -252,7 +261,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #402, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #409, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
@@ -284,6 +293,7 @@ The current codebase already includes:
 - loaded route search feedback can jump directly to comparison cards;
 - booking-partner handoff context in AI Trip product-card detail CTA accessible labels;
 - product-card handoff visible copy explicitly says the booking partner handoff continues from the product page;
+- AI Trip prompt chips use 44px minimum tap targets;
 - traveler-facing AI Trip return-context copy on sourced tour detail pages;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
