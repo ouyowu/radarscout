@@ -64,17 +64,32 @@ function isCityDestination(destination: string): boolean {
 function getInterestSearchTerms(interests: string[]): string[] {
   const terms: string[] = []
   const seen = new Set<string>()
+  const termGroups: string[][] = []
 
   for (const interest of interests) {
     const normalized = interest.trim().toLowerCase()
     if (!normalized) continue
 
+    const group: string[] = []
     for (const term of [normalized, ...(INTEREST_SEARCH_ALIASES[normalized] ?? [])]) {
       const normalizedTerm = term.trim().toLowerCase()
-      if (!normalizedTerm || seen.has(normalizedTerm)) continue
+      if (!normalizedTerm || group.includes(normalizedTerm)) continue
 
-      seen.add(normalizedTerm)
-      terms.push(normalizedTerm)
+      group.push(normalizedTerm)
+    }
+
+    if (group.length > 0) termGroups.push(group)
+  }
+
+  const maxGroupLength = Math.max(0, ...termGroups.map(group => group.length))
+
+  for (let termIndex = 0; termIndex < maxGroupLength; termIndex += 1) {
+    for (const group of termGroups) {
+      const term = group[termIndex]
+      if (!term || seen.has(term)) continue
+
+      seen.add(term)
+      terms.push(term)
 
       if (terms.length >= MAX_INTEREST_SEARCH_TERMS) return terms
     }
