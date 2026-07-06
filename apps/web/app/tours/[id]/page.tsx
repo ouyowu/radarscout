@@ -206,6 +206,11 @@ function UnavailableState({
           <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
             {body}
           </p>
+          {isFromAiTripPlanner ? (
+            <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
+              Return to the AI Trip Planner results to compare the other matches. No partner action or current status is recorded from this unavailable detail page.
+            </p>
+          ) : null}
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/tours"

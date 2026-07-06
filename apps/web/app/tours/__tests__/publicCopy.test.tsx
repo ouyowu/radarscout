@@ -249,6 +249,8 @@ describe('tour public copy safety', () => {
     const markup = renderToStaticMarkup(element)
 
     expect(markup).toContain('This product detail is not available.')
+    expect(markup).toContain('Return to the AI Trip Planner results to compare the other matches')
+    expect(markup).toContain('No partner action or current status is recorded from this unavailable detail page')
     expect(markup).toContain('Back to AI Trip Planner results')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
     expect(fetchMock).not.toHaveBeenCalled()
