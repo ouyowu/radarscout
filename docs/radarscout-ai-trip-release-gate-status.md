@@ -1,8 +1,8 @@
 # RadarScout AI Trip Planner release gate status
 
-Task: `TD-RADARSCOUT-AI-TRIP-RELEASE-GATE-STATUS-0`
+Task: `TD-RADARSCOUT-AI-TRIP-RELEASE-GATE-STATUS-1`
 
-Last updated: 2026-07-06
+Last updated: 2026-07-07
 
 ## Current branch state
 
@@ -12,130 +12,167 @@ Safe base branch:
 origin/codex/travel-mvp-launch
 ```
 
-Latest merged app-code HEAD:
+Latest checked branch HEAD:
 
 ```text
-af249530be2df862566be8c7023c7531418a8588
+d65966717cde3725486fffcae273667301836d31
 ```
 
-Merged product increment:
+Latest application-code candidate in this branch:
 
 ```text
-PR #288: Add Thailand route starter to AI trip planner
-Status: merged
-Merge SHA: d8242c7e2c5a978e792dafd4eb626dfb72a84fe7
+e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
-Merged layout polish:
+The latest overall branch HEAD is newer because docs-only status updates were
+merged after the application-code candidate.
+
+## Current product candidate
+
+The current AI Trip Planner candidate includes:
+
+- AI Trip result flow and safe return links from product detail pages;
+- read-only Thailand product matching;
+- destination and compact-prompt parser coverage;
+- homepage prompt boundary clarification;
+- mobile result-flow and result-card layout coverage;
+- positive public boundary labels:
 
 ```text
-PR #289: Fit AI trip destination starters in desktop grid
-Status: merged
-Merge SHA: af249530be2df862566be8c7023c7531418a8588
-Scope: AI Trip Planner layout polish and E2E coverage only
+Read-only comparison
+Product-page details
+Thailand-only matching
+Reviewed coverage first
 ```
 
-## Product state
+The candidate remains a guarded discovery and comparison surface. It does not
+enable LLM/OpenAI calls, Bókun API calls, checkout, payment, booking submission,
+inventory behavior, or availability claims.
 
-The AI Trip Planner now includes a Thailand-wide route starter in addition to city starters:
+## Latest validation evidence
+
+Latest clean validation worktree:
 
 ```text
-Bangkok
-Chiang Mai
-Pattaya
-Phuket
-Thailand
+/private/tmp/radarscout-ai-trip-production-drift-0-postmerge
 ```
 
-The Thailand starter preloads this safe multi-city prompt:
+Validated HEAD:
 
 ```text
-Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace
+bca4a504729ce9a1be1639b82c252137e669e2b8
 ```
 
-The starter remains deterministic. It does not call an LLM, does not call Bókun, and does not trigger any booking, checkout, payment, inventory, or availability behavior.
-
-## Validation evidence
-
-PR #288 local and same-SHA validation passed:
-
-```text
-Prisma generate: passed
-Vitest: passed
-AI Trip Planner E2E: passed
-TypeScript: passed
-Next build: passed
-git diff --check: clean
-Local same-SHA production smoke: passed
-```
-
-PR #289 local validation passed before merge:
+Results:
 
 ```text
 Prisma generate: passed
-Vitest: passed
-AI Trip Planner E2E: passed
-TypeScript: passed
+Focused copySafety Vitest: passed, 59 files / 932 tests
+AI Trip Planner Playwright E2E: passed on retry, 54/54
+TypeScript: clean
 Next build: passed
+Full Playwright E2E: passed, 60/60
 git diff --check: clean
 ```
 
-## Current external blocker
+Validation note:
 
-Vercel preview deployment is currently blocked by the account daily deployment quota:
+The first focused AI Trip Playwright run hit a local dev-server/test-runner flake
+after test 19. The immediate focused rerun passed all 54 tests, and the
+subsequent full E2E suite passed all 60 tests. This is recorded as a local test
+runner flake, not a product-code failure.
+
+## Latest preview retry
+
+Latest clean preview retry:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-latest-head-preview-2
+HEAD: d65966717cde3725486fffcae273667301836d31
+Project: ouyowus-projects / reddit-monitor
+Guard: pnpm guard:vercel-preview passed
+Command: npx vercel --yes
+Result: blocked
+```
+
+Vercel blocker:
 
 ```text
 api-deployments-free-per-day
 ```
 
-This is a platform quota blocker, not a code validation failure.
+This is an external Vercel daily deployment quota blocker. It is not a code,
+build, TypeScript, test, project-linking, DB, Bókun, SEO, or production-deploy
+failure.
 
 Do not run production deploy to bypass this blocker.
+
+## Production drift
+
+Observed production URLs:
+
+```text
+https://radarscout.io/ai-trip-planner
+https://www.radarscout.io/ai-trip-planner
+```
+
+Current production result:
+
+- both URLs return `200`;
+- title is `Thailand AI Trip Planner | RadarScout`;
+- robots remain `noindex, nofollow`;
+- production still shows the older `No fake...` transparency labels.
+
+Interpretation:
+
+Production is healthy but behind the latest reviewed AI Trip Planner copy
+candidate. This is expected because the latest candidate has not been production
+deployed.
 
 ## Required next gate
 
 When Vercel preview quota recovers:
 
-1. Create a clean worktree from `origin/codex/travel-mvp-launch`.
-2. Run `git rev-parse HEAD` in that worktree and record the current branch HEAD at retry time.
-3. Verify the Vercel project is `ouyowus-projects / reddit-monitor`.
-4. Run preview deploy only.
-5. Smoke `/ai-trip-planner` for:
-   - page loads 200
-   - title is `Thailand AI Trip Planner | RadarScout`
-   - robots remain `noindex, nofollow`
-   - Thailand multi-city starter visible
-   - starter fills the expected prompt
-   - result search remains read-only comparison mode
-   - no unsafe network calls
-   - no forbidden public copy
-   - no mobile horizontal overflow
+1. create a fresh clean worktree from `origin/codex/travel-mvp-launch`;
+2. confirm the current HEAD in that worktree;
+3. verify the Vercel project is `ouyowus-projects / reddit-monitor`;
+4. run `pnpm guard:vercel-preview`;
+5. run preview deploy only with `npx vercel --yes`;
+6. run the protected AI Trip preview smoke helper against `/ai-trip-planner`;
+7. confirm no production aliases, no SEO opening, no unsafe network behavior, and
+   no forbidden public copy.
 
-If this preview passes, the AI Trip Planner starter and layout changes can be considered preview-smoked.
-Production deployment still requires explicit SHA approval.
+Production deployment still requires explicit approval for an exact SHA.
+
+If the operator accepts the known preview-quota limitation, the current latest
+exact SHA for a production approval would be:
+
+```text
+d65966717cde3725486fffcae273667301836d31
+```
 
 ## Safety boundaries still active
 
 Do not do any of the following from this release gate:
 
 ```text
-production deploy
+production deploy without exact-SHA approval
 SEO index/follow opening
 Bókun API/edit/sync
 checkout/payment/cart/booking submission
 live availability/inventory behavior
 DB/schema/env changes
+LLM/OpenAI integration
 ThaiEleHub/Shopify changes
 ```
 
 ## Recommended next task
 
 ```text
-TD-RADARSCOUT-AI-TRIP-STARTER-UPDATES-PREVIEW-RETRY
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 ```
 
-Goal:
+Run it after Vercel deployment quota resets.
 
-Retry Vercel preview for the current `origin/codex/travel-mvp-launch` HEAD after the deployment quota resets.
-
-Production deploy remains blocked until an explicit production approval names the exact SHA.
+Until the preview quota recovers, continue only with local/testable or docs-only
+RadarScout tasks and avoid stacking more unpreviewed application-code changes.
