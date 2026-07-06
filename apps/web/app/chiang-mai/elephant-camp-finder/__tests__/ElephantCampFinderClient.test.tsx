@@ -5,6 +5,7 @@ import {
   buildItinerarySummaryFromPlanner,
   CHAT_PLANNER_CHIP_CLASS,
   CHAT_PLANNER_HELPER,
+  CHIANG_MAI_PLANNER_SECTION_ID,
   CHAT_PLANNER_SUBMIT_LABEL,
   CHAT_PLANNER_STEPS,
   CHAT_PLANNER_TITLE,
@@ -124,6 +125,7 @@ describe('ElephantCampFinderClient view model', () => {
 
   it('defines a deterministic chat-style planner without LLM/API behavior', () => {
     expect(CHAT_PLANNER_TITLE).toBe('Plan with RadarScout')
+    expect(CHIANG_MAI_PLANNER_SECTION_ID).toBe('plan-with-radarscout')
     expect(CHAT_PLANNER_HELPER).toBe(
       'Start with your travel style, choose your pace, then see matching experiences.',
     )
