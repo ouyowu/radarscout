@@ -60,7 +60,8 @@ Recent completed items:
 - AI Trip destination starter grid was tightened to fit five desktop cards through PR #289.
 - Thailand multi-city route fallback suggestion was added to unsupported-destination and no-match flows through PR #297.
 - Thailand multi-city route example prompt was added to the AI Trip Planner input area through PR #301.
-- Latest clean local validation passed for the current AI Trip candidate. The previous protected Vercel preview smoke passed before PR #301; a fresh preview for PR #301 is blocked by the Vercel daily deployment quota.
+- Thailand-route-specific result summary wording was clarified through commit `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`.
+- Latest clean local validation passed for the current AI Trip candidate. The previous protected Vercel preview smoke passed before PR #301; a fresh preview for the latest head is blocked by the Vercel daily deployment quota.
 
 ## 4. Current blocked or deferred items
 
@@ -110,15 +111,16 @@ Status: partially passed; latest local validation passed, latest fresh preview b
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `8b3123703e493175847b944bee55ed7b8a67dfb3`;
-- latest merged AI Trip app-code increment: PR #301, merge SHA `8b3123703e493175847b944bee55ed7b8a67dfb3`;
+- latest `origin/codex/travel-mvp-launch`: `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
+- latest merged AI Trip app-code increment: commit `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #298, merge SHA `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
+- clean local validation passed after commit `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd` with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - Vercel PR preview deployment `https://reddit-monitor-qp4o01w65-ouyowus-projects.vercel.app` completed successfully for PR #298 head `58c0b89c4f47f183a1eddd205b5683cfbc0eafa4`;
 - PR #298 head and merge commit `b41834b197d1f9a107a3e63eb2b6dddfeb79ee1e` have the same tree hash `2b86ef7de933477c02ee2f47c3041f9b5fe2a37d`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
-- PR #301 Vercel check returned `api-deployments-free-per-day`, so no fresh protected preview is available for the latest merge SHA yet;
+- PR #301 Vercel check and latest-head manual preview retry returned `api-deployments-free-per-day`, so no fresh protected preview is available for the latest SHA yet;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
 
@@ -141,6 +143,7 @@ The current codebase already includes:
 - compact AI Trip example prompt chip;
 - Thailand multi-city route example prompt chip;
 - Thailand multi-city route starter;
+- Thailand-route-specific result fit summary;
 - five-card desktop destination starter layout;
 - read-only Thailand product search from confirmed trip intent;
 - comparison-only product result cards;
