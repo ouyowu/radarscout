@@ -9,14 +9,15 @@ Last updated: 2026-07-06
 Latest product-code candidate validated in this release-status checkpoint:
 
 ```text
-f14a278058b13ae0a52624149b1c4dc4c9d5ab99
+0301c9f492e0fb7e3495031fdb636eacc46befae
 ```
 
 This SHA includes the safe AI Trip Planner result-flow, mobile UX, copy safety,
 return-path, protected-preview runbook, local preview-smoke helper, preview data
-readiness documentation, multi-interest search coverage, and Thailand
-destination prefix normalization work. Before any production deploy, use the
-latest branch HEAD and re-run the deploy validation gate against that exact SHA.
+readiness documentation, multi-interest search coverage, Thailand destination
+prefix normalization, compact prompt coverage, and preview-deploy guard work.
+Before any production deploy, use the latest branch HEAD and re-run the deploy
+validation gate against that exact SHA.
 
 ## Recent merged increments
 
@@ -122,28 +123,41 @@ Title: Normalize AI trip Thailand destination prefixes
 Merge SHA: f14a278058b13ae0a52624149b1c4dc4c9d5ab99
 Scope: product-code destination normalization for Thailand-prefixed AI Trip prompts
 Production deploy: no
+
+PR #282
+Title: Add RadarScout Vercel preview guard
+Merge SHA: db86ae26cef299ac742c4c3f7d7b152e7eaedea2
+Scope: local preview guard and runbook update to require correct reddit-monitor project linkage before preview deploy
+Production deploy: no
+
+PR #283
+Title: Allow compact AI trip interest prompts
+Merge SHA: 0301c9f492e0fb7e3495031fdb636eacc46befae
+Scope: product-code parser/search UI coverage for compact prompts such as Chiang Mai elephant food without combining destination and interest into an unsafe query
+Production deploy: no
 ```
 
 ## Latest validation evidence
 
-Latest local validation after PR #279:
+Latest local validation after PR #283:
 
 ```text
-Worktree: /private/tmp/radarscout-ai-trip-search-partial-match-0-postmerge
-HEAD: 30d1dbc5a95ba1579bcd28c87a777bee50a1cb76
+Worktree: /private/tmp/radarscout-ai-trip-compact-prompt-e2e-1-postmerge
+HEAD: 0301c9f492e0fb7e3495031fdb636eacc46befae
 
 Prisma generate: passed
-Full Vitest: passed, 909 tests
-Playwright E2E: passed, 40/40
+Full Vitest: passed, 58 files / 914 tests
+Playwright E2E: passed, 41/41
 TypeScript: clean
 Next build: passed
 git diff --check: clean
+Local same-SHA production smoke with preview DB: passed
 ```
 
-Latest branch status after PR #280:
+Latest branch status after PR #283:
 
 ```text
-origin/codex/travel-mvp-launch: f14a278058b13ae0a52624149b1c4dc4c9d5ab99
+origin/codex/travel-mvp-launch: 0301c9f492e0fb7e3495031fdb636eacc46befae
 Fresh preview deployment: blocked by Vercel daily deployment quota
 Vercel error code: api-deployments-free-per-day
 Production deploy: not approved
@@ -156,7 +170,13 @@ An accidental Vercel project named
 radarscout-ai-trip-search-partial-match-0-postmerge
 was created while attempting a preview from a temporary worktree.
 It has been removed. Future preview deploys must explicitly link the worktree
-to ouyowus-projects / reddit-monitor before running npx vercel --yes.
+to ouyowus-projects / reddit-monitor and run `pnpm guard:vercel-preview` before
+running `npx vercel --yes`.
+
+During latest local validation, Next build initially hit a system-level
+`Too many open files` error. Stale Node/Next/Playwright-style local processes
+were removed, then the same build passed. This was local environment exhaustion,
+not a product-code failure.
 ```
 
 Latest protected-preview helper validation after PR #268:
@@ -353,7 +373,7 @@ latest `origin/codex/travel-mvp-launch` SHA to deploy. As of this checkpoint,
 the latest product-code candidate was:
 
 ```text
-f14a278058b13ae0a52624149b1c4dc4c9d5ab99
+0301c9f492e0fb7e3495031fdb636eacc46befae
 ```
 
 If production deploy is approved later, the deploy task should:
@@ -372,8 +392,8 @@ Recommended non-production tasks:
 ```text
 TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 After the Vercel daily deployment quota resets, create a fresh preview deployment
-from clean HEAD f14a278 and run the local AI Trip protected-preview smoke helper
-against that deployment.
+from clean HEAD 0301c9f and run `pnpm guard:vercel-preview` before `npx vercel --yes`,
+then run the local AI Trip protected-preview smoke helper against that deployment.
 
 TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
 Read-only audit of preview product-data readiness for real product-detail smoke. Do not mutate DB/schema/env.

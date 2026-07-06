@@ -51,7 +51,9 @@ Recent completed items:
 - AI Trip preview data readiness and real preview smoke evidence documented through PRs #271, #273, #276, and #278.
 - AI Trip multi-interest search now uses broader round-robin term coverage through PR #279.
 - AI Trip Thailand destination prefix normalization merged through PR #280.
-- Latest clean local validation for the current AI Trip search candidate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
+- Vercel preview guard added through PR #282 to prevent accidental temporary-project deploys.
+- Compact AI Trip interest prompts now search safely through PR #283.
+- Latest clean local validation for the current AI Trip candidate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
 
 ## 4. Current blocked or deferred items
 
@@ -101,12 +103,12 @@ Status: temporarily blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `f14a278058b13ae0a52624149b1c4dc4c9d5ab99`;
-- latest merged AI Trip product-code increments include PR #279 and PR #280;
-- clean local validation passed after PR #279 before the branch advanced again;
+- latest `origin/codex/travel-mvp-launch`: `0301c9f492e0fb7e3495031fdb636eacc46befae`;
+- latest merged AI Trip product-code increments include PR #279, PR #280, and PR #283;
+- clean local validation passed after PR #283;
 - Vercel returned `api-deployments-free-per-day` when attempting a fresh preview;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
-- future preview attempts must re-link the clean worktree to the existing `ouyowus-projects / reddit-monitor` project before deploy.
+- future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
 
 Decision:
 
