@@ -12,10 +12,16 @@ Safe base branch:
 origin/codex/travel-mvp-launch
 ```
 
-Current merged HEAD:
+Current branch HEAD:
 
 ```text
-d8242c7e2c5a978e792dafd4eb626dfb72a84fe7
+0c6bc319d503f17fcca2d17e3f9b67f921013628
+```
+
+Latest merged app-code HEAD:
+
+```text
+af249530be2df862566be8c7023c7531418a8588
 ```
 
 Merged product increment:
@@ -26,12 +32,12 @@ Status: merged
 Merge SHA: d8242c7e2c5a978e792dafd4eb626dfb72a84fe7
 ```
 
-Open candidate:
+Merged layout polish:
 
 ```text
 PR #289: Fit AI trip destination starters in desktop grid
-Status: open / mergeable
-Head SHA: c6039bfca0da3a4366916ccadbe08023a9745681
+Status: merged
+Merge SHA: af249530be2df862566be8c7023c7531418a8588
 Scope: AI Trip Planner layout polish and E2E coverage only
 ```
 
@@ -69,7 +75,7 @@ git diff --check: clean
 Local same-SHA production smoke: passed
 ```
 
-PR #289 local validation passed:
+PR #289 local validation passed before merge:
 
 ```text
 Prisma generate: passed
@@ -97,7 +103,7 @@ Do not run production deploy to bypass this blocker.
 When Vercel preview quota recovers:
 
 1. Create a clean worktree from `origin/codex/travel-mvp-launch`.
-2. Verify `HEAD = d8242c7e2c5a978e792dafd4eb626dfb72a84fe7`.
+2. Verify `HEAD = 0c6bc319d503f17fcca2d17e3f9b67f921013628` or the newer current branch HEAD if a later docs-only status update has landed.
 3. Verify the Vercel project is `ouyowus-projects / reddit-monitor`.
 4. Run preview deploy only.
 5. Smoke `/ai-trip-planner` for:
@@ -111,7 +117,8 @@ When Vercel preview quota recovers:
    - no forbidden public copy
    - no mobile horizontal overflow
 
-If this preview passes, PR #289 can proceed to merge and post-merge preview smoke.
+If this preview passes, the AI Trip Planner starter and layout changes can be considered preview-smoked.
+Production deployment still requires explicit SHA approval.
 
 ## Safety boundaries still active
 
@@ -130,11 +137,11 @@ ThaiEleHub/Shopify changes
 ## Recommended next task
 
 ```text
-TD-RADARSCOUT-AI-TRIP-THAILAND-ROUTE-STARTER-0-PREVIEW-RETRY
+TD-RADARSCOUT-AI-TRIP-STARTER-UPDATES-PREVIEW-RETRY
 ```
 
 Goal:
 
-Retry Vercel preview for merge SHA `d8242c7e2c5a978e792dafd4eb626dfb72a84fe7` after the deployment quota resets.
+Retry Vercel preview for current branch HEAD `0c6bc319d503f17fcca2d17e3f9b67f921013628` after the deployment quota resets.
 
 Production deploy remains blocked until an explicit production approval names the exact SHA.
