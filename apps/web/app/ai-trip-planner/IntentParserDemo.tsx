@@ -567,7 +567,7 @@ export function IntentParserDemo() {
                           <a
                             key={stop.city}
                             href={`#${buildRouteStopGroupId(stop.city)}`}
-                            className="rounded-full bg-[#f5fbf7] px-2.5 py-1 text-xs font-black text-[#0f766e] transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30 sm:px-3"
+                            className="inline-flex min-h-[44px] items-center rounded-full bg-[#f5fbf7] px-3 py-1 text-xs font-black text-[#0f766e] transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
                           >
                             {stop.city}: {stop.count} comparison match{stop.count === 1 ? '' : 'es'}
                           </a>
@@ -592,7 +592,7 @@ export function IntentParserDemo() {
                               <p>{group.count} comparison match{group.count === 1 ? '' : 'es'}</p>
                               <a
                                 href="#ai-trip-route-stop-overview"
-                                className="rounded-full bg-white px-2.5 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                                className="inline-flex min-h-[44px] items-center rounded-full bg-white px-3 py-1 transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
                               >
                                 Back to route overview
                               </a>

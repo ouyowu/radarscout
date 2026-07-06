@@ -349,8 +349,17 @@ test.describe('Valid Chiang Mai flow', () => {
     await page.getByRole('button', { name: /search loaded trip idea/i }).click()
 
     await expect(page.getByLabel(/route stop overview/i)).toBeVisible()
+    const bangkokOverviewLinkBox = await page.getByRole('link', { name: 'Bangkok: 1 comparison match' }).boundingBox()
+    expect(bangkokOverviewLinkBox).not.toBeNull()
+    expect(bangkokOverviewLinkBox?.height ?? 0).toBeGreaterThanOrEqual(44)
     await expect(page.getByLabel(/Bangkok result group/i)).toContainText('Bangkok Temple and Local Food Walk')
     await expect(page.getByLabel(/Phuket result group/i)).toContainText('Phuket Beach and Island Day')
+    const phuketBackLinkBox = await page
+      .getByLabel(/Phuket result group/i)
+      .getByRole('link', { name: /back to route overview/i })
+      .boundingBox()
+    expect(phuketBackLinkBox).not.toBeNull()
+    expect(phuketBackLinkBox?.height ?? 0).toBeGreaterThanOrEqual(44)
     await expect(page.getByLabel(/Chiang Mai result group/i)).toContainText('Chiang Mai Elephant Sanctuary')
     await expect(productCards(page)).toHaveCount(3)
 
