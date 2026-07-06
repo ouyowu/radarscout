@@ -53,6 +53,39 @@ function run(command, args, options = {}) {
   return result
 }
 
+function runVercel(args) {
+  const result = spawnSync("npx", args, {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    stdio: ["inherit", "pipe", "pipe"],
+  })
+
+  if (result.stdout) {
+    process.stdout.write(result.stdout)
+  }
+
+  if (result.stderr) {
+    process.stderr.write(result.stderr)
+  }
+
+  if (result.error) {
+    fail(result.error.message)
+  }
+
+  const combinedOutput = `${result.stdout || ""}\n${result.stderr || ""}`
+  if (result.status !== 0 && combinedOutput.includes("api-deployments-free-per-day")) {
+    console.error(
+      "[radarscout-vercel-preview-deploy] RadarScout preview deploy is blocked by Vercel daily deployment quota (api-deployments-free-per-day). This is not a code, TypeScript, test, or build failure. Retry after quota reset or use an already READY protected preview/share smoke path.",
+    )
+  }
+
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1)
+  }
+
+  return result
+}
+
 function main() {
   const passThroughArgs = process.argv.slice(2)
   assertSafeArgs(passThroughArgs)
@@ -67,7 +100,7 @@ function main() {
     return
   }
 
-  run("npx", vercelArgs)
+  runVercel(vercelArgs)
 }
 
 main()
