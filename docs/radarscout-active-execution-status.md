@@ -78,7 +78,9 @@ Recent completed items:
 - AI Trip route overview and city result group hash targets now have scroll margin through PR #337.
 - AI Trip deterministic planning outline is tighter on mobile through PR #341.
 - AI Trip route results now follow traveler prompt order through PR #342.
-- Latest clean local validation passed for the current AI Trip candidate after PR #342.
+- AI Trip route overview jump links now have clearer helper copy through PR #344.
+- Safer RadarScout preview deploy wrapper was added through PR #345.
+- Latest clean local validation passed for the current AI Trip candidate after PR #345.
 
 ## 4. Current blocked or deferred items
 
@@ -129,7 +131,7 @@ Known state:
 - a latest-head preview retry after PR #317 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - a latest-head preview retry after PR #321 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - a latest-head preview retry after PR #339 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
-- no fresh Vercel preview has been created yet for the PR #342 route-order candidate because the quota gate remains active;
+- no fresh Vercel preview has been created yet for the PR #344 route-overview-helper candidate because the quota gate remains active;
 - no production deployment or alias change completed.
 
 Decision:
@@ -137,9 +139,9 @@ Decision:
 - do not keep retrying deployment while Vercel returns `api-deployments-free-per-day`;
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
-- latest production-deploy branch candidate is `a78e667bd000d3a0c39e09283ca9b3f5fb309656`.
-- latest merged AI Trip app-code candidate is PR #342, merge SHA `a78e667bd000d3a0c39e09283ca9b3f5fb309656`.
-- latest branch HEAD after PR #342 is `a78e667bd000d3a0c39e09283ca9b3f5fb309656`.
+- latest production-deploy branch candidate is `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`.
+- latest merged AI Trip app-code candidate is PR #344, merge SHA `528e6a2da2daa834b3e5de6f9bf72578ce6a0789`.
+- latest branch HEAD after PR #345 is `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`.
 
 ### Latest fresh preview deployment
 
@@ -147,7 +149,7 @@ Status: prior preview passed; latest-head preview blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `a78e667bd000d3a0c39e09283ca9b3f5fb309656`;
+- latest `origin/codex/travel-mvp-launch`: `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -170,6 +172,8 @@ Known state:
 - latest merged AI Trip status-doc increment after PR #337: PR #339, merge SHA `2619d39d59306c2a752caa09e7c086ce6327dfa4`;
 - latest merged AI Trip app-code mobile outline compactness increment: PR #341, merge SHA `9a55f35f9a98b6835c97922a5f424f125d4bd86b`;
 - latest merged AI Trip app-code route-order increment: PR #342, merge SHA `a78e667bd000d3a0c39e09283ca9b3f5fb309656`;
+- latest merged AI Trip app-code route-overview-helper increment: PR #344, merge SHA `528e6a2da2daa834b3e5de6f9bf72578ce6a0789`;
+- latest merged RadarScout preview deploy tooling increment: PR #345, merge SHA `990ff8b89f3e1325f3ac26f69bb0604180c4eb91`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -188,6 +192,7 @@ Known state:
 - clean post-merge local validation passed after PR #337 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #341 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean latest-head local validation passed after PR #342 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
+- clean latest-head local validation passed after PR #345 with preview-wrapper tests, Prisma generate, AI Trip Vitest, AI Trip E2E, Next build, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -206,6 +211,8 @@ Known state:
 - latest PR #337 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
 - latest PR #339 latest-head preview retry passed the Vercel project guard and was then blocked by the same quota gate.
 - latest PR #342 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
+- latest PR #344 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
+- latest PR #345 tooling candidate has not received a fresh Vercel preview because the same quota gate remains active.
 
 Decision:
 
@@ -235,6 +242,8 @@ The current codebase already includes:
 - scroll-margin on route overview and city group anchor targets;
 - compact mobile deterministic planning outline cards;
 - route result ordering that follows the traveler prompt where possible;
+- clearer route overview jump-link helper copy;
+- safer `pnpm deploy:vercel-preview` wrapper for future RadarScout preview attempts;
 - Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand-wide route-comparison result summary wording;
 - E2E coverage for Thailand route city-chip visibility;
