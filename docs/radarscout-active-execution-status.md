@@ -1,8 +1,8 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-10`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-11`
 
-Updated: 2026-07-06
+Updated: 2026-07-07
 
 ## 1. Execution mode
 
@@ -18,6 +18,70 @@ Default rules:
 - use preview smoke for app changes when Vercel capacity allows;
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
+
+## 0. Latest autonomous execution update — homepage and AI Trip result copy
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+a196d8896c506f2cd0313b3cdceb78d75ed68922
+```
+
+Completed low-risk increments:
+
+- PR #441: homepage prompt chip section now clarifies that prompt links load the planner form only and that real Thailand experience search starts after review and confirmation.
+- PR #443: refreshed the AI Trip Planner copy safety review and identified result-state copy density as the next narrow product gap.
+- PR #445: tightened AI Trip Planner successful-result helper copy while preserving the comparison-only and booking partner handoff boundary.
+
+Scope:
+
+- homepage copy;
+- AI Trip Planner result-state copy;
+- copy-safety and E2E test assertions;
+- one docs-only copy safety review refresh;
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Validation evidence:
+
+- PR #441 post-merge worktree: `/private/tmp/radarscout-homepage-prompt-boundary-copy-0-postmerge`.
+- PR #443 post-merge worktree: `/private/tmp/radarscout-ai-trip-copy-safety-review-1-postmerge-current`.
+- PR #445 post-merge worktree: `/private/tmp/radarscout-ai-trip-result-copy-tighten-1-postmerge`.
+- Prisma generate: passed.
+- Focused copySafety/productSearch Vitest coverage: passed, 59 files / 932 tests.
+- Focused AI Trip Planner E2E: passed, 54 / 54 tests.
+- Full Playwright E2E: passed, 60 / 60 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview guard passed after removing Vercel CLI generated `.env.local` from the clean temp worktree.
+- Preview deploy reached Vercel but remains blocked by daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+This is an external Vercel quota blocker, not a code, TypeScript, test, build, or project-linking failure.
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run it only after Vercel deployment quota resets. Until then, continue only with local/testable or docs-only RadarScout work.
 
 ## 0. Latest autonomous execution update — homepage AI planner E2E coverage
 
