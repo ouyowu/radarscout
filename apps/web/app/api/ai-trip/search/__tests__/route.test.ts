@@ -271,17 +271,22 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.status).toBe('ok')
   })
 
-  it('interest searches do not fall back to unrelated destination-only products', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+  it('interest searches fall back to destination-only products when all terms miss', async () => {
+    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
+      Promise.resolve(options.search ? [] : [makeCandidate()]),
+    )
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
 
     const res = await POST(makeRequest({ prompt: 'Pattaya 2 days elephant food beach' }))
     const body = await res.json()
 
-    expect(body.status).toBe('no_match')
+    expect(body.status).toBe('ok')
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
     expect(calls.length).toBeGreaterThan(1)
-    expect(calls.every(options => options.search)).toBe(true)
+    expect(calls.at(-1)).toEqual({ city: 'Pattaya', take: expect.any(Number) })
   })
 
   // Test 15: Response contains no rawJson or eligibility internals
@@ -524,15 +529,21 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     expect(calls.every(options => options.search)).toBe(true)
   })
 
-  it('interest primary miss with empty aliases: fallbackUsed=false and no destination fallback', async () => {
+  it('interest primary miss with empty aliases: fallbackUsed=true and uses destination fallback', async () => {
     listMock.listAiEligibleThailandProducts
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([makeCandidate()])
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
 
-    expect(getSearchLog().fallbackUsed).toBe(false)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
+    expect(getSearchLog().fallbackUsed).toBe(true)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(3)
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls[0]).toMatchObject({ city: 'Chiang Mai', search: 'elephants' })
+    expect(calls[1]).toMatchObject({ city: 'Chiang Mai', search: 'elephant' })
+    expect(calls[2]).toEqual({ city: 'Chiang Mai', take: expect.any(Number) })
   })
 
   it('no-interest query: fallbackUsed=false, retrieval called once', async () => {
