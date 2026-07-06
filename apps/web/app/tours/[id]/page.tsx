@@ -260,10 +260,20 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
               href="/ai-trip-planner#ai-trip-results"
               className="inline-flex min-h-[44px] items-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-5 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e] transition hover:text-[#0b5f59]"
             >
-              From AI Trip Planner · Back to AI Trip Planner
+              Back to AI Trip Planner results
             </Link>
           ) : null}
         </div>
+        {isFromAiTripPlanner ? (
+          <div className="mx-auto mt-4 max-w-7xl rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+              AI Trip Planner context
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+              You opened this product from RadarScout&apos;s AI Trip Planner. Review this product detail, then return to compare the other planner matches.
+            </p>
+          </div>
+        ) : null}
       </section>
 
       <AdventureHero
