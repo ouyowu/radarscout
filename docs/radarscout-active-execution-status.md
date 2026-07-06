@@ -19,6 +19,53 @@ Default rules:
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
 
+## 0. Latest autonomous execution update — latest HEAD preview retry
+
+Updated: 2026-07-07
+
+Latest checked HEAD:
+
+```text
+bb35f368222f9d47c0bdfcc638958924749e4042
+```
+
+Completed check:
+
+- Created a fresh clean worktree from `origin/codex/travel-mvp-launch`.
+- Confirmed the correct Vercel project: `ouyowus-projects / reddit-monitor`.
+- Removed Vercel CLI generated `.env.local` and `.gitignore` side effects from the temporary worktree before running the preview guard.
+- Ran `pnpm guard:vercel-preview`; guard passed.
+- Attempted `npx vercel --yes` for preview only.
+
+Preview status:
+
+```text
+blocked: api-deployments-free-per-day
+```
+
+This remains an external Vercel daily preview deployment quota blocker, not a code,
+TypeScript, test, build, project-linking, or production-deploy failure.
+
+Safety status:
+
+- no production deploy;
+- no SEO `index,follow` opening;
+- no sitemap or robots change;
+- no DB/schema/env change;
+- no LLM/OpenAI integration;
+- no Bókun API/edit/sync;
+- no checkout/payment/booking submission;
+- ThaiEleHub and Shopify files untouched.
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run the preview deploy again only after Vercel deployment quota resets. Until then,
+continue with local/testable or docs-only RadarScout tasks.
+
 ## 0. Latest autonomous execution update — homepage and AI Trip result copy
 
 Updated: 2026-07-07
