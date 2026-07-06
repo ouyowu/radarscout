@@ -55,10 +55,10 @@ const steps = [
 ]
 
 const transparencyPoints = [
-  'No invented prices',
-  'No claimed current product status',
-  'No unsupported product links',
-  'No fake products or suppliers',
+  'Read-only comparison',
+  'Product-page details',
+  'Thailand-only matching',
+  'Reviewed coverage first',
 ]
 
 const notConnected = [
@@ -282,9 +282,8 @@ export default function AiTripPlannerPage() {
               Understand your travel intent locally before read-only product matching
             </h2>
             <p className="mt-4 text-base leading-8 text-[#6b7280]">
-              The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. No invented prices,
-              no claimed current status, and no unsupported product links are shown. Product matching is currently limited to Thailand experience
-              records.
+              The planner below keeps all current safety boundaries. Product results, when shown, are comparison-only. Current details stay on product
+              pages, and product matching is currently limited to Thailand experience records.
             </p>
           </div>
           <div className="rounded-[2rem] border border-[#ece3d6] bg-white p-4 shadow-[0_30px_60px_rgba(17,24,39,0.06)] sm:p-6 lg:p-8">
