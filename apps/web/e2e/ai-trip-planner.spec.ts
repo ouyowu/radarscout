@@ -46,6 +46,12 @@ const OK_RESPONSE: AiTripSearchResponse = {
   },
 }
 
+const COMPACT_CHIANG_MAI_RESPONSE: AiTripSearchResponse = {
+  ...OK_RESPONSE,
+  intent: { destination: 'Chiang Mai', days: null, interests: ['elephants'] },
+  products: OK_RESPONSE.products.slice(0, 1),
+}
+
 const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   status: 'unsupported_destination',
   intent: { destination: 'Singapore', days: 3, interests: ['food'] },
@@ -381,6 +387,38 @@ test.describe('Valid Chiang Mai flow', () => {
     // Product cards are identified by their unique "View details" CTA
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/why this fits/i)).toHaveCount(3)
+  })
+
+  test('compact Chiang Mai interest prompt searches without combining destination and interest', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(COMPACT_CHIANG_MAI_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.locator('#trip-idea').fill('Chiang Mai elephants')
+    await page.getByRole('button', { name: /parse trip intent/i }).click()
+
+    await expect(page.locator('dd').filter({ hasText: /^Chiang Mai$/ })).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^elephants$/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    expect(receivedPrompt).toBe('Chiang Mai elephants')
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+    await expect(productCards(page)).toHaveCount(1)
+    await expect(page.getByLabel(/result fit summary/i)).toContainText(/Matched interests: elephants/i)
+    await expect(page.getByText(/Chiang Mai Elephants/)).toHaveCount(0)
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
 
   test('each product card has a public /tours/ detail link', async ({ page }) => {

@@ -75,7 +75,7 @@ export function LocalConfirmationPanel({ confirmed }: LocalConfirmationPanelProp
         </div>
       ) : (
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-          Nothing has been confirmed yet. Parse a prompt, then confirm the detected destination and duration in local UI only.
+          Nothing has been confirmed yet. Parse a prompt, then confirm the detected destination plus a trip length or interest in local UI only.
         </p>
       )}
     </section>
