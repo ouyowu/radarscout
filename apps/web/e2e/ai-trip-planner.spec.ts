@@ -397,6 +397,25 @@ test.describe('Valid Chiang Mai flow', () => {
     }
   })
 
+  test('mobile results flow keeps result actions visible without horizontal overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(page.getByRole('link', { name: /open top match details/i })).toBeVisible()
+    await expect(productCards(page).first()).toBeVisible()
+    await expect(productCards(page)).toHaveCount(3)
+
+    const viewport = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+
+    expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
+  })
+
   test('search button is disabled while search is pending and shows Searching text', async ({ page }) => {
     // Override with a slow-resolving mock to catch the disabled state
     await page.route('/api/ai-trip/search', async route => {
