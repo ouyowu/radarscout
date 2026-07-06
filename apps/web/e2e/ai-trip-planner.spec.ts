@@ -410,6 +410,7 @@ test.describe('Valid Chiang Mai flow', () => {
       'href',
       /\/tours\/.*source=ai-trip-planner/,
     )
+    await expect(page.getByLabel(/result fit summary/i)).toHaveClass(/p-3/)
     await expect(productCards(page).first()).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
 
