@@ -286,6 +286,8 @@ test.describe('Valid Chiang Mai flow', () => {
 
     expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
     await expect(page.getByText('Suggested Thailand multi-city route outline')).toBeVisible()
+    await expect(page.getByLabel(/suggested planning outline/i)).toHaveClass(/p-4/)
+    await expect(page.getByLabel(/suggested planning outline/i).locator('article').first()).toHaveClass(/p-3/)
     await expect(page.getByText(/7-day Thailand route/i)).toBeVisible()
     await expect(page.getByText('Compare Chiang Mai, Phuket, or nearby Thailand stops')).toBeVisible()
     await expect(page.getByText('How these experiences support your Thailand route')).toBeVisible()
