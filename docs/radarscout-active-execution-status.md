@@ -1,5 +1,70 @@
 # RadarScout active execution status
 
+## 0. Latest autonomous execution update — AI Trip latest-head preview retry re-attempt
+
+Updated: 2026-07-07
+
+Current branch HEAD checked:
+
+```text
+a36403da10cc1d0f5e362efed3f2d57077ce4e82
+```
+
+Action performed:
+
+- Clean worktree created at:
+  `/private/tmp/radarscout-ai-trip-latest-head-preview-retry`
+- Vercel preview guard:
+  - `pnpm run guard:vercel-preview` passed after linking/cleanup
+  - project confirmed: `ouyowus-projects / reddit-monitor`
+- Vercel preview deploy attempted:
+  - `npx vercel --yes`
+  - blocked by free-tier quota: `api-deployments-free-per-day`
+- Local AI Trip smoke fallback executed:
+  - `pnpm smoke:ai-trip-local http://127.0.0.1:3456/ai-trip-planner`
+  - result: all checks passed
+
+Local smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
+
+Validation performed:
+
+- `pnpm run test:vercel-preview-guard` passed
+- `pnpm run test:vercel-preview-deploy` passed
+- `git status`: clean in preview worktree
+
+Production gate status:
+
+- The latest product-code production candidate remains:
+
+```text
+5fc5e617ab19ca910966f9142c7fc04f5532441d
+```
+
+- The newer branch commits after that candidate are docs/status updates only.
+- Production deploy still requires explicit approval for the exact SHA to deploy.
+
+Blocker unchanged:
+
+Vercel free-tier daily deployment quota.
+
+Next safe step:
+
+```text
+Continue with local/testable tasks until quota resets, then retry TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY.
+```
+
 Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-14`
 
 Updated: 2026-07-07
