@@ -64,9 +64,14 @@ export function AiSearchProductCard({
         </span>
       </div>
       {city ? (
-        <p className="mt-2 sm:mt-3 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
-          {city}
-        </p>
+        <div className="mt-2 sm:mt-3">
+          <p className="text-[0.68rem] font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            Matched route stop
+          </p>
+          <p className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            {city}
+          </p>
+        </div>
       ) : null}
       <h3 className="mt-2 text-lg font-black leading-tight text-[#101820]">{title}</h3>
       {summary ? (

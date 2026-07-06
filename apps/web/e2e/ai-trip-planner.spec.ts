@@ -1186,6 +1186,22 @@ test.describe('Product card safety', () => {
     }
   })
 
+  test('product cards label the matched route stop without availability claims', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(3)
+
+    const cards = page.locator('article').filter({
+      has: page.getByRole('link', { name: /view details/i }),
+    })
+    await expect(cards).toHaveCount(3)
+
+    for (let i = 0; i < 3; i++) {
+      await expect(cards.nth(i).getByText(/matched route stop/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+    }
+  })
+
   test('product cards explain the safe booking partner handoff step', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
