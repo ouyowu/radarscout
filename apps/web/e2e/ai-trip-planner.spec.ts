@@ -366,6 +366,9 @@ test.describe('Valid Chiang Mai flow', () => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+
     const resultSummary = page.getByLabel(/result fit summary/i)
     await expect(resultSummary).toBeVisible()
     await expect(resultSummary.getByText(/why these experiences match/i)).toBeVisible()
