@@ -126,6 +126,26 @@ function parseUrl(rawUrl) {
   return parsed.toString()
 }
 
+function detectPreviewProtection({ url, title, bodyText, tripIdeaCount }) {
+  const normalizedUrl = url.toLowerCase()
+  const normalizedTitle = title.toLowerCase()
+  const normalizedBody = bodyText.toLowerCase()
+
+  if (
+    tripIdeaCount === 0 &&
+    (
+      normalizedUrl.startsWith('https://vercel.com/login') ||
+      normalizedUrl.includes('/sso-api') ||
+      normalizedTitle.includes('login') && normalizedTitle.includes('vercel') ||
+      normalizedBody.includes('log in to vercel')
+    )
+  ) {
+    return { protected: true, reason: 'vercel_authentication_required' }
+  }
+
+  return { protected: false, reason: null }
+}
+
 async function runSmoke(targetUrl) {
   const chromium = loadChromium()
   const unsafeNetwork = []
@@ -155,6 +175,26 @@ async function runSmoke(targetUrl) {
   try {
     const response = await page.goto(targetUrl, { waitUntil: 'networkidle' })
     const status = response?.status() ?? null
+
+    const protectionCheck = detectPreviewProtection({
+      url: page.url(),
+      title: await page.title().catch(() => ''),
+      bodyText: await page.locator('body').innerText({ timeout: 5_000 }).catch(() => ''),
+      tripIdeaCount: await page.locator('#trip-idea').count().catch(() => 0),
+    })
+
+    if (protectionCheck.protected) {
+      console.log(JSON.stringify({
+        ok: false,
+        failedChecks: ['preview_protected'],
+        status,
+        reason: protectionCheck.reason,
+        message:
+          'Vercel Preview is protected by Vercel Authentication. Use an approved share/bypass URL or disable protection for this preview before running smoke.',
+      }, null, 2))
+      process.exitCode = 1
+      return
+    }
 
     await page.locator('#trip-idea').waitFor({ timeout: 15_000 })
     await page.fill('#trip-idea', 'Chiang Mai 3 days elephants temples food')
@@ -220,7 +260,15 @@ async function main() {
   await runSmoke(targetUrl)
 }
 
-main().catch(error => {
-  console.error(error.message)
-  process.exit(1)
-})
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error.message)
+    process.exit(1)
+  })
+}
+
+module.exports = {
+  detectPreviewProtection,
+  parseUrl,
+  runSmoke,
+}
