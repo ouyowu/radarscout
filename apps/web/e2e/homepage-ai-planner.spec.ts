@@ -101,4 +101,28 @@ test.describe('Homepage AI planner entry', () => {
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
     expect(searchRequestCount).toBe(0)
   })
+
+  test('Start planning opens the AI Trip Planner form without automatic product search', async ({ page }) => {
+    let searchRequestCount = 0
+    const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
+
+    await page.route('/api/ai-trip/search', async route => {
+      searchRequestCount += 1
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'no_match', products: [] }),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Start planning' }).click()
+
+    await expect(page).toHaveURL('/ai-trip-planner#intent-demo')
+    await expect(page.locator('#trip-idea')).toBeVisible()
+    await expect(page.locator('#trip-idea')).toHaveValue(defaultPrompt)
+    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    expect(searchRequestCount).toBe(0)
+  })
 })
