@@ -328,6 +328,14 @@ describe('AI planner source context for tour detail links', () => {
   it('keeps AI planner detail links inside the /tours namespace', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1')).toMatch(/^\/tours\//)
   })
+
+  it('falls back to a safe tour detail URL for external detail links', () => {
+    expect(buildAiTripPlannerDetailHref('https://example.com/tours/prod_1', 'prod_1')).toBe('/tours/prod_1?source=ai-trip-planner')
+  })
+
+  it('falls back to a safe tour detail URL for non-tour paths', () => {
+    expect(buildAiTripPlannerDetailHref('/checkout/prod_1', 'prod_1')).toBe('/tours/prod_1?source=ai-trip-planner')
+  })
 })
 
 
@@ -351,6 +359,27 @@ describe('AI search product card detail CTA accessibility', () => {
     expect(markup).toContain('min-h-[44px]')
     expect(markup).toContain('aria-label="View details for Elephant Sanctuary"')
     expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
+  })
+
+  it('renders a safe internal fallback when a product detail href is not a tours path', () => {
+    ;(globalThis as typeof globalThis & { React: typeof React }).React = React
+
+    const markup = renderToStaticMarkup(
+      createElement(AiSearchProductCard, {
+        id: 'prod_1',
+        title: 'Elephant Sanctuary',
+        city: 'Chiang Mai',
+        summary: 'Half-day ethical elephant visit.',
+        tags: ['Elephants', 'Nature'],
+        detailHref: 'https://example.com/checkout/prod_1',
+        retailPrice: '49.00',
+        currency: 'USD',
+      }),
+    )
+
+    expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
+    expect(markup).not.toContain('https://example.com')
+    expect(markup).not.toContain('/checkout/prod_1')
   })
 })
 
