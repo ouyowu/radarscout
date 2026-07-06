@@ -9,7 +9,7 @@ Last updated: 2026-07-07
 Latest branch HEAD checked in this release-status checkpoint:
 
 ```text
-5fc5e617ab19ca910966f9142c7fc04f5532441d
+f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
 ```
 
 Latest AI Trip Planner product-code candidate on the current branch:
@@ -209,9 +209,40 @@ Title: Add local AI Trip smoke helper
 Merge SHA: 5fc5e617ab19ca910966f9142c7fc04f5532441d
 Scope: tooling/docs-only localhost AI Trip smoke helper for Vercel preview quota fallback
 Production deploy: no
+
+PR #461
+Title: Add one-command AI Trip local production smoke
+Merge SHA: f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
+Scope: tooling/docs-only one-command local production-build smoke for AI Trip Planner
+Production deploy: no
 ```
 
 ## Latest validation evidence
+
+Latest one-command local production smoke after PR #461:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-local-production-smoke-0-postmerge
+HEAD: f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
+
+Script tests: passed, 12/12
+One-command local production smoke: passed
+git diff --check: clean
+```
+
+Smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
 
 Latest local smoke-helper validation after PR #459:
 

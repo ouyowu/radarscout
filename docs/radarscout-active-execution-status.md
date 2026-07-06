@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-14`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-15`
 
 Updated: 2026-07-07
 
@@ -18,6 +18,79 @@ Default rules:
 - use preview smoke for app changes when Vercel capacity allows;
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
+
+## 0. Latest autonomous execution update — one-command local production smoke
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
+```
+
+Completed low-risk increment:
+
+- PR #461: added a one-command local production-build smoke for the AI Trip Planner.
+
+New command:
+
+```bash
+pnpm smoke:ai-trip-local:production
+```
+
+This command:
+
+1. builds `@reddit-monitor/web`;
+2. starts a local Next production server;
+3. runs the localhost-only AI Trip smoke helper;
+4. stops the local server.
+
+Post-merge validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-ai-trip-local-production-smoke-0-postmerge`.
+- Script tests: passed, 12 / 12 tests.
+- One-command local production smoke: passed.
+- `git diff --check`: passed.
+
+Latest one-command smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
+
+Production gate:
+
+Production deploy can be considered only if explicitly approved for merge SHA:
+
+```text
+f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
+```
+
+Preview gate:
+
+Vercel preview deploy remains blocked by:
+
+```text
+api-deployments-free-per-day
+```
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run it after Vercel deployment quota resets. Until then, continue only with
+local/testable or docs-only RadarScout work.
 
 ## 0. Latest autonomous execution update — local AI Trip smoke helper
 
