@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #387:
+Latest `origin/codex/travel-mvp-launch` after PR #389:
 
 ```text
-7717e79f94909c5d350066364a5a5ffb7bf5d7d6
+e677d50fe8bae620ed738a144727b7fef535e3de
 ```
 
 Latest AI Trip product-code increments:
@@ -61,6 +61,7 @@ Latest AI Trip product-code increments:
 - PR #377: sourced tour detail pages explain that the AI Trip return link goes to the matching experiences section without storing partner action or current status.
 - PR #380: sourced tour detail pages use more traveler-facing AI Trip return-context copy.
 - PR #385: unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available tour detail pages.
+- PR #388: unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results and that no partner action or current status is recorded from the unavailable page.
 
 Latest tooling increment:
 
@@ -86,7 +87,8 @@ Latest status-doc increment:
 - PR #384 refreshed active status after PR #383 and the latest preview-quota retry.
 - PR #386 recorded latest-head local validation after PR #384.
 - PR #387 corrected active status after PR #385 and PR #386.
-- This PR records latest-head preview smoke passing after PR #387.
+- PR #389 recorded preview smoke passing for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6`.
+- This PR corrects active status after PR #388 and the latest-head preview retry.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -99,21 +101,25 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-validation-after-pr386
+/private/tmp/radarscout-pr388-postmerge
 ```
 
-Validated latest-head SHA before the preview evidence update:
+Validated product-code SHA after PR #388:
 
 ```text
-4d2efeac1119833e68c3b221791b441eac67f792
+e6c1cf7d6600322d759a994ad6f857c4a42411fd
+```
+
+Latest docs-only merge after validation:
+
+```text
+e677d50fe8bae620ed738a144727b7fef535e3de
 ```
 
 Validation results:
 
 - Prisma generate: passed.
-- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
-- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
-- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
+- Public copy / tours Vitest coverage (`pnpm --filter @reddit-monitor/web test -- publicCopy`): passed, 58 files / 921 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
@@ -139,19 +145,18 @@ Guard result:
 passed
 ```
 
-Current result:
+Current latest-head result:
 
 ```text
-preview READY; protected-preview smoke passed
+api-deployments-free-per-day
 ```
 
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The deployment reached `READY`.
-- Vercel Authentication protected the preview from anonymous smoke.
-- A temporary Vercel share URL was used for the read-only AI Trip smoke helper.
-- The temporary share token was not committed to source files or docs.
+- The latest-head deploy for `e677d50fe8bae620ed738a144727b7fef535e3de` failed because the current Vercel plan hit the daily deployment quota.
+- This is not a code, TypeScript, test, or build failure.
+- A previous preview for `7717e79f94909c5d350066364a5a5ffb7bf5d7d6` reached `READY` and passed protected-preview smoke, but it does not include the PR #388 unavailable-page copy.
 
 Recent preview evidence:
 
@@ -198,6 +203,7 @@ Recent preview evidence:
   - mobile horizontal overflow: none;
   - unsafe network calls: none;
   - forbidden visible copy matches: none.
+- A clean latest-head manual preview retry for `e677d50fe8bae620ed738a144727b7fef535e3de` hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -208,7 +214,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- the latest AI Trip preview gate has passed, but production deploy remains blocked until explicit approval for the exact merge SHA.
+- latest-head preview remains blocked by Vercel quota after PR #388, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
