@@ -128,6 +128,16 @@ export function IntentParserDemo() {
 
     return Array.from(counts, ([city, count]) => ({ city, count }))
   }, [searchState])
+  const routeStopGroups = useMemo(() => {
+    if (searchState?.status !== 'ok' || routeStopOverview.length <= 1) return []
+
+    return routeStopOverview
+      .map(stop => ({
+        ...stop,
+        products: searchState.products.filter(product => product.city?.trim() === stop.city),
+      }))
+      .filter(stop => stop.products.length > 0)
+  }, [routeStopOverview, searchState])
   const starterSearchFeedback = searchState
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
@@ -553,22 +563,59 @@ export function IntentParserDemo() {
                       </div>
                     </section>
                   ) : null}
-                  <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {searchState.products.map(product => (
-                      <AiSearchProductCard
-                        key={product.id}
-                        id={product.id}
-                        title={product.title}
-                        city={product.city}
-                        summary={product.summary}
-                        tags={product.tags}
-                        detailHref={product.detailHref}
-                        retailPrice={product.retailPrice}
-                        currency={product.currency}
-                        fitReason={buildProductFitReason(product, searchState.intent)}
-                      />
-                    ))}
-                  </div>
+                  {routeStopGroups.length > 1 ? (
+                    <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4">
+                      {routeStopGroups.map(group => (
+                        <section
+                          key={group.city}
+                          aria-label={`${group.city} result group`}
+                          className="rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
+                        >
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                            <h4 className="text-sm font-black uppercase tracking-[0.12em] text-[#101820]">
+                              {group.city} results
+                            </h4>
+                            <p className="text-xs font-black text-[#0f766e]">
+                              {group.count} comparison match{group.count === 1 ? '' : 'es'}
+                            </p>
+                          </div>
+                          <div className="mt-3 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                            {group.products.map(product => (
+                              <AiSearchProductCard
+                                key={product.id}
+                                id={product.id}
+                                title={product.title}
+                                city={product.city}
+                                summary={product.summary}
+                                tags={product.tags}
+                                detailHref={product.detailHref}
+                                retailPrice={product.retailPrice}
+                                currency={product.currency}
+                                fitReason={buildProductFitReason(product, searchState.intent)}
+                              />
+                            ))}
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {searchState.products.map(product => (
+                        <AiSearchProductCard
+                          key={product.id}
+                          id={product.id}
+                          title={product.title}
+                          city={product.city}
+                          summary={product.summary}
+                          tags={product.tags}
+                          detailHref={product.detailHref}
+                          retailPrice={product.retailPrice}
+                          currency={product.currency}
+                          fitReason={buildProductFitReason(product, searchState.intent)}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               ) : searchState.status === 'error' ? (
                 <div className="rounded-[1.25rem] border border-[#fde8e8] bg-white p-5">
