@@ -142,15 +142,16 @@ Production deploy: no
 Latest local validation after PR #283:
 
 ```text
-Worktree: /private/tmp/radarscout-latest-head-preview-retry-2
+Worktree: /private/tmp/radarscout-ai-trip-compact-prompt-e2e-1-postmerge
 HEAD: 0301c9f492e0fb7e3495031fdb636eacc46befae
 
 Prisma generate: passed
-Focused AI Trip/Web Vitest: passed, 914 tests
+Full Vitest: passed, 58 files / 914 tests
 Playwright E2E: passed, 41/41
 TypeScript: clean
 Next build: passed
 git diff --check: clean
+Local same-SHA production smoke with preview DB: passed
 ```
 
 Latest branch status after PR #283:
@@ -173,9 +174,9 @@ to ouyowus-projects / reddit-monitor and run `pnpm guard:vercel-preview` before
 running `npx vercel --yes`.
 
 During latest local validation, Next build initially hit a system-level
-`Too many open files` error caused by a stale Playwright/E2E process from an
-older temporary worktree. The stale process tree was removed, then the same
-build passed. This was local environment exhaustion, not a product-code failure.
+`Too many open files` error. Stale Node/Next/Playwright-style local processes
+were removed, then the same build passed. This was local environment exhaustion,
+not a product-code failure.
 ```
 
 Latest protected-preview helper validation after PR #268:
