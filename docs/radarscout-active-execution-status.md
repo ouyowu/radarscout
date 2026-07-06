@@ -46,7 +46,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-c04b0399b03f8fcb479a1a44da744487c12267df
+ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
 ```
 
 Latest AI Trip product-code increments:
@@ -64,6 +64,7 @@ Latest AI Trip product-code increments:
 - PR #388: unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results and that no partner action or current status is recorded from the unavailable page.
 - PR #394: successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 - PR #397: the successful-result top-match detail CTA accessible label now explains that the booking partner handoff continues from the product page.
+- PR #400: ordinary AI Trip product-card handoff copy now uses the same product-page-scoped boundary as the top-match CTA.
 
 Latest tooling increment:
 
@@ -95,7 +96,7 @@ Latest status-doc increment:
 - PR #393 recorded latest-head local validation after PR #392.
 - PR #395 recorded PR #394 post-merge validation and the latest preview quota blocker.
 - PR #396 corrected the preview guard command and recorded the dirty-metadata caveat from the latest successful protected preview smoke.
-- Current status update records PR #397 post-merge validation, the earlier preview quota blocker, and the clean latest-head preview smoke pass after PR #398.
+- Current status update records PR #400 post-merge validation, the clean latest-head preview smoke pass after PR #398, and the latest PR #400 preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -108,27 +109,27 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr397-postmerge
+/private/tmp/radarscout-ai-trip-card-handoff-label-1-postmerge
 ```
 
-Validated product-code SHA after PR #397:
+Validated product-code SHA after PR #400:
 
 ```text
-705337b4d557d1910ff9fd1a46393bed51f5e8ef
+ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
 ```
 
 Latest docs-only merge before this status refresh:
 
 ```text
-c04b0399b03f8fcb479a1a44da744487c12267df
+not applicable; PR #400 was a product-copy and test update
 ```
 
 Validation results:
 
 - Prisma generate: passed.
 - AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
+- AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e -- e2e/ai-trip-planner.spec.ts`): passed, 53 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
-- AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
 - Next build: passed.
 - `git diff --check`: passed.
 - Worktree status: clean.
@@ -162,10 +163,12 @@ READY and protected-preview smoke passed
 Meaning:
 
 - Vercel accepted the correct project and clean worktree guard.
-- The latest-head deploy for `c04b0399b03f8fcb479a1a44da744487c12267df` reached `READY`.
+- The latest successful preview deploy for `c04b0399b03f8fcb479a1a44da744487c12267df` reached `READY`.
 - Vercel Authentication protected the anonymous preview URL, so a temporary Vercel share URL was generated for smoke only.
 - The share URL was not committed to source files, docs, tests, or PR bodies.
 - The protected-preview AI Trip smoke passed.
+- The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
+- This is not a code, TypeScript, test, or build failure.
 
 Recent preview evidence:
 
@@ -234,6 +237,7 @@ Recent preview evidence:
   - unsafe network calls: none;
   - forbidden visible copy matches: none.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
+- A clean latest-head manual preview retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -243,8 +247,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview has passed after PR #398;
-- production deploy still requires explicit approval naming the exact latest branch HEAD.
+- latest-head preview remains blocked by Vercel quota after PR #400, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
@@ -275,6 +278,7 @@ The current codebase already includes:
 - matched-route-stop labels on AI Trip product cards;
 - loaded route search feedback can jump directly to comparison cards;
 - booking-partner handoff context in AI Trip product-card detail CTA accessible labels;
+- product-card handoff visible copy explicitly says the booking partner handoff continues from the product page;
 - traveler-facing AI Trip return-context copy on sourced tour detail pages;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
