@@ -70,14 +70,15 @@ Properties:
 
 Use the temporary share URL for browser smoke.
 
-Before creating a new preview deployment from a clean worktree, run the local
-preview guard:
+Before creating a new preview deployment from a clean worktree, use the local
+preview deploy wrapper:
 
 ```bash
-pnpm guard:vercel-preview
+pnpm deploy:vercel-preview
 ```
 
-The guard confirms:
+The wrapper runs the preview guard first, then calls Vercel with the approved
+scope. The guard confirms:
 
 - the git worktree is clean;
 - `.vercel/project.json` points to `ouyowus-projects / reddit-monitor`;
@@ -86,8 +87,9 @@ The guard confirms:
 - production deploy flags such as `--prod` are not being passed through the
   preview path.
 
-Only run `npx vercel --yes` after this guard passes. If it fails, fix the local
-worktree or Vercel link first; do not deploy from the failed state.
+Do not call `npx vercel --yes` directly from RadarScout preview worktrees. If the
+wrapper fails, fix the local worktree or Vercel link first; do not deploy from
+the failed state.
 
 For UI-only result-flow validation, it is acceptable to mock `/api/ai-trip/search` in Playwright. This proves the deployed frontend shell and client-side result UI without depending on preview database seed state.
 
@@ -203,22 +205,26 @@ RadarScout now includes local preview helpers:
 
 ```text
 pnpm guard:vercel-preview
+pnpm deploy:vercel-preview
 ```
 
 Implementation:
 
 ```text
 scripts/radarscout-vercel-preview-guard.js
+scripts/radarscout-vercel-preview-deploy.js
 ```
 
 Purpose:
 
 ```text
-Validate the local deploy worktree and Vercel project link before preview deploy.
+Validate the local deploy worktree and Vercel project link, then run the preview
+deployment with the approved Vercel scope.
 ```
 
-The guard is intentionally local-only. It does not deploy, request secrets,
-change Vercel project settings, mutate data, or touch production aliases.
+The guard is intentionally local-only. The wrapper only continues to deployment
+after the guard passes. Neither helper requests secrets, changes Vercel project
+settings, mutates data, or touches production aliases.
 
 RadarScout also includes the AI Trip smoke helper:
 

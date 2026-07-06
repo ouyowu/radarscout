@@ -170,8 +170,8 @@ An accidental Vercel project named
 radarscout-ai-trip-search-partial-match-0-postmerge
 was created while attempting a preview from a temporary worktree.
 It has been removed. Future preview deploys must explicitly link the worktree
-to ouyowus-projects / reddit-monitor and run `pnpm guard:vercel-preview` before
-running `npx vercel --yes`.
+to ouyowus-projects / reddit-monitor and use `pnpm deploy:vercel-preview`
+instead of calling `npx vercel --yes` directly.
 
 During latest local validation, Next build initially hit a system-level
 `Too many open files` error. Stale Node/Next/Playwright-style local processes
@@ -392,7 +392,7 @@ Recommended non-production tasks:
 ```text
 TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 After the Vercel daily deployment quota resets, create a fresh preview deployment
-from clean HEAD 0301c9f and run `pnpm guard:vercel-preview` before `npx vercel --yes`,
+from clean HEAD 0301c9f with `pnpm deploy:vercel-preview`,
 then run the local AI Trip protected-preview smoke helper against that deployment.
 
 TD-RADARSCOUT-PREVIEW-DATA-READINESS-0

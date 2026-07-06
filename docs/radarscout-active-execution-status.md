@@ -194,7 +194,7 @@ Known state:
 - generic AI Trip preview smoke passed with status 200, title `Thailand AI Trip Planner | RadarScout`, robots `noindex, nofollow`, three mocked product cards, no unsafe network requests, no forbidden copy matches, and no mobile horizontal overflow;
 - targeted Thailand route summary smoke passed on the same preview with `How these experiences support your Thailand route`, `possible route stops`, `Result cities: Bangkok, Phuket`, no unsafe network requests, no forbidden copy matches, and no mobile horizontal overflow;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
-- future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
+- future preview attempts must use `pnpm deploy:vercel-preview` instead of calling `npx vercel --yes` directly.
 - latest fresh Vercel preview, production deploy, and production promotion attempts are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
 - latest PR #321 preview retry is also blocked by the same Vercel quota after passing the local preview guard.
 - latest PR #324 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
