@@ -560,7 +560,7 @@ export function IntentParserDemo() {
                         Route stop overview
                       </p>
                       <p className="mt-1.5 text-xs font-semibold leading-5 text-[#5a6670] sm:mt-2 sm:text-sm sm:leading-6">
-                        City grouping helps you compare returned Thailand experiences by route stop. It does not claim availability or booking status.
+                        City grouping helps you compare returned Thailand experiences by route stop. Choose a city chip to jump to that result group. It does not claim availability or booking status.
                       </p>
                       <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                         {routeStopOverview.map(stop => (
