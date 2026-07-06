@@ -9,7 +9,7 @@ Last updated: 2026-07-06
 Current clean `codex/travel-mvp-launch` HEAD:
 
 ```text
-5652f98ec55f12899894903e6de1af2431199c50
+3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
 ```
 
 This HEAD includes the latest safe AI Trip Planner result-flow improvements:
@@ -18,6 +18,7 @@ This HEAD includes the latest safe AI Trip Planner result-flow improvements:
 - results-ready feedback after successful product search
 - top-match detail action after successful product search
 - source-tagged product detail links using `source=ai-trip-planner`
+- mobile result-flow E2E coverage for result actions and horizontal overflow
 
 ## Recent merged increments
 
@@ -39,11 +40,23 @@ Title: Add AI trip planner top match action
 Merge SHA: 5652f98ec55f12899894903e6de1af2431199c50
 Scope: front-end top-match product detail action + Playwright coverage
 Production deploy: no
+
+PR #258
+Title: Document AI trip planner release status
+Merge SHA: 0c193e98fc6c398d6e6d412ce9057f826477b94b
+Scope: docs-only release status checkpoint
+Production deploy: no
+
+PR #259
+Title: Add mobile AI trip planner results coverage
+Merge SHA: 3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
+Scope: mobile viewport E2E coverage for result actions and no horizontal overflow
+Production deploy: no
 ```
 
 ## Preview evidence
 
-Latest preview for clean HEAD:
+Latest product-flow preview checkpoint before the test-only PR #259:
 
 ```text
 Preview URL: https://reddit-monitor-gktqz8zi6-ouyowus-projects.vercel.app
@@ -52,6 +65,10 @@ Target: preview
 Status: READY
 Production aliases: none
 ```
+
+PR #259 is test-only and did not require a new Vercel preview deployment. Its
+mobile coverage was validated by Playwright against the same AI Trip Planner
+result-flow code.
 
 Previous preview checkpoints:
 
@@ -74,7 +91,7 @@ Latest clean HEAD validation passed:
 ```text
 Prisma generate: passed
 Vitest: passed
-Playwright AI Trip Planner: 39/39 passed
+Playwright AI Trip Planner: passed
 TypeScript: clean
 Next build: passed
 git diff --check: clean
@@ -87,6 +104,8 @@ The AI Trip Planner E2E suite covers:
 - pending status message
 - results-ready status message
 - top-match detail action
+- mobile viewport result actions
+- mobile horizontal overflow guard
 - source-tagged `/tours/{id}` links
 - unsupported destination handling
 - no-match handling
@@ -163,13 +182,13 @@ Production has not been automatically updated with the latest clean HEAD.
 Production deploy may be considered only if explicitly approved for:
 
 ```text
-5652f98ec55f12899894903e6de1af2431199c50
+3d6f1e3a1ad6daee7e3105d49e929ddf30647afb
 ```
 
 If production deploy is approved later, the deploy task should:
 
 1. create a fresh clean production worktree from `origin/codex/travel-mvp-launch`
-2. confirm HEAD equals `5652f98ec55f12899894903e6de1af2431199c50`
+2. confirm HEAD equals `3d6f1e3a1ad6daee7e3105d49e929ddf30647afb`
 3. run validation before deploy
 4. deploy with `npx vercel --prod --yes`
 5. run production smoke on `https://radarscout.io/ai-trip-planner`
@@ -180,8 +199,8 @@ If production deploy is approved later, the deploy task should:
 Recommended non-production tasks:
 
 ```text
-TD-RADARSCOUT-AI-TRIP-PLANNER-MOBILE-RESULTS-UX-0
-Audit AI Trip Planner result flow on mobile and document any layout issues.
+TD-RADARSCOUT-AI-TRIP-PLANNER-MOBILE-RESULTS-UX-AUDIT-0
+Audit AI Trip Planner result flow on mobile and document any layout issues after PR #259 coverage.
 
 TD-RADARSCOUT-AI-TRIP-PLANNER-COPY-SAFETY-REVIEW-0
 Review AI Trip Planner public copy after the recent result-flow increments.
@@ -194,5 +213,5 @@ Recommended production task only after explicit approval:
 
 ```text
 TD-DEPLOY-AI-TRIP-PLANNER-RESULT-FLOW-PRODUCTION
-Deploy clean HEAD 5652f98ec55f12899894903e6de1af2431199c50 to production.
+Deploy clean HEAD 3d6f1e3a1ad6daee7e3105d49e929ddf30647afb to production.
 ```
