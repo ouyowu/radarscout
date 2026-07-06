@@ -97,6 +97,12 @@ test.describe('Homepage AI planner entry', () => {
 
     await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
     await expect(page.locator('#trip-idea')).toHaveValue(prompt)
+    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
+      'Review or edit the trip idea',
+    )
+    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
+      'Product search only runs after you choose',
+    )
     await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
     expect(searchRequestCount).toBe(0)
@@ -121,6 +127,12 @@ test.describe('Homepage AI planner entry', () => {
     await expect(page).toHaveURL('/ai-trip-planner#intent-demo')
     await expect(page.locator('#trip-idea')).toBeVisible()
     await expect(page.locator('#trip-idea')).toHaveValue(defaultPrompt)
+    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
+      'Review or edit the trip idea',
+    )
+    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
+      'Product search only runs after you choose',
+    )
     await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
     expect(searchRequestCount).toBe(0)

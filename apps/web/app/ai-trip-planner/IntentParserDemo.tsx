@@ -37,6 +37,8 @@ const noMatchNextSearches = [
 ]
 
 export const AI_TRIP_RESULTS_NEXT_STEP_COPY = 'Next step: compare the cards, open one product detail page, then continue with the booking partner only from that detail page.'
+export const AI_TRIP_INTENT_DEMO_LANDING_COPY =
+  'Planner form loaded. Review or edit the trip idea, then confirm trip intent. Product search only runs after you choose to search real Thailand experiences.'
 
 function focusTripIdeaField() {
   document.getElementById('trip-idea')?.focus()
@@ -84,6 +86,7 @@ export function IntentParserDemo() {
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [starterLoadedCity, setStarterLoadedCity] = useState<string | null>(null)
+  const [intentDemoLanding, setIntentDemoLanding] = useState(false)
 
   const parsedJson = useMemo(() => JSON.stringify(result, null, 2), [result])
 
@@ -174,6 +177,7 @@ export function IntentParserDemo() {
           ? 'This starter search is limited to Thailand experiences.'
           : 'Search did not complete. Try again with a clearer Thailand trip idea.'
     : null
+  const showIntentDemoLandingHelper = intentDemoLanding && !starterLoadedCity && !confirmed && !searchState
 
   useEffect(() => {
     function handleStarterPrompt(event: Event) {
@@ -202,6 +206,10 @@ export function IntentParserDemo() {
     setStarterLoadedCity(null)
     setResult(parseTripIntent(initialPromptFromSearch))
   }, [initialPromptFromSearch])
+
+  useEffect(() => {
+    setIntentDemoLanding(window.location.hash === '#intent-demo')
+  }, [])
 
   function handleConfirmIntent() {
     if (!canConfirm) return
@@ -324,6 +332,15 @@ export function IntentParserDemo() {
                 </button>
               ) : null}
             </div>
+          </div>
+        ) : null}
+        {showIntentDemoLandingHelper ? (
+          <div
+            role="note"
+            aria-label="Planner landing guidance"
+            className="mt-3 rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] px-4 py-3 text-sm font-black leading-6 text-[#0f766e]"
+          >
+            {AI_TRIP_INTENT_DEMO_LANDING_COPY}
           </div>
         ) : null}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
