@@ -88,8 +88,9 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
-    expect(homepageSource).toContain("href: '/chiang-mai/elephant-camp-finder'")
-    expect(homepageSource).toContain('href="/chiang-mai/elephant-camp-finder"')
+    expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
+    expect(homepageSource).toContain('href: chiangMaiPlannerHref')
+    expect(homepageSource).toContain('href={chiangMaiPlannerHref}')
     expect(homepageSource).toContain('Plan a Chiang Mai elephant day')
     expect(homepageSource).toContain('Plan with RadarScout')
     expect(homepageSource).toContain('guided planner')

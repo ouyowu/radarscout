@@ -88,6 +88,8 @@ const plannerPromptChips = [
   'Bangkok or Pattaya elephant day',
 ]
 
+const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'
+
 function buildPlannerIdeaHref(prompt: string) {
   return `/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`
 }
@@ -123,7 +125,7 @@ export default function LandingPage() {
         subtitle="Tell RadarScout the kind of Thailand day you want. Compare elephant care, food, nature, family-friendly, and city experiences before continuing with a booking partner."
         actions={[
           { label: 'Start planning', href: '/ai-trip-planner#intent-demo' },
-          { label: 'Plan a Chiang Mai elephant day', href: '/chiang-mai/elephant-camp-finder', variant: 'secondary' },
+          { label: 'Plan a Chiang Mai elephant day', href: chiangMaiPlannerHref, variant: 'secondary' },
         ]}
         trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
       />
@@ -176,7 +178,7 @@ export default function LandingPage() {
           </div>
           <div className="mt-6 lg:mt-0">
             <Link
-              href="/chiang-mai/elephant-camp-finder"
+              href={chiangMaiPlannerHref}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-bg-dark)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
             >
               Plan with RadarScout

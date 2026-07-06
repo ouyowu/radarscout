@@ -23,6 +23,7 @@ export const OPTION_ROW_CLASS =
 export const FORM_SECTION_CLASS =
   'rounded-[1.1rem] border border-[#eadfce] bg-[#fffdf7] p-4'
 export const CHAT_PLANNER_TITLE = 'Plan with RadarScout'
+export const CHIANG_MAI_PLANNER_SECTION_ID = 'plan-with-radarscout'
 export const CHAT_PLANNER_HELPER =
   'Start with your travel style, choose your pace, then see matching experiences.'
 export const CHAT_PLANNER_CHIP_CLASS =
@@ -477,7 +478,10 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
         onSubmit={handleSubmit}
         className="rounded-[1.5rem] border border-[#ded7ca] bg-white p-5 shadow-[0_12px_28px_rgba(17,24,39,0.06)]"
       >
-        <section className="rounded-[1.1rem] border border-[#d8eadf] bg-[#f5fbf7] p-4">
+        <section
+          id={CHIANG_MAI_PLANNER_SECTION_ID}
+          className="rounded-[1.1rem] border border-[#d8eadf] bg-[#f5fbf7] p-4"
+        >
           <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
             {CHAT_PLANNER_TITLE}
           </p>

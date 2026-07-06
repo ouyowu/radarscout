@@ -34,7 +34,7 @@ test.describe('Homepage AI planner entry', () => {
     )
     await expect(page.getByRole('link', { name: 'Plan a Chiang Mai elephant day' }).first()).toHaveAttribute(
       'href',
-      '/chiang-mai/elephant-camp-finder',
+      '/chiang-mai/elephant-camp-finder#plan-with-radarscout',
     )
 
     await expect(page.getByText('Start with a travel idea')).toBeVisible()
