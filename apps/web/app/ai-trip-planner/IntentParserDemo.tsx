@@ -39,6 +39,16 @@ function focusTripIdeaField() {
   document.getElementById('trip-idea')?.focus()
 }
 
+function buildRouteStopGroupId(city: string) {
+  const slug = city
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return `ai-trip-result-group-${slug || 'unknown'}`
+}
+
 export function canSearchFromConfirmed(confirmed: ConfirmedIntent | null): boolean {
   return confirmed !== null
 }
@@ -553,12 +563,13 @@ export function IntentParserDemo() {
                       </p>
                       <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                         {routeStopOverview.map(stop => (
-                          <span
+                          <a
                             key={stop.city}
-                            className="rounded-full bg-[#f5fbf7] px-2.5 py-1 text-xs font-black text-[#0f766e] sm:px-3"
+                            href={`#${buildRouteStopGroupId(stop.city)}`}
+                            className="rounded-full bg-[#f5fbf7] px-2.5 py-1 text-xs font-black text-[#0f766e] transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30 sm:px-3"
                           >
                             {stop.city}: {stop.count} comparison match{stop.count === 1 ? '' : 'es'}
-                          </span>
+                          </a>
                         ))}
                       </div>
                     </section>
@@ -568,6 +579,7 @@ export function IntentParserDemo() {
                       {routeStopGroups.map(group => (
                         <section
                           key={group.city}
+                          id={buildRouteStopGroupId(group.city)}
                           aria-label={`${group.city} result group`}
                           className="rounded-[1.25rem] border border-[#e8dfd2] bg-[#fffdf7] p-3 sm:p-4"
                         >

@@ -294,6 +294,16 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Bangkok: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Phuket: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Chiang Mai: 1 comparison match')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Bangkok: 1 comparison match' })).toHaveAttribute(
+      'href',
+      '#ai-trip-result-group-bangkok',
+    )
+    await expect(page.getByRole('link', { name: 'Phuket: 1 comparison match' })).toHaveAttribute(
+      'href',
+      '#ai-trip-result-group-phuket',
+    )
+    await page.getByRole('link', { name: 'Phuket: 1 comparison match' }).click()
+    await expect(page).toHaveURL(/#ai-trip-result-group-phuket$/)
     await expect(page.getByLabel(/Bangkok result group/i)).toContainText('Bangkok Temple and Local Food Walk')
     await expect(page.getByLabel(/Phuket result group/i)).toContainText('Phuket Beach and Island Day')
     await expect(page.getByLabel(/Chiang Mai result group/i)).toContainText('Chiang Mai Elephant Sanctuary')
