@@ -435,6 +435,22 @@ test.describe('Valid Chiang Mai flow', () => {
     }
   })
 
+  test('opening a product detail keeps the AI Trip Planner return path safe', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(3)
+
+    await productCards(page).first().click()
+
+    await expect(page).toHaveURL(/\/tours\/prod_cm_1\?source=ai-trip-planner/)
+    await expect(page.getByRole('link', { name: /back to ai trip planner/i })).toHaveAttribute(
+      'href',
+      '/ai-trip-planner#ai-trip-results',
+    )
+    await expect(page.getByText('Experience detail')).toBeVisible()
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('mobile results flow keeps result actions visible without horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
 
