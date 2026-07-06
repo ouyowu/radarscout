@@ -272,6 +272,9 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
               You opened this product from RadarScout&apos;s AI Trip Planner. Review this product detail, then return to compare the other planner matches.
             </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+              The return link goes back to the stable matching experiences section. No partner action or current status is stored on this page.
+            </p>
           </div>
         ) : null}
       </section>

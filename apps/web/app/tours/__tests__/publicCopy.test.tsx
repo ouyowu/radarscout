@@ -228,6 +228,8 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Back to AI Trip Planner results')
     expect(markup).toContain('You opened this product from RadarScout&#x27;s AI Trip Planner')
     expect(markup).toContain('return to compare the other planner matches')
+    expect(markup).toContain('The return link goes back to the stable matching experiences section')
+    expect(markup).toContain('No partner action or current status is stored on this page')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
