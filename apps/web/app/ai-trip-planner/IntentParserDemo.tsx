@@ -12,7 +12,7 @@ import {
   type ConfirmedIntent,
 } from './IntentParserPanels'
 import { TripIntentSummary } from './TripIntentSummary'
-import { AiSearchProductCard } from './AiSearchProductCard'
+import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary } from './resultFitSummary'
 
@@ -458,6 +458,17 @@ export function IntentParserDemo() {
                       className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
                     >
                       Refine trip idea
+                    </a>
+                  </div>
+                  <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm font-semibold leading-6 text-[#5a6670]">
+                      Start with the first comparison match, then compare the remaining cards below.
+                    </p>
+                    <a
+                      href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref)}
+                      className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+                    >
+                      Open top match details
                     </a>
                   </div>
                   <p

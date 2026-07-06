@@ -368,6 +368,9 @@ test.describe('Valid Chiang Mai flow', () => {
 
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+    const topMatchLink = page.getByRole('link', { name: /open top match details/i })
+    await expect(topMatchLink).toBeVisible()
+    await expect(topMatchLink).toHaveAttribute('href', /\/tours\/.*source=ai-trip-planner/)
 
     const resultSummary = page.getByLabel(/result fit summary/i)
     await expect(resultSummary).toBeVisible()
