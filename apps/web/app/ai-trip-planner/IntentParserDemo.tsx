@@ -14,7 +14,7 @@ import {
 import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
-import { buildProductFitReason, buildResultFitSummary } from './resultFitSummary'
+import { buildProductFitReason, buildResultFitSummary, orderCityEntriesBySourceText } from './resultFitSummary'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const promptMaxLength = 600
@@ -124,7 +124,7 @@ export function IntentParserDemo() {
   const canConfirm = canConfirmTripIntent(result, isParsedPromptCurrent)
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
-  const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
+  const resultFitSummary = searchState ? buildResultFitSummary(searchState, prompt) : null
   const routeStopOverview = useMemo(() => {
     if (searchState?.status !== 'ok') return []
 
@@ -136,8 +136,8 @@ export function IntentParserDemo() {
       counts.set(city, (counts.get(city) ?? 0) + 1)
     }
 
-    return Array.from(counts, ([city, count]) => ({ city, count }))
-  }, [searchState])
+    return orderCityEntriesBySourceText(Array.from(counts, ([city, count]) => ({ city, count })), prompt)
+  }, [prompt, searchState])
   const routeStopGroups = useMemo(() => {
     if (searchState?.status !== 'ok' || routeStopOverview.length <= 1) return []
 

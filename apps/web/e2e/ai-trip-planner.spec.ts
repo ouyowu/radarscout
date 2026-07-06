@@ -291,12 +291,16 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText(/7-day Thailand route/i)).toBeVisible()
     await expect(page.getByText('Compare Chiang Mai, Phuket, or nearby Thailand stops')).toBeVisible()
     await expect(page.getByText('How these experiences support your Thailand route')).toBeVisible()
-    await expect(page.getByText('Result cities: Bangkok, Phuket, Chiang Mai')).toBeVisible()
+    await expect(page.getByText('Result cities: Bangkok, Chiang Mai, Phuket')).toBeVisible()
     await expect(page.getByLabel(/route stop overview/i)).toBeVisible()
     await expect(page.getByLabel(/route stop overview/i)).toHaveClass(/scroll-mt-6/)
     await expect(page.getByText('Bangkok: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Phuket: 1 comparison match')).toBeVisible()
     await expect(page.getByText('Chiang Mai: 1 comparison match')).toBeVisible()
+    const routeStopLinks = page.getByLabel(/route stop overview/i).getByRole('link')
+    await expect(routeStopLinks.nth(0)).toHaveText('Bangkok: 1 comparison match')
+    await expect(routeStopLinks.nth(1)).toHaveText('Chiang Mai: 1 comparison match')
+    await expect(routeStopLinks.nth(2)).toHaveText('Phuket: 1 comparison match')
     await expect(page.getByRole('link', { name: 'Bangkok: 1 comparison match' })).toHaveAttribute(
       'href',
       '#ai-trip-result-group-bangkok',
