@@ -88,6 +88,10 @@ const plannerPromptChips = [
   'Bangkok or Pattaya elephant day',
 ]
 
+function buildPlannerIdeaHref(prompt: string) {
+  return `/ai-trip-planner?idea=${encodeURIComponent(prompt)}`
+}
+
 const faqItems = [
   {
     question: 'How broad is RadarScout coverage today?',
@@ -141,7 +145,7 @@ export default function LandingPage() {
               {plannerPromptChips.map(chip => (
                 <Link
                   key={chip}
-                  href="/ai-trip-planner"
+                  href={buildPlannerIdeaHref(chip)}
                   className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--color-border-light)] bg-[var(--color-bg-secondary)] px-4 text-sm font-black text-[var(--color-text-primary)]"
                 >
                   {chip}
