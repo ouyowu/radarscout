@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-4`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-5`
 
 Updated: 2026-07-06
 
@@ -46,7 +46,7 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
+8c344b1233c0b2ed6e2053dbb592842640aeb876
 ```
 
 Latest AI Trip product-code increments:
@@ -96,7 +96,9 @@ Latest status-doc increment:
 - PR #393 recorded latest-head local validation after PR #392.
 - PR #395 recorded PR #394 post-merge validation and the latest preview quota blocker.
 - PR #396 corrected the preview guard command and recorded the dirty-metadata caveat from the latest successful protected preview smoke.
-- Current status update records PR #400 post-merge validation, the clean latest-head preview smoke pass after PR #398, and the latest PR #400 preview quota blocker.
+- PR #401 recorded the clean protected-preview smoke pass for `c04b0399b03f8fcb479a1a44da744487c12267df`.
+- PR #402 refreshed active status after PR #400 and documented the PR #400 preview quota blocker.
+- Current status update records latest-head validation for `8c344b1233c0b2ed6e2053dbb592842640aeb876` and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -109,28 +111,28 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-ai-trip-card-handoff-label-1-postmerge
+/private/tmp/radarscout-latest-after-pr402
 ```
 
-Validated product-code SHA after PR #400:
+Validated latest branch HEAD after PR #402:
 
 ```text
-ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
+8c344b1233c0b2ed6e2053dbb592842640aeb876
 ```
 
 Latest docs-only merge before this status refresh:
 
 ```text
-not applicable; PR #400 was a product-copy and test update
+8c344b1233c0b2ed6e2053dbb592842640aeb876
 ```
 
 Validation results:
 
 - Prisma generate: passed.
 - AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
-- AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e -- e2e/ai-trip-planner.spec.ts`): passed, 53 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
+- Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
@@ -157,7 +159,7 @@ passed
 Current latest-head result:
 
 ```text
-READY and protected-preview smoke passed
+preview deploy blocked by Vercel daily deployment quota after local validation passed
 ```
 
 Meaning:
@@ -168,6 +170,8 @@ Meaning:
 - The share URL was not committed to source files, docs, tests, or PR bodies.
 - The protected-preview AI Trip smoke passed.
 - The later clean latest-head retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
+- The latest clean-head retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed local validation and the Vercel preview guard, then failed because the current Vercel plan hit the daily deployment quota.
+- The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`.
 - This is not a code, TypeScript, test, or build failure.
 
 Recent preview evidence:
@@ -238,6 +242,7 @@ Recent preview evidence:
   - forbidden visible copy matches: none.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 - A clean latest-head manual preview retry for `ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `8c344b1233c0b2ed6e2053dbb592842640aeb876` passed the local Vercel preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -247,7 +252,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #400, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #402, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
