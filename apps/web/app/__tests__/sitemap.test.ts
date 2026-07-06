@@ -53,6 +53,15 @@ describe('sitemap', () => {
     expect(urls.some(url => url.includes('/tours/'))).toBe(false)
   })
 
+  it('does not include tour detail SEO candidates while the candidate allowlist is empty', async () => {
+    listMock.listPublicThailandProducts.mockResolvedValue([])
+
+    const entries = await sitemap()
+    const urls = entries.map(e => e.url)
+
+    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
+  })
+
   it('does not include unsafe tour detail URLs even when product IDs require encoding', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([
       makeProduct('tour id with spaces'),
