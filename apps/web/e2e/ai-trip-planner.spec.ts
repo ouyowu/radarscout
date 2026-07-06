@@ -302,6 +302,8 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText('Chiang Mai: 1 comparison match')).toBeVisible()
     const routeStopLinks = page.getByLabel(/route stop overview/i).getByRole('link')
     await expect(routeStopLinks.nth(0)).toHaveText('Bangkok: 1 comparison match')
+    await expect(routeStopLinks.nth(0)).toHaveClass(/max-w-full/)
+    await expect(routeStopLinks.nth(0)).toHaveClass(/leading-5/)
     await expect(routeStopLinks.nth(1)).toHaveText('Chiang Mai: 1 comparison match')
     await expect(routeStopLinks.nth(2)).toHaveText('Phuket: 1 comparison match')
     await expect(page.getByRole('link', { name: 'Bangkok: 1 comparison match' })).toHaveAttribute(

@@ -600,7 +600,7 @@ export function IntentParserDemo() {
                           <a
                             key={stop.city}
                             href={`#${buildRouteStopGroupId(stop.city)}`}
-                            className="inline-flex min-h-[44px] items-center rounded-full bg-[#f5fbf7] px-3 py-1 text-xs font-black text-[#0f766e] transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
+                            className="inline-flex min-h-[44px] max-w-full items-center rounded-full bg-[#f5fbf7] px-3 py-1 text-left text-xs font-black leading-5 text-[#0f766e] transition hover:bg-[#e7f5f2] focus:outline-none focus:ring-2 focus:ring-[#0f766e]/30"
                           >
                             {stop.city}: {stop.count} comparison match{stop.count === 1 ? '' : 'es'}
                           </a>
