@@ -9,7 +9,7 @@ Last updated: 2026-07-07
 Latest branch HEAD checked in this release-status checkpoint:
 
 ```text
-e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
+bca4a504729ce9a1be1639b82c252137e669e2b8
 ```
 
 Latest AI Trip Planner product-code candidate on the current branch:
@@ -173,9 +173,46 @@ Title: Use positive AI Trip boundary copy
 Merge SHA: e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 Scope: product-code copy polish replacing hard negative transparency badges with positive boundary labels while preserving comparison-only, Thailand-only, and product-page handoff boundaries
 Production deploy: no
+
+PR #454
+Title: Record positive AI Trip copy validation
+Merge SHA: d6fa83cd7858dc466a9708a1fbcb27dc53eec4af
+Scope: docs-only validation and release-status record after PR #453
+Production deploy: no
+
+PR #455
+Title: Refresh active status after AI Trip copy polish
+Merge SHA: 0f96fa7491b805700ba2a467bb2afcfb92d703b4
+Scope: docs-only active execution status refresh after the positive boundary copy work
+Production deploy: no
+
+PR #456
+Title: Document AI Trip production drift
+Merge SHA: bca4a504729ce9a1be1639b82c252137e669e2b8
+Scope: docs-only production drift observation showing production is healthy but still behind the latest AI Trip copy candidate
+Production deploy: no
 ```
 
 ## Latest validation evidence
+
+Latest local validation after PR #456:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-production-drift-0-postmerge
+HEAD: bca4a504729ce9a1be1639b82c252137e669e2b8
+
+Prisma generate: passed
+Focused copySafety Vitest: passed, 59 files / 932 tests
+AI Trip Planner Playwright E2E: passed on retry, 54/54
+Full Playwright E2E: passed, 60/60
+TypeScript: clean
+Next build: passed
+git diff --check: clean
+
+Note: the first focused AI Trip Playwright run hit a local dev-server/test-runner
+flake. The immediate rerun passed all 54 focused tests, and the subsequent full
+E2E run passed all 60 tests.
+```
 
 Latest local validation after PR #453:
 

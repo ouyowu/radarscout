@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-12`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-13`
 
 Updated: 2026-07-07
 
@@ -18,6 +18,85 @@ Default rules:
 - use preview smoke for app changes when Vercel capacity allows;
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
+
+## 0. Latest autonomous execution update — latest AI Trip branch validation
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+bca4a504729ce9a1be1639b82c252137e669e2b8
+```
+
+Completed low-risk increments:
+
+- PR #453: replaced hard negative AI Trip Planner transparency badges with positive boundary labels.
+- PR #454: recorded PR #453 validation evidence and updated the AI Trip release gate status.
+- PR #455: refreshed active execution status after positive-copy work.
+- PR #456: documented current production drift: production is healthy but still serves the older AI Trip labels until an exact-SHA production deploy is explicitly approved.
+
+Current AI Trip public boundary labels in the latest source:
+
+```text
+Read-only comparison
+Product-page details
+Thailand-only matching
+Reviewed coverage first
+```
+
+Current production drift:
+
+- `https://radarscout.io/ai-trip-planner` returns `200`.
+- `https://www.radarscout.io/ai-trip-planner` returns `200`.
+- production title remains `Thailand AI Trip Planner | RadarScout`;
+- production robots remain `noindex, nofollow`;
+- production still shows the older `No fake...` labels because this candidate has not been production deployed.
+
+Latest validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-ai-trip-production-drift-0-postmerge`.
+- Prisma generate: passed.
+- Focused copySafety Vitest coverage: passed, 59 files / 932 tests.
+- AI Trip Planner Playwright E2E: passed on immediate retry, 54 / 54 tests.
+- Full Playwright E2E: passed, 60 / 60 tests.
+- TypeScript: passed.
+- Next build: passed.
+- `git diff --check`: passed.
+
+Validation note:
+
+The first focused AI Trip Playwright run hit a local dev-server/test-runner flake
+and failed after the server dropped. The immediate focused rerun passed all 54
+tests, and the full E2E suite then passed all 60 tests. Treat this as a local
+test-runner flake, not a product-code failure.
+
+Preview status:
+
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- Preview guard passed after cleaning Vercel CLI generated `.env.local` and `.gitignore` side effects from the temporary worktree.
+- Preview deploy reached Vercel but remains blocked by daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+Production gate:
+
+Production deploy can be considered only if explicitly approved for merge SHA:
+
+```text
+bca4a504729ce9a1be1639b82c252137e669e2b8
+```
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run it after Vercel deployment quota resets. Until then, continue only with
+local/testable or docs-only RadarScout work.
 
 ## 0. Latest autonomous execution update — AI Trip positive boundary copy
 
