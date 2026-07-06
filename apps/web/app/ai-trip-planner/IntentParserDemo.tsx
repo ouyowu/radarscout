@@ -523,20 +523,23 @@ export function IntentParserDemo() {
                     </a>
                   </div>
                   <section aria-label="AI Trip Planner result actions" className="mt-2 grid gap-2 sm:mt-3 sm:gap-3">
-                    <div className="flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
+                    <div
+                      data-testid="ai-trip-result-action-panel"
+                      className="flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-4 sm:py-3"
+                    >
                       <p className="text-xs font-semibold leading-5 text-[#5a6670] sm:text-sm sm:leading-6">
                         Start with <span className="font-black text-[#101820]">{searchState.products[0].title}</span>, then compare the remaining cards below.
                       </p>
                       <a
                         href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref, searchState.products[0].id)}
                         aria-label={buildAiTripTopMatchDetailAriaLabel(searchState.products[0].title)}
-                        className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+                        className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
                       >
                         Open top match details
                       </a>
                       <a
                         href="#ai-trip-comparison-results"
-                        className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-5 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e]"
+                        className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-5 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e] sm:w-auto"
                       >
                         Review comparison cards
                       </a>

@@ -654,9 +654,12 @@ test.describe('Valid Chiang Mai flow', () => {
 
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('status')).toContainText('continue with a booking partner')
+    await expect(page.getByTestId('ai-trip-result-action-panel')).toHaveClass(/sm:flex-wrap/)
     const topMatchLink = page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })
     await expect(topMatchLink).toBeVisible()
     await expect(topMatchLink).toHaveAttribute('href', /\/tours\/.*source=ai-trip-planner/)
+    await expect(topMatchLink).toHaveClass(/w-full/)
+    await expect(topMatchLink).toHaveClass(/sm:w-auto/)
 
     const resultSummary = page.getByLabel(/result fit summary/i)
     await expect(resultSummary).toBeVisible()
