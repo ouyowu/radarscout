@@ -65,6 +65,9 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('RadarScout helps with guided discovery, comparison, and planning')
     expect(homepageSource).toContain('Booking partners handle current')
     expect(homepageSource).toContain('final booking steps')
+    expect(homepageSource).toContain('Prompt links load the planner form only')
+    expect(homepageSource).toContain('Real Thailand experience search starts after you review and')
+    expect(homepageSource).toContain('confirm your trip intent')
   })
 
   it('positions the homepage destination rollout as Thailand-first', () => {

@@ -82,6 +82,8 @@ test.describe('Homepage AI planner entry', () => {
 
     await expect(page.getByText('Start with a travel idea')).toBeVisible()
     await expect(page.getByText('Use a prompt, then compare matching experiences.')).toBeVisible()
+    await expect(page.getByText('Prompt links load the planner form only.')).toBeVisible()
+    await expect(page.getByText('Real Thailand experience search starts after you review and')).toBeVisible()
 
     const promptChips = [
       'Gentle elephant day in Chiang Mai',

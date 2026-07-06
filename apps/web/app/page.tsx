@@ -159,6 +159,10 @@ export default function LandingPage() {
             RadarScout helps with guided discovery, comparison, and planning. Booking partners handle current
             operating details and final booking steps.
           </p>
+          <p className="mt-2 max-w-4xl text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+            Prompt links load the planner form only. Real Thailand experience search starts after you review and
+            confirm your trip intent.
+          </p>
         </div>
       </section>
 
