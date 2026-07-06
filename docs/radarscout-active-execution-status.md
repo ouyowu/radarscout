@@ -82,7 +82,7 @@ Recent completed items:
 - A safer RadarScout preview deploy wrapper was added through PR #345.
 - AI Trip route result group back links now include city-specific accessible labels through PR #349.
 - Product-enrichment coverage route types were corrected through PR #350, clearing the prior TypeScript baseline note.
-- Latest clean local validation passed for the current AI Trip candidate after PR #349 and PR #350.
+- Latest clean local and post-merge validation passed for the current AI Trip candidate after PR #350.
 
 ## 4. Current blocked or deferred items
 
@@ -134,6 +134,7 @@ Known state:
 - a latest-head preview retry after PR #321 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - a latest-head preview retry after PR #339 passed `pnpm guard:vercel-preview`, confirmed the `reddit-monitor` Vercel project, then was blocked by the same `api-deployments-free-per-day` quota;
 - no fresh Vercel preview has been created yet for the PR #345 preview-wrapper candidate because the quota gate remains active;
+- a latest-head preview retry after the wrapper passed `pnpm deploy:vercel-preview`, confirmed the `reddit-monitor` Vercel project, and was then blocked by the same `api-deployments-free-per-day` quota;
 - no production deployment or alias change completed.
 
 Decision:
@@ -201,6 +202,8 @@ Known state:
 - clean latest-head local validation passed after PR #345 with Prisma generate, preview-wrapper tests, AI Trip Vitest, AI Trip E2E rerun after one dev-server reset, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #349 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - PR #350 corrected the prior TypeScript baseline failure in `apps/web/app/api/internal/product-enrichment/coverage/route.ts`.
+- clean local validation passed after PR #350 with Prisma generate, focused product-enrichment coverage Vitest, TypeScript, Next build, Playwright E2E, and `git diff --check`;
+- clean post-merge local validation passed after PR #350 with Prisma generate, focused product-enrichment coverage Vitest, TypeScript, Next build, Playwright E2E, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -228,6 +231,7 @@ Decision:
 
 - latest AI Trip app-code increment has clean local validation and previous latest-head protected preview smoke evidence;
 - latest AI Trip test-only increment has clean post-merge local validation;
+- current latest-head TypeScript is clean after PR #350;
 - new preview deployment should be retried after Vercel quota resets or plan capacity changes;
 - production deploy remains blocked until Vercel quota resets or plan capacity changes.
 
