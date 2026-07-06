@@ -70,7 +70,8 @@ Recent completed items:
 - AI Trip detail source normalization E2E coverage was added through PR #319.
 - AI Trip multi-city results now show a compact route stop overview through PR #321.
 - AI Trip multi-city result cards are now grouped by route stop / city through PR #324.
-- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #324.
+- AI Trip route-stop grouped result detail links now have E2E coverage through PR #326.
+- Latest clean post-merge local validation passed for the current AI Trip candidate after PR #326.
 
 ## 4. Current blocked or deferred items
 
@@ -128,9 +129,9 @@ Decision:
 - do not keep retrying deployment while Vercel returns `api-deployments-free-per-day`;
 - retry after the Vercel daily deployment quota resets or after plan capacity changes;
 - use a clean worktree and deploy the latest `origin/codex/travel-mvp-launch` SHA when quota is available.
-- latest production-deploy branch candidate is `d0bd35714560b3c00f4a559625d96e7eb683a004`.
+- latest production-deploy branch candidate is `8ac3a51b0760cf4a5c8a1d19a709b1abb977ab2e`.
 - latest merged AI Trip app-code candidate is PR #324, merge SHA `77aeb5c5a12c9609eea9ffb585f3322e3510e356`.
-- latest branch HEAD after PR #323 docs refresh is `d0bd35714560b3c00f4a559625d96e7eb683a004`.
+- latest branch HEAD after PR #326 is `8ac3a51b0760cf4a5c8a1d19a709b1abb977ab2e`.
 
 ### Latest fresh preview deployment
 
@@ -138,7 +139,7 @@ Status: prior preview passed; latest-head preview blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `d0bd35714560b3c00f4a559625d96e7eb683a004`;
+- latest `origin/codex/travel-mvp-launch`: `8ac3a51b0760cf4a5c8a1d19a709b1abb977ab2e`;
 - latest merged AI Trip app-code increment: PR #302, merge SHA `9585a27b80a27d8a0b8e2014419bd4267d2ad5bd`;
 - latest merged AI Trip status-doc increment: PR #304, merge SHA `56ebefaa646d972fa92b925282f842fdd71609fc`;
 - latest merged AI Trip test-only increment: PR #307, merge SHA `812d803603f518b7236b42b06b3cc8676c0171b8`;
@@ -151,6 +152,7 @@ Known state:
 - latest merged AI Trip app-code route-stop overview increment: PR #321, merge SHA `b0a612d566616428d639e0411302cb495651b30e`;
 - latest merged AI Trip app-code route-result grouping increment: PR #324, merge SHA `77aeb5c5a12c9609eea9ffb585f3322e3510e356`;
 - latest merged AI Trip status-doc increment after PR #324: PR #323, merge SHA `d0bd35714560b3c00f4a559625d96e7eb683a004`;
+- latest merged AI Trip test-only grouped-link increment: PR #326, merge SHA `8ac3a51b0760cf4a5c8a1d19a709b1abb977ab2e`;
 - clean local validation passed after PR #297 and after the current release-gate docs refresh;
 - clean local validation passed after PR #301 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean local validation passed after PR #302 with Prisma generate, `productSearch` Vitest, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
@@ -161,6 +163,7 @@ Known state:
 - clean post-merge local validation passed after PR #319 with Prisma generate, AI Trip E2E, TypeScript, and `git diff --check`;
 - clean post-merge local validation passed after PR #321 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #324 with Prisma generate, AI Trip E2E, AI Trip Vitest, TypeScript, Next build, and `git diff --check`;
+- clean post-merge local validation passed after PR #326 with Prisma generate, AI Trip E2E, TypeScript, and `git diff --check`;
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
@@ -171,6 +174,7 @@ Known state:
 - latest fresh Vercel preview, production deploy, and production promotion attempts are blocked by the Vercel free daily deployment quota (`api-deployments-free-per-day`), not by a code/build failure.
 - latest PR #321 preview retry is also blocked by the same Vercel quota after passing the local preview guard.
 - latest PR #324 app-code candidate has not received a fresh Vercel preview because the same quota gate remains active.
+- latest PR #326 is test-only and has not received a fresh Vercel preview because the same quota gate remains active.
 
 Decision:
 
