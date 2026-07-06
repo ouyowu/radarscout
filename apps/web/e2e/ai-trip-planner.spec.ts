@@ -417,7 +417,11 @@ test.describe('Valid Chiang Mai flow', () => {
   test('example prompt chip focuses the trip idea field for immediate editing', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
-    await page.getByRole('button', { name: 'Bangkok 3 days canals temples street food, relaxed pace', exact: true }).click()
+    const examplePrompt = page.getByRole('button', { name: 'Bangkok 3 days canals temples street food, relaxed pace', exact: true })
+    await expect(examplePrompt).toHaveClass(/min-h-\[44px\]/)
+    await expect(page.getByRole('button', { name: /clear trip idea/i })).toHaveClass(/min-h-\[44px\]/)
+
+    await examplePrompt.click()
 
     await expect(page.locator('#trip-idea')).toBeFocused()
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')

@@ -240,7 +240,7 @@ export function IntentParserDemo() {
               key={examplePrompt}
               type="button"
               onClick={() => useExamplePrompt(examplePrompt)}
-              className="border border-[#ded7ca] bg-[#fffdf7] px-3 py-2 text-left text-xs font-black leading-5 text-[#101820] hover:border-[#0f766e] hover:text-[#0f766e]"
+              className="min-h-[44px] border border-[#ded7ca] bg-[#fffdf7] px-3 py-2 text-left text-xs font-black leading-5 text-[#101820] hover:border-[#0f766e] hover:text-[#0f766e]"
             >
               {examplePrompt}
             </button>
@@ -248,7 +248,7 @@ export function IntentParserDemo() {
           <button
             type="button"
             onClick={handleClearPrompt}
-            className="border border-[#ded7ca] bg-white px-3 py-2 text-left text-xs font-black leading-5 text-[#5a5147] hover:border-[#a35c09] hover:text-[#a35c09]"
+            className="min-h-[44px] border border-[#ded7ca] bg-white px-3 py-2 text-left text-xs font-black leading-5 text-[#5a5147] hover:border-[#a35c09] hover:text-[#a35c09]"
           >
             Clear trip idea
           </button>
