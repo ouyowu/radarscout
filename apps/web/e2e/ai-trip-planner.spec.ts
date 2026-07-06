@@ -224,6 +224,36 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('dd').filter({ hasText: /^relaxed$/ })).toBeVisible()
   })
 
+  test('Thailand route starter fills and searches a multi-city planner prompt safely', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use thailand route idea/i }).click()
+
+    await expect(page.locator('#trip-idea')).toHaveValue(
+      'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace',
+    )
+    await expect(
+      page.getByText('Thailand route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.'),
+    ).toBeVisible()
+
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+    await page.getByRole('button', { name: /search loaded trip idea/i }).click()
+
+    expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
+    await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('destination starter focuses the trip idea field for immediate editing', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
