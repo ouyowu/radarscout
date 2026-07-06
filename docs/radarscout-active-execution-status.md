@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #377:
+Latest `origin/codex/travel-mvp-launch` after PR #381:
 
 ```text
-85e25156fdae83b367d324cc7389116d541cb547
+c1652cee16e2670e1dd019a9399554f6cabdee7f
 ```
 
 Latest AI Trip product-code increments:
@@ -58,7 +58,8 @@ Latest AI Trip product-code increments:
 - PR #368: AI Trip product cards label each result's matched route stop.
 - PR #370: loaded route search feedback can jump directly to the comparison-card area.
 - PR #372: AI Trip product-card detail CTA accessible labels include booking partner handoff context.
-- PR #377: sourced tour detail pages explain that the AI Trip return link goes to the stable matching experiences section without storing partner action or current status.
+- PR #377: sourced tour detail pages explain that the AI Trip return link goes to the matching experiences section without storing partner action or current status.
+- PR #380: sourced tour detail pages use more traveler-facing AI Trip return-context copy.
 
 Latest tooling increment:
 
@@ -76,7 +77,10 @@ Latest status-doc increment:
 - PR #371 refreshed active status after PR #370.
 - PR #374 refreshed active status after PR #372 and PR #373.
 - PR #376 recorded the latest local validation after PR #373.
-- This PR refreshes active status after PR #377.
+- PR #378 refreshed active status after PR #377.
+- PR #379 recorded the traveler funnel analytics vendor decision.
+- PR #381 documented the AI Trip production deploy candidate and kept production behind explicit approval.
+- This PR refreshes active status after PR #380 and PR #381.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -89,13 +93,19 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr377-postmerge-tour-return-context
+/private/tmp/radarscout-pr380-postmerge-return-copy
 ```
 
-Validated product-code SHA after the PR #377 merge:
+Validated product-code SHA after the PR #380 merge:
 
 ```text
-85e25156fdae83b367d324cc7389116d541cb547
+56b91395f97c32c53bb79c37bc0b3e3e97dece1a
+```
+
+Latest docs-only merge after validation:
+
+```text
+c1652cee16e2670e1dd019a9399554f6cabdee7f
 ```
 
 Validation results:
@@ -158,12 +168,15 @@ Recent preview evidence:
   - AI Trip Planner static page content;
   - safe public copy.
 - The PR #377 product-code head `85e25156fdae83b367d324cc7389116d541cb547` has clean local dynamic validation.
+- The PR #380 product-code head `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` has clean local dynamic validation.
 - A clean latest-head manual preview retry for `5b0c447aa715e8d0d60fa9c7d07c7debede971ee` still hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `90658452fff5f0a5db3f18ce9be500428eef2058` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `8ae92f753a0bc31c97b865be1cbd157e5c13c648` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `05e3d0c05fcf0bd3cfad8e2d1a758f74d2d2f440` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `03991696b94e31f110374e93877fa99abf1034cb` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `85e25156fdae83b367d324cc7389116d541cb547` also hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `bafb4ca1173d4f1dea39d69779ee65c57b7c105c` also hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` also hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
@@ -205,7 +218,7 @@ The current codebase already includes:
 - matched-route-stop labels on AI Trip product cards;
 - loaded route search feedback can jump directly to comparison cards;
 - booking-partner handoff context in AI Trip product-card detail CTA accessible labels;
-- AI Trip return-context copy on sourced tour detail pages;
+- traveler-facing AI Trip return-context copy on sourced tour detail pages;
 - deterministic planning outline link to the experience search section;
 - `/tours/{id}?source=ai-trip-planner` return context;
 - AI Trip Planner context card on sourced tour detail pages;
