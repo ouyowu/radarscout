@@ -49,6 +49,30 @@ function mockFetchJson(payload: unknown) {
   })))
 }
 
+function makeTourDetailProduct(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'tour_state_test',
+    title: 'Chiang Mai Elephant Care',
+    city: 'Chiang Mai',
+    location: 'Mae Rim',
+    destination: 'Thailand',
+    imageUrl: null,
+    summary: null,
+    description: null,
+    retailPrice: null,
+    currency: null,
+    detailHref: '/tours/tour_state_test',
+    facts: {
+      duration: null,
+      meetingPoint: null,
+      pickupAvailable: false,
+      cancellationPolicy: null,
+    },
+    reviewedEnrichment: null,
+    ...overrides,
+  }
+}
+
 describe('tour public copy safety', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -253,6 +277,73 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('No partner action or current status is recorded from this unavailable detail page')
     expect(markup).toContain('Back to AI Trip Planner results')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
+    expect(fetchMock).not.toHaveBeenCalled()
+    expectSafeTourCopy(markup)
+  })
+
+  it('State A renders only a verified booking partner handoff CTA', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'found',
+      product: makeTourDetailProduct({
+        bookingPartnerHandoff: {
+          href: 'https://booking.example.com/experience/1232729',
+          label: 'Check availability',
+          rel: 'nofollow sponsored noopener noreferrer',
+          source: 'owner_managed_profile',
+          verifiedBy: 'owner_managed_catalog',
+        },
+      }),
+    })
+
+    const element = await TourDetailPage({ params: { id: 'tour_state_a' } })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('Check availability')
+    expect(markup).toContain('href="https://booking.example.com/experience/1232729"')
+    expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
+    expect(markup).toContain('Continue with a booking partner')
+    expect(markup).not.toContain('Planning-only detail')
+    expect(markup).not.toContain('verified booking partner handoff is not available yet')
+    expect(fetchMock).not.toHaveBeenCalled()
+    expectSafeTourCopy(markup)
+  })
+
+  it('State B renders planning-only fallback copy without Check availability', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'found',
+      product: makeTourDetailProduct(),
+    })
+
+    const element = await TourDetailPage({ params: { id: 'tour_state_b' } })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('Planning-only detail')
+    expect(markup).toContain('verified booking partner handoff is not available yet')
+    expect(markup).toContain('Use this page for planning and compare other experiences with verified handoff options')
+    expect(markup).not.toContain('Check availability')
+    expect(markup).not.toContain('href="https://booking.example.com')
+    expect(fetchMock).not.toHaveBeenCalled()
+    expectSafeTourCopy(markup)
+  })
+
+  it('State C renders unavailable copy without a booking partner CTA', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
+      status: 'not-found',
+    })
+
+    const element = await TourDetailPage({ params: { id: 'tour_state_c' } })
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('This product detail is not available.')
+    expect(markup).toContain('Back to tours')
+    expect(markup).not.toContain('Check availability')
+    expect(markup).not.toContain('Continue with a booking partner')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
