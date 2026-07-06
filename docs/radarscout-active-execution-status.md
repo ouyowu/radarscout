@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-8`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-9`
 
 Updated: 2026-07-06
 
@@ -46,10 +46,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 Latest `origin/codex/travel-mvp-launch` before this status refresh:
 
 ```text
-b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
+3ac1068ead0681db3578c38fd9422672982b0f98
 ```
 
-Latest AI Trip product-code increments:
+Latest AI Trip and homepage product-code increments:
 
 - PR #356: AI Trip Planner successful result action shows the top matched product title.
 - PR #357: AI Trip Planner refine links include clearer accessible context.
@@ -68,6 +68,7 @@ Latest AI Trip product-code increments:
 - PR #409: AI Trip example prompt chips and the `Clear trip idea` chip now use 44px minimum tap targets.
 - PR #411: AI Trip intent summary mobile density is tighter.
 - PR #413: AI Trip product-card action rows can wrap on mobile while preserving the product-detail CTA tap target.
+- PR #418: homepage hero and prompt chips now route users more directly into AI-guided Thailand planning.
 
 Latest tooling increment:
 
@@ -108,7 +109,9 @@ Latest status-doc increment:
 - PR #405 refreshed active status and the production deploy candidate after PR #402.
 - PR #410 refreshed active status after PR #409.
 - PR #412 refreshed active status after PR #411.
-- Current status update records latest-head validation for `b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c`, the fixed preview-link cleanup path, and the latest preview quota blocker.
+- PR #415 refreshed active status after PR #413.
+- PR #417 documented the homepage AI planner concept.
+- Current status update records post-merge validation for `3ac1068ead0681db3578c38fd9422672982b0f98` and the latest preview quota blocker.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -121,26 +124,27 @@ none at the start of this status refresh
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-after-pr413
+/private/tmp/radarscout-homepage-ai-planner-concept-1-postmerge
 ```
 
-Validated latest branch HEAD after PR #413:
+Validated latest branch HEAD after PR #418:
 
 ```text
-b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
+3ac1068ead0681db3578c38fd9422672982b0f98
 ```
 
-Latest docs-only merge before this status refresh:
+Latest merge before this status refresh:
 
 ```text
-b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c
+3ac1068ead0681db3578c38fd9422672982b0f98
 ```
 
 Validation results:
 
 - Prisma generate: passed.
 - Vercel preview cleanup/deploy helper tests (`node --test scripts/__tests__/radarscout-vercel-preview-link-cleanup.test.js scripts/__tests__/radarscout-vercel-preview-deploy.test.js`): passed, 13 tests.
-- AI Trip focused Vitest coverage (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
+- Focused homepage/sitemap/SEO Vitest coverage (`pnpm --filter @reddit-monitor/web test -- homepageCopy sitemap seo`): passed, 58 files / 924 tests.
+- Full Vitest (`pnpm --filter @reddit-monitor/web test`): passed, 58 files / 924 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
@@ -186,6 +190,7 @@ Meaning:
 - The latest clean-head retry for `0a00697021dc190304fec5be84e82e139162d550` confirmed the preview wrapper now removes Vercel CLI `.env.local` / `.env*` side effects, passes the guard, and then fails only on the Vercel daily deployment quota.
 - The latest clean-head retry for `f77574a836b4ad4fd3336b96736cd18eef18f581` also passed cleanup and guard, then hit the same Vercel daily deployment quota.
 - The latest clean-head retry for `b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c` also passed cleanup and guard, then hit the same Vercel daily deployment quota.
+- The latest clean-head retry for `3ac1068ead0681db3578c38fd9422672982b0f98` also passed cleanup and guard, then hit the same Vercel daily deployment quota.
 - This is not a code, TypeScript, test, or build failure.
 
 Recent preview evidence:
@@ -260,6 +265,7 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `0a00697021dc190304fec5be84e82e139162d550` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `f77574a836b4ad4fd3336b96736cd18eef18f581` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `b7afbb5c65ef00e4d096a302829f5e4abf9b0d4c` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `3ac1068ead0681db3578c38fd9422672982b0f98` passed the local cleanup helper and preview guard, then hit `api-deployments-free-per-day`.
 
 ## 6. Production status
 
@@ -269,7 +275,7 @@ Decision:
 
 - do not production deploy without explicit approval naming the merge SHA;
 - do not treat quota failures as product-code failures;
-- latest-head preview remains blocked by Vercel quota after PR #413, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
+- latest-head preview remains blocked by Vercel quota after PR #418, so production deploy should wait for fresh latest-head preview evidence unless the operator explicitly approves deploying the exact latest SHA with that known preview limitation.
 
 ## 7. Safety status
 
@@ -288,6 +294,7 @@ The current codebase already includes:
 
 - homepage link to `/ai-trip-planner`;
 - homepage link to `/chiang-mai/elephant-camp-finder`;
+- homepage hero and prompt chips route users into AI-guided Thailand planning;
 - Chiang Mai deterministic chat planner;
 - itinerary summary;
 - compact mobile summary;
