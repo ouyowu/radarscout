@@ -48,7 +48,7 @@ test.describe('Homepage AI planner entry', () => {
     for (const chip of promptChips) {
       await expect(page.getByRole('link', { name: chip })).toHaveAttribute(
         'href',
-        new RegExp('^/ai-trip-planner\\?idea='),
+        `/ai-trip-planner?idea=${encodeURIComponent(chip)}#intent-demo`,
       )
     }
 

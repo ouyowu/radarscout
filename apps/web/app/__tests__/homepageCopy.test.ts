@@ -56,6 +56,7 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('Use a prompt, then compare matching experiences.')
     expect(homepageSource).toContain('buildPlannerIdeaHref')
     expect(homepageSource).toContain('encodeURIComponent(prompt)')
+    expect(homepageSource).toContain('#intent-demo')
     expect(homepageSource).toContain('Gentle elephant day in Chiang Mai')
     expect(homepageSource).toContain('Family-friendly Thailand experience')
     expect(homepageSource).toContain('Cooking and local food day')

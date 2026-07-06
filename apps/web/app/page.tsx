@@ -89,7 +89,7 @@ const plannerPromptChips = [
 ]
 
 function buildPlannerIdeaHref(prompt: string) {
-  return `/ai-trip-planner?idea=${encodeURIComponent(prompt)}`
+  return `/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`
 }
 
 const faqItems = [
