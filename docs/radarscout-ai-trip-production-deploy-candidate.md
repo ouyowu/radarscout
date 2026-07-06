@@ -17,13 +17,13 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD before this docs refresh:
 
 ```text
-c04b0399b03f8fcb479a1a44da744487c12267df
+8c344b1233c0b2ed6e2053dbb592842640aeb876
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-705337b4d557d1910ff9fd1a46393bed51f5e8ef
+ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
 ```
 
 The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product-copy increment plus docs-only status or decision records:
@@ -37,6 +37,9 @@ The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product
 - PR #396: recorded preview evidence with the dirty-metadata caveat.
 - PR #397: clarified the top-match detail CTA accessible label with product-page booking partner handoff context.
 - PR #398: recorded PR #397 validation status and kept production behind exact-SHA approval.
+- PR #400: clarified ordinary AI Trip product-card handoff copy so the booking partner handoff remains scoped to the product page.
+- PR #401: recorded clean protected-preview smoke evidence for `c04b0399b03f8fcb479a1a44da744487c12267df`.
+- PR #402: refreshed active status after PR #400 and recorded the PR #400 preview quota blocker.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -54,6 +57,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Unavailable sourced tour detail pages explain that travelers can return to AI Trip Planner results to compare other matches, and that no partner action or current status is recorded from the unavailable page.
 - Successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 - The successful-result top-match detail CTA accessible label explains that the booking partner handoff continues from the product page.
+- Ordinary AI Trip product-card copy uses the same product-page-scoped booking partner handoff boundary.
 
 The candidate does not add:
 
@@ -69,16 +73,16 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean post-merge validation was run after PR #397:
+Clean latest-head validation was run after PR #402:
 
 ```text
-705337b4d557d1910ff9fd1a46393bed51f5e8ef
+8c344b1233c0b2ed6e2053dbb592842640aeb876
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr397-postmerge
+/private/tmp/radarscout-latest-after-pr402
 ```
 
 Results:
@@ -86,12 +90,12 @@ Results:
 - Prisma generate: passed.
 - AI Trip focused Vitest coverage: passed, 58 files / 923 tests.
 - TypeScript: passed.
-- AI Trip Playwright E2E: passed, 53 tests.
 - Next build: passed.
+- Playwright E2E: passed, 53 tests.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The latest validation includes PR #397's top-match accessible handoff label plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #400's product-card handoff copy plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -161,6 +165,20 @@ noHorizontalOverflow: true
 unsafeNetwork: []
 forbiddenMatches: []
 ```
+
+Latest preview retry for the current branch HEAD:
+
+```text
+8c344b1233c0b2ed6e2053dbb592842640aeb876
+```
+
+Result:
+
+```text
+blocked by Vercel daily deployment quota after the clean local preview guard passed
+```
+
+The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`. This is an operational quota blocker, not a code, test, TypeScript, or build failure.
 
 Production deployment remains gated on explicit approval naming the latest merge SHA.
 
@@ -238,7 +256,7 @@ TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 
 Run this after Vercel deployment quota resets or when an approved protected-preview/share-smoke path is available.
 
-If the operator wants to skip the preview blocker and proceed anyway, require explicit production approval for the exact latest branch HEAD.
+If the operator wants to skip the preview blocker and proceed anyway, require explicit production approval for the exact latest branch HEAD and record that latest-preview evidence is quota-blocked.
 
 ## 9. Safety confirmations
 
