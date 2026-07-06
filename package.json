@@ -12,7 +12,9 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r --if-present test",
     "test:vercel-preview-guard": "node --test scripts/__tests__/radarscout-vercel-preview-guard.test.js",
+    "test:vercel-preview-deploy": "node --test scripts/__tests__/radarscout-vercel-preview-deploy.test.js",
     "guard:vercel-preview": "node scripts/radarscout-vercel-preview-guard.js",
+    "deploy:vercel-preview": "node scripts/radarscout-vercel-preview-deploy.js",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "smoke:ai-trip-preview": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-preview-smoke.js"
