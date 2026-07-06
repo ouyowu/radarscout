@@ -684,6 +684,8 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await expect(page.getByText(/Try one of these Thailand trip ideas/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /Chiang Mai elephants and food/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /Bangkok food and canals/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Phuket islands and local food/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Pattaya beaches with easy pace/i })).toBeVisible()
 
     await page.getByRole('button', { name: /Bangkok food and canals/i }).click()
 

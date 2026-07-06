@@ -405,7 +405,7 @@ export function IntentParserDemo() {
                     Try one of these Thailand trip ideas:
                   </p>
                   <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670] sm:grid-cols-2">
-                    {noMatchNextSearches.slice(0, 2).map(nextSearch => (
+                    {noMatchNextSearches.map(nextSearch => (
                       <li key={nextSearch.label}>
                         <button
                           type="button"
