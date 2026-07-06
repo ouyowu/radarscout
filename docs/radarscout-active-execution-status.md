@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #383:
+Latest `origin/codex/travel-mvp-launch` after PR #384:
 
 ```text
-6f5ecadc77498f4e35d561d090e95d1f7c60b5c4
+7c3b2d5711197a532e8f5de3a96e29af29b5249d
 ```
 
 Latest AI Trip product-code increments:
@@ -82,7 +82,8 @@ Latest status-doc increment:
 - PR #381 documented the AI Trip production deploy candidate and kept production behind explicit approval.
 - PR #382 refreshed active status after PR #380 and PR #381.
 - PR #383 refreshed the AI Trip production deploy candidate after the latest return-copy validation.
-- This PR refreshes active status after PR #383 and the latest preview-quota retry.
+- PR #384 refreshed active status after PR #383 and the latest preview-quota retry.
+- This PR records latest-head local validation after PR #384.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -95,30 +96,25 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr381-postmerge
+/private/tmp/radarscout-latest-head-local-validation-after-pr384
 ```
 
-Validated product-code SHA after the PR #380 merge:
+Validated latest-head SHA:
 
 ```text
-56b91395f97c32c53bb79c37bc0b3e3e97dece1a
-```
-
-Latest docs-only merge after validation:
-
-```text
-6f5ecadc77498f4e35d561d090e95d1f7c60b5c4
+7c3b2d5711197a532e8f5de3a96e29af29b5249d
 ```
 
 Validation results:
 
 - Prisma generate: passed.
 - AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
+- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
 - Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
-- Worktree status: clean before the docs-only status update.
+- Worktree status: clean.
 
 ## 5. Latest preview status
 
@@ -180,6 +176,7 @@ Recent preview evidence:
 - A clean latest-head manual preview retry for `bafb4ca1173d4f1dea39d69779ee65c57b7c105c` also hit `api-deployments-free-per-day`.
 - A clean post-merge manual preview retry for `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` also hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `444cfb17ab2871584b6785407fc20663e3b6d081` also hit `api-deployments-free-per-day`.
+- A clean latest-head manual preview retry for `7c3b2d5711197a532e8f5de3a96e29af29b5249d` also hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status

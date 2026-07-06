@@ -17,7 +17,7 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD at this record:
 
 ```text
-444cfb17ab2871584b6785407fc20663e3b6d081
+7c3b2d5711197a532e8f5de3a96e29af29b5249d
 ```
 
 Latest product-code merge included in this branch:
@@ -30,6 +30,8 @@ The commits after `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` are docs-only statu
 
 - PR #381: documented the AI Trip production deploy candidate.
 - PR #382: refreshed active status after PR #380 and PR #381.
+- PR #383: refreshed this production candidate record after PR #380.
+- PR #384: refreshed active status after PR #383.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -67,13 +69,14 @@ Clean post-merge validation was run against the product-code merge:
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr380-postmerge-return-copy
+/private/tmp/radarscout-latest-head-local-validation-after-pr384
 ```
 
 Results:
 
 - Prisma generate: passed.
-- Public copy / tours Vitest coverage: passed, 58 files / 921 tests.
+- AI Trip Vitest focus: passed.
+- Tours Vitest focus: passed.
 - AI Trip Playwright E2E: passed.
 - TypeScript: passed.
 - Next build: passed.
@@ -95,7 +98,7 @@ Latest preview retry worktree:
 Latest preview retry SHA:
 
 ```text
-56b91395f97c32c53bb79c37bc0b3e3e97dece1a
+7c3b2d5711197a532e8f5de3a96e29af29b5249d
 ```
 
 Vercel project:
