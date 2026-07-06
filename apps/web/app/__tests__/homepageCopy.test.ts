@@ -45,9 +45,23 @@ describe('homepage public copy safety', () => {
 
   it('links to the AI trip planner with safe planning-first copy', () => {
     expect(homepageSource).toContain("href: '/ai-trip-planner'")
-    expect(homepageSource).toContain('Start planning with AI')
+    expect(homepageSource).toContain('Start planning')
     expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
+    expect(homepageSource).toContain('Tell RadarScout the kind of Thailand day you want')
     expect(homepageSource).toContain('trusted booking partner handoff')
+  })
+
+  it('shows safe homepage planner prompt chips without booking or availability claims', () => {
+    expect(homepageSource).toContain('Start with a travel idea')
+    expect(homepageSource).toContain('Use a prompt, then compare matching experiences.')
+    expect(homepageSource).toContain('Gentle elephant day in Chiang Mai')
+    expect(homepageSource).toContain('Family-friendly Thailand experience')
+    expect(homepageSource).toContain('Cooking and local food day')
+    expect(homepageSource).toContain('Nature day trip from Chiang Mai')
+    expect(homepageSource).toContain('Bangkok or Pattaya elephant day')
+    expect(homepageSource).toContain('RadarScout helps with guided discovery, comparison, and planning')
+    expect(homepageSource).toContain('Booking partners handle current')
+    expect(homepageSource).toContain('final booking steps')
   })
 
   it('positions the homepage destination rollout as Thailand-first', () => {
@@ -71,6 +85,7 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
+    expect(homepageSource).toContain("href: '/chiang-mai/elephant-camp-finder'")
     expect(homepageSource).toContain('href="/chiang-mai/elephant-camp-finder"')
     expect(homepageSource).toContain('Plan a Chiang Mai elephant day')
     expect(homepageSource).toContain('Plan with RadarScout')

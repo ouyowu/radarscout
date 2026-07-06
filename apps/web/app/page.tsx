@@ -80,6 +80,14 @@ const howItWorks = [
   },
 ]
 
+const plannerPromptChips = [
+  'Gentle elephant day in Chiang Mai',
+  'Family-friendly Thailand experience',
+  'Cooking and local food day',
+  'Nature day trip from Chiang Mai',
+  'Bangkok or Pattaya elephant day',
+]
+
 const faqItems = [
   {
     question: 'How broad is RadarScout coverage today?',
@@ -108,15 +116,45 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
         title="AI-guided Thailand Experience Planner"
-        subtitle="Plan Thailand trips, compare local experiences, and discover day tours, transfers, food tours, and custom itinerary ideas with safe booking partner handoff."
+        subtitle="Tell RadarScout the kind of Thailand day you want. Compare elephant care, food, nature, family-friendly, and city experiences before continuing with a booking partner."
         actions={[
-          { label: 'Start planning with AI', href: '/ai-trip-planner' },
-          { label: 'Compare Thailand experiences', href: '/tours', variant: 'secondary' },
+          { label: 'Start planning', href: '/ai-trip-planner' },
+          { label: 'Plan a Chiang Mai elephant day', href: '/chiang-mai/elephant-camp-finder', variant: 'secondary' },
         ]}
         trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
       />
 
       <DmcTrustBar items={trustItems} />
+
+      <section className="bg-[var(--color-bg-primary)] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
+          <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                Start with a travel idea
+              </p>
+              <h2 className="mt-3 font-[var(--font-heading)] text-3xl font-black leading-tight tracking-[-0.035em] sm:text-4xl">
+                Use a prompt, then compare matching experiences.
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {plannerPromptChips.map(chip => (
+                <Link
+                  key={chip}
+                  href="/ai-trip-planner"
+                  className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--color-border-light)] bg-[var(--color-bg-secondary)] px-4 text-sm font-black text-[var(--color-text-primary)]"
+                >
+                  {chip}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <p className="mt-5 max-w-4xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+            RadarScout helps with guided discovery, comparison, and planning. Booking partners handle current
+            operating details and final booking steps.
+          </p>
+        </div>
+      </section>
 
       <section className="bg-[var(--color-bg-secondary)] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8">
