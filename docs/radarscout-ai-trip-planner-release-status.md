@@ -9,7 +9,7 @@ Last updated: 2026-07-07
 Latest branch HEAD checked in this release-status checkpoint:
 
 ```text
-bca4a504729ce9a1be1639b82c252137e669e2b8
+5fc5e617ab19ca910966f9142c7fc04f5532441d
 ```
 
 Latest AI Trip Planner product-code candidate on the current branch:
@@ -191,9 +191,54 @@ Title: Document AI Trip production drift
 Merge SHA: bca4a504729ce9a1be1639b82c252137e669e2b8
 Scope: docs-only production drift observation showing production is healthy but still behind the latest AI Trip copy candidate
 Production deploy: no
+
+PR #457
+Title: Record latest AI Trip validation status
+Merge SHA: d65966717cde3725486fffcae273667301836d31
+Scope: docs-only status refresh after latest local validation and preview quota evidence
+Production deploy: no
+
+PR #458
+Title: Refresh AI Trip release gate status
+Merge SHA: 03f598fd7ddafdc02a65de2112f4897038961fc3
+Scope: docs-only release gate refresh for latest preview quota and production drift status
+Production deploy: no
+
+PR #459
+Title: Add local AI Trip smoke helper
+Merge SHA: 5fc5e617ab19ca910966f9142c7fc04f5532441d
+Scope: tooling/docs-only localhost AI Trip smoke helper for Vercel preview quota fallback
+Production deploy: no
 ```
 
 ## Latest validation evidence
+
+Latest local smoke-helper validation after PR #459:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-local-smoke-helper-0-postmerge
+HEAD: 5fc5e617ab19ca910966f9142c7fc04f5532441d
+
+Script tests: passed, 8/8
+smoke:ai-trip-local --help: passed
+Next build: passed
+Local production smoke: passed
+git diff --check: clean
+```
+
+Local production smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
 
 Latest local validation after PR #456:
 

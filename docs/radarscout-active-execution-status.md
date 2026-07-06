@@ -1,6 +1,6 @@
 # RadarScout active execution status
 
-Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-13`
+Task: `TD-RADARSCOUT-ACTIVE-EXECUTION-STATUS-14`
 
 Updated: 2026-07-07
 
@@ -18,6 +18,88 @@ Default rules:
 - use preview smoke for app changes when Vercel capacity allows;
 - do not production deploy without explicit approval for a merge SHA;
 - do not touch ThaiEleHub or Shopify files.
+
+## 0. Latest autonomous execution update — local AI Trip smoke helper
+
+Updated: 2026-07-07
+
+Latest merged HEAD:
+
+```text
+5fc5e617ab19ca910966f9142c7fc04f5532441d
+```
+
+Completed low-risk increments:
+
+- PR #458: refreshed the AI Trip release gate status to the latest branch and quota context.
+- PR #459: added a localhost-only AI Trip smoke helper for Vercel preview quota fallback.
+
+New local smoke helper:
+
+```bash
+pnpm smoke:ai-trip-local http://localhost:3456/ai-trip-planner
+```
+
+The helper:
+
+- refuses RadarScout production domains;
+- accepts only `localhost` or `127.0.0.1`;
+- mocks `/api/ai-trip/search`;
+- checks title, robots, top-match source parameter, product-card count, result
+  summary visibility, mobile horizontal overflow, unsafe network requests, and
+  forbidden public copy.
+
+Latest post-merge validation evidence:
+
+- Clean post-merge worktree: `/private/tmp/radarscout-ai-trip-local-smoke-helper-0-postmerge`.
+- Script tests: passed, 8 / 8 tests.
+- `pnpm smoke:ai-trip-local --help`: passed.
+- Next build: passed.
+- Local production smoke against `http://localhost:3456/ai-trip-planner`: passed.
+- `git diff --check`: passed.
+
+Latest local smoke result:
+
+```text
+status: 200
+title: Thailand AI Trip Planner | RadarScout
+robots: noindex, nofollow
+topMatchHref: /tours/prod_cm_1?source=ai-trip-planner
+productCardCount: 3
+resultSummaryVisible: true
+noHorizontalOverflow: true
+unsafeNetwork: none
+forbiddenMatches: none
+```
+
+Latest preview status:
+
+- Clean preview retry worktree: `/private/tmp/radarscout-ai-trip-latest-head-preview-3`.
+- Preview HEAD: `5fc5e617ab19ca910966f9142c7fc04f5532441d`.
+- Correct Vercel project confirmed: `ouyowus-projects / reddit-monitor`.
+- `pnpm guard:vercel-preview`: passed.
+- Preview deploy reached Vercel but remains blocked by daily deployment quota:
+
+```text
+api-deployments-free-per-day
+```
+
+Production gate:
+
+Production deploy can be considered only if explicitly approved for merge SHA:
+
+```text
+5fc5e617ab19ca910966f9142c7fc04f5532441d
+```
+
+Recommended next safe step:
+
+```text
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
+```
+
+Run it after Vercel deployment quota resets. Until then, continue only with
+local/testable or docs-only RadarScout work.
 
 ## 0. Latest autonomous execution update — latest AI Trip branch validation
 
