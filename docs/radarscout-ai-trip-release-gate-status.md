@@ -12,12 +12,6 @@ Safe base branch:
 origin/codex/travel-mvp-launch
 ```
 
-Current branch HEAD:
-
-```text
-0c6bc319d503f17fcca2d17e3f9b67f921013628
-```
-
 Latest merged app-code HEAD:
 
 ```text
@@ -103,7 +97,7 @@ Do not run production deploy to bypass this blocker.
 When Vercel preview quota recovers:
 
 1. Create a clean worktree from `origin/codex/travel-mvp-launch`.
-2. Verify `HEAD = 0c6bc319d503f17fcca2d17e3f9b67f921013628` or the newer current branch HEAD if a later docs-only status update has landed.
+2. Run `git rev-parse HEAD` in that worktree and record the current branch HEAD at retry time.
 3. Verify the Vercel project is `ouyowus-projects / reddit-monitor`.
 4. Run preview deploy only.
 5. Smoke `/ai-trip-planner` for:
@@ -142,6 +136,6 @@ TD-RADARSCOUT-AI-TRIP-STARTER-UPDATES-PREVIEW-RETRY
 
 Goal:
 
-Retry Vercel preview for current branch HEAD `0c6bc319d503f17fcca2d17e3f9b67f921013628` after the deployment quota resets.
+Retry Vercel preview for the current `origin/codex/travel-mvp-launch` HEAD after the deployment quota resets.
 
 Production deploy remains blocked until an explicit production approval names the exact SHA.
