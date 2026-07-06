@@ -115,6 +115,19 @@ export function IntentParserDemo() {
   const canSearch = canSearchFromConfirmed(confirmed)
   const productRetrievalEnabled = searchState?.status === 'ok'
   const resultFitSummary = searchState ? buildResultFitSummary(searchState) : null
+  const routeStopOverview = useMemo(() => {
+    if (searchState?.status !== 'ok') return []
+
+    const counts = new Map<string, number>()
+    for (const product of searchState.products) {
+      const city = product.city?.trim()
+      if (!city) continue
+
+      counts.set(city, (counts.get(city) ?? 0) + 1)
+    }
+
+    return Array.from(counts, ([city, count]) => ({ city, count }))
+  }, [searchState])
   const starterSearchFeedback = searchState
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
@@ -515,6 +528,29 @@ export function IntentParserDemo() {
                           <li key={point}>{point}</li>
                         ))}
                       </ul>
+                    </section>
+                  ) : null}
+                  {routeStopOverview.length > 1 ? (
+                    <section
+                      aria-label="Route stop overview"
+                      className="mt-3 rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:mt-4 sm:p-4"
+                    >
+                      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+                        Route stop overview
+                      </p>
+                      <p className="mt-1.5 text-xs font-semibold leading-5 text-[#5a6670] sm:mt-2 sm:text-sm sm:leading-6">
+                        City grouping helps you compare returned Thailand experiences by route stop. It does not claim availability or booking status.
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
+                        {routeStopOverview.map(stop => (
+                          <span
+                            key={stop.city}
+                            className="rounded-full bg-[#f5fbf7] px-2.5 py-1 text-xs font-black text-[#0f766e] sm:px-3"
+                          >
+                            {stop.city}: {stop.count} comparison match{stop.count === 1 ? '' : 'es'}
+                          </span>
+                        ))}
+                      </div>
                     </section>
                   ) : null}
                   <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
