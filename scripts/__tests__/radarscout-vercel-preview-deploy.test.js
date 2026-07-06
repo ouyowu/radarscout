@@ -75,6 +75,32 @@ test("passes safe Vercel preview args after the forced scope", () => {
   assert.match(result.stdout, /npx vercel --yes --scope ouyowus-projects --debug/)
 })
 
+test("cleans safe Vercel link side effects before running the preview guard", () => {
+  const cwd = makeFixture()
+  fs.writeFileSync(path.join(cwd, ".env.local"), "DATABASE_URL=redacted\n")
+  fs.appendFileSync(path.join(cwd, ".gitignore"), ".env.local\n.vercel\n")
+
+  const result = runDeploy(cwd)
+
+  assert.equal(result.status, 0)
+  assert.match(result.stdout, /removed \.env\.local/)
+  assert.match(result.stdout, /restored \.gitignore Vercel CLI additions/)
+  assert.match(result.stdout, /npx vercel --yes --scope ouyowus-projects/)
+  assert.equal(fs.existsSync(path.join(cwd, ".env.local")), false)
+  assert.equal(execFileSync("git", ["status", "--short"], { cwd, encoding: "utf8" }).trim(), "")
+})
+
+test("refuses non-Vercel .gitignore changes during automatic cleanup", () => {
+  const cwd = makeFixture()
+  fs.appendFileSync(path.join(cwd, ".gitignore"), "coverage/\n")
+
+  const result = runDeploy(cwd)
+
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /\.gitignore has changes beyond Vercel CLI preview-link additions/)
+  assert.doesNotMatch(result.stdout, /npx vercel/)
+})
+
 test("rejects production deploy flags before running Vercel", () => {
   const result = runDeploy(makeFixture(), ["--prod"])
 

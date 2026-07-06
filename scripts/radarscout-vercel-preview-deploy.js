@@ -90,6 +90,9 @@ function main() {
   const passThroughArgs = process.argv.slice(2)
   assertSafeArgs(passThroughArgs)
 
+  const cleanupPath = path.join(__dirname, "radarscout-vercel-preview-link-cleanup.js")
+  run(process.execPath, [cleanupPath])
+
   const guardPath = path.join(__dirname, "radarscout-vercel-preview-guard.js")
   run(process.execPath, [guardPath, ...passThroughArgs])
 
