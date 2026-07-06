@@ -15,7 +15,7 @@ origin/codex/travel-mvp-launch
 Latest checked branch HEAD:
 
 ```text
-5fc5e617ab19ca910966f9142c7fc04f5532441d
+f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
 ```
 
 Latest application-code candidate in this branch:
@@ -25,8 +25,8 @@ e6d9ecf559e5658e3798b053e6f6c409ea12a6c2
 ```
 
 The latest overall branch HEAD is newer because docs-only status updates were
-merged after the application-code candidate and a tooling-only local smoke helper
-was added after those status updates.
+merged after the application-code candidate, and tooling-only local smoke helpers
+were added after those status updates.
 
 ## Current product candidate
 
@@ -147,6 +147,15 @@ Next build: passed
 Local production smoke: passed
 ```
 
+Latest one-command helper evidence:
+
+```text
+Worktree: /private/tmp/radarscout-ai-trip-local-production-smoke-0-postmerge
+HEAD: f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
+Script tests: passed, 12/12
+One-command local production smoke: passed
+```
+
 Latest local production smoke result:
 
 ```text
@@ -202,7 +211,7 @@ If the operator accepts the known preview-quota limitation, the current latest
 exact SHA for a production approval would be:
 
 ```text
-5fc5e617ab19ca910966f9142c7fc04f5532441d
+f94317d515b5b9f55ba76a1ea6f5501c435ff6bc
 ```
 
 ## Safety boundaries still active
