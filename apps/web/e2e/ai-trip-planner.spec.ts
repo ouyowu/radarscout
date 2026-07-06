@@ -254,6 +254,31 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
   })
 
+  test('destination starters fit as one desktop row without horizontal overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('/ai-trip-planner')
+
+    const starterButtons = page.getByRole('button', { name: /use .* route idea/i })
+
+    await expect(starterButtons).toHaveCount(5)
+
+    const firstBox = await starterButtons.first().boundingBox()
+    expect(firstBox).not.toBeNull()
+
+    for (let index = 1; index < 5; index += 1) {
+      const box = await starterButtons.nth(index).boundingBox()
+      expect(box).not.toBeNull()
+      expect(Math.abs((box?.y ?? 0) - (firstBox?.y ?? 0))).toBeLessThanOrEqual(2)
+    }
+
+    const viewport = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+
+    expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
+  })
+
   test('destination starter focuses the trip idea field for immediate editing', async ({ page }) => {
     await page.goto('/ai-trip-planner')
 
