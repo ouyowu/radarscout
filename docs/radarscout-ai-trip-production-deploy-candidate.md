@@ -17,13 +17,13 @@ origin/codex/travel-mvp-launch
 Latest branch HEAD before this docs refresh:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Latest product-code merge included in this branch:
 
 ```text
-ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product-copy increment plus docs-only status or decision records:
@@ -40,6 +40,12 @@ The commits after `e6c1cf7d6600322d759a994ad6f857c4a42411fd` include one product
 - PR #400: clarified ordinary AI Trip product-card handoff copy so the booking partner handoff remains scoped to the product page.
 - PR #401: recorded clean protected-preview smoke evidence for `c04b0399b03f8fcb479a1a44da744487c12267df`.
 - PR #402: refreshed active status after PR #400 and recorded the PR #400 preview quota blocker.
+- PR #403: recorded AI Trip deploy candidate status after PR #400 and PR #402.
+- PR #404: added the Vercel preview link cleanup helper.
+- PR #405: refreshed active status and this production deploy candidate after PR #402.
+- PR #406: ran preview link cleanup before the deploy guard.
+- PR #407: allowed the cleanup helper to restore the current Vercel CLI `.env*` addition.
+- PR #409: increased AI Trip example prompt and clear-button tap targets.
 
 If production deployment is later approved, the safest deploy target is the latest branch HEAD at that time, after confirming it is still a direct descendant of the validated product-code merge.
 
@@ -58,6 +64,7 @@ The current candidate includes the recent AI Trip safe-handoff improvements alre
 - Successful AI Trip product results show a compact next-step helper explaining the safe path from comparison cards to one product detail page and then to the booking partner.
 - The successful-result top-match detail CTA accessible label explains that the booking partner handoff continues from the product page.
 - Ordinary AI Trip product-card copy uses the same product-page-scoped booking partner handoff boundary.
+- AI Trip prompt chips and the `Clear trip idea` chip use 44px minimum tap targets.
 
 The candidate does not add:
 
@@ -73,21 +80,22 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean latest-head validation was run after PR #402:
+Clean latest-head validation was run after PR #409:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-after-pr402
+/private/tmp/radarscout-latest-after-pr409
 ```
 
 Results:
 
 - Prisma generate: passed.
+- Vercel preview cleanup/deploy helper tests: passed, 13 tests.
 - AI Trip focused Vitest coverage: passed, 58 files / 923 tests.
 - TypeScript: passed.
 - Next build: passed.
@@ -95,7 +103,7 @@ Results:
 - `git diff --check`: passed.
 - Worktree status: clean.
 
-The latest validation includes PR #400's product-card handoff copy plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
+The latest validation includes PR #400's product-card handoff copy, PR #407's preview cleanup fix, and PR #409's prompt-chip tap-target change plus regression coverage. No route, API, database, schema, environment, Bókun, checkout, payment, inventory, or SEO behavior changed.
 
 ## 4. Preview status
 
@@ -169,7 +177,7 @@ forbiddenMatches: []
 Latest preview retry for the current branch HEAD:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Result:
@@ -178,7 +186,7 @@ Result:
 blocked by Vercel daily deployment quota after the clean local preview guard passed
 ```
 
-The 20 most recent Vercel deployments did not include a `READY` preview for `8c344b1233c0b2ed6e2053dbb592842640aeb876`. This is an operational quota blocker, not a code, test, TypeScript, or build failure.
+The latest retry confirmed the preview wrapper now removes Vercel CLI `.env.local` / `.env*` side effects and passes the local guard before Vercel returns `api-deployments-free-per-day`. This is an operational quota blocker, not a code, test, TypeScript, or build failure.
 
 Production deployment remains gated on explicit approval naming the latest merge SHA.
 

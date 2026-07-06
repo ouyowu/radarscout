@@ -9,31 +9,34 @@ Updated: 2026-07-06
 Latest `origin/codex/travel-mvp-launch` checked for this status:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 This head includes:
 
 - AI Trip Planner product-card handoff copy clarified through PR #400;
-- active execution status refreshed through PR #402;
+- active execution status refreshed through PR #405;
+- Vercel preview cleanup fixed for the current `.env*` Vercel CLI behavior through PR #407;
+- AI Trip prompt-chip tap targets increased through PR #409;
 - prior AI Trip result-flow, top-match, route-stop, return-path, and preview-smoke documentation updates.
 
 ## Local validation evidence
 
-Latest product-code validation after PR #400:
+Latest validation after PR #409:
 
 ```text
-Validated SHA: ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
-Worktree: /private/tmp/radarscout-ai-trip-card-handoff-label-1-postmerge
+Validated SHA: 0a00697021dc190304fec5be84e82e139162d550
+Worktree: /private/tmp/radarscout-latest-after-pr409
 ```
 
 Results:
 
 - Prisma generate: passed.
+- Vercel preview cleanup/deploy helper tests: passed, 13 tests.
 - AI Trip focused Vitest (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed, 58 files / 923 tests.
-- AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e -- e2e/ai-trip-planner.spec.ts`): passed, 53 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
+- Playwright E2E (`pnpm --filter @reddit-monitor/web test:e2e`): passed, 53 tests.
 - `git diff --check`: passed.
 - Worktree status: clean.
 
@@ -62,10 +65,10 @@ Protected-preview smoke result:
 - Unsafe network calls: none observed.
 - Forbidden visible copy matches: none observed.
 
-Latest fresh preview attempt after PR #400:
+Latest fresh preview attempt after PR #409:
 
 ```text
-Attempted SHA: ff9d9a33d993f9aaaa9cd2d96a79b24d13caebfe
+Attempted SHA: 0a00697021dc190304fec5be84e82e139162d550
 Result: blocked by Vercel daily deployment quota
 Error code: api-deployments-free-per-day
 ```
@@ -73,8 +76,9 @@ Error code: api-deployments-free-per-day
 Interpretation:
 
 - The current latest branch head has clean local validation.
-- The latest successful preview does not include the PR #400 product-card copy update.
-- The latest failed preview attempt is an operational quota blocker, not a code, build, TypeScript, test, DB, Bókun, or SEO failure.
+- The latest successful preview does not include the PR #400 product-card copy update, the PR #407 preview cleanup fix, or the PR #409 tap-target update.
+- The latest failed preview attempt confirms the preview wrapper cleans Vercel CLI `.env.local` / `.env*` link side effects and passes the local preview guard before hitting Vercel quota.
+- The remaining blocker is operational quota, not a code, build, TypeScript, test, DB, Bókun, or SEO failure.
 
 ## Production gate
 
@@ -85,7 +89,7 @@ Do not production deploy unless the operator explicitly approves an exact merge 
 Recommended deploy candidate if the operator accepts the known preview limitation:
 
 ```text
-8c344b1233c0b2ed6e2053dbb592842640aeb876
+0a00697021dc190304fec5be84e82e139162d550
 ```
 
 Safer default:
