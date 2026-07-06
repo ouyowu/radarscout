@@ -460,24 +460,26 @@ export function IntentParserDemo() {
                       Refine trip idea
                     </a>
                   </div>
-                  <div className="mt-2 flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:mt-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
-                    <p className="text-xs font-semibold leading-5 text-[#5a6670] sm:text-sm sm:leading-6">
-                      Start with the first comparison match, then compare the remaining cards below.
-                    </p>
-                    <a
-                      href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref)}
-                      className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+                  <section aria-label="AI Trip Planner result actions" className="mt-2 grid gap-2 sm:mt-3 sm:gap-3">
+                    <div className="flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
+                      <p className="text-xs font-semibold leading-5 text-[#5a6670] sm:text-sm sm:leading-6">
+                        Start with the first comparison match, then compare the remaining cards below.
+                      </p>
+                      <a
+                        href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref)}
+                        className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+                      >
+                        Open top match details
+                      </a>
+                    </div>
+                    <p
+                      role="status"
+                      aria-live="polite"
+                      className="rounded-2xl border border-[#d8eadf] bg-white px-3 py-2 text-xs font-semibold leading-5 text-[#0f766e] sm:px-4 sm:py-3 sm:text-sm sm:leading-6"
                     >
-                      Open top match details
-                    </a>
-                  </div>
-                  <p
-                    role="status"
-                    aria-live="polite"
-                    className="mt-2 rounded-2xl border border-[#d8eadf] bg-white px-3 py-2 text-xs font-semibold leading-5 text-[#0f766e] sm:mt-3 sm:px-4 sm:py-3 sm:text-sm sm:leading-6"
-                  >
-                    Results ready. Review the comparison cards below, then open product details to continue with a booking partner.
-                  </p>
+                      Results ready. Review the comparison cards below, then open product details to continue with a booking partner.
+                    </p>
+                  </section>
                   {resultFitSummary ? (
                     <section
                       aria-label="Result fit summary"
