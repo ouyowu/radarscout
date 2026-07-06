@@ -460,8 +460,8 @@ export function IntentParserDemo() {
                       Refine trip idea
                     </a>
                   </div>
-                  <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm font-semibold leading-6 text-[#5a6670]">
+                  <div className="mt-2 flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:mt-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
+                    <p className="text-xs font-semibold leading-5 text-[#5a6670] sm:text-sm sm:leading-6">
                       Start with the first comparison match, then compare the remaining cards below.
                     </p>
                     <a
@@ -474,39 +474,39 @@ export function IntentParserDemo() {
                   <p
                     role="status"
                     aria-live="polite"
-                    className="mt-3 rounded-2xl border border-[#d8eadf] bg-white px-4 py-3 text-sm font-semibold leading-6 text-[#0f766e]"
+                    className="mt-2 rounded-2xl border border-[#d8eadf] bg-white px-3 py-2 text-xs font-semibold leading-5 text-[#0f766e] sm:mt-3 sm:px-4 sm:py-3 sm:text-sm sm:leading-6"
                   >
                     Results ready. Review the comparison cards below, then open product details to continue with a booking partner.
                   </p>
                   {resultFitSummary ? (
                     <section
                       aria-label="Result fit summary"
-                      className="mt-4 rounded-[1.25rem] border border-[#d8eadf] bg-white p-4"
+                      className="mt-3 rounded-[1.25rem] border border-[#d8eadf] bg-white p-3 sm:mt-4 sm:p-4"
                     >
                       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
                         Result fit summary
                       </p>
-                      <h3 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#101820]">
+                      <h3 className="mt-1.5 text-lg font-black tracking-[-0.025em] text-[#101820] sm:mt-2 sm:text-xl">
                         {resultFitSummary.heading}
                       </h3>
-                      <div className="mt-3 flex flex-wrap gap-2">
+                      <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                         {resultFitSummary.chips.map(chip => (
                           <span
                             key={chip}
-                            className="rounded-full bg-[#e7f5f2] px-3 py-1 text-xs font-black text-[#0f766e]"
+                            className="rounded-full bg-[#e7f5f2] px-2.5 py-1 text-xs font-black text-[#0f766e] sm:px-3"
                           >
                             {chip}
                           </span>
                         ))}
                       </div>
-                      <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670]">
+                      <ul className="mt-2 grid gap-1.5 text-xs font-semibold leading-5 text-[#5a6670] sm:mt-3 sm:gap-2 sm:text-sm sm:leading-6">
                         {resultFitSummary.points.map(point => (
                           <li key={point}>{point}</li>
                         ))}
                       </ul>
                     </section>
                   ) : null}
-                  <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {searchState.products.map(product => (
                       <AiSearchProductCard
                         key={product.id}
