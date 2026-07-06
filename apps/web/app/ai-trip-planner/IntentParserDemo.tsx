@@ -509,6 +509,7 @@ export function IntentParserDemo() {
                       </p>
                       <a
                         href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref, searchState.products[0].id)}
+                        aria-label={`Open top match details for ${searchState.products[0].title}`}
                         className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
                       >
                         Open top match details
