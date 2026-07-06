@@ -366,6 +366,8 @@ describe('AI search product card detail CTA accessibility', () => {
     )
 
     expect(markup).toContain('min-h-[44px]')
+    expect(markup).toContain('flex-wrap')
+    expect(markup).toContain('shrink-0')
     expect(markup).toContain('aria-label="View details for Elephant Sanctuary, then continue with the booking partner from that product page"')
     expect(markup).toContain('booking partner handoff continues from that product page')
     expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
