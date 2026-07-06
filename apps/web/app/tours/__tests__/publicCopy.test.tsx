@@ -249,7 +249,7 @@ describe('tour public copy safety', () => {
     const markup = renderToStaticMarkup(element)
 
     expect(markup).toContain('This product detail is not available.')
-    expect(markup).toContain('Back to AI Trip Planner')
+    expect(markup).toContain('Back to AI Trip Planner results')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
