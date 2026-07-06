@@ -313,11 +313,11 @@ test.describe('Valid Chiang Mai flow', () => {
     await page.getByRole('link', { name: 'Phuket: 1 comparison match' }).click()
     await expect(page).toHaveURL(/#ai-trip-result-group-phuket$/)
     await expect(page.getByLabel(/Phuket result group/i)).toHaveClass(/scroll-mt-6/)
-    await expect(page.getByLabel(/Phuket result group/i).getByRole('link', { name: /back to route overview/i })).toHaveAttribute(
+    await expect(page.getByLabel(/Phuket result group/i).getByRole('link', { name: /back to route overview from phuket results/i })).toHaveAttribute(
       'href',
       '#ai-trip-route-stop-overview',
     )
-    await page.getByLabel(/Phuket result group/i).getByRole('link', { name: /back to route overview/i }).click()
+    await page.getByLabel(/Phuket result group/i).getByRole('link', { name: /back to route overview from phuket results/i }).click()
     await expect(page).toHaveURL(/#ai-trip-route-stop-overview$/)
     await expect(page.getByLabel(/Bangkok result group/i)).toContainText('Bangkok Temple and Local Food Walk')
     await expect(page.getByLabel(/Phuket result group/i)).toContainText('Phuket Beach and Island Day')
