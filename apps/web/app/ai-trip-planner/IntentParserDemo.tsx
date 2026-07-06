@@ -428,6 +428,7 @@ export function IntentParserDemo() {
                     <p className="text-sm font-black text-[#a35c09]">Thailand-only search</p>
                     <a
                       href="#trip-idea"
+                      aria-label="Refine trip idea after Thailand-only search"
                       className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
                     >
                       Refine trip idea
@@ -459,6 +460,7 @@ export function IntentParserDemo() {
                     <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
                     <a
                       href="#trip-idea"
+                      aria-label="Refine trip idea after no matching Thailand experiences"
                       className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
                     >
                       Refine trip idea
@@ -497,6 +499,7 @@ export function IntentParserDemo() {
                     </div>
                     <a
                       href="#trip-idea"
+                      aria-label="Refine trip idea from search results"
                       className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
                     >
                       Refine trip idea
