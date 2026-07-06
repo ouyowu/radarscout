@@ -193,7 +193,8 @@ Known state:
 - clean post-merge local validation passed after PR #341 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean latest-head local validation passed after PR #342 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
 - clean post-merge local validation passed after PR #344 with Prisma generate, AI Trip Vitest, AI Trip E2E, TypeScript, Next build, and `git diff --check`;
-- clean latest-head local validation passed after PR #345 with Prisma generate, preview-wrapper tests, AI Trip Vitest, AI Trip E2E rerun after one dev-server reset, TypeScript, Next build, and `git diff --check`;
+- clean latest-head local validation passed after PR #345 with Prisma generate, preview-wrapper tests, AI Trip Vitest, AI Trip E2E rerun after one dev-server reset, Next build, and `git diff --check`;
+- `pnpm --filter @reddit-monitor/web exec tsc --noEmit` currently has a base-branch baseline failure in `apps/web/app/api/internal/product-enrichment/coverage/route.ts`; PR #345 did not touch that route.
 - latest Vercel branch preview deployment is `dpl_72ku3BtQKfh2k9gCoecpEqGXHv5b`;
 - latest Vercel branch preview URL is `https://reddit-monitor-75zhctjlo-ouyowus-projects.vercel.app`;
 - protected preview smoke passed for `/ai-trip-planner` through an approved temporary Vercel share URL;
