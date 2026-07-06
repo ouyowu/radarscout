@@ -53,7 +53,12 @@ Recent completed items:
 - AI Trip Thailand destination prefix normalization merged through PR #280.
 - Vercel preview guard added through PR #282 to prevent accidental temporary-project deploys.
 - Compact AI Trip interest prompts now search safely through PR #283.
-- Latest clean local validation for the current AI Trip candidate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
+- AI Trip release gate status was refreshed through PR #284, PR #285, PR #290, PR #291, and PR #293.
+- AI Trip detail return path E2E coverage was added through PR #286.
+- Compact example prompt chip `Chiang Mai elephants` was added through PR #287.
+- Thailand multi-city route starter was added through PR #288.
+- AI Trip destination starter grid was tightened to fit five desktop cards through PR #289.
+- Latest clean local validation for the current AI Trip release gate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
 
 ## 4. Current blocked or deferred items
 
@@ -103,9 +108,10 @@ Status: temporarily blocked by Vercel quota.
 
 Known state:
 
-- latest `origin/codex/travel-mvp-launch`: `0301c9f492e0fb7e3495031fdb636eacc46befae`;
-- latest merged AI Trip product-code increments include PR #279, PR #280, and PR #283;
-- clean local validation passed after PR #283;
+- latest `origin/codex/travel-mvp-launch`: `7c1a5f1558d2ac63f229837784d472f00e6d1ce3`;
+- latest merged AI Trip app-code increment: PR #289, merge SHA `af249530be2df862566be8c7023c7531418a8588`;
+- latest merged AI Trip status-doc increment: PR #293, merge SHA `7c1a5f1558d2ac63f229837784d472f00e6d1ce3`;
+- clean local validation passed after PR #289 and after the current release-gate docs refresh;
 - Vercel returned `api-deployments-free-per-day` when attempting a fresh preview;
 - an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
 - future preview attempts must run `pnpm guard:vercel-preview` before `npx vercel --yes`.
@@ -126,6 +132,9 @@ The current codebase already includes:
 - itinerary summary;
 - compact mobile summary;
 - AI trip planner route;
+- compact AI Trip example prompt chip;
+- Thailand multi-city route starter;
+- five-card desktop destination starter layout;
 - read-only Thailand product search from confirmed trip intent;
 - comparison-only product result cards;
 - compact successful-result action and fit-summary spacing on mobile;
@@ -164,6 +173,9 @@ Why this is the right next step:
 - local validation is not a substitute for the final preview smoke gate;
 - Vercel quota, not code behavior, is currently blocking the fresh preview;
 - the next reliable gate is to retry preview deployment after quota reset.
+
+If Vercel quota remains blocked, continue only with local/docs/read-only tasks that
+do not require preview deployment or production changes.
 
 ## 7. Candidate follow-up tasks after audit
 
