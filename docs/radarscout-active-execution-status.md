@@ -48,6 +48,10 @@ Recent completed items:
 - AI Trip Planner tour-detail return context tightened through PR #266;
 - protected Vercel preview bypass runbook documented through PR #267;
 - local `pnpm smoke:ai-trip-preview` helper added through PR #268 and verified against a protected preview share URL.
+- AI Trip preview data readiness and real preview smoke evidence documented through PRs #271, #273, #276, and #278.
+- AI Trip multi-interest search now uses broader round-robin term coverage through PR #279.
+- AI Trip Thailand destination prefix normalization merged through PR #280.
+- Latest clean local validation for the current AI Trip search candidate passed, but a fresh Vercel preview deployment is temporarily blocked by the Vercel daily deployment quota.
 
 ## 4. Current blocked or deferred items
 
@@ -91,6 +95,25 @@ Decision:
 
 - no production deploy without explicit approval naming the merge SHA.
 
+### Latest fresh preview deployment
+
+Status: temporarily blocked by Vercel quota.
+
+Known state:
+
+- latest `origin/codex/travel-mvp-launch`: `f14a278058b13ae0a52624149b1c4dc4c9d5ab99`;
+- latest merged AI Trip product-code increments include PR #279 and PR #280;
+- clean local validation passed after PR #279 before the branch advanced again;
+- Vercel returned `api-deployments-free-per-day` when attempting a fresh preview;
+- an accidentally created non-RadarScout Vercel project named `radarscout-ai-trip-search-partial-match-0-postmerge` was removed;
+- future preview attempts must re-link the clean worktree to the existing `ouyowus-projects / reddit-monitor` project before deploy.
+
+Decision:
+
+- do not treat the Vercel quota error as a product-code failure;
+- retry latest-head preview smoke only after the deployment quota resets;
+- do not production deploy the latest AI Trip increments until a fresh preview or equivalent approved validation gate passes.
+
 ## 5. Already-present product surfaces
 
 The current codebase already includes:
@@ -118,35 +141,27 @@ Do not create duplicate tasks for these already-present surfaces unless the chan
 Recommended next task:
 
 ```text
-TD-RADARSCOUT-PREVIEW-DATA-READINESS-0
+TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
 ```
 
 Type:
 
 ```text
-read-only observation + docs report
+preview smoke after Vercel quota reset
 ```
 
 Goal:
 
-Audit why protected preview smoke can validate the mocked AI Trip Planner result UI but cannot currently verify real display-ready `/tours` rows on preview.
-
-Questions to answer:
-
-- Does `/tours` on preview intentionally show no display-ready rows?
-- Does `/api/ai-trip/search` on preview have the expected product-search behavior for seeded data?
-- Is the limitation only preview data state, not product UI behavior?
-- What evidence is required before relying on preview for real product-detail smoke?
-- Is a future preview seed/readiness task needed, and what gates should it have?
+Create a clean latest-head preview from `origin/codex/travel-mvp-launch`, confirm
+the Vercel project is `ouyowus-projects / reddit-monitor`, and run the protected
+AI Trip preview smoke helper against `/ai-trip-planner`.
 
 Why this is the right next step:
 
-- analytics implementation is blocked by plan/vendor choice;
-- SEO opening is a hard approval gate;
-- several previously recommended B2B and tour-detail fallback tasks already exist in code;
-- the mobile results path has already been audited and tightened through PR #263;
-- the AI Trip Planner to tour-detail return path has already been tightened through PR #266;
-- current preview smoke can validate UI with mocked search, but real preview `/tours` returned no display-ready rows during the last protected-preview check.
+- the latest product-code changes are already merged;
+- local validation is not a substitute for the final preview smoke gate;
+- Vercel quota, not code behavior, is currently blocking the fresh preview;
+- the next reliable gate is to retry preview deployment after quota reset.
 
 ## 7. Candidate follow-up tasks after audit
 
