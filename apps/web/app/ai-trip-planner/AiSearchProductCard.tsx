@@ -12,8 +12,6 @@ export type AiSearchProductCardProps = {
   fitReason?: string | null
 }
 
-const AI_TRIP_PLANNER_SOURCE_PARAM = 'source=ai-trip-planner'
-
 function buildSafeTourFallback(productId?: string): string {
   return productId ? `/tours/${encodeURIComponent(productId)}` : '/tours'
 }
@@ -23,20 +21,21 @@ export function buildAiTripPlannerDetailHref(detailHref: string, productId?: str
   const [hrefWithoutHash, hash] = trimmedHref.split('#', 2)
 
   if (!hrefWithoutHash.startsWith('/tours/')) {
-    return `${buildSafeTourFallback(productId)}?${AI_TRIP_PLANNER_SOURCE_PARAM}`
+    return `${buildSafeTourFallback(productId)}?source=ai-trip-planner`
   }
 
-  const query = hrefWithoutHash.split('?', 2)[1] ?? ''
+  const [path, query = ''] = hrefWithoutHash.split('?', 2)
   const params = new URLSearchParams(query)
 
   if (params.get('source') === 'ai-trip-planner') {
     return trimmedHref
   }
 
-  const separator = hrefWithoutHash.includes('?') ? '&' : '?'
+  params.set('source', 'ai-trip-planner')
+  const nextQuery = params.toString()
   const hashSuffix = hash ? `#${hash}` : ''
 
-  return `${hrefWithoutHash}${separator}${AI_TRIP_PLANNER_SOURCE_PARAM}${hashSuffix}`
+  return `${path}${nextQuery ? `?${nextQuery}` : ''}${hashSuffix}`
 }
 
 export function AiSearchProductCard({
