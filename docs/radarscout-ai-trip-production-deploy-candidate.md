@@ -60,22 +60,24 @@ The candidate does not add:
 
 ## 3. Validation evidence
 
-Clean post-merge validation was run after PR #388:
+Clean latest-head validation was run after PR #391:
 
 ```text
-e6c1cf7d6600322d759a994ad6f857c4a42411fd
+3ce46c4b0da1e45884b8534690595d53b233e059
 ```
 
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-pr388-postmerge
+/private/tmp/radarscout-latest-head-validation-after-pr391
 ```
 
 Results:
 
 - Prisma generate: passed.
-- Public copy / tours Vitest coverage: passed, 58 files / 921 tests.
+- AI Trip Vitest focus: passed.
+- Tours Vitest focus: passed.
+- AI Trip Playwright E2E: passed.
 - TypeScript: passed.
 - Next build: passed.
 - `git diff --check`: passed.
