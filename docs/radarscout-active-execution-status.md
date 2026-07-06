@@ -43,10 +43,10 @@ RadarScout must not behave like a live inventory system, payment system, booking
 
 ## 3. Current branch state
 
-Latest `origin/codex/travel-mvp-launch` after PR #384:
+Latest `origin/codex/travel-mvp-launch` after PR #386:
 
 ```text
-7c3b2d5711197a532e8f5de3a96e29af29b5249d
+4d2efeac1119833e68c3b221791b441eac67f792
 ```
 
 Latest AI Trip product-code increments:
@@ -60,6 +60,7 @@ Latest AI Trip product-code increments:
 - PR #372: AI Trip product-card detail CTA accessible labels include booking partner handoff context.
 - PR #377: sourced tour detail pages explain that the AI Trip return link goes to the matching experiences section without storing partner action or current status.
 - PR #380: sourced tour detail pages use more traveler-facing AI Trip return-context copy.
+- PR #385: unavailable sourced tour detail pages use the same `Back to AI Trip Planner results` label as available tour detail pages.
 
 Latest tooling increment:
 
@@ -83,7 +84,8 @@ Latest status-doc increment:
 - PR #382 refreshed active status after PR #380 and PR #381.
 - PR #383 refreshed the AI Trip production deploy candidate after the latest return-copy validation.
 - PR #384 refreshed active status after PR #383 and the latest preview-quota retry.
-- This PR records latest-head local validation after PR #384.
+- PR #386 recorded latest-head local validation after PR #384.
+- This PR corrects active status after PR #385 and PR #386.
 
 Open PRs against `codex/travel-mvp-launch` at the time of this update:
 
@@ -96,21 +98,25 @@ none except this status refresh PR
 Clean worktree:
 
 ```text
-/private/tmp/radarscout-latest-head-local-validation-after-pr384
+/private/tmp/radarscout-pr385-postmerge
 ```
 
-Validated latest-head SHA:
+Validated product-code SHA after PR #385:
 
 ```text
-7c3b2d5711197a532e8f5de3a96e29af29b5249d
+bcb637c3cb542da83ead211a84856f18832d998d
+```
+
+Latest docs-only merge after validation:
+
+```text
+4d2efeac1119833e68c3b221791b441eac67f792
 ```
 
 Validation results:
 
 - Prisma generate: passed.
-- AI Trip Vitest focus (`pnpm --filter @reddit-monitor/web test -- ai-trip`): passed.
-- Tours Vitest focus (`pnpm --filter @reddit-monitor/web test -- tours`): passed.
-- Full AI Trip Playwright E2E (`pnpm --filter @reddit-monitor/web exec playwright test e2e/ai-trip-planner.spec.ts --workers=1`): passed.
+- Public copy / tours Vitest coverage (`pnpm --filter @reddit-monitor/web test -- publicCopy`): passed, 58 files / 921 tests.
 - TypeScript (`pnpm --filter @reddit-monitor/web exec tsc --noEmit`): passed.
 - Next build: passed.
 - `git diff --check`: passed.
@@ -177,6 +183,7 @@ Recent preview evidence:
 - A clean post-merge manual preview retry for `56b91395f97c32c53bb79c37bc0b3e3e97dece1a` also hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `444cfb17ab2871584b6785407fc20663e3b6d081` also hit `api-deployments-free-per-day`.
 - A clean latest-head manual preview retry for `7c3b2d5711197a532e8f5de3a96e29af29b5249d` also hit `api-deployments-free-per-day`.
+- A clean post-merge manual preview retry for `bcb637c3cb542da83ead211a84856f18832d998d` also hit `api-deployments-free-per-day`.
 - PR #373 improved the preview helper's quota-blocker output but did not change product code.
 
 ## 6. Production status
