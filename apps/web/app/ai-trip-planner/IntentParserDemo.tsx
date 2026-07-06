@@ -19,6 +19,7 @@ import { buildProductFitReason, buildResultFitSummary } from './resultFitSummary
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const promptMaxLength = 600
 const examplePrompts = [
+  'Chiang Mai elephants',
   'Chiang Mai 3 days food temples elephants, less crowded',
   'Bangkok 3 days canals temples street food, relaxed pace',
   '清迈3天，大象，寺庙，美食，避开人多',
