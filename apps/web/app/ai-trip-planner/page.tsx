@@ -201,7 +201,7 @@ export default function AiTripPlannerPage() {
               details. Non-Thailand ideas can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.
             </p>
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
             {destinationStarters.map(item => (
               <DestinationStarterCard
                 key={item.city}
