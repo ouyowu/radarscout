@@ -73,4 +73,29 @@ test.describe('Homepage AI planner entry', () => {
 
     expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
   })
+
+  test('homepage prompt chip opens the AI Trip Planner form with safe prefill and no search request', async ({
+    page,
+  }) => {
+    let searchRequestCount = 0
+    const prompt = 'Gentle elephant day in Chiang Mai'
+
+    await page.route('/api/ai-trip/search', async route => {
+      searchRequestCount += 1
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'no_match', products: [] }),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByRole('link', { name: prompt }).click()
+
+    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
+    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
+    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
+    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    expect(searchRequestCount).toBe(0)
+  })
 })
