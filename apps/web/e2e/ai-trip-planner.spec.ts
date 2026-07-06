@@ -598,7 +598,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await page.getByRole('button', { name: /search loaded trip idea/i }).click()
     await expect(productCards(page)).toHaveCount(3)
 
-    await page.getByRole('link', { name: /refine trip idea/i }).click()
+    await page.getByRole('link', { name: /refine trip idea from search results/i }).click()
 
     await expect(page).toHaveURL(/#trip-idea$/)
     await expect(page.locator('#trip-idea')).toBeVisible()
@@ -846,7 +846,7 @@ test.describe('Unsupported destination flow (Singapore)', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
     await expect(page.getByText('Thailand-only search')).toBeVisible()
-    await page.getByRole('link', { name: /refine trip idea/i }).click()
+    await page.getByRole('link', { name: /refine trip idea after thailand-only search/i }).click()
 
     await expect(page).toHaveURL(/#trip-idea$/)
     await expect(page.locator('#trip-idea')).toBeFocused()
@@ -940,7 +940,7 @@ test.describe('No match guidance', () => {
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
     await expect(page.getByText('No matching Thailand experiences found')).toBeVisible()
-    await page.getByRole('link', { name: /refine trip idea/i }).click()
+    await page.getByRole('link', { name: /refine trip idea after no matching thailand experiences/i }).click()
 
     await expect(page).toHaveURL(/#trip-idea$/)
     await expect(page.locator('#trip-idea')).toBeFocused()
