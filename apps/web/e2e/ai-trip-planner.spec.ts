@@ -583,6 +583,35 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(productCards(page)).toHaveCount(3)
   })
 
+  test('destination starter helper can jump directly to comparison cards after helper search', async ({ page }) => {
+    await page.route('/api/ai-trip/search', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(OK_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: /use bangkok route idea/i }).click()
+    await page.getByRole('button', { name: /confirm loaded trip intent/i }).click()
+    await page.getByRole('button', { name: /search loaded trip idea/i }).click()
+
+    const starterFeedback = page.locator('[aria-label="Loaded trip result feedback"]')
+    const comparisonCardsLink = starterFeedback.getByRole('link', { name: /review comparison cards/i })
+
+    await expect(starterFeedback).toBeVisible()
+    await expect(comparisonCardsLink).toBeVisible()
+    await expect(comparisonCardsLink).toHaveAttribute('href', '#ai-trip-comparison-results')
+
+    await comparisonCardsLink.click()
+
+    await expect(page).toHaveURL(/#ai-trip-comparison-results$/)
+    await expect(page.locator('#ai-trip-comparison-results')).toBeVisible()
+    await expect(productCards(page)).toHaveCount(3)
+    await expect(page.getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('search results can jump back to refine the trip idea', async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({

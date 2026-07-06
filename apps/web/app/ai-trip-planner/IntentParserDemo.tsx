@@ -253,15 +253,26 @@ export function IntentParserDemo() {
               {starterLoadedCity} route idea loaded. Review the summary, then confirm trip intent to search real Thailand experiences.
             </p>
             {starterSearchFeedback ? (
-              <div className="flex flex-col gap-2 text-sm font-semibold leading-6 text-[#3f6f5c]">
+              <div
+                aria-label="Loaded trip result feedback"
+                className="flex flex-col gap-2 text-sm font-semibold leading-6 text-[#3f6f5c]"
+              >
                 <p>{starterSearchFeedback}</p>
                 {searchState?.status === 'ok' && searchState.products.length > 0 ? (
-                  <a
-                    href="#ai-trip-results"
-                    className="font-black text-[#0f766e] underline decoration-[#0f766e]/30 underline-offset-4 hover:text-[#0b5f59]"
-                  >
-                    View matching experiences
-                  </a>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    <a
+                      href="#ai-trip-results"
+                      className="font-black text-[#0f766e] underline decoration-[#0f766e]/30 underline-offset-4 hover:text-[#0b5f59]"
+                    >
+                      View matching experiences
+                    </a>
+                    <a
+                      href="#ai-trip-comparison-results"
+                      className="font-black text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                    >
+                      Review comparison cards
+                    </a>
+                  </div>
                 ) : null}
               </div>
             ) : null}
