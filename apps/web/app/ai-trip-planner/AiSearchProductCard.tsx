@@ -14,13 +14,23 @@ export type AiSearchProductCardProps = {
 
 const AI_TRIP_PLANNER_SOURCE_PARAM = 'source=ai-trip-planner'
 
-export function buildAiTripPlannerDetailHref(detailHref: string): string {
-  const [hrefWithoutHash, hash] = detailHref.split('#', 2)
+function buildSafeTourFallback(productId?: string): string {
+  return productId ? `/tours/${encodeURIComponent(productId)}` : '/tours'
+}
+
+export function buildAiTripPlannerDetailHref(detailHref: string, productId?: string): string {
+  const trimmedHref = detailHref.trim()
+  const [hrefWithoutHash, hash] = trimmedHref.split('#', 2)
+
+  if (!hrefWithoutHash.startsWith('/tours/')) {
+    return `${buildSafeTourFallback(productId)}?${AI_TRIP_PLANNER_SOURCE_PARAM}`
+  }
+
   const query = hrefWithoutHash.split('?', 2)[1] ?? ''
   const params = new URLSearchParams(query)
 
   if (params.get('source') === 'ai-trip-planner') {
-    return detailHref
+    return trimmedHref
   }
 
   const separator = hrefWithoutHash.includes('?') ? '&' : '?'
@@ -30,6 +40,7 @@ export function buildAiTripPlannerDetailHref(detailHref: string): string {
 }
 
 export function AiSearchProductCard({
+  id,
   title,
   city,
   summary,
@@ -101,7 +112,7 @@ export function AiSearchProductCard({
           <div />
         )}
         <Link
-          href={buildAiTripPlannerDetailHref(detailHref)}
+          href={buildAiTripPlannerDetailHref(detailHref, id)}
           aria-label={`View details for ${title}`}
           className="inline-flex min-h-[44px] items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
         >
