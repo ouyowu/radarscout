@@ -242,6 +242,35 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days canals temples street food, relaxed pace')
   })
 
+  test('compact example prompt chip can confirm and search safely', async ({ page }) => {
+    let receivedPrompt: string | null = null
+
+    await page.route('/api/ai-trip/search', async route => {
+      receivedPrompt = route.request().postDataJSON().prompt
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(COMPACT_CHIANG_MAI_RESPONSE),
+      })
+    })
+
+    await page.goto('/ai-trip-planner')
+    await page.getByRole('button', { name: 'Chiang Mai elephants', exact: true }).click()
+
+    await expect(page.locator('#trip-idea')).toBeFocused()
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai elephants')
+    await expect(page.locator('dd').filter({ hasText: /^Chiang Mai$/ })).toBeVisible()
+    await expect(page.locator('dd').filter({ hasText: /^elephants$/ })).toBeVisible()
+
+    await page.getByRole('button', { name: /confirm trip intent/i }).click()
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    expect(receivedPrompt).toBe('Chiang Mai elephants')
+    await expect(page.getByRole('status')).toContainText('Results ready')
+    await expect(productCards(page)).toHaveCount(1)
+    await expect(page.getByText(/live availability|available now|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
+  })
+
   test('clear trip idea resets planner state and focuses the input', async ({ page }) => {
     await page.goto('/ai-trip-planner')
     await page.getByRole('button', { name: /use bangkok route idea/i }).click()
