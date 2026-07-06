@@ -35,6 +35,8 @@ const noMatchNextSearches = [
   { label: 'Thailand multi-city route', prompt: 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace' },
 ]
 
+export const AI_TRIP_RESULTS_NEXT_STEP_COPY = 'Next step: compare the cards, open one product detail page, then continue with the booking partner only from that detail page.'
+
 function focusTripIdeaField() {
   document.getElementById('trip-idea')?.focus()
 }
@@ -541,6 +543,9 @@ export function IntentParserDemo() {
                       className="rounded-2xl border border-[#d8eadf] bg-white px-3 py-2 text-xs font-semibold leading-5 text-[#0f766e] sm:px-4 sm:py-3 sm:text-sm sm:leading-6"
                     >
                       Results ready. Review the comparison cards below, then open product details to continue with a booking partner.
+                    </p>
+                    <p className="rounded-2xl border border-[#e8dfd2] bg-[#f7f3ec] px-3 py-2 text-xs font-semibold leading-5 text-[#5a6670] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+                      {AI_TRIP_RESULTS_NEXT_STEP_COPY}
                     </p>
                   </section>
                   {resultFitSummary ? (
