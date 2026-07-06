@@ -68,6 +68,18 @@ const accessibilityMatchers: Array<[RegExp, string]> = [
   [/老人|长辈/, 'elderly friendly'],
 ]
 
+const thailandDestinationPrefixes = [
+  'Chiang Mai',
+  'Chiang Rai',
+  'Koh Samui',
+  'Hua Hin',
+  'Bangkok',
+  'Phuket',
+  'Pattaya',
+  'Krabi',
+  'Thailand',
+]
+
 function detectLanguage(prompt: string): string {
   if (/[\u3400-\u9fff]/.test(prompt)) return 'zh'
   if (/[a-z]/i.test(prompt)) return 'en'
@@ -75,7 +87,40 @@ function detectLanguage(prompt: string): string {
   return 'unknown'
 }
 
+function hasTrailingIntentSignal(value: string): boolean {
+  return [
+    ...interestMatchers,
+    ...foodMatchers,
+    ...accessibilityMatchers,
+  ].some(([pattern]) => pattern.test(value))
+}
+
+function normalizeThailandDestinationPrefix(value: string): string | null {
+  const normalizedValue = value
+    .replace(/[，。,.]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (!normalizedValue) return null
+
+  const lowercaseValue = normalizedValue.toLowerCase()
+
+  for (const destination of thailandDestinationPrefixes) {
+    const lowercaseDestination = destination.toLowerCase()
+    if (lowercaseValue === lowercaseDestination) return destination
+    if (!lowercaseValue.startsWith(`${lowercaseDestination} `)) continue
+
+    const remainder = normalizedValue.slice(destination.length).trim()
+    if (hasTrailingIntentSignal(remainder)) return destination
+  }
+
+  return null
+}
+
 function normalizeDestination(value: string): string | null {
+  const thailandPrefix = normalizeThailandDestinationPrefix(value)
+  if (thailandPrefix) return thailandPrefix
+
   const destination = value
     .replace(/\b(for|in|to|trip|travel|plan|itinerary|please|i want|we want|book|booking|pay|payment|tomorrow|today)\b/gi, ' ')
     .replace(/[，。,.]/g, ' ')

@@ -315,6 +315,27 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.at(-1)).toEqual({ city: 'Pattaya', take: expect.any(Number) })
   })
 
+  it('compact Chiang Mai interest prompt uses Chiang Mai fallback instead of a combined destination', async () => {
+    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
+      Promise.resolve(options.search ? [] : [makeCandidate()]),
+    )
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai elephants' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.intent.destination).toBe('Chiang Mai')
+    expect(body.intent.interests).toContain('elephants')
+
+    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
+    expect(calls.at(-1)).toEqual({ city: 'Chiang Mai', take: expect.any(Number) })
+  })
+
   // Test 15: Response contains no rawJson or eligibility internals
   it('ok response contains no rawJson or eligibility internals', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])

@@ -45,6 +45,25 @@ describe('parseTripIntent', () => {
     expect(result.intent.interests).toEqual(expect.arrayContaining(['food', 'temples', 'elephants']))
   })
 
+  it('keeps known Thailand destination prefixes separate from trailing activity interests', () => {
+    const chiangMai = parseTripIntent('Chiang Mai elephants')
+    const bangkok = parseTripIntent('Bangkok food')
+    const phuket = parseTripIntent('Phuket beaches')
+
+    expect(chiangMai.intent.destination).toBe('Chiang Mai')
+    expect(chiangMai.intent.interests).toContain('elephants')
+    expect(bangkok.intent.destination).toBe('Bangkok')
+    expect(bangkok.intent.interests).toContain('food')
+    expect(phuket.intent.destination).toBe('Phuket')
+    expect(phuket.intent.interests).toContain('beaches')
+  })
+
+  it('does not normalize mixed Thailand and foreign destinations as a Thailand prefix', () => {
+    const result = parseTripIntent('Thailand and Singapore 7 days')
+
+    expect(result.intent.destination).toBe('Thailand And Singapore')
+  })
+
   it('extracts avoid and excluded style signals', () => {
     const english = parseTripIntent('Barcelona 4 days avoid crowds and not commercial')
     const chinese = parseTripIntent('清迈3天，不拥挤，不商业化')
