@@ -8,6 +8,7 @@ import { ExperienceCategoryGrid } from './_components/ExperienceCategoryGrid'
 import { FAQAccordion } from './_components/FAQAccordion'
 import { PartnerInventoryNotice } from './_components/PartnerInventoryNotice'
 import { SupplierPartnerCTA } from './_components/SupplierPartnerCTA'
+import { TrackedLink } from './_components/TrackedLink'
 import { WarmNewsletterFooter } from './_components/WarmNewsletterFooter'
 import { globalDestinations } from '@/lib/global-destinations'
 
@@ -125,7 +126,12 @@ export default function LandingPage() {
         subtitle="Tell RadarScout the kind of Thailand day you want. Compare elephant care, food, nature, family-friendly, and city experiences before continuing with a booking partner."
         actions={[
           { label: 'Start planning', href: '/ai-trip-planner#intent-demo' },
-          { label: 'Plan a Chiang Mai elephant day', href: chiangMaiPlannerHref, variant: 'secondary' },
+          {
+            label: 'Plan a Chiang Mai elephant day',
+            href: chiangMaiPlannerHref,
+            variant: 'secondary',
+            analytics: { event: 'homepage_finder_entry_clicked', props: { source: 'hero' } },
+          },
         ]}
         trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
       />
@@ -181,12 +187,14 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="mt-6 lg:mt-0">
-            <Link
+            <TrackedLink
               href={chiangMaiPlannerHref}
+              event="homepage_finder_entry_clicked"
+              eventProps={{ source: 'section' }}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-bg-dark)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
             >
               Plan with RadarScout
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>

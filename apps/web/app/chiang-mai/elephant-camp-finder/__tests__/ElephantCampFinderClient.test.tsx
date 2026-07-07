@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import {
   applyChatPlannerChoice,
   BATHING_HELPER_NOTE,
@@ -30,6 +31,8 @@ import {
 } from '../ElephantCampFinderClient'
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
 import type { ElephantCampProductProfile } from '@/lib/elephantFinder/types'
+
+const finderClientSource = readFileSync(new URL('../ElephantCampFinderClient.tsx', import.meta.url), 'utf8')
 
 function testProfile(
   id: string,
@@ -181,6 +184,21 @@ describe('ElephantCampFinderClient view model', () => {
     expect(serialized).not.toMatch(/Bókun-powered/i)
     expect(serialized).not.toMatch(/fake reviews/i)
     expect(serialized).not.toMatch(/fake ratings/i)
+  })
+
+  it('instruments existing finder funnel interactions without adding network, booking, or availability behavior', () => {
+    expect(finderClientSource).toContain("import { track } from '@/lib/analytics/track'")
+    expect(finderClientSource).toContain("track('finder_planner_choice_selected', { stepId, choiceId })")
+    expect(finderClientSource).toContain("track('finder_matching_experiences_clicked', { source: 'planner' })")
+    expect(finderClientSource).toContain("track('finder_matching_experiences_clicked', { source: 'form' })")
+    expect(finderClientSource).toContain("track('booking_partner_handoff_clicked', { recommendationId: recommendation.recommendationId })")
+    expect(finderClientSource).not.toMatch(/navigator\.sendBeacon/i)
+    expect(finderClientSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
+    expect(finderClientSource).not.toMatch(/\/api\/bokun/i)
+    expect(finderClientSource).not.toMatch(/openai/i)
+    expect(finderClientSource).not.toMatch(/live availability/i)
+    expect(finderClientSource).not.toMatch(/\bcheckout\b/i)
+    expect(finderClientSource).not.toMatch(/\bpayment\b/i)
   })
 
   it('uses 44px chat planner chip tap targets', () => {
