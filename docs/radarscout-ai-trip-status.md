@@ -129,6 +129,23 @@ superseded — it contains no product code.
   opened with research-only Bókun API feasibility and boundary note; result: PR
   open, awaiting human merge.
 
+## 9. Human Approval Queue
+
+- Production deploy remains human-only. Current blocker is Vercel production
+  alias / deploy quota uncertainty; the human must decide whether to upgrade
+  Vercel or wait for reset, then explicitly approve and run production deploy.
+- `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
+  and taxonomy alignment before any provider or tracking network request is
+  added.
+- `PARTNER-PRODUCT-SEED-5` is blocked on real signed partner product data from
+  the operator. Codex must not invent products, partners, prices, suppliers, or
+  booking widget URLs.
+- `PRODUCT-MATCHING-6` is blocked until reviewed partner product seed data
+  exists and is merged.
+- Any Bókun API implementation remains red-zone work. It requires a separate
+  human-approved plan, credentials/scope decision, and safety review before any
+  code, env, DB, sync, availability, checkout, or booking behavior is added.
+
 ## 8. Execution Log
 
 - 2026-07-07 — `TD-RADARSCOUT-PARTNER-PRODUCT-MODEL-4`: PR #476
