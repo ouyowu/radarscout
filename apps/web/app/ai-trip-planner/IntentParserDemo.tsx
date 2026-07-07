@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { track } from '@/lib/analytics/track'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
 import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
@@ -228,6 +229,7 @@ export function IntentParserDemo() {
   async function handleSearchProducts() {
     if (!canSearch || isSearching) return
 
+    track('planner_search_submitted')
     setIsSearching(true)
     setSearchState(null)
 

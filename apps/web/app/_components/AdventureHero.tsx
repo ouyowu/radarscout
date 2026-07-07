@@ -1,10 +1,16 @@
 import Link from 'next/link'
 import { ScriptLabel } from './ScriptLabel'
+import { TrackedLink } from './TrackedLink'
+import type { FunnelEvent, FunnelEventProps } from '@/lib/analytics/track'
 
 type HeroAction = {
   label: string
   href: string
   variant?: 'primary' | 'secondary'
+  analytics?: {
+    event: FunnelEvent
+    props?: FunnelEventProps
+  }
 }
 
 type AdventureHeroProps = {
@@ -40,19 +46,27 @@ export function AdventureHero({
           </p>
           {actions.length > 0 ? (
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {actions.map(action => (
-                <Link
-                  key={action.href}
-                  href={action.href}
-                  className={
-                    action.variant === 'secondary'
-                      ? 'inline-flex min-h-[44px] items-center justify-center border border-[var(--color-text-primary)] bg-white px-7 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]'
-                      : 'inline-flex min-h-[44px] items-center justify-center bg-[var(--color-accent-orange)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-accent-orange-dark)]'
-                  }
-                >
-                  {action.label}
-                </Link>
-              ))}
+              {actions.map(action => {
+                const className = action.variant === 'secondary'
+                  ? 'inline-flex min-h-[44px] items-center justify-center border border-[var(--color-text-primary)] bg-white px-7 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]'
+                  : 'inline-flex min-h-[44px] items-center justify-center bg-[var(--color-accent-orange)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-accent-orange-dark)]'
+
+                return action.analytics ? (
+                  <TrackedLink
+                    key={action.href}
+                    href={action.href}
+                    event={action.analytics.event}
+                    eventProps={action.analytics.props}
+                    className={className}
+                  >
+                    {action.label}
+                  </TrackedLink>
+                ) : (
+                  <Link key={action.href} href={action.href} className={className}>
+                    {action.label}
+                  </Link>
+                )
+              })}
             </div>
           ) : null}
           {trustNote ? (

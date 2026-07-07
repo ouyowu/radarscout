@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
+import { track } from '@/lib/analytics/track'
 import { scoreElephantCampProducts } from '@/lib/elephantFinder/scoreElephantCamp'
 import type {
   ElephantCampProductProfile,
@@ -386,6 +387,7 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
             href={recommendation.ctaHref}
             rel={recommendation.linkRel}
             target="_blank"
+            onClick={() => track('finder_check_availability_click', { recommendationId: recommendation.recommendationId })}
             className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {recommendation.ctaLabel}
@@ -445,6 +447,7 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
   }
 
   function chooseChatPlannerOption(stepId: string, choiceId: string) {
+    track('finder_plan_with_radarscout_click', { stepId, choiceId })
     setSelectedChatChoices(current => updateChatPlannerSelections(current, stepId, choiceId))
     setInput(current => applyChatPlannerChoice(current, choiceId))
     if (submitted) setSubmitted(false)
@@ -458,10 +461,12 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    track('finder_see_matching_experiences_click', { source: 'form' })
     setSubmitted(true)
   }
 
   function showMatches() {
+    track('finder_see_matching_experiences_click', { source: 'planner' })
     setSubmitted(true)
   }
 
