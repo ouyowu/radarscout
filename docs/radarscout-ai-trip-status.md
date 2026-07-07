@@ -244,7 +244,92 @@ Use Vercel dashboard rollback, or run vercel rollback to the previous production
 deployment. No DB/schema/env change is involved, so rollback is deployment-only.
 ```
 
-## 8. Recommended next real product work
+## 8. Production observation (post Option B deploy attempt)
+
+Observed on 2026-07-07 from a docs-only worktree:
+
+```text
+Worktree: /private/tmp/radarscout-prod-observation-b
+Branch: codex/td-radarscout-prod-observation-b
+Source branch: codex/td-radarscout-prod-deploy-candidate-b
+```
+
+Deployment status:
+
+```text
+Expected: production deployment switched away from old dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Actual radarscout.io deployment ID: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Actual www.radarscout.io deployment ID: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Target: production
+Status: Ready
+Aliases: radarscout.io, www.radarscout.io
+Result: deployment switch not confirmed; Option B deploy is not closed.
+```
+
+Smoke command note:
+
+```text
+Requested command:
+node scripts/radarscout-ai-trip-preview-smoke.js https://www.radarscout.io/ai-trip-planner
+
+Result:
+Refusing to run against RadarScout production domains.
+```
+
+The existing preview smoke script intentionally refuses production domains. A
+read-only one-off Playwright observation using the same mocked `/api/ai-trip/search`
+frontend-shell pattern was run against production without modifying app code.
+
+Production route observation:
+
+```json
+{
+  "wwwTripPlanner": {
+    "url": "https://www.radarscout.io/ai-trip-planner",
+    "status": 200,
+    "title": "Thailand Trip Planner | RadarScout",
+    "robots": "noindex, nofollow",
+    "productCardCount": 3,
+    "resultSummaryVisible": true,
+    "noHorizontalOverflow": true,
+    "unsafeNetwork": [],
+    "forbiddenMatches": []
+  },
+  "rootTripPlanner": {
+    "url": "https://radarscout.io/ai-trip-planner",
+    "status": 200,
+    "title": "Thailand Trip Planner | RadarScout",
+    "robots": "noindex, nofollow",
+    "productCardCount": 3,
+    "resultSummaryVisible": true,
+    "noHorizontalOverflow": true,
+    "unsafeNetwork": [],
+    "forbiddenMatches": []
+  },
+  "chiangMaiFinder": {
+    "url": "https://www.radarscout.io/chiang-mai/elephant-camp-finder",
+    "status": 200,
+    "title": "Find the right Chiang Mai experience | RadarScout",
+    "robots": "index, follow",
+    "plannerVisible": true
+  }
+}
+```
+
+Assessment:
+
+```text
+Route behavior: passed.
+Safety/network copy: passed.
+Controlled SEO state: passed.
+Deployment switch: failed / not observed.
+Blocker: production aliases still point to old deployment dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3.
+Recommended next action: if the human intended to deploy 7d446ee, rerun the exact
+manual production deploy command from §7, then rerun this observation. If a bad
+deployment appears later, rollback is Vercel-only because there were no DB/schema/env changes.
+```
+
+## 9. Recommended next real product work
 
 1. Trip result quality review (is keyword-match relevance good enough?).
 2. Booking-partner handoff coverage on product pages.
