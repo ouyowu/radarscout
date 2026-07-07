@@ -7,6 +7,7 @@ const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'ut
 const homepageVisibleCopySources = [
   homepageSource,
   readFileSync(new URL('../_components/AdventureHero.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/TrackedLink.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/SupplierPartnerCTA.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../../lib/global-destinations.ts', import.meta.url), 'utf8'),
@@ -99,6 +100,16 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('guided planner')
     expect(homepageSource).toContain('compare experiences')
     expect(homepageSource).toContain('booking partner')
+  })
+
+  it('instruments the existing RAD-3 Chiang Mai finder entry without adding a new route or changing the href', () => {
+    expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
+    expect(homepageSource).toContain("analytics: { event: 'homepage_finder_entry_click', props: { source: 'hero' } }")
+    expect(homepageSource).toContain('event="homepage_finder_entry_click"')
+    expect(homepageSource).toContain('eventProps={{ source: \'section\' }}')
+    expect(homepageVisibleCopySources).toContain('track(event, eventProps)')
+    expect(homepageVisibleCopySources).not.toMatch(/navigator\.sendBeacon/i)
+    expect(homepageVisibleCopySources).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
 
   it('keeps homepage AI planning use cases focused on Thailand routes', () => {

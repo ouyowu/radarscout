@@ -4,6 +4,7 @@
  * vitest is Node-only (no jsdom). Tests cover extracted pure logic and
  * type-level contracts rather than DOM rendering.
  */
+import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createElement } from 'react'
 import * as React from 'react'
@@ -22,6 +23,8 @@ import {
 import type { AiTripSearchResponse } from '../../api/ai-trip/search/route'
 import { parseTripIntent } from '../../../lib/ai-trip/parse-intent'
 import { buildProductFitReason, buildResultFitSummary } from '../resultFitSummary'
+
+const intentParserDemoSource = readFileSync(new URL('../IntentParserDemo.tsx', import.meta.url), 'utf8')
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -73,6 +76,16 @@ describe('canSearchFromConfirmed (test 21–22)', () => {
   // Test 22: Search CTA becomes enabled after valid Thailand intent confirmation
   it('returns true when intent has been confirmed', () => {
     expect(canSearchFromConfirmed(makeConfirmed())).toBe(true)
+  })
+})
+
+describe('planner search funnel analytics', () => {
+  it('tracks search submission without sending prompt text or PII props', () => {
+    expect(intentParserDemoSource).toContain("import { track } from '@/lib/analytics/track'")
+    expect(intentParserDemoSource).toContain("track('planner_search_submitted')")
+    expect(intentParserDemoSource).not.toContain("track('planner_search_submitted',")
+    expect(intentParserDemoSource).not.toMatch(/navigator\.sendBeacon/i)
+    expect(intentParserDemoSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
 })
 
