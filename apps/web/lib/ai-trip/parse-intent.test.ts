@@ -45,6 +45,11 @@ describe('parseTripIntent', () => {
     expect(result.intent.interests).toEqual(expect.arrayContaining(['food', 'temples', 'elephants']))
   })
 
+  it('extracts common English word-number durations', () => {
+    expect(parseTripIntent('Bangkok one day temples food').intent.durationDays).toBe(1)
+    expect(parseTripIntent('Chiang Mai three days elephants food').intent.durationDays).toBe(3)
+  })
+
   it('keeps known Thailand destination prefixes separate from trailing activity interests', () => {
     const chiangMai = parseTripIntent('Chiang Mai elephants')
     const bangkok = parseTripIntent('Bangkok food')

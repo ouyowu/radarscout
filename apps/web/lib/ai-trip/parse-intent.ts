@@ -170,14 +170,36 @@ function extractNumber(pattern: RegExp, prompt: string): number | null {
   return Number.isFinite(value) && value > 0 ? Math.floor(value) : null
 }
 
+const englishNumberWords: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+}
+
+function extractEnglishWordNumber(pattern: RegExp, prompt: string): number | null {
+  const match = prompt.match(pattern)
+  if (!match?.[1]) return null
+
+  return englishNumberWords[match[1].toLowerCase()] ?? null
+}
+
 function extractDurationDays(prompt: string): number | null {
   return extractNumber(/\b(\d{1,2})\s*(?:days?|d)\b/i, prompt) ??
+    extractEnglishWordNumber(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+days?\b/i, prompt) ??
     extractNumber(/\b(\d{1,2})\s*d\s*\d{1,2}\s*n\b/i, prompt) ??
     extractNumber(/(\d{1,2})\s*天/, prompt)
 }
 
 function extractDurationNights(prompt: string): number | null {
   return extractNumber(/\b(\d{1,2})\s*(?:nights?|n)\b/i, prompt) ??
+    extractEnglishWordNumber(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+nights?\b/i, prompt) ??
     extractNumber(/\b\d{1,2}\s*d\s*(\d{1,2})\s*n\b/i, prompt) ??
     extractNumber(/(\d{1,2})\s*晚/, prompt)
 }
