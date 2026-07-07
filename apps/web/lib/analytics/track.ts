@@ -1,3 +1,5 @@
+import { track as trackVercelEvent } from '@vercel/analytics'
+
 export type FunnelEvent =
   | 'homepage_finder_entry_clicked'
   | 'finder_planner_choice_selected'
@@ -35,6 +37,7 @@ export function track(event: FunnelEvent, props: FunnelEventProps = {}): void {
 
     window.dataLayer.push(payload)
     window.__radarscoutAnalyticsQueue.push(payload)
+    trackVercelEvent(event, props)
 
     if (window.__radarscoutAnalyticsQueue.length > QUEUE_LIMIT) {
       window.__radarscoutAnalyticsQueue.splice(0, window.__radarscoutAnalyticsQueue.length - QUEUE_LIMIT)

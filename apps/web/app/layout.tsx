@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
@@ -34,7 +35,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className="bg-white font-sans text-gray-900">{children}</body>
+      <body className="bg-white font-sans text-gray-900">
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }

@@ -2,9 +2,12 @@
 
 Task: `TD-RADARSCOUT-TRAVELER-FUNNEL-PLAUSIBLE-DECISION-2`
 
-Status: docs-only decision record.
+Status: decision record, updated 2026-07-08 after human approval to proceed
+with analytics provider implementation.
 
-This document records the current analytics decision for RadarScout's traveler funnel. It does not install analytics, add tracking scripts, configure a vendor, write to the database, change environment variables, change SEO behavior, call Bókun, or touch ThaiEleHub.
+This document records the analytics decision for RadarScout's traveler funnel.
+It does not approve database writes, environment-variable changes, SEO behavior
+changes, Bókun API calls, checkout/payment/booking behavior, or ThaiEleHub work.
 
 ## 1. Source documents reviewed
 
@@ -38,7 +41,8 @@ The useful questions remain:
 - Do recommendation cards render after planner submission?
 - Do users click the external booking partner handoff?
 
-These questions are valid, but they do not require immediate analytics implementation before the next product release gate.
+These questions are now worth measuring because the Trip Planner production
+deployment is live and the finder is the controlled-open marketing route.
 
 ## 3. Options considered
 
@@ -50,14 +54,17 @@ Value:
 - same platform as deployment;
 - can keep pageview and event instrumentation close to the Next.js app.
 
-Current issue:
+Current fit:
 
-- RadarScout's current Vercel plan and recent docs review indicate custom events are not the safest immediate path.
-- Current Vercel preview deploys are also blocked by `api-deployments-free-per-day`, so adding analytics code now would make verification slower.
+- RadarScout is already deployed on Vercel.
+- Vercel Web Analytics requires no new third-party analytics vendor account.
+- The package supports App Router pageview instrumentation and custom events
+  through `@vercel/analytics`.
+- Custom events should use the already-approved event taxonomy only.
 
 Decision:
 
-Do not implement Vercel custom-event analytics now.
+Select Vercel Web Analytics for the first implementation.
 
 ### Option B: Plausible custom events
 
@@ -75,7 +82,8 @@ Risks:
 
 Decision:
 
-Do not implement Plausible now.
+Do not implement Plausible now. Keep Plausible as a later alternative only if
+Vercel Analytics does not answer the funnel questions.
 
 ### Option C: Postpone custom analytics
 
@@ -95,24 +103,29 @@ Cost:
 
 Decision:
 
-Choose Option C for now.
+Option C is superseded by the 2026-07-08 human decision to proceed with Vercel
+Web Analytics. The postponement is closed.
 
 ## 4. Decision
 
 Current decision:
 
 ```text
-Do not add analytics code yet.
-Do not upgrade or configure Vercel Analytics for custom events yet.
-Do not add Plausible yet.
-Keep the approved traveler funnel event taxonomy ready for a later implementation.
+Vendor: Vercel Web Analytics.
+Implement App Router pageviews with @vercel/analytics/next.
+Flush approved custom funnel events with @vercel/analytics.
+Do not add Plausible.
+Do not add database writes, environment variables, SEO changes, Bókun API calls,
+checkout/payment/booking behavior, or availability/inventory behavior.
 ```
 
-This is the lowest-risk choice while the current priority is keeping the AI Trip and tour-detail handoff flow safe, understandable, and releasable.
+This is the lowest-risk provider choice because it stays on the existing Vercel
+deployment platform and does not require secrets or a new external vendor script.
 
-## 5. What remains approved for later
+## 5. Approved taxonomy
 
-The event taxonomy from the analytics plan remains the approved shape for a future implementation:
+The event taxonomy from the analytics plan is the approved shape for the
+implementation:
 
 - `homepage_finder_entry_clicked`
 - `finder_planner_choice_selected`
@@ -134,9 +147,9 @@ Future implementation must use normalized keys only. It must not send:
 - Bókun backend data;
 - checkout, payment, booking, confirmation, availability, or inventory state.
 
-## 6. Guardrails for future analytics implementation
+## 6. Guardrails for analytics implementation
 
-Before any analytics code is added, require a new implementation task with:
+Analytics implementation must include:
 
 - selected vendor named explicitly;
 - package/script changes listed;
@@ -160,31 +173,13 @@ Future analytics implementation must not:
 - add `/tours/{id}` back to the sitemap;
 - touch ThaiEleHub or Shopify files.
 
-## 7. Recommended next RadarScout task
+## 7. Current status
 
-Because analytics is postponed, the recommended next product task is:
+Vercel Web Analytics is selected for implementation.
 
-```text
-TD-RADARSCOUT-AI-TRIP-LATEST-HEAD-PREVIEW-SMOKE-RETRY
-```
+Plausible remains unselected.
 
-Run it only when Vercel preview deployment quota resets or when an approved protected-preview/share-smoke path is available.
-
-If preview remains blocked, the next safe docs/product task is:
-
-```text
-TD-RADARSCOUT-AI-TRIP-PRODUCTION-DEPLOY-CANDIDATE-DOCS
-```
-
-Goal:
-
-Document the exact release candidate state, validation evidence, known preview quota blocker, production smoke checklist, and rollback plan before asking for production deployment approval.
-
-## 8. Current status
-
-No analytics implementation is active.
-
-No analytics vendor is selected for implementation.
+No database analytics implementation is active.
 
 RadarScout remains within the current safety boundary:
 

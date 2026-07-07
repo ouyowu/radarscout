@@ -18,11 +18,11 @@ already built?"):
 - `/chiang-mai/elephant-camp-finder` already `robots: { index: true, follow: true }`
   and already listed in `app/sitemap.ts`.
 - `app/robots.ts` disallows the reddit-tool marketing routes; finder is allowed.
-- Analytics: none. Task 1 (TD-RADARSCOUT-ANALYTICS-FUNNEL-0) adds a
-  provider-agnostic `track()` shim only — it collects nothing until a provider
-  is wired (task 2 below).
+- Analytics: Vercel Web Analytics was selected by human approval on 2026-07-08.
+  The implementation should use the approved event taxonomy in
+  `docs/radarscout-traveler-funnel-plausible-decision-2.md`.
 
-Order: 1 analytics shim (done, PR #470) → 2 provider **[POSTPONED — see below]** →
+Order: 1 analytics shim + Vercel provider →
 3 SEO index guard **[NEXT]** → 4 Search Console checklist → 5 partner product
 model → 6 partner seed → 7 product matching → 8 Bókun discovery.
 
@@ -36,41 +36,34 @@ model → 6 partner seed → 7 product matching → 8 Bókun discovery.
 
 ---
 
-## TD-RADARSCOUT-ANALYTICS-PROVIDER-1  — POSTPONED (do not implement)
+## TD-RADARSCOUT-ANALYTICS-PROVIDER-1
 
-Decision 2026-07-07 (route A): analytics stays postponed per the existing
-decision record `docs/radarscout-traveler-funnel-plausible-decision-2.md`
-(Option C: no Vercel custom events, no Plausible, keep the approved event
-taxonomy ready). Do NOT pick a provider or wire analytics now. Revisit only
-after the product is in production with real traffic, and only via a new task
-that names the vendor explicitly and reconciles the shim's event names with the
-approved taxonomy in that decision doc (the two currently differ). PR #470 (the
-shim) should be reviewed on its own merits; if postponement stands, consider
-holding #470 too rather than merging an unused shim.
+Decision 2026-07-08: human approved proceeding with analytics provider work.
+Vendor selected: Vercel Web Analytics. Plausible remains unselected.
 
-Original intent (kept for later): wire one provider so the funnel produces data.
+Intent: wire one privacy-friendly provider so the finder funnel produces data
+without DB writes, secrets, or a second analytics vendor.
 
 Scope:
-- Wire a single, privacy-friendly provider to flush the existing
-  `window.__radarscoutAnalyticsQueue` / `dataLayer`. Recommended: Vercel Web
-  Analytics or Plausible (no cookie banner needed). The provider choice is a
-  human decision — if unset, keep the shim no-op and STOP with a one-line
-  blocker rather than guessing.
-- Load the provider script only in production and only when
-  `NEXT_PUBLIC_ANALYTICS_PROVIDER` is set; SSR-safe; no blocking of first paint.
-- Add `NEXT_PUBLIC_ANALYTICS_PROVIDER` (and any provider key) to `.env.example`
-  as EMPTY placeholders only (this is the one allowed `.env.example` edit).
+- Add Vercel Web Analytics App Router pageview support through
+  `@vercel/analytics/next`.
+- Add or keep the approved local `track()` shim and flush its approved taxonomy
+  events through `@vercel/analytics`.
+- Do not send raw free-form trip text, PII, full booking partner URLs, Bókun
+  backend data, checkout/payment/booking state, availability, inventory, prices,
+  ratings, or reviews.
+- Do not add environment variables or secrets.
 
 Forbidden: DB/schema, SEO/robots, Bókun, payment/availability, copy/layout
 changes, PII in events, ThaiEleHub/Shopify. No secrets committed.
 
-Acceptance: with the env var set, the 5 funnel events reach the provider in prod
-build; with it unset, zero network egress and no console errors. Consent/no-PII
-respected.
+Acceptance: root layout loads Vercel Web Analytics; approved custom funnel
+events are flushed through Vercel Analytics; local queue/dataLayer behavior is
+preserved for debugging; consent/no-PII guardrails are respected.
 
 Checks: `tsc --noEmit`; `vitest run lib/analytics`; `next build`;
-`git diff --check`. Manually confirm events in the provider dashboard (or note
-that this requires the human to add the key).
+`git diff --check`. Manually confirm events in the Vercel dashboard after
+deployment and real traffic.
 
 Hermes focus: flag any network call added outside the provider flush; confirm no
 key/secret is committed.

@@ -1,9 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { track as trackVercelEvent } from '@vercel/analytics'
 import { track } from './track'
+
+vi.mock('@vercel/analytics', () => ({
+  track: vi.fn(),
+}))
 
 describe('track', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.mocked(trackVercelEvent).mockClear()
   })
 
   it('is a server-side no-op', () => {
@@ -28,6 +34,9 @@ describe('track', () => {
         source: 'planner',
       },
     ])
+    expect(trackVercelEvent).toHaveBeenCalledWith('finder_matching_experiences_clicked', {
+      source: 'planner',
+    })
   })
 
   it('caps the in-memory RadarScout queue at 50 events', () => {
