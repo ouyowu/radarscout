@@ -115,7 +115,136 @@ superseded — it contains no product code.
 - **Option C** — pause release and run a real product-quality review of the
   planner (result relevance, whether users want it) before further release work.
 
-## 7. Recommended next real product work
+## 7. Production deploy candidate (Option B)
+
+Prepared on 2026-07-07 from a clean worktree:
+
+```text
+Worktree: /private/tmp/radarscout-prod-deploy-candidate-b
+Branch: codex/td-radarscout-prod-deploy-candidate-b
+Deployable branch HEAD: 7d446eedabbb7667ba559aa00d6b961348360de8
+Last real Trip Planner code commit: 58d25e8 Parse word-number Trip Planner durations
+Base: origin/codex/travel-mvp-launch
+git status --short: clean before validation
+git diff --check: clean before and after validation
+```
+
+Vercel project check:
+
+```text
+Project: ouyowus-projects / reddit-monitor
+Project ID: prj_TG7h3uoTkZR5OdlIoroJOj3T5uUy
+Framework: Next.js
+Build command: pnpm --filter @reddit-monitor/web build
+Output directory: apps/web/.next
+Observed production target: manual Vercel production deployment
+Current live production deployment observed by CLI: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Production aliases observed: radarscout.io, www.radarscout.io
+```
+
+The Vercel CLI exposed the project and production deployment target, but did not
+print a Git production-branch setting in `vercel project inspect`. Treat the
+safe deploy path as an explicit manual CLI production deploy from the approved
+clean worktree/SHA, not as an assumed branch auto-deploy.
+
+Pending PR status at candidate preparation time:
+
+```text
+Honest Trip Planner naming: merged via PR #465.
+Trip Planner quality fixes: merged through PR #469.
+Optional SEO index guard PR #471: open, test/doc-only, not required for this
+  noindex/read-only Trip Planner deploy candidate.
+Analytics PR #470: open and out of scope; analytics provider remains postponed.
+```
+
+Local gate results:
+
+```text
+pnpm --filter @reddit-monitor/db exec prisma generate: passed
+pnpm --filter @reddit-monitor/web exec tsc --noEmit: passed
+pnpm --filter @reddit-monitor/web exec vitest run: passed, 59 files / 936 tests
+pnpm --filter @reddit-monitor/web exec playwright test: passed, 60/60
+pnpm --filter @reddit-monitor/web build: passed
+pnpm smoke:ai-trip-local:production: passed
+git diff --check: clean
+```
+
+Production-mode local smoke output:
+
+```json
+{
+  "ok": true,
+  "failedChecks": [],
+  "status": 200,
+  "title": "Thailand Trip Planner | RadarScout",
+  "robots": "noindex, nofollow",
+  "topMatchHref": "/tours/prod_cm_1?source=ai-trip-planner",
+  "productCardCount": 3,
+  "resultSummaryVisible": true,
+  "noHorizontalOverflow": true,
+  "viewport": {
+    "clientWidth": 390,
+    "scrollWidth": 390
+  },
+  "unsafeNetwork": [],
+  "forbiddenMatches": []
+}
+```
+
+Decision note:
+
+```text
+Known preview limitation accepted for Option B:
+Vercel free-tier preview quota previously blocked real preview smoke. For this
+specific release surface, local production-mode smoke is accepted as sufficient
+evidence because /ai-trip-planner remains noindex, read-only, deterministic,
+no-DB-write, booking-disabled, availability-disabled, and payment-free.
+```
+
+Human deploy command, if approved:
+
+```bash
+rm -rf /private/tmp/radarscout-trip-planner-prod-7d446ee
+git -C /Users/ouyowu/reddit-monitor worktree add \
+  /private/tmp/radarscout-trip-planner-prod-7d446ee \
+  7d446eedabbb7667ba559aa00d6b961348360de8
+cd /private/tmp/radarscout-trip-planner-prod-7d446ee
+npx vercel link --yes --project reddit-monitor --scope ouyowus-projects
+npx vercel --prod --yes
+```
+
+The agent must not run the command above. The human must explicitly approve and
+run the production deploy. Do not use this docs/report branch as the deploy
+source; deploy the exact app HEAD above so the release candidate is anchored to
+the reviewed product code rather than a later status-doc commit.
+
+Post-deploy production observation checklist:
+
+```text
+Check https://radarscout.io/ai-trip-planner and https://www.radarscout.io/ai-trip-planner
+- page returns 200
+- browser title is Thailand Trip Planner | RadarScout
+- robots remains noindex,nofollow
+- Trip Planner copy uses honest naming; no unqualified AI marketing claim
+- search flow returns 3 safe product cards for a valid Thailand prompt
+- no unsafe visible claims: live availability, available now, instant confirmation,
+  checkout, payment, booking complete, Bókun backend/database/powered, partner
+  rate, supplier net rate, commission, fake reviews, fake ratings
+- no unsafe network: no OpenAI/LLM, no /api/bokun call, no checkout/payment/
+  booking submission, no DB write
+- product detail links preserve safe Trip Planner source
+Check https://radarscout.io/chiang-mai/elephant-camp-finder
+- page remains live and indexable according to current controlled-opening policy
+```
+
+Rollback plan:
+
+```text
+Use Vercel dashboard rollback, or run vercel rollback to the previous production
+deployment. No DB/schema/env change is involved, so rollback is deployment-only.
+```
+
+## 8. Recommended next real product work
 
 1. Trip result quality review (is keyword-match relevance good enough?).
 2. Booking-partner handoff coverage on product pages.
