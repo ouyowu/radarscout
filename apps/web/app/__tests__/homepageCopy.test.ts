@@ -104,8 +104,8 @@ describe('homepage public copy safety', () => {
 
   it('instruments the existing RAD-3 Chiang Mai finder entry without adding a new route or changing the href', () => {
     expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
-    expect(homepageSource).toContain("analytics: { event: 'homepage_finder_entry_click', props: { source: 'hero' } }")
-    expect(homepageSource).toContain('event="homepage_finder_entry_click"')
+    expect(homepageSource).toContain("analytics: { event: 'homepage_finder_entry_clicked', props: { source: 'hero' } }")
+    expect(homepageSource).toContain('event="homepage_finder_entry_clicked"')
     expect(homepageSource).toContain('eventProps={{ source: \'section\' }}')
     expect(homepageVisibleCopySources).toContain('track(event, eventProps)')
     expect(homepageVisibleCopySources).not.toMatch(/navigator\.sendBeacon/i)

@@ -188,10 +188,10 @@ describe('ElephantCampFinderClient view model', () => {
 
   it('instruments existing finder funnel interactions without adding network, booking, or availability behavior', () => {
     expect(finderClientSource).toContain("import { track } from '@/lib/analytics/track'")
-    expect(finderClientSource).toContain("track('finder_plan_with_radarscout_click', { stepId, choiceId })")
-    expect(finderClientSource).toContain("track('finder_see_matching_experiences_click', { source: 'planner' })")
-    expect(finderClientSource).toContain("track('finder_see_matching_experiences_click', { source: 'form' })")
-    expect(finderClientSource).toContain("track('finder_check_availability_click', { recommendationId: recommendation.recommendationId })")
+    expect(finderClientSource).toContain("track('finder_planner_choice_selected', { stepId, choiceId })")
+    expect(finderClientSource).toContain("track('finder_matching_experiences_clicked', { source: 'planner' })")
+    expect(finderClientSource).toContain("track('finder_matching_experiences_clicked', { source: 'form' })")
+    expect(finderClientSource).toContain("track('booking_partner_handoff_clicked', { recommendationId: recommendation.recommendationId })")
     expect(finderClientSource).not.toMatch(/navigator\.sendBeacon/i)
     expect(finderClientSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
     expect(finderClientSource).not.toMatch(/\/api\/bokun/i)

@@ -7,24 +7,24 @@ describe('track', () => {
   })
 
   it('is a server-side no-op', () => {
-    expect(() => track('homepage_finder_entry_click', { source: 'hero' })).not.toThrow()
+    expect(() => track('homepage_finder_entry_clicked', { source: 'hero' })).not.toThrow()
   })
 
   it('pushes browser events into dataLayer and the RadarScout queue', () => {
     const fakeWindow = {} as Window
     vi.stubGlobal('window', fakeWindow)
 
-    track('finder_see_matching_experiences_click', { source: 'planner' })
+    track('finder_matching_experiences_clicked', { source: 'planner' })
 
     expect(fakeWindow.dataLayer).toEqual([
       {
-        event: 'finder_see_matching_experiences_click',
+        event: 'finder_matching_experiences_clicked',
         source: 'planner',
       },
     ])
     expect(fakeWindow.__radarscoutAnalyticsQueue).toEqual([
       {
-        event: 'finder_see_matching_experiences_click',
+        event: 'finder_matching_experiences_clicked',
         source: 'planner',
       },
     ])
@@ -35,7 +35,7 @@ describe('track', () => {
     vi.stubGlobal('window', fakeWindow)
 
     for (let index = 0; index < 55; index += 1) {
-      track('finder_check_availability_click', { index })
+      track('booking_partner_handoff_clicked', { index })
     }
 
     expect(fakeWindow.__radarscoutAnalyticsQueue).toHaveLength(50)
@@ -52,6 +52,6 @@ describe('track', () => {
     })
     vi.stubGlobal('window', fakeWindow)
 
-    expect(() => track('planner_search_submitted')).not.toThrow()
+    expect(() => track('finder_planner_viewed')).not.toThrow()
   })
 })
