@@ -561,7 +561,7 @@ export function IntentParserDemo() {
                       Refine trip idea
                     </a>
                   </div>
-                  <section aria-label="AI Trip Planner result actions" className="mt-2 grid gap-2 sm:mt-3 sm:gap-3">
+                  <section aria-label="Trip Planner result actions" className="mt-2 grid gap-2 sm:mt-3 sm:gap-3">
                     <div
                       data-testid="ai-trip-result-action-panel"
                       className="flex flex-col gap-2 rounded-2xl border border-[#e8dfd2] bg-white px-3 py-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-4 sm:py-3"

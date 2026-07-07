@@ -10,14 +10,19 @@ function readAiTripPlannerSource(fileName: string) {
 }
 
 describe('AI trip planner public copy safety', () => {
-  it('positions the page as a visible Thailand AI trip planner MVP', () => {
+  it('positions the page as a visible Thailand trip planner MVP without over-claiming AI', () => {
     const publicCopy = [
       readAiTripPlannerSource('page.tsx'),
       readAiTripPlannerSource('IntentParserDemo.tsx'),
       readAiTripPlannerSource('AiSearchProductCard.tsx'),
     ].join('\n')
 
-    expect(publicCopy).toMatch(/Thailand AI trip planner/i)
+    expect(publicCopy).toMatch(/Thailand trip planner/i)
+    // Honest-naming guard: the planner runs deterministic local intent parsing plus
+    // keyword product search — it must NOT market itself as a generative "AI" planner.
+    expect(publicCopy).not.toMatch(/\bAI trip planner\b/i)
+    expect(publicCopy).not.toMatch(/AI-powered/i)
+    expect(publicCopy).not.toMatch(/AI-guided/i)
     expect(publicCopy).toMatch(/Bangkok/i)
     expect(publicCopy).toMatch(/Chiang Mai/i)
     expect(publicCopy).toMatch(/Pattaya/i)

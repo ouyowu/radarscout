@@ -230,7 +230,7 @@ async function runSmoke(targetUrl) {
 
     const failedChecks = [
       result.status !== 200 ? 'status_not_200' : null,
-      result.title !== 'Thailand AI Trip Planner | RadarScout' ? 'unexpected_title' : null,
+      result.title !== 'Thailand Trip Planner | RadarScout' ? 'unexpected_title' : null,
       result.robots !== 'noindex, nofollow' ? 'unexpected_robots' : null,
       !result.topMatchHref?.includes('source=ai-trip-planner') ? 'missing_source_param' : null,
       result.productCardCount !== 3 ? 'unexpected_product_card_count' : null,

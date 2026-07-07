@@ -762,7 +762,7 @@ test.describe('Valid Chiang Mai flow', () => {
     }
   })
 
-  test('product detail links replace non-AI source parameters with AI Trip Planner source', async ({ page }) => {
+  test('product detail links replace non-planner source parameters with Trip Planner source', async ({ page }) => {
     await page.route('/api/ai-trip/search', async route => {
       await route.fulfill({
         status: 200,
@@ -789,7 +789,7 @@ test.describe('Valid Chiang Mai flow', () => {
     )
   })
 
-  test('opening a product detail keeps the AI Trip Planner return path safe', async ({ page }) => {
+  test('opening a product detail keeps the Trip Planner return path safe', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
     await expect(productCards(page)).toHaveCount(3)
@@ -797,7 +797,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await productCards(page).first().click()
 
     await expect(page).toHaveURL(/\/tours\/prod_cm_1\?source=ai-trip-planner/)
-    await expect(page.getByRole('link', { name: /back to ai trip planner/i })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /back to trip planner/i })).toHaveAttribute(
       'href',
       '/ai-trip-planner#ai-trip-results',
     )
@@ -811,7 +811,7 @@ test.describe('Valid Chiang Mai flow', () => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
-    await expect(page.getByLabel(/ai trip planner result actions/i)).toBeVisible()
+    await expect(page.getByLabel(/trip planner result actions/i)).toBeVisible()
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })).toBeVisible()
     await expect(page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })).toHaveAttribute(
