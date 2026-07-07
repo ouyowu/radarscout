@@ -61,19 +61,20 @@ separate branding decision.
 
 ## 3. Validation evidence
 
-From the last recorded local run (toolchain-verified in CI, not in a mounted
-sandbox):
+Local validation completed on 2026-07-07 after the honest-naming change and
+latest `codex/travel-mvp-launch` merge:
 
 ```text
 Prisma generate: passed
-Focused copySafety Vitest: passed, 59 files / 932 tests
-Trip Planner Playwright E2E: passed on retry, 54/54
-Full Playwright E2E: passed, 60/60
+Focused Trip Planner / tour Vitest: passed, 59 files / 932 tests
+Smoke script unit tests: passed, 12/12
 TypeScript: clean
 Next build: passed
+Focused Trip Planner / homepage Playwright E2E: passed, 60/60
+git diff --check: clean
 ```
 
-Local fallback smoke (`pnpm smoke:ai-trip-local:production`):
+Local production-mode smoke (`pnpm smoke:ai-trip-local:production`): passed.
 
 ```text
 status: 200
@@ -86,11 +87,6 @@ noHorizontalOverflow: true
 unsafeNetwork: none
 forbiddenMatches: none
 ```
-
-Note: the honest-naming change updates the expected page title to
-`Thailand Trip Planner | RadarScout`. Re-run the focused Vitest and E2E in CI to
-confirm green after this change (the mounted dev environment cannot run the
-toolchain because its `node_modules` is built for a different architecture).
 
 ## 4. Release candidate
 
