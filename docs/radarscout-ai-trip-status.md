@@ -122,3 +122,27 @@ superseded — it contains no product code.
 3. Traveler analytics funnel (currently no conversion/analytics data exists).
 4. SEO `index,follow` opening only after readiness gates — not before there is
    real traffic and conversion evidence.
+
+## 8. Current SEO surface guard
+
+Current controlled-opening policy:
+
+- `/chiang-mai/elephant-camp-finder` is the only open marketing planner route:
+  `robots: { index: true, follow: true }`.
+- `/chiang-mai/elephant-camp-finder` is included in `sitemap.xml`.
+- `/ai-trip-planner` remains closed: `robots: { index: false, follow: false }`.
+- `/tours/[id]` remains closed unless a future explicit tour-detail SEO
+  candidate is reviewed and allowlisted.
+- The sitemap must not include `/ai-trip-planner` or unsafe `/tours/{id}` URLs.
+- `robots.txt` still disallows the legacy reddit-tool marketing routes.
+
+Regression coverage:
+
+- `apps/web/app/__tests__/seoIndexGuard.test.ts` asserts the current index
+  surface across finder, Trip Planner, tour detail metadata, sitemap, and
+  robots.txt.
+- `apps/web/app/__tests__/sitemap.test.ts` continues to guard sitemap scope and
+  route exclusions.
+
+Do not open additional `index,follow` pages or add routes to the sitemap without
+a dedicated SEO readiness task and human approval.
