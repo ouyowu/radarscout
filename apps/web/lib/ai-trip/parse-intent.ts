@@ -46,6 +46,10 @@ const avoidMatchers: Array<[RegExp, string, string]> = [
   [/不商业化/, 'commercial', 'not commercial'],
 ]
 
+const negatedInterestMatchers: Array<[RegExp, string, string]> = [
+  [/\b(no|not|avoid|without)\s+(?:an?\s+)?(?:elephant|elephants|elephant sanctuar(?:y|ies))\b/i, 'elephants', 'avoid elephants'],
+]
+
 const foodMatchers: Array<[RegExp, string]> = [
   [/\b(vegetarian)\b/i, 'vegetarian'],
   [/\b(vegan)\b/i, 'vegan'],
@@ -197,6 +201,21 @@ function extractAvoid(prompt: string): Pick<TripIntent, 'avoid' | 'excludedStyle
   return { avoid, excludedStyles }
 }
 
+function extractNegatedInterests(prompt: string): Pick<TripIntent, 'avoid' | 'excludedStyles'> & { interests: string[] } {
+  const interests: string[] = []
+  const avoid: string[] = []
+  const excludedStyles: string[] = []
+
+  for (const [pattern, interestValue, styleValue] of negatedInterestMatchers) {
+    if (!pattern.test(prompt)) continue
+    interests.push(interestValue)
+    avoid.push(interestValue)
+    excludedStyles.push(styleValue)
+  }
+
+  return { interests, avoid, excludedStyles }
+}
+
 function extractPace(prompt: string): TripPace {
   if (/\b(relaxed|slow|chill|easy pace|leisurely)\b/i.test(prompt)) return 'relaxed'
   if (/\b(packed|busy|full schedule|intense)\b/i.test(prompt)) return 'packed'
@@ -285,7 +304,9 @@ export function parseTripIntent(prompt: string): ParseTripIntentResult {
   intent.destination = extractDestination(normalizedPrompt)
   intent.durationDays = extractDurationDays(normalizedPrompt)
   intent.durationNights = extractDurationNights(normalizedPrompt)
+  const negatedInterestIntent = extractNegatedInterests(normalizedPrompt)
   intent.interests = extractMatches(normalizedPrompt, interestMatchers)
+    .filter(interest => !negatedInterestIntent.interests.includes(interest))
   intent.foodPreferences = extractMatches(normalizedPrompt, foodMatchers)
   intent.accessibilityNeeds = extractMatches(normalizedPrompt, accessibilityMatchers)
   intent.pace = extractPace(normalizedPrompt)
@@ -294,8 +315,14 @@ export function parseTripIntent(prompt: string): ParseTripIntentResult {
   intent.groupSize = extractGroupSize(normalizedPrompt)
 
   const avoidIntent = extractAvoid(normalizedPrompt)
-  intent.avoid = avoidIntent.avoid
-  intent.excludedStyles = avoidIntent.excludedStyles
+  intent.avoid = [
+    ...avoidIntent.avoid,
+    ...negatedInterestIntent.avoid,
+  ]
+  intent.excludedStyles = [
+    ...avoidIntent.excludedStyles,
+    ...negatedInterestIntent.excludedStyles,
+  ]
 
   if (!intent.destination) warnings.push('ambiguous or missing destination')
   if (!intent.durationDays) warnings.push('ambiguous or missing duration')

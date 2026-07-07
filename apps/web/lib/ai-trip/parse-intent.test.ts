@@ -74,6 +74,14 @@ describe('parseTripIntent', () => {
     expect(chinese.intent.excludedStyles).toEqual(expect.arrayContaining(['less crowded', 'not commercial']))
   })
 
+  it('treats negated elephant requests as an avoided interest, not a positive interest', () => {
+    const result = parseTripIntent('Chiang Mai temples night market no elephant relaxed evening')
+
+    expect(result.intent.destination).toBe('Chiang Mai')
+    expect(result.intent.interests).not.toContain('elephants')
+    expect(result.intent.avoid).toContain('elephants')
+  })
+
   it('ignores booking, payment, and availability requests while keeping disabled flags', () => {
     const result = parseTripIntent('I want to book and pay for Dubai tomorrow')
 

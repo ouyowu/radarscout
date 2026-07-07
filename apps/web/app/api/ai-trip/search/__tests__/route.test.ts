@@ -336,6 +336,32 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.at(-1)).toEqual({ city: 'Chiang Mai', take: expect.any(Number) })
   })
 
+  it('negated elephant prompt does not search elephant aliases or expose elephants as a positive interest', async () => {
+    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
+      Promise.resolve(options.search === 'temples' ? [makeCandidate({ title: 'Chiang Mai Temple Walk' })] : []),
+    )
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem({ title: 'Chiang Mai Temple Walk' })],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai temples night market no elephant relaxed evening' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.intent.destination).toBe('Chiang Mai')
+    expect(body.intent.interests).toEqual(expect.arrayContaining(['temples', 'markets']))
+    expect(body.intent.interests).not.toContain('elephants')
+
+    const searches = listMock.listAiEligibleThailandProducts.mock.calls
+      .map(call => call[0].search)
+      .filter(Boolean)
+    expect(searches).toContain('temples')
+    expect(searches).not.toContain('elephants')
+    expect(searches).not.toContain('elephant')
+  })
+
   // Test 15: Response contains no rawJson or eligibility internals
   it('ok response contains no rawJson or eligibility internals', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
