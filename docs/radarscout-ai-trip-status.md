@@ -125,6 +125,12 @@ superseded — it contains no product code.
 
 ## 8. Execution Log
 
+- 2026-07-07 — `TD-RADARSCOUT-BOKUN-API-DISCOVERY-7`: PR #477 (`a1f6b67`)
+  opened with research-only Bókun API feasibility and boundary note; result: PR
+  open, awaiting human merge.
+
+## 8. Execution Log
+
 - 2026-07-07 — `TD-RADARSCOUT-PARTNER-PRODUCT-MODEL-4`: PR #476
   (`b0e2499`) opened with typed partner product model validator and unit tests;
   result: PR open, awaiting human merge.
