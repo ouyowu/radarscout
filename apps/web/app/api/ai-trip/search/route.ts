@@ -98,6 +98,41 @@ function getInterestSearchTerms(interests: string[]): string[] {
   return terms
 }
 
+function mergeCandidateBuckets(
+  buckets: AiProductCandidate[][],
+  take: number,
+): AiProductCandidate[] {
+  const merged: AiProductCandidate[] = []
+  const seen = new Set<string>()
+  const cursors = buckets.map(() => 0)
+
+  while (merged.length < take) {
+    let addedThisRound = false
+
+    for (let bucketIndex = 0; bucketIndex < buckets.length; bucketIndex += 1) {
+      const bucket = buckets[bucketIndex]
+
+      while (cursors[bucketIndex] < bucket.length) {
+        const candidate = bucket[cursors[bucketIndex]]
+        cursors[bucketIndex] += 1
+
+        if (seen.has(candidate.id)) continue
+
+        seen.add(candidate.id)
+        merged.push(candidate)
+        addedThisRound = true
+        break
+      }
+
+      if (merged.length >= take) break
+    }
+
+    if (!addedThisRound) break
+  }
+
+  return merged
+}
+
 async function queryEligibleCandidates(
   destination: string | null,
   interests: string[],
@@ -106,7 +141,7 @@ async function queryEligibleCandidates(
   const city = destination && isCityDestination(destination) ? destination : null
 
   if (interests.length > 0) {
-    const byId = new Map<string, AiProductCandidate>()
+    const matchBuckets: AiProductCandidate[][] = []
 
     for (const term of getInterestSearchTerms(interests)) {
       const matches = await listAiEligibleThailandProducts({
@@ -115,15 +150,10 @@ async function queryEligibleCandidates(
         take,
       })
 
-      for (const candidate of matches) {
-        if (!byId.has(candidate.id)) byId.set(candidate.id, candidate)
-        if (byId.size >= take) break
-      }
-
-      if (byId.size >= take) break
+      if (matches.length > 0) matchBuckets.push(matches)
     }
 
-    const interestMatches = Array.from(byId.values()).slice(0, take)
+    const interestMatches = mergeCandidateBuckets(matchBuckets, take)
     if (interestMatches.length > 0) {
       return { candidates: interestMatches, fallbackUsed: false }
     }

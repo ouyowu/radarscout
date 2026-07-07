@@ -297,6 +297,49 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products).toHaveLength(1)
   })
 
+  it('multi-interest results keep later-interest matches when the first parsed interest fills the candidate limit', async () => {
+    const foodCandidates = Array.from({ length: 6 }, (_, index) =>
+      makeCandidate({
+        id: `food-${index + 1}`,
+        title: `Chiang Mai Local Food Walk ${index + 1}`,
+        suggestedTags: ['Food'],
+      }),
+    )
+    const elephantCandidate = makeCandidate({
+      id: 'elephant-1',
+      title: 'Chiang Mai Elephant Care',
+      suggestedTags: ['Elephants'],
+    })
+
+    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) => {
+      if (options.search === 'food') return Promise.resolve(foodCandidates)
+      if (options.search === 'elephants') return Promise.resolve([elephantCandidate])
+      return Promise.resolve([])
+    })
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+      })),
+    }))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants food' }))
+    const body = await res.json()
+
+    const searches = listMock.listAiEligibleThailandProducts.mock.calls
+      .map(call => call[0].search)
+      .filter(Boolean)
+    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
+      .map((candidate: { id: string }) => candidate.id)
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(searches).toContain('elephants')
+    expect(rankedIds).toContain('elephant-1')
+    expect(rankedIds.slice(0, 3)).toContain('elephant-1')
+  })
+
   it('interest searches fall back to destination-only products when all terms miss', async () => {
     listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
       Promise.resolve(options.search ? [] : [makeCandidate()]),
