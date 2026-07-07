@@ -122,7 +122,7 @@ test.describe('Homepage AI planner entry', () => {
     expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
   })
 
-  test('homepage prompt chip opens the AI Trip Planner form with safe prefill and no search request', async ({
+  test('homepage prompt chip opens the Trip Planner form with safe prefill and no search request', async ({
     page,
   }) => {
     let searchRequestCount = 0
@@ -193,7 +193,7 @@ test.describe('Homepage AI planner entry', () => {
     }
   })
 
-  test('Start planning opens the AI Trip Planner form without automatic product search', async ({ page }) => {
+  test('Start planning opens the Trip Planner form without automatic product search', async ({ page }) => {
     let searchRequestCount = 0
     const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 

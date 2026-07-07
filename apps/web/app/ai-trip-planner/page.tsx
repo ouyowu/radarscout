@@ -7,15 +7,15 @@ import { IntentParserDemo } from './IntentParserDemo'
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'Thailand AI Trip Planner | RadarScout',
+  title: 'Thailand Trip Planner | RadarScout',
   description:
     'Plan Thailand experiences with RadarScout. Describe Bangkok, Chiang Mai, Pattaya, Phuket, or a wider Thailand route, then compare read-only product matches safely.',
   alternates: { canonical: `${base}/ai-trip-planner` },
   robots: { index: false, follow: false },
   openGraph: {
-    title: 'Thailand AI Trip Planner | RadarScout',
+    title: 'Thailand Trip Planner | RadarScout',
     description:
-      'Thailand AI trip planner for guided discovery. Local intent parsing with read-only Thailand product search for comparison.',
+      'Thailand trip planner for guided discovery. Local intent parsing with read-only Thailand product search for comparison.',
     type: 'website',
     url: `${base}/ai-trip-planner`,
   },
@@ -113,7 +113,7 @@ export default function AiTripPlannerPage() {
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
               <span className="inline-flex rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#f8d7bf]">
-                Thailand AI Trip Planner
+                Thailand Trip Planner
               </span>
               <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
                 Plan Thailand experiences before choosing what to compare
@@ -127,7 +127,7 @@ export default function AiTripPlannerPage() {
                   href="#intent-demo"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#D57C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#c66b37]"
                 >
-                  Try the AI Trip Planner
+                  Try the Trip Planner
                 </a>
                 <Link
                   href="#planner-demo"
@@ -276,7 +276,7 @@ export default function AiTripPlannerPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 max-w-3xl">
             <span className="inline-flex rounded-full bg-[#1E2D59] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
-              AI Trip Planner
+              Trip Planner
             </span>
             <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#1E2D59] sm:text-5xl">
               Understand your travel intent locally before read-only product matching
@@ -305,7 +305,7 @@ export default function AiTripPlannerPage() {
                 The Thailand experience catalog is connected for read-only comparison only
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
-                This page positions RadarScout as a Thailand AI trip planner. The current implementation understands trip intent locally
+                This page positions RadarScout as a Thailand trip planner. The current implementation understands trip intent locally
                 and can return comparison-only product results from Thailand experience records. Non-Thailand ideas can still be structured
                 as planning text, but product matching stays Thailand-only until coverage is reviewed. Current details stay on product pages
                 and booking partner surfaces.
@@ -356,7 +356,7 @@ export default function AiTripPlannerPage() {
               href="#intent-demo"
               className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#D57C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-[#c66b37]"
             >
-              Try the AI Trip Planner
+              Try the Trip Planner
             </a>
             <Link
               href="#planner-demo"

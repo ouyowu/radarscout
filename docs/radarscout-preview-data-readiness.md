@@ -32,10 +32,8 @@ This task did not:
 
 Read-only sources checked:
 
-- `docs/radarscout-active-execution-status.md`
-- `docs/radarscout-ai-trip-planner-release-status.md`
+- `docs/radarscout-ai-trip-status.md`
 - `docs/radarscout-vercel-preview-bypass-runbook.md`
-- `docs/radarscout-ai-trip-planner-production-readiness.md`
 - `scripts/radarscout-ai-trip-preview-smoke.js`
 - `apps/web/app/api/ai-trip/search/route.ts`
 - `apps/web/app/tours/[id]/page.tsx`

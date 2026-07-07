@@ -13,7 +13,7 @@ This decision is based on the current RadarScout analytics docs:
 - `docs/radarscout-traveler-funnel-analytics-plan.md`
 - `docs/radarscout-traveler-funnel-analytics-tool-selection.md`
 - `docs/radarscout-traveler-funnel-plausible-comparison.md`
-- `docs/radarscout-active-execution-status.md`
+- `docs/radarscout-ai-trip-status.md`
 
 ## 2. Current funnel goal
 

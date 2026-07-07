@@ -163,7 +163,7 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Planning-only detail')
     expect(markup).toContain('verified booking partner handoff is not available yet')
     expect(markup).toContain('Use this page for planning and compare other experiences with verified handoff options')
-    expect(markup).not.toContain('AI Trip Planner context')
+    expect(markup).not.toContain('Trip Planner context')
     expect(markup).not.toContain('Check availability')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
@@ -215,7 +215,7 @@ describe('tour public copy safety', () => {
     expectSafeTourCopy(markup)
   })
 
-  it('renders safe AI trip planner return context when source is ai-trip-planner', async () => {
+  it('renders safe trip planner return context when source is ai-trip-planner', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
     productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
@@ -248,18 +248,18 @@ describe('tour public copy safety', () => {
     })
     const markup = renderToStaticMarkup(element)
 
-    expect(markup).toContain('AI Trip Planner context')
-    expect(markup).toContain('Back to AI Trip Planner results')
-    expect(markup).toContain('You opened this product from RadarScout&#x27;s AI Trip Planner')
+    expect(markup).toContain('Trip Planner context')
+    expect(markup).toContain('Back to Trip Planner results')
+    expect(markup).toContain('You opened this product from RadarScout&#x27;s Trip Planner')
     expect(markup).toContain('return to compare the other planner matches')
-    expect(markup).toContain('The return link takes you back to the same AI Trip Planner results section')
+    expect(markup).toContain('The return link takes you back to the same Trip Planner results section')
     expect(markup).toContain('No partner action or current status is recorded on this page')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
 
-  it('keeps the AI trip planner return path when a sourced tour detail is unavailable', async () => {
+  it('keeps the trip planner return path when a sourced tour detail is unavailable', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
     productLoaderMock.loadPublicThailandProductDetail.mockResolvedValue({
@@ -273,9 +273,9 @@ describe('tour public copy safety', () => {
     const markup = renderToStaticMarkup(element)
 
     expect(markup).toContain('This product detail is not available.')
-    expect(markup).toContain('Return to the AI Trip Planner results to compare the other matches')
+    expect(markup).toContain('Return to the Trip Planner results to compare the other matches')
     expect(markup).toContain('No partner action or current status is recorded from this unavailable detail page')
-    expect(markup).toContain('Back to AI Trip Planner results')
+    expect(markup).toContain('Back to Trip Planner results')
     expect(markup).toContain('href="/ai-trip-planner#ai-trip-results"')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
