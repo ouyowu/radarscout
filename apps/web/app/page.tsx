@@ -130,7 +130,7 @@ export default function LandingPage() {
             label: 'Plan a Chiang Mai elephant day',
             href: chiangMaiPlannerHref,
             variant: 'secondary',
-            analytics: { event: 'homepage_finder_entry_click', props: { source: 'hero' } },
+            analytics: { event: 'homepage_finder_entry_clicked', props: { source: 'hero' } },
           },
         ]}
         trustNote="Thailand is currently RadarScout's first focused experience destination. Other destinations remain planning-only while local partner coverage improves."
@@ -189,7 +189,7 @@ export default function LandingPage() {
           <div className="mt-6 lg:mt-0">
             <TrackedLink
               href={chiangMaiPlannerHref}
-              event="homepage_finder_entry_click"
+              event="homepage_finder_entry_clicked"
               eventProps={{ source: 'section' }}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-bg-dark)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white"
             >

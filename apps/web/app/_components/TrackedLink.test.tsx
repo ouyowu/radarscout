@@ -16,7 +16,7 @@ describe('TrackedLink', () => {
   it('tracks the configured funnel event before preserving the link href', () => {
     const element = TrackedLink({
       href: '/chiang-mai/elephant-camp-finder#plan-with-radarscout',
-      event: 'homepage_finder_entry_click',
+      event: 'homepage_finder_entry_clicked',
       eventProps: { source: 'hero' },
       children: 'Plan a Chiang Mai elephant day',
     }) as ReactElement<{
@@ -27,6 +27,6 @@ describe('TrackedLink', () => {
     element.props.onClick()
 
     expect(element.props.href).toBe('/chiang-mai/elephant-camp-finder#plan-with-radarscout')
-    expect(track).toHaveBeenCalledWith('homepage_finder_entry_click', { source: 'hero' })
+    expect(track).toHaveBeenCalledWith('homepage_finder_entry_clicked', { source: 'hero' })
   })
 })

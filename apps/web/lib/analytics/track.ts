@@ -1,9 +1,11 @@
 export type FunnelEvent =
-  | 'homepage_finder_entry_click'
-  | 'finder_plan_with_radarscout_click'
-  | 'finder_see_matching_experiences_click'
-  | 'finder_check_availability_click'
-  | 'planner_search_submitted'
+  | 'homepage_finder_entry_clicked'
+  | 'finder_planner_choice_selected'
+  | 'finder_planner_reset_clicked'
+  | 'finder_matching_experiences_clicked'
+  | 'finder_recommendations_rendered'
+  | 'booking_partner_handoff_clicked'
+  | 'finder_planner_viewed'
 
 export type FunnelEventProps = Record<string, string | number | boolean>
 

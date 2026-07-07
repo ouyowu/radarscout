@@ -80,10 +80,9 @@ describe('canSearchFromConfirmed (test 21–22)', () => {
 })
 
 describe('planner search funnel analytics', () => {
-  it('tracks search submission without sending prompt text or PII props', () => {
-    expect(intentParserDemoSource).toContain("import { track } from '@/lib/analytics/track'")
-    expect(intentParserDemoSource).toContain("track('planner_search_submitted')")
-    expect(intentParserDemoSource).not.toContain("track('planner_search_submitted',")
+  it('does not add unapproved Trip Planner search analytics outside the approved finder taxonomy', () => {
+    expect(intentParserDemoSource).not.toContain("track('planner_search_submitted')")
+    expect(intentParserDemoSource).not.toContain("import { track } from '@/lib/analytics/track'")
     expect(intentParserDemoSource).not.toMatch(/navigator\.sendBeacon/i)
     expect(intentParserDemoSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
