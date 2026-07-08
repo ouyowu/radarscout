@@ -10,6 +10,7 @@ import {
   type AiProductContextItem,
 } from '@/lib/aiProducts/buildAiProductContext'
 import { IneligibleProductInContextError } from '@/lib/aiProducts/assertAllProductsThailandEligible'
+import { listMatchingPartnerProductCandidates } from '@/lib/partnerProducts/matching'
 
 export const dynamic = 'force-dynamic'
 
@@ -149,8 +150,14 @@ async function queryEligibleCandidates(
         search: term,
         take,
       })
+      const partnerMatches = listMatchingPartnerProductCandidates({
+        city,
+        search: term,
+        take,
+      })
+      const combinedMatches = [...matches, ...partnerMatches]
 
-      if (matches.length > 0) matchBuckets.push(matches)
+      if (combinedMatches.length > 0) matchBuckets.push(combinedMatches)
     }
 
     const interestMatches = mergeCandidateBuckets(matchBuckets, take)
@@ -159,11 +166,13 @@ async function queryEligibleCandidates(
     }
 
     const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
-    return { candidates: fallback, fallbackUsed: true }
+    const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
+    return { candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback]], take), fallbackUsed: true }
   }
 
   const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
-  return { candidates: fallback, fallbackUsed: false }
+  const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
+  return { candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback]], take), fallbackUsed: false }
 }
 
 export async function POST(request: NextRequest) {

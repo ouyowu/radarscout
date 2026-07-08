@@ -16,6 +16,7 @@ import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary, orderCityEntriesBySourceText } from './resultFitSummary'
+import { track } from '@/lib/analytics/track'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const promptMaxLength = 600
@@ -168,6 +169,8 @@ export function IntentParserDemo() {
       }))
       .filter(stop => stop.products.length > 0)
   }, [routeStopOverview, searchState])
+  const topProduct = searchState?.status === 'ok' ? searchState.products[0] : null
+  const topProductHasExternalHandoff = Boolean(topProduct?.externalHandoff && topProduct.ctaHref)
   const starterSearchFeedback = searchState
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
@@ -569,13 +572,24 @@ export function IntentParserDemo() {
                       <p className="text-xs font-semibold leading-5 text-[#5a6670] sm:text-sm sm:leading-6">
                         Start with <span className="font-black text-[#101820]">{searchState.products[0].title}</span>, then compare the remaining cards below.
                       </p>
-                      <a
-                        href={buildAiTripPlannerDetailHref(searchState.products[0].detailHref, searchState.products[0].id)}
-                        aria-label={buildAiTripTopMatchDetailAriaLabel(searchState.products[0].title)}
-                        className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
-                      >
-                        Open top match details
-                      </a>
+                      {topProduct ? (
+                        <a
+                          href={topProductHasExternalHandoff && topProduct.ctaHref
+                            ? topProduct.ctaHref
+                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id)}
+                          target={topProductHasExternalHandoff ? '_blank' : undefined}
+                          rel={topProductHasExternalHandoff ? topProduct.ctaRel ?? 'nofollow sponsored noopener noreferrer' : undefined}
+                          aria-label={topProductHasExternalHandoff
+                            ? `Check availability for top match ${topProduct.title} with the booking partner`
+                            : buildAiTripTopMatchDetailAriaLabel(topProduct.title)}
+                          onClick={topProductHasExternalHandoff
+                            ? () => track('booking_partner_handoff_clicked', { productId: topProduct.id, source: 'ai_trip_planner_top_match' })
+                            : undefined}
+                          className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
+                        >
+                          {topProductHasExternalHandoff ? 'Check availability' : 'Open top match details'}
+                        </a>
+                      ) : null}
                       <a
                         href="#ai-trip-comparison-results"
                         className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full border border-[#1e2d59] px-5 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:border-[#0f766e] hover:text-[#0f766e] sm:w-auto"
@@ -688,6 +702,10 @@ export function IntentParserDemo() {
                                   detailHref={product.detailHref}
                                   retailPrice={product.retailPrice}
                                   currency={product.currency}
+                                  ctaHref={product.ctaHref}
+                                  ctaLabel={product.ctaLabel}
+                                  ctaRel={product.ctaRel}
+                                  externalHandoff={product.externalHandoff}
                                   fitReason={buildProductFitReason(product, searchState.intent)}
                                 />
                               ))}
@@ -708,6 +726,10 @@ export function IntentParserDemo() {
                             detailHref={product.detailHref}
                             retailPrice={product.retailPrice}
                             currency={product.currency}
+                            ctaHref={product.ctaHref}
+                            ctaLabel={product.ctaLabel}
+                            ctaRel={product.ctaRel}
+                            externalHandoff={product.externalHandoff}
                             fitReason={buildProductFitReason(product, searchState.intent)}
                           />
                         ))}

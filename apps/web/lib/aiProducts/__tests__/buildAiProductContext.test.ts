@@ -170,6 +170,37 @@ describe('buildAiProductContext — model context (tests 15–21)', () => {
     ])
   })
 
+  it('serializes only safe partner handoff fields when present on reviewed candidates', async () => {
+    const result = await buildAiProductContext([
+      makeEligibleCandidate({
+        id: 'partner_cm_1232729',
+        retailPrice: null,
+        currency: null,
+        ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+        ctaLabel: 'Check availability',
+        ctaRel: 'nofollow sponsored noopener noreferrer',
+        externalHandoff: true,
+      }),
+    ])
+
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') {
+      expect(result.items[0]).toMatchObject({
+        id: 'partner_cm_1232729',
+        retailPrice: null,
+        currency: null,
+        ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+        ctaLabel: 'Check availability',
+        ctaRel: 'nofollow sponsored noopener noreferrer',
+        externalHandoff: true,
+      })
+      expect(result.items[0]).not.toHaveProperty('bookingUrl')
+      expect(result.items[0]).not.toHaveProperty('checkoutUrl')
+      expect(result.items[0]).not.toHaveProperty('paymentUrl')
+      expect(result.items[0]).not.toHaveProperty('availability')
+    }
+  })
+
   // Test 20: Empty eligible result returns safe no-match behavior
   it('returns no_match when no eligible candidates remain', async () => {
     const result = await buildAiProductContext([])

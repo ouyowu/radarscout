@@ -17,6 +17,10 @@ export type AiProductCandidate = {
   detailHref: string
   retailPrice: string | null
   currency: string | null
+  ctaHref?: string | null
+  ctaLabel?: 'Check availability' | null
+  ctaRel?: 'nofollow sponsored noopener noreferrer' | null
+  externalHandoff?: boolean
 }
 
 export type ListAiEligibleOptions = {

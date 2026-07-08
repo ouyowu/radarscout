@@ -163,6 +163,46 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products[0].id).toBe('prod_1')
   })
 
+  it('Chiang Mai prompt includes reviewed partner handoff candidates when matching DB products are absent', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<Record<string, unknown>>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+        city: candidate.city,
+        summary: candidate.summary,
+        tags: candidate.suggestedTags,
+        detailHref: candidate.detailHref,
+        retailPrice: candidate.retailPrice,
+        currency: candidate.currency,
+        ctaHref: candidate.ctaHref,
+        ctaLabel: candidate.ctaLabel,
+        ctaRel: candidate.ctaRel,
+        externalHandoff: candidate.externalHandoff,
+      })),
+    }))
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+    const body = await res.json()
+    const partnerProduct = body.products.find((product: { id: string }) => product.id === 'partner_cm_1232729')
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(partnerProduct).toMatchObject({
+      title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
+      city: 'Chiang Mai',
+      retailPrice: null,
+      currency: null,
+      ctaLabel: 'Check availability',
+      ctaRel: 'nofollow sponsored noopener noreferrer',
+      externalHandoff: true,
+    })
+    expect(partnerProduct.ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\/online-sales\//)
+    expect(body.meta.bookingEnabled).toBe(false)
+    expect(body.meta.availabilityEnabled).toBe(false)
+  })
+
   // Test 5: Thailand-wide prompt returns eligible Thailand candidates
   it('Thailand-wide prompt does not force city filter', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
@@ -358,7 +398,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.at(-1)).toEqual({ city: 'Pattaya', take: expect.any(Number) })
   })
 
-  it('compact Chiang Mai interest prompt uses Chiang Mai fallback instead of a combined destination', async () => {
+  it('compact Chiang Mai interest prompt can use reviewed partner matches without a combined destination fallback', async () => {
     listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
       Promise.resolve(options.search ? [] : [makeCandidate()]),
     )
@@ -375,8 +415,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.intent.destination).toBe('Chiang Mai')
     expect(body.intent.interests).toContain('elephants')
 
+    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
+      .map((candidate: { id: string }) => candidate.id)
+    expect(rankedIds.some((id: string) => id.startsWith('partner_cm_'))).toBe(true)
+
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls.at(-1)).toEqual({ city: 'Chiang Mai', take: expect.any(Number) })
+    expect(calls.every(call => call.city === 'Chiang Mai')).toBe(true)
+    expect(calls.some(call => call.search === 'elephants')).toBe(true)
   })
 
   it('negated elephant prompt does not search elephant aliases or expose elephants as a positive interest', async () => {
@@ -647,7 +692,7 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     expect(calls.every(options => options.search)).toBe(true)
   })
 
-  it('interest primary miss with empty aliases: fallbackUsed=true and uses destination fallback', async () => {
+  it('interest primary miss with reviewed partner aliases: fallbackUsed=false and skips destination fallback', async () => {
     listMock.listAiEligibleThailandProducts
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])
@@ -656,12 +701,12 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
 
-    expect(getSearchLog().fallbackUsed).toBe(true)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(3)
+    expect(getSearchLog().fallbackUsed).toBe(false)
+    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
     expect(calls[0]).toMatchObject({ city: 'Chiang Mai', search: 'elephants' })
     expect(calls[1]).toMatchObject({ city: 'Chiang Mai', search: 'elephant' })
-    expect(calls[2]).toEqual({ city: 'Chiang Mai', take: expect.any(Number) })
+    expect(calls.every(options => options.search)).toBe(true)
   })
 
   it('no-interest query: fallbackUsed=false, retrieval called once', async () => {

@@ -12,6 +12,10 @@ export type AiProductContextItem = {
   detailHref: string
   retailPrice: string | null
   currency: string | null
+  ctaHref?: string | null
+  ctaLabel?: 'Check availability' | null
+  ctaRel?: 'nofollow sponsored noopener noreferrer' | null
+  externalHandoff?: boolean
 }
 
 export type AiProductContextResult =
@@ -26,7 +30,7 @@ export type BuildAiProductContextOptions = {
 }
 
 function serializeCandidate(candidate: AiProductCandidate): AiProductContextItem {
-  return {
+  const item: AiProductContextItem = {
     id: candidate.id,
     title: candidate.cleanedTitle ?? candidate.title,
     city: candidate.city,
@@ -36,6 +40,13 @@ function serializeCandidate(candidate: AiProductCandidate): AiProductContextItem
     retailPrice: candidate.retailPrice,
     currency: candidate.currency,
   }
+
+  if (candidate.ctaHref) item.ctaHref = candidate.ctaHref
+  if (candidate.ctaLabel) item.ctaLabel = candidate.ctaLabel
+  if (candidate.ctaRel) item.ctaRel = candidate.ctaRel
+  if (candidate.externalHandoff) item.externalHandoff = candidate.externalHandoff
+
+  return item
 }
 
 export async function buildAiProductContext(
