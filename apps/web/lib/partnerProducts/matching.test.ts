@@ -35,6 +35,45 @@ describe('listMatchingPartnerProductCandidates', () => {
     expect(candidates.every(candidate => candidate.city === 'Chiang Mai')).toBe(true)
   })
 
+  it('prioritizes bamboo rafting when the search is specific', () => {
+    const candidates = listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'bamboo rafting',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'partner_cm_1236830',
+      title: 'Day for Elephant & Bamboo Rafting Adventure Meets Natural Beauty',
+    })
+  })
+
+  it('prioritizes Inthanon trail when the search is specific', () => {
+    const candidates = listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'inthanon trail',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'partner_cm_1232798',
+      title: 'Inthanon Heaven Trail (Living Green Elephant Sanctuary)',
+    })
+  })
+
+  it('prioritizes Bigboy when the search is specific', () => {
+    const candidates = listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'bigboy morning',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'partner_cm_1236811',
+      title: 'Day for Elephant Half-Day Morning-Bigboy',
+    })
+  })
+
   it('does not return Chiang Mai partner products for another city filter', () => {
     expect(listMatchingPartnerProductCandidates({
       city: 'Bangkok',
