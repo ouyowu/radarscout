@@ -1,6 +1,6 @@
 # RadarScout Trip Planner — Consolidated Status
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08
 
 This single document supersedes and replaces the following status/gate/audit
 docs, which have been removed to stop status-doc sprawl:
@@ -96,63 +96,52 @@ preparing a production deploy, anchor the candidate to that code commit, verify
 `git diff --check` is clean, and confirm the exact SHA. Do not treat a
 status-doc merge commit as the release candidate.
 
-## 5. Blockers
+## 5. Production status
 
-Primary: Vercel **free-tier** preview quota (`api-deployments-free-per-day`).
-This is a plan limit, not a code problem. Options: upgrade the Vercel plan, or
-accept the local smoke as sufficient evidence for this noindex/read-only page.
+Production deploy completed on 2026-07-08 after explicit human approval.
 
-Secondary: any stale, conflicting status-doc PR (e.g. #463) should be closed as
-superseded — it contains no product code.
+```text
+Production HEAD: f9fe2b4c0b33c8608a11b8886e2032a1d64de554
+Deployment ID: dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE
+Deployment URL: https://reddit-monitor-d7jy6dlec-ouyowus-projects.vercel.app
+Target: production
+Status: READY
+Aliases:
+- https://radarscout.io
+- https://www.radarscout.io
+Previous production deployment replaced: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+```
 
-## 6. Decision options for release
+Post-deploy observation:
 
-- **Option A** — wait for Vercel quota reset, run a real preview smoke, then
-  deploy the exact code SHA if clean. Cleanest process.
-- **Option B** — accept the local production smoke as sufficient (justified for
-  a noindex, read-only, no-DB-write, booking/availability-disabled page) and
-  deploy the exact code SHA. Reasonable if speed matters.
-- **Option C** — pause release and run a real product-quality review of the
-  planner (result relevance, whether users want it) before further release work.
+```text
+https://radarscout.io/ai-trip-planner: 200, noindex,nofollow, title correct,
+product cards rendered, result summary visible, no horizontal overflow, unsafe
+network none, forbidden copy none.
 
-## 7. Recommended next real product work
+https://www.radarscout.io/ai-trip-planner: 200, noindex,nofollow, title correct,
+product cards rendered, result summary visible, no horizontal overflow, unsafe
+network none, forbidden copy none.
 
-1. Trip result quality review (is keyword-match relevance good enough?).
-2. Booking-partner handoff coverage on product pages.
-3. Traveler analytics funnel (currently no conversion/analytics data exists).
-4. SEO `index,follow` opening only after readiness gates — not before there is
-   real traffic and conversion evidence.
+https://radarscout.io/chiang-mai/elephant-camp-finder: 200, index,follow,
+title correct, Plan with RadarScout visible.
 
-## 8. Execution Log
+https://www.radarscout.io/chiang-mai/elephant-camp-finder: 200, index,follow,
+title correct, Plan with RadarScout visible.
 
-- 2026-07-07 — `TD-RADARSCOUT-BOKUN-API-DISCOVERY-7`: PR #477 (`a1f6b67`)
-  opened with research-only Bókun API feasibility and boundary note; result: PR
-  open, awaiting human merge.
+https://radarscout.io/sitemap.xml: includes homepage and
+/chiang-mai/elephant-camp-finder.
+```
 
-## 9. Human Approval Queue
+Deploy gate result:
 
-- Production deploy remains human-only. Current blocker is Vercel production
-  alias / deploy quota uncertainty; the human must decide whether to upgrade
-  Vercel or wait for reset, then explicitly approve and run production deploy.
-- `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
-  and taxonomy alignment before any provider or tracking network request is
-  added.
-- `PARTNER-PRODUCT-SEED-5` is blocked on real signed partner product data from
-  the operator. Codex must not invent products, partners, prices, suppliers, or
-  booking widget URLs.
-- `PRODUCT-MATCHING-6` is blocked until reviewed partner product seed data
-  exists and is merged.
-- Any Bókun API implementation remains red-zone work. It requires a separate
-  human-approved plan, credentials/scope decision, and safety review before any
-  code, env, DB, sync, availability, checkout, or booking behavior is added.
+- Vercel quota / production alias blocker is resolved.
+- Trip Planner remains noindex and read-only.
+- Finder remains the controlled-open indexable marketing route.
+- No DB/schema/env, Bókun API, checkout/payment/booking submission, live
+  availability, or ThaiEleHub/Shopify change was introduced.
 
-## 8. Execution Log
-
-- 2026-07-07 — `TD-RADARSCOUT-PARTNER-PRODUCT-MODEL-4`: PR #476
-  (`b0e2499`) opened with typed partner product model validator and unit tests;
-  result: PR open, awaiting human merge.
-
-## 8. Current SEO surface guard
+## 6. Current SEO surface guard
 
 Current controlled-opening policy:
 
@@ -175,3 +164,41 @@ Regression coverage:
 
 Do not open additional `index,follow` pages or add routes to the sitemap without
 a dedicated SEO readiness task and human approval.
+
+## 7. Recommended next real product work
+
+1. Observe real production behavior for `/ai-trip-planner` and
+   `/chiang-mai/elephant-camp-finder`.
+2. Choose whether to keep analytics postponed or explicitly approve a provider
+   and taxonomy-aligned implementation.
+3. Provide real signed partner product data for `PARTNER-PRODUCT-SEED-5`.
+4. After reviewed partner data exists, implement partner product matching and
+   safe external handoff.
+5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
+   static reviewed handoff insufficient.
+
+## 8. Execution Log
+
+- 2026-07-08 — `TD-RADARSCOUT-PRODUCTION-DEPLOY-F9FE2B4`: production deploy
+  completed for `f9fe2b4c0b33c8608a11b8886e2032a1d64de554`; aliases moved to
+  `dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE`; post-deploy smoke passed.
+- 2026-07-07 — `TD-RADARSCOUT-BOKUN-API-DISCOVERY-7`: PR #477 (`a1f6b67`)
+  opened with research-only Bókun API feasibility and boundary note; result:
+  merged.
+- 2026-07-07 — `TD-RADARSCOUT-PARTNER-PRODUCT-MODEL-4`: PR #476 (`b0e2499`)
+  opened with typed partner product model validator and unit tests; result:
+  merged.
+
+## 9. Human Approval Queue
+
+- `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
+  and taxonomy alignment before any provider or tracking network request is
+  added.
+- `PARTNER-PRODUCT-SEED-5` is blocked on real signed partner product data from
+  the operator. Codex must not invent products, partners, prices, suppliers, or
+  booking widget URLs.
+- `PRODUCT-MATCHING-6` is blocked until reviewed partner product seed data
+  exists and is merged.
+- Any Bókun API implementation remains red-zone work. It requires a separate
+  human-approved plan, credentials/scope decision, and safety review before any
+  code, env, DB, sync, availability, checkout, or booking behavior is added.
