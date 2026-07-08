@@ -23,8 +23,9 @@ already built?"):
   `docs/radarscout-traveler-funnel-plausible-decision-2.md`.
 
 Order: 1 analytics shim + Vercel provider →
-3 SEO index guard **[NEXT]** → 4 Search Console checklist → 5 partner product
-model → 6 partner seed → 7 product matching → 8 Bókun discovery.
+3 SEO index guard → 4 Search Console checklist → 5 partner product model →
+5A partner seed pilot **[NEXT BLOCKED ON HUMAN DATA]** → 6 product matching →
+8 Bókun discovery.
 
 > **Strategic note (2026-07-07).** Step-0 checks keep finding these tasks are
 > already largely built (homepage finder entry, finder SEO-open, per-page index
@@ -169,28 +170,38 @@ booking-status) enters the schema, or if a DB write is introduced.
 
 ---
 
-## TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5
+## TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5A-PILOT
 
-Branch: `codex/td-radarscout-partner-product-seed-5`
+Branch: `codex/td-radarscout-partner-product-seed-5a-pilot`
 
-Why: load 20–50 REAL signed partner products (human-provided) into a static,
-reviewed data file using the task-4 model. No live API, no DB.
+Why: load a small pilot set of 3–10 REAL signed partner products
+(human-provided) into a static, reviewed data file using the task-4 model. No
+live API, no DB. This replaces the earlier 20–50 product target for the first
+iteration; do not stall product validation just to hit a larger count.
+
+Human input gate:
+- The raw operator-provided source must live locally under
+  `private-inputs/partner-products.csv` or `private-inputs/partner-products.json`.
+- `private-inputs/` is gitignored and must never be committed.
+- If the input file is absent, malformed, or contains fewer than 3 valid records,
+  STOP with a blocker. Do not fabricate or pad records.
+- If more than 10 records are provided, use only records that validate and report
+  the count; do not broaden the pilot without a separate task.
 
 Scope:
-- Consume an operator-provided data source (CSV/JSON the human supplies). Do NOT
-  invent products, partners, titles, or `bookingWidgetUrl`s. If the source file
-  is absent, STOP with a blocker — do not fabricate.
+- Consume the operator-provided local data source. Do NOT invent products,
+  partners, titles, summaries, tags, or `bookingWidgetUrl`s.
 - Produce a validated static dataset (e.g. `lib/partnerProducts/seed/*.json` +
   a typed loader) that passes the task-4 validator.
-- Unit test: every seed record validates; count is within 20–50; all Thailand;
+- Unit test: every seed record validates; count is within 3–10; all Thailand;
   no forbidden fields; every `bookingWidgetUrl` is a well-formed https URL.
 - Not yet surfaced in the planner/finder results (that is task 6).
 
 Forbidden: fabricating any product/partner/URL, DB writes, Bókun API calls,
 price/availability/rating, exposing raw JSON publicly.
 
-Acceptance: 20–50 human-sourced records load and validate; tests green; nothing
-rendered publicly yet.
+Acceptance: 3–10 human-sourced pilot records load and validate; tests green;
+nothing rendered publicly yet.
 
 Checks: `tsc --noEmit`; `vitest run lib/partnerProducts`; `git diff --check`.
 

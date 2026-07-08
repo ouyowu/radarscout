@@ -40,3 +40,6 @@ packages/db/node_modules/.prisma/
 
 # Database backups — never commit, may contain credentials
 *.sql
+
+# Local operator-provided product data — never commit raw partner inputs
+private-inputs/
