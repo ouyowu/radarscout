@@ -171,14 +171,17 @@ a dedicated SEO readiness task and human approval.
    `/chiang-mai/elephant-camp-finder`.
 2. Choose whether to keep analytics postponed or explicitly approve a provider
    and taxonomy-aligned implementation.
-3. Provide real signed partner product data for `PARTNER-PRODUCT-SEED-5`.
-4. After reviewed partner data exists, implement partner product matching and
+3. Merge `TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5A-PILOT` after review.
+4. After reviewed partner seed data is merged, implement partner product matching and
    safe external handoff.
 5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
    static reviewed handoff insufficient.
 
 ## 8. Execution Log
 
+- 2026-07-08 — `TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5A-PILOT`: PR #483
+  (`e555ee8`) opened with 8 reviewed Chiang Mai partner product seed records,
+  typed loader, and validation tests; result: PR open, awaiting human merge.
 - 2026-07-08 — `TD-RADARSCOUT-PRODUCTION-DEPLOY-F9FE2B4`: production deploy
   completed for `f9fe2b4c0b33c8608a11b8886e2032a1d64de554`; aliases moved to
   `dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE`; post-deploy smoke passed.
@@ -194,11 +197,8 @@ a dedicated SEO readiness task and human approval.
 - `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
   and taxonomy alignment before any provider or tracking network request is
   added.
-- `PARTNER-PRODUCT-SEED-5` is blocked on real signed partner product data from
-  the operator. Codex must not invent products, partners, prices, suppliers, or
-  booking widget URLs.
-- `PRODUCT-MATCHING-6` is blocked until reviewed partner product seed data
-  exists and is merged.
+- `PRODUCT-MATCHING-6` is blocked until PR #483 reviewed partner product seed
+  data is merged.
 - Any Bókun API implementation remains red-zone work. It requires a separate
   human-approved plan, credentials/scope decision, and safety review before any
   code, env, DB, sync, availability, checkout, or booking behavior is added.
