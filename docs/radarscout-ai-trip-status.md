@@ -101,15 +101,15 @@ status-doc merge commit as the release candidate.
 Production deploy completed on 2026-07-08 after explicit human approval.
 
 ```text
-Production HEAD: f9fe2b4c0b33c8608a11b8886e2032a1d64de554
-Deployment ID: dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE
-Deployment URL: https://reddit-monitor-d7jy6dlec-ouyowus-projects.vercel.app
+Production HEAD: c67ac4587fab0e2a533036a68ba10482c8583a54
+Deployment ID: dpl_C4bNqgeVCoNmFsgfjDsW62JNi69n
+Deployment URL: https://reddit-monitor-jse6b7mut-ouyowus-projects.vercel.app
 Target: production
 Status: READY
 Aliases:
 - https://radarscout.io
 - https://www.radarscout.io
-Previous production deployment replaced: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Previous production deployment replaced: dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE
 ```
 
 Post-deploy observation:
@@ -130,12 +130,14 @@ https://www.radarscout.io/chiang-mai/elephant-camp-finder: 200, index,follow,
 title correct, Plan with RadarScout visible.
 
 https://radarscout.io/sitemap.xml: includes homepage and
-/chiang-mai/elephant-camp-finder.
+/chiang-mai/elephant-camp-finder, excludes /ai-trip-planner and /tours/{id}.
 ```
 
 Deploy gate result:
 
 - Vercel quota / production alias blocker is resolved.
+- Vercel Web Analytics is deployed; dashboard event confirmation still requires
+  real production traffic.
 - Trip Planner remains noindex and read-only.
 - Finder remains the controlled-open indexable marketing route.
 - No DB/schema/env, Bókun API, checkout/payment/booking submission, live
@@ -169,9 +171,9 @@ a dedicated SEO readiness task and human approval.
 
 1. Observe real production behavior for `/ai-trip-planner` and
    `/chiang-mai/elephant-camp-finder`.
-2. Choose whether to keep analytics postponed or explicitly approve a provider
-   and taxonomy-aligned implementation.
-3. Provide real signed partner product data for `PARTNER-PRODUCT-SEED-5`.
+2. Confirm Vercel Analytics dashboard events after real traffic.
+3. Provide 3–10 real signed partner product records for
+   `PARTNER-PRODUCT-SEED-5A-PILOT`.
 4. After reviewed partner data exists, implement partner product matching and
    safe external handoff.
 5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
@@ -179,9 +181,9 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
-- 2026-07-08 — `TD-RADARSCOUT-PRODUCTION-DEPLOY-F9FE2B4`: production deploy
-  completed for `f9fe2b4c0b33c8608a11b8886e2032a1d64de554`; aliases moved to
-  `dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE`; post-deploy smoke passed.
+- 2026-07-08 — `TD-RADARSCOUT-PRODUCTION-DEPLOY-C67AC45`: production deploy
+  completed for `c67ac4587fab0e2a533036a68ba10482c8583a54`; aliases moved to
+  `dpl_C4bNqgeVCoNmFsgfjDsW62JNi69n`; post-deploy smoke passed.
 - 2026-07-07 — `TD-RADARSCOUT-BOKUN-API-DISCOVERY-7`: PR #477 (`a1f6b67`)
   opened with research-only Bókun API feasibility and boundary note; result:
   merged.
@@ -191,12 +193,13 @@ a dedicated SEO readiness task and human approval.
 
 ## 9. Human Approval Queue
 
-- `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
-  and taxonomy alignment before any provider or tracking network request is
-  added.
-- `PARTNER-PRODUCT-SEED-5` is blocked on real signed partner product data from
-  the operator. Codex must not invent products, partners, prices, suppliers, or
-  booking widget URLs.
+- Vercel Analytics is deployed. Dashboard event confirmation is blocked on real
+  production traffic; do not add another analytics provider unless a future
+  decision explicitly replaces Vercel.
+- `PARTNER-PRODUCT-SEED-5A-PILOT` is blocked on 3–10 real signed partner product
+  records from the operator, supplied locally as
+  `private-inputs/partner-products.csv` or `.json`. Codex must not invent
+  products, partners, prices, suppliers, summaries, tags, or booking widget URLs.
 - `PRODUCT-MATCHING-6` is blocked until reviewed partner product seed data
   exists and is merged.
 - Any Bókun API implementation remains red-zone work. It requires a separate

@@ -42,7 +42,9 @@ shipping product over writing docs.
    batch-merges open green PRs when they choose.
 8. **Record** — append one line to the Execution Log in the status doc (task, PR,
    SHA, result = "PR open, awaiting human merge"). Do NOT create a new status doc.
-   Do NOT open status-only PRs.
+   Do NOT open status-only PRs. The status doc must have exactly one
+   `Execution Log` section; append entries to that section instead of creating a
+   second heading.
 9. **Next** — go to step 1. Keep opening green PRs (up to the daily cap) until
    blocked or the green queue is empty. Do not wait for the human to merge before
    starting the next task — branch each new task off `codex/travel-mvp-launch`
@@ -100,6 +102,8 @@ you never idle waiting.
 
 - One task, one branch, smallest diff. No unrelated fixes, no broad refactors.
 - Never open a status-only PR. Update `radarscout-ai-trip-status.md` in place.
+- Keep exactly one `Execution Log` section in `radarscout-ai-trip-status.md`.
+  Never create duplicate numbered log headings.
 - Batch trivial doc updates. Don't restate the same evidence across files.
 - Prefer product value over process. If a week's output is mostly docs/process,
   say so in the log and switch to product.
