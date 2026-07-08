@@ -87,6 +87,70 @@ Candidate supplier/product names observed during read-only marketplace browsing:
 This candidate list is not product seed data. It must not be used to create
 RadarScout recommendations until public widget URLs are obtained and reviewed.
 
+## 3A. Candidate review 1 — read-only marketplace product list
+
+Task: `BOKUN-MARKETPLACE-SUPPLIER-CANDIDATE-REVIEW-1`
+
+Date: 2026-07-08
+
+Source: logged-in Bókun Marketplace → Discover products, read-only search.
+
+Searches reviewed:
+
+- `elephant Thailand`
+- `Chiang Mai`
+- `Pattaya elephant`
+- `Bangkok elephant`
+
+Actions intentionally not taken:
+
+- did not click `Sell experience`;
+- did not create or request a marketplace contract;
+- did not create a booking channel, widget, product, supplier, or reseller
+  setting;
+- did not copy widget URLs;
+- did not call Bókun API or run sync;
+- did not add any candidate to RadarScout seed data.
+
+All rows below are **candidate-only**. They are not approved RadarScout products,
+not seed records, and not safe to render in recommendations until a human selects
+the candidate, approves the marketplace onboarding action, and provides a public
+`https://widgets.bokun.io/...` handoff URL that passes
+`validatePartnerProductRecord`.
+
+| Priority | Candidate product | Supplier observed | Destination observed | Fit | Current status | Next requirement |
+| --- | --- | --- | --- | --- | --- | --- |
+| High | Best of Chiang Mai: Private Tour in a Day | Pon Elephant Thailand | Chiang Mai, Thailand | Chiang Mai private tour / elephant-adjacent supplier search result | Candidate only — `Sell experience` visible | Human decides whether this supplier/product is relevant enough for onboarding |
+| High | Bangkok Elephant Park Half Day Care Program | Vacio Co.,Ltd | Thailand | Bangkok elephant day-trip candidate | Candidate only — `Sell experience` visible | Human approval before any marketplace action |
+| High | Mong Chang Cafe Pattaya Elephant Village | WESHARE SAS | Muang Pattaya, Thailand | Pattaya elephant experience candidate | Candidate only — `Sell experience` visible | Human approval before any marketplace action |
+| High | Pattaya Elephant Jungle Sanctuary Entry ticket | Yo Tours | Bang Sare, Thailand | Pattaya elephant sanctuary-style candidate | Candidate only — `Sell experience` visible | Human approval before any marketplace action |
+| High | Thai Cooking Class at Grandma’s Home Cooking School \| Chiang Mai | Thai Travel co. | Saraphi, Thailand | Chiang Mai cooking / local food fit | Candidate only — `Sell experience` visible | Review if food/cooking should expand beyond current elephant pilot |
+| High | Doi Inthanon Trekking Private Tour | Eco Tours Chiang Mai | Tambon Ban Luang, Thailand | Chiang Mai nature / Doi Inthanon fit | Candidate only — `Sell experience` visible | Review against current Inthanon seed coverage |
+| High | Doi Inthanon National Park Sightseeing | Trips Chiang Mai | Tambon Ban Luang, Thailand | Chiang Mai nature / day-trip fit | Candidate only — `Sell experience` visible | Review against current Inthanon seed coverage |
+| High | Doi Inthanon National Park and Pha Dok Siew Nature Trail Hiking | Trips Chiang Mai | Tambon Ban Luang, Thailand | Nature trail / hiking fit | Candidate only — `Sell experience` visible | Review for nature-intent recall |
+| Medium | Doi Inthanon and Pa Chor Canyon 1 Day Tour | Eco Tours Chiang Mai | Tambon Ban Luang, Thailand | Nature / canyon day-trip fit | Candidate only — `Sell experience` visible | Review if broader Chiang Mai nature products are wanted |
+| Medium | Chiang Mai Mae Kam Pong Wild Gibbon Jungle Trek with Transfer | Siam Scape Journeys | Ban Sa Ha Khon, Thailand | Chiang Mai jungle / transfer-friendly nature fit | Candidate only — `Sell experience` visible | Check product quality and transfer claims before onboarding |
+| Medium | "KAYAK F2" 2-Day Mae Taeng River Kayak Excursion | Chiang Mai Mountain Biking & Kayaks | Tambon Mueang Khong, Thailand | Mae Taeng outdoor / adventure fit | Candidate only — `Sell experience` visible | Review if multi-day/adventure products fit RadarScout scope |
+| Medium | Jungle Adventure Park Chiang Mai Extreme Rides and Fun Activities | Siam Scape Journeys Co.,Ltd | Khun Khong, Thailand | Chiang Mai adventure park candidate | Candidate only — `Sell experience` visible | Lower priority unless users search for adventure activities |
+| Medium | Khao Yai National Park and Waterfalls Tour from Bangkok | WanderSiam Chiang Mai | Bangkok, Thailand | Bangkok-based nature day-trip candidate | Candidate only — `Sell experience` visible | Review for Bangkok day-trip coverage |
+| Medium | Bangkok Backstreets | A Chef's Tour | Thailand | Bangkok food tour candidate | Candidate only — `Sell experience` visible in marketplace search | Review if food/culture category is expanded |
+| Medium | Bangkok Canal Tour: Chaophraya River and Wat Arun | TripGuru Thailand | Thailand | Bangkok canal / temple fit | Candidate only — `Sell experience` visible in marketplace search | Review if Bangkok culture/day-trip category is expanded |
+| Medium | Bangkok: Michelin Guide Street Food Tour by Tuk Tuk | MY Holiday Centre | Thailand | Bangkok food / tuk-tuk fit | Candidate only — `Sell experience` visible in marketplace search | Review if food/culture category is expanded |
+| Medium | Bangkok Authentic Tasting Thai-Chinatown Walking Food Tour | Siam Adventures Tour Co.,Ltd | Thailand | Bangkok Chinatown food fit | Candidate only — `Sell experience` visible in marketplace search | Review if food/culture category is expanded |
+| Low | Chiang Mai data eSIM product | Frewie Technologies Pte Ltd | Chiang Mai, Thailand | Not a tour/experience fit | Candidate only — `Sell experience` visible | Exclude unless RadarScout later sells travel utilities |
+
+Shortlist for a future human approval gate:
+
+1. Pattaya elephant products first, if RadarScout needs Pattaya coverage.
+2. Bangkok elephant day-trip product, if RadarScout needs Bangkok elephant
+   coverage.
+3. Chiang Mai nature/Inthanon products, if user searches show demand for nature
+   alternatives beside elephant care.
+4. Chiang Mai cooking product, if food/cooking intent needs more coverage.
+
+Do not move any row above into seed data until the human approves the specific
+marketplace action and a public widget URL exists.
+
 ## 4. Candidate review fields
 
 For each future candidate supplier/product, collect only review-safe fields:
