@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { track } from '@/lib/analytics/track'
 
 export type AiSearchProductCardProps = {
   id: string
@@ -10,6 +11,10 @@ export type AiSearchProductCardProps = {
   retailPrice: string | null
   currency: string | null
   fitReason?: string | null
+  ctaHref?: string | null
+  ctaLabel?: 'Check availability' | null
+  ctaRel?: 'nofollow sponsored noopener noreferrer' | null
+  externalHandoff?: boolean
 }
 
 function buildSafeTourFallback(productId?: string): string {
@@ -48,10 +53,15 @@ export function AiSearchProductCard({
   retailPrice,
   currency,
   fitReason,
+  ctaHref,
+  ctaLabel,
+  ctaRel,
+  externalHandoff,
 }: AiSearchProductCardProps) {
   const priceLabel = retailPrice
     ? `${currency ? `${currency} ` : ''}${retailPrice}`
     : null
+  const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
 
   return (
     <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-4 sm:p-5 shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
@@ -105,7 +115,9 @@ export function AiSearchProductCard({
         </div>
       ) : null}
       <p className="mt-auto pt-4 text-xs font-bold leading-5 text-[#5a6670]">
-        Open the product page to review details; booking partner handoff continues from that product page.
+        {hasExternalHandoff
+          ? 'Continue with the booking partner to review current product details.'
+          : 'Open the product page to review details; booking partner handoff continues from that product page.'}
       </p>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         {priceLabel ? (
@@ -115,13 +127,26 @@ export function AiSearchProductCard({
         ) : (
           <div />
         )}
-        <Link
-          href={buildAiTripPlannerDetailHref(detailHref, id)}
-          aria-label={`View details for ${title}, then continue with the booking partner from that product page`}
-          className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
-        >
-          View details
-        </Link>
+        {hasExternalHandoff ? (
+          <a
+            href={ctaHref ?? undefined}
+            target="_blank"
+            rel={ctaRel ?? 'nofollow sponsored noopener noreferrer'}
+            aria-label={`Check availability for ${title} with the booking partner`}
+            onClick={() => track('booking_partner_handoff_clicked', { productId: id, source: 'ai_trip_planner' })}
+            className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+          >
+            {ctaLabel ?? 'Check availability'}
+          </a>
+        ) : (
+          <Link
+            href={buildAiTripPlannerDetailHref(detailHref, id)}
+            aria-label={`View details for ${title}, then continue with the booking partner from that product page`}
+            className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+          >
+            View details
+          </Link>
+        )}
       </div>
     </article>
   )

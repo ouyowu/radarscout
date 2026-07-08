@@ -171,14 +171,18 @@ a dedicated SEO readiness task and human approval.
    `/chiang-mai/elephant-camp-finder`.
 2. Choose whether to keep analytics postponed or explicitly approve a provider
    and taxonomy-aligned implementation.
-3. Merge `TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5A-PILOT` after review.
-4. After reviewed partner seed data is merged, implement partner product matching and
-   safe external handoff.
+3. Merge `TD-RADARSCOUT-PRODUCT-MATCHING-6` after review.
+4. After partner product matching reaches production, observe real planner
+   searches and handoff clicks.
 5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
    static reviewed handoff insufficient.
 
 ## 8. Execution Log
 
+- 2026-07-08 — `TD-RADARSCOUT-PRODUCT-MATCHING-6`: branch
+  `codex/td-radarscout-product-matching-6` wired the reviewed partner seed into
+  Trip Planner product matching, added safe external `Check availability`
+  handoffs, and extended tests; result: PR pending.
 - 2026-07-08 — `TD-RADARSCOUT-PARTNER-PRODUCT-SEED-5A-PILOT`: PR #483
   (`e555ee8`) opened with 8 reviewed Chiang Mai partner product seed records,
   typed loader, and validation tests; result: PR open, awaiting human merge.
@@ -197,8 +201,7 @@ a dedicated SEO readiness task and human approval.
 - `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
   and taxonomy alignment before any provider or tracking network request is
   added.
-- `PRODUCT-MATCHING-6` is blocked until PR #483 reviewed partner product seed
-  data is merged.
+- `PRODUCT-MATCHING-6` awaits human PR review/merge after validation.
 - Any Bókun API implementation remains red-zone work. It requires a separate
   human-approved plan, credentials/scope decision, and safety review before any
   code, env, DB, sync, availability, checkout, or booking behavior is added.

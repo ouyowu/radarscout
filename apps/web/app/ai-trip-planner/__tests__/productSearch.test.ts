@@ -80,9 +80,9 @@ describe('canSearchFromConfirmed (test 21–22)', () => {
 })
 
 describe('planner search funnel analytics', () => {
-  it('does not add unapproved Trip Planner search analytics outside the approved finder taxonomy', () => {
+  it('does not add unapproved Trip Planner search analytics outside the approved taxonomy', () => {
     expect(intentParserDemoSource).not.toContain("track('planner_search_submitted')")
-    expect(intentParserDemoSource).not.toContain("import { track } from '@/lib/analytics/track'")
+    expect(intentParserDemoSource).toContain("track('booking_partner_handoff_clicked'")
     expect(intentParserDemoSource).not.toMatch(/navigator\.sendBeacon/i)
     expect(intentParserDemoSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
@@ -183,6 +183,10 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       retailPrice: '49.00',
       currency: 'USD',
       fitReason: 'Why this fits: matches Chiang Mai and your interest in elephants.',
+      ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+      ctaLabel: 'Check availability',
+      ctaRel: 'nofollow sponsored noopener noreferrer',
+      externalHandoff: true,
     }
 
     const keys = Object.keys(validProps)
@@ -224,6 +228,39 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
     for (const field of forbidden) {
       expect(keys).not.toContain(field)
     }
+  })
+
+  it('renders reviewed partner products as safe external Check availability handoffs', () => {
+    ;(globalThis as typeof globalThis & { React: typeof React }).React = React
+
+    const markup = renderToStaticMarkup(
+      createElement(AiSearchProductCard, {
+        id: 'partner_cm_1232729',
+        title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
+        city: 'Chiang Mai',
+        summary: 'A reviewed Chiang Mai elephant experience with a safe booking partner handoff.',
+        tags: ['Elephants', 'Chiang Mai'],
+        detailHref: '/tours/partner_cm_1232729',
+        retailPrice: null,
+        currency: null,
+        ctaHref: 'https://widgets.bokun.io/online-sales/3f335ed3-148b-4690-b13f-c76a637227db/experience/1232729',
+        ctaLabel: 'Check availability',
+        ctaRel: 'nofollow sponsored noopener noreferrer',
+        externalHandoff: true,
+      }),
+    )
+
+    expect(markup).toContain('Check availability')
+    expect(markup).toContain('href="https://widgets.bokun.io/online-sales/3f335ed3-148b-4690-b13f-c76a637227db/experience/1232729"')
+    expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
+    expect(markup).toContain('target="_blank"')
+    expect(markup).toContain('Continue with the booking partner to review current product details.')
+    expect(markup).not.toContain('From ')
+    expect(markup).not.toMatch(/live availability/i)
+    expect(markup).not.toMatch(/available now/i)
+    expect(markup).not.toMatch(/instant confirmation/i)
+    expect(markup).not.toMatch(/\bcheckout\b/i)
+    expect(markup).not.toMatch(/\bpayment\b/i)
   })
 })
 
