@@ -179,6 +179,11 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-08 — `BOKUN-MARKETPLACE-SUPPLIER-CANDIDATE-REVIEW-1`: branch
+  `codex/td-bokun-marketplace-supplier-candidate-review-1` documented 18
+  read-only Bókun Marketplace candidate products across Chiang Mai, Bangkok, and
+  Pattaya; result: PR open, awaiting human merge. No `Sell experience`, seed,
+  widget, API, sync, or app-code change.
 - 2026-07-08 — `TD-RADARSCOUT-PRODUCT-MATCHING-6`: branch
   `codex/td-radarscout-product-matching-6` wired the reviewed partner seed into
   Trip Planner product matching, added safe external `Check availability`
