@@ -10,6 +10,40 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        'rs-display': ['var(--rs-font-display)'],
+        'rs-body': ['var(--rs-font-body)'],
+      },
+      colors: {
+        rs: {
+          ink: 'var(--rs-ink)',
+          forest: {
+            900: 'var(--rs-forest-900)',
+            700: 'var(--rs-forest-700)',
+            500: 'var(--rs-forest-500)',
+          },
+          sage: {
+            200: 'var(--rs-sage-200)',
+          },
+          terracotta: {
+            DEFAULT: 'var(--rs-terracotta)',
+            600: 'var(--rs-terracotta-600)',
+          },
+          sand: {
+            50: 'var(--rs-sand-50)',
+            100: 'var(--rs-sand-100)',
+          },
+          cloud: 'var(--rs-cloud)',
+          muted: 'var(--rs-muted)',
+        },
+      },
+      borderRadius: {
+        'rs-sm': 'var(--rs-radius-sm)',
+        'rs-md': 'var(--rs-radius-md)',
+        'rs-lg': 'var(--rs-radius-lg)',
+        'rs-pill': 'var(--rs-radius-pill)',
+      },
+      boxShadow: {
+        'rs-soft': 'var(--rs-shadow-soft)',
       },
       fontSize: {
         'display':  ['4.5rem',   { lineHeight: '1.1',  letterSpacing: '-0.02em' }],

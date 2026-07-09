@@ -8,6 +8,38 @@ html, body { background: white !important; }
 
 @layer base {
   :root {
+    /* RadarScout "Immersive Expedition" design tokens.
+       These are additive for the public frontend redesign and do not change
+       existing page behavior until components opt in. */
+    --rs-ink: #14201b;
+    --rs-forest-900: #0f241c;
+    --rs-forest-700: #1b4638;
+    --rs-forest-500: #2e6b55;
+    --rs-sage-200: #cbd8cf;
+    --rs-terracotta: #d57c48;
+    --rs-terracotta-600: #c0662f;
+    --rs-sand-50: #f7f2ea;
+    --rs-sand-100: #efe6d8;
+    --rs-cloud: #ffffff;
+    --rs-muted: #6b7b72;
+    --rs-font-display: Fraunces, Georgia, Cambria, "Times New Roman", Times, serif;
+    --rs-font-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --rs-space-1: 0.25rem;
+    --rs-space-2: 0.5rem;
+    --rs-space-3: 0.75rem;
+    --rs-space-4: 1rem;
+    --rs-space-6: 1.5rem;
+    --rs-space-8: 2rem;
+    --rs-space-12: 3rem;
+    --rs-space-16: 4rem;
+    --rs-space-24: 6rem;
+    --rs-space-32: 8rem;
+    --rs-radius-sm: 0.625rem;
+    --rs-radius-md: 1.125rem;
+    --rs-radius-lg: 1.75rem;
+    --rs-radius-pill: 9999px;
+    --rs-shadow-soft: 0 20px 40px rgba(15, 36, 28, 0.1);
+
     --font-display: Georgia, Cambria, "Times New Roman", Times, serif;
     --color-accent-orange: #ff9933;
     --color-accent-orange-dark: #e67300;
