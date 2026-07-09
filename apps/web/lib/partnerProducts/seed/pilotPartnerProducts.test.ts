@@ -64,6 +64,20 @@ describe('pilot partner product seed', () => {
     }
   })
 
+  it('includes display-safe public Bókun image CDN URLs for every pilot product', () => {
+    for (const product of pilotPartnerProducts) {
+      expect(product.imageUrl).toMatch(/^https:\/\/imgcdn\.bokun\.tools\//)
+      expect(product.imageAlt).toBeTruthy()
+      expect(product.sourceImageUrls?.length).toBeGreaterThanOrEqual(1)
+
+      for (const imageUrl of product.sourceImageUrls ?? []) {
+        const url = new URL(imageUrl)
+        expect(url.protocol).toBe('https:')
+        expect(url.hostname).toBe('imgcdn.bokun.tools')
+      }
+    }
+  })
+
   it('does not include forbidden booking, price, inventory, rating, or raw upstream fields', () => {
     for (const record of pilotPartnerProductSeedRecords) {
       for (const field of FORBIDDEN_SEED_FIELDS) {

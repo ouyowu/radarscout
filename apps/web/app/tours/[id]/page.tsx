@@ -57,6 +57,7 @@ type ProductDetail = {
   city?: string | null
   location?: string | null
   imageUrl?: string | null
+  imageGalleryUrls?: string[]
   retailPrice?: string | null
   currency?: string | null
   detailHref: string
@@ -317,6 +318,19 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                 </p>
               </div>
             )}
+            {product.imageGalleryUrls && product.imageGalleryUrls.length > 1 ? (
+              <div className="grid grid-cols-3 gap-2 border-b border-rs-sage-200/70 bg-white p-3 sm:grid-cols-4">
+                {product.imageGalleryUrls.slice(1, 5).map((imageUrl, index) => (
+                  <img
+                    key={imageUrl}
+                    src={imageUrl}
+                    alt={`${displayTitle(product)} photo ${index + 2}`}
+                    loading="lazy"
+                    className="h-24 w-full rounded-rs-sm object-cover sm:h-28"
+                  />
+                ))}
+              </div>
+            ) : null}
             <div className="p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-forest-500">
                 {location}

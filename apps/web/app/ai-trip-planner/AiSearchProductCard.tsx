@@ -6,6 +6,8 @@ export type AiSearchProductCardProps = {
   title: string
   city: string | null
   summary: string | null
+  imageUrl?: string | null
+  imageAlt?: string | null
   tags: string[]
   detailHref: string
   retailPrice: string | null
@@ -48,6 +50,8 @@ export function AiSearchProductCard({
   title,
   city,
   summary,
+  imageUrl,
+  imageAlt,
   tags,
   detailHref,
   retailPrice,
@@ -64,7 +68,16 @@ export function AiSearchProductCard({
   const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
 
   return (
-    <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-4 sm:p-5 shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
+    <article className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#e8dfd2] bg-white shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={imageAlt ?? title}
+          loading="lazy"
+          className="h-44 w-full object-cover sm:h-48"
+        />
+      ) : null}
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
       <div className="flex flex-wrap gap-1.5 sm:gap-2">
         <span className="rounded-full bg-[#e7f5f2] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.1em] text-[#0f766e]">
           Comparison match
@@ -147,6 +160,7 @@ export function AiSearchProductCard({
             View details
           </Link>
         )}
+      </div>
       </div>
     </article>
   )

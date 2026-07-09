@@ -8,6 +8,8 @@ export type AiProductContextItem = {
   title: string
   city: string | null
   summary: string | null
+  imageUrl?: string | null
+  imageAlt?: string | null
   tags: string[]
   detailHref: string
   retailPrice: string | null
@@ -35,6 +37,8 @@ function serializeCandidate(candidate: AiProductCandidate): AiProductContextItem
     title: candidate.cleanedTitle ?? candidate.title,
     city: candidate.city,
     summary: candidate.summary,
+    ...(candidate.imageUrl ? { imageUrl: candidate.imageUrl } : {}),
+    ...(candidate.imageAlt ? { imageAlt: candidate.imageAlt } : {}),
     tags: candidate.suggestedTags,
     detailHref: candidate.detailHref,
     retailPrice: candidate.retailPrice,

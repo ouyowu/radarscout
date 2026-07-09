@@ -103,6 +103,8 @@ function toCandidate(product: PartnerProduct): AiProductCandidate {
     city: product.destination,
     location: product.destination,
     summary: product.shortSummary,
+    imageUrl: product.imageUrl ?? null,
+    imageAlt: product.imageAlt ?? product.title,
     suggestedTags: product.tags,
     detailHref: `/tours/${encodeURIComponent(product.id)}`,
     retailPrice: null,

@@ -13,6 +13,8 @@ export type AiProductCandidate = {
   city: string | null
   location: string | null
   summary: string | null
+  imageUrl?: string | null
+  imageAlt?: string | null
   suggestedTags: string[]
   detailHref: string
   retailPrice: string | null

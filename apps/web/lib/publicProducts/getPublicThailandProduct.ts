@@ -16,6 +16,7 @@ export type PublicThailandProduct = {
   city: string | null
   location: string | null
   imageUrl: string | null
+  imageGalleryUrls: string[]
   summary: string | null
   description: string | null
   retailPrice: string | null
@@ -87,7 +88,8 @@ function partnerSeedProductDetail(id: string): PublicThailandProductDetailResult
       destination: product.destination,
       city: product.destination,
       location: product.destination,
-      imageUrl: null,
+      imageUrl: product.imageUrl ?? null,
+      imageGalleryUrls: product.sourceImageUrls ?? (product.imageUrl ? [product.imageUrl] : []),
       summary: product.shortSummary,
       description: product.shortSummary,
       retailPrice: null,
@@ -172,6 +174,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
         city: product.city,
         location: product.location,
         imageUrl: shaped.imageUrl,
+        imageGalleryUrls: shaped.imageUrl ? [shaped.imageUrl] : [],
         summary: shaped.summary,
         description: productDescription(product.rawJson, product.description) ?? shaped.summary,
         retailPrice: shaped.retailPrice,
