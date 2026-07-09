@@ -327,6 +327,11 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-09 — `TD-RADARSCOUT-PARTNER-HANDOFF-OBSERVABILITY-1`: branch
+  `codex/td-partner-handoff-observability-1` instruments the partner detail
+  `Check availability` handoff with the approved `booking_partner_handoff_clicked`
+  event using bounded product/source props only; no Bókun API/sync, DB, SEO,
+  checkout, payment, availability, widget URL, or product data changes.
 - 2026-07-09 — `TD-RADARSCOUT-PARTNER-DETAIL-ROUTE-CONSISTENCY-0`: branch
   `codex/td-partner-detail-route-consistency-0` makes reviewed partner seed
   product detail routes resolve through `/tours/partner_cm_*` with safe public
