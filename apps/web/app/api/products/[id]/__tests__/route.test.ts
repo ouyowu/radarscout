@@ -239,6 +239,7 @@ describe('GET /api/products/[id]', () => {
       'detailHref',
       'facts',
       'id',
+      'imageGalleryUrls',
       'imageUrl',
       'location',
       'retailPrice',

@@ -22,6 +22,8 @@ describe('listMatchingPartnerProductCandidates', () => {
       externalHandoff: true,
     })
     expect(candidates[0].ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\/online-sales\//)
+    expect(candidates[0].imageUrl).toMatch(/^https:\/\/imgcdn\.bokun\.tools\//)
+    expect(candidates[0].imageAlt).toBeTruthy()
   })
 
   it('matches food and cooking searches against reviewed partner product text', () => {

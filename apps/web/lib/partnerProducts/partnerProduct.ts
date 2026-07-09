@@ -10,6 +10,8 @@ const MAX_PARTNER_NAME_LENGTH = 160
 const MAX_REVIEWER_LENGTH = 160
 const MAX_TAGS = 8
 const MAX_TAG_LENGTH = 40
+const MAX_IMAGE_ALT_LENGTH = 180
+const MAX_IMAGE_URLS = 6
 
 const ALLOWED_KEYS = new Set([
   'id',
@@ -20,6 +22,9 @@ const ALLOWED_KEYS = new Set([
   'tags',
   'partnerName',
   'bookingWidgetUrl',
+  'imageUrl',
+  'imageAlt',
+  'sourceImageUrls',
   'reviewedBy',
   'reviewedAt',
 ])
@@ -48,6 +53,8 @@ const FORBIDDEN_KEYS = new Set([
   'candidate',
 ])
 
+const ALLOWED_IMAGE_HOSTS = new Set(['imgcdn.bokun.tools'])
+
 export type PartnerProduct = {
   id: string
   slug: string
@@ -57,6 +64,9 @@ export type PartnerProduct = {
   tags: string[]
   partnerName: string
   bookingWidgetUrl: string
+  imageUrl?: string
+  imageAlt?: string
+  sourceImageUrls?: string[]
   reviewedBy: string
   reviewedAt: Date
 }
@@ -78,6 +88,9 @@ export type PartnerProductValidationResult =
         | 'invalid_tags'
         | 'invalid_partner_name'
         | 'invalid_booking_widget_url'
+        | 'invalid_image_url'
+        | 'invalid_image_alt'
+        | 'invalid_source_image_urls'
         | 'invalid_reviewer'
         | 'invalid_reviewed_at'
       fields?: string[]
@@ -93,6 +106,13 @@ function compactString(value: string, maxLength: number): string | null {
 
 function requiredString(value: unknown, maxLength: number): string | null {
   return typeof value === 'string' ? compactString(value, maxLength) : null
+}
+
+function optionalString(value: unknown, maxLength: number): string | undefined | null {
+  if (value === undefined) return undefined
+  if (typeof value !== 'string') return null
+
+  return compactString(value, maxLength)
 }
 
 function parseSlug(value: unknown): string | null {
@@ -132,6 +152,44 @@ function parseReviewedAt(value: unknown): Date | null {
   const date = new Date(value)
 
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+function parsePublicImageUrl(value: unknown): string | null {
+  const imageUrl = requiredString(value, 520)
+  if (!imageUrl) return null
+
+  try {
+    const url = new URL(imageUrl)
+    if (url.protocol !== 'https:') return null
+    if (!ALLOWED_IMAGE_HOSTS.has(url.hostname)) return null
+    if (url.username || url.password) return null
+
+    return url.toString()
+  } catch {
+    return null
+  }
+}
+
+function parseSourceImageUrls(value: unknown): string[] | undefined | null {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value)) return null
+
+  const urls: string[] = []
+  const seen = new Set<string>()
+
+  for (const rawUrl of value) {
+    const imageUrl = parsePublicImageUrl(rawUrl)
+    if (!imageUrl) return null
+
+    if (!seen.has(imageUrl)) {
+      seen.add(imageUrl)
+      urls.push(imageUrl)
+    }
+
+    if (urls.length >= MAX_IMAGE_URLS) break
+  }
+
+  return urls.length > 0 ? urls : null
 }
 
 function findInvalidKeys(payload: Record<string, unknown>) {
@@ -218,6 +276,21 @@ export function validatePartnerProductRecord(
   })
   if (!handoff) return { ok: false, error: 'invalid_booking_widget_url' }
 
+  const imageUrl = payload.imageUrl === undefined
+    ? undefined
+    : parsePublicImageUrl(payload.imageUrl)
+  if (payload.imageUrl !== undefined && !imageUrl) {
+    return { ok: false, error: 'invalid_image_url' }
+  }
+
+  const imageAlt = optionalString(payload.imageAlt, MAX_IMAGE_ALT_LENGTH)
+  if (imageAlt === null) return { ok: false, error: 'invalid_image_alt' }
+
+  const sourceImageUrls = parseSourceImageUrls(payload.sourceImageUrls)
+  if (sourceImageUrls === null) {
+    return { ok: false, error: 'invalid_source_image_urls' }
+  }
+
   const reviewedBy = requiredString(payload.reviewedBy, MAX_REVIEWER_LENGTH)
   if (!reviewedBy) return { ok: false, error: 'invalid_reviewer' }
 
@@ -235,9 +308,11 @@ export function validatePartnerProductRecord(
       tags,
       partnerName,
       bookingWidgetUrl: handoff.href,
+      ...(imageUrl ? { imageUrl } : {}),
+      ...(imageAlt ? { imageAlt } : {}),
+      ...(sourceImageUrls ? { sourceImageUrls } : {}),
       reviewedBy,
       reviewedAt,
     },
   }
 }
-

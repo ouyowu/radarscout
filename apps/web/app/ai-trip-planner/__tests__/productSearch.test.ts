@@ -178,6 +178,8 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       title: 'Elephant Sanctuary',
       city: 'Chiang Mai',
       summary: 'Half-day ethical elephant visit.',
+      imageUrl: 'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+      imageAlt: 'Chiang Mai elephant sanctuary',
       tags: ['Elephants'],
       detailHref: '/tours/p1',
       retailPrice: '49.00',
@@ -216,6 +218,8 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       title: 'Elephant Sanctuary',
       city: 'Chiang Mai',
       summary: 'Half-day ethical elephant visit.',
+      imageUrl: 'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+      imageAlt: 'Chiang Mai elephant sanctuary',
       tags: ['Elephants'],
       detailHref: '/tours/p1',
       retailPrice: '49.00',
@@ -239,6 +243,8 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
         title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
         city: 'Chiang Mai',
         summary: 'A reviewed Chiang Mai elephant experience with a safe booking partner handoff.',
+        imageUrl: 'https://imgcdn.bokun.tools/768dfe3e-be4b-4d37-9c0c-40b9e5c83902.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+        imageAlt: 'Elephants at a Chiang Mai sanctuary morning program',
         tags: ['Elephants', 'Chiang Mai'],
         detailHref: '/tours/partner_cm_1232729',
         retailPrice: null,
@@ -251,6 +257,8 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
     )
 
     expect(markup).toContain('Check availability')
+    expect(markup).toContain('https://imgcdn.bokun.tools/768dfe3e-be4b-4d37-9c0c-40b9e5c83902.jpeg')
+    expect(markup).toContain('alt="Elephants at a Chiang Mai sanctuary morning program"')
     expect(markup).toContain('href="https://widgets.bokun.io/online-sales/3f335ed3-148b-4690-b13f-c76a637227db/experience/1232729"')
     expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
     expect(markup).toContain('target="_blank"')

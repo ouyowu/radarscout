@@ -11,6 +11,12 @@ const validRecord = {
   tags: ['Elephants', 'Nature', 'Family'],
   partnerName: 'Reviewed Chiang Mai Operator',
   bookingWidgetUrl: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+  imageUrl: 'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+  imageAlt: 'Chiang Mai elephant care experience',
+  sourceImageUrls: [
+    'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+    'https://imgcdn.bokun.tools/example-detail.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=294&h=221',
+  ],
   reviewedBy: 'RadarScout Ops',
   reviewedAt: '2026-07-07T10:00:00.000Z',
 }
@@ -31,6 +37,12 @@ describe('validatePartnerProductRecord', () => {
       tags: ['Elephants', 'Nature', 'Family'],
       partnerName: 'Reviewed Chiang Mai Operator',
       bookingWidgetUrl: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+      imageUrl: 'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+      imageAlt: 'Chiang Mai elephant care experience',
+      sourceImageUrls: [
+        'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450',
+        'https://imgcdn.bokun.tools/example-detail.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=294&h=221',
+      ],
       reviewedBy: 'RadarScout Ops',
     })
     expect(result.data.reviewedAt).toBeInstanceOf(Date)
@@ -139,6 +151,25 @@ describe('validatePartnerProductRecord', () => {
     }
   })
 
+  it('rejects unsafe public image URLs', () => {
+    const unsafeImageUrls = [
+      'http://imgcdn.bokun.tools/example.jpeg',
+      'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+      'https://api.bokun.io/admin/image/example.jpeg',
+      'https://example.com/example.jpeg',
+      'not-a-url',
+    ]
+
+    for (const imageUrl of unsafeImageUrls) {
+      expect(
+        validatePartnerProductRecord({
+          ...validRecord,
+          imageUrl,
+        }),
+      ).toEqual({ ok: false, error: 'invalid_image_url' })
+    }
+  })
+
   it('rejects invalid slugs, tags, reviewer, and reviewedAt values', () => {
     expect(validatePartnerProductRecord({ ...validRecord, slug: 'Bad Slug' }))
       .toEqual({ ok: false, error: 'invalid_slug' })
@@ -150,4 +181,3 @@ describe('validatePartnerProductRecord', () => {
       .toEqual({ ok: false, error: 'invalid_reviewed_at' })
   })
 })
-

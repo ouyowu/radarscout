@@ -698,6 +698,8 @@ export function IntentParserDemo() {
                                   title={product.title}
                                   city={product.city}
                                   summary={product.summary}
+                                  imageUrl={product.imageUrl}
+                                  imageAlt={product.imageAlt}
                                   tags={product.tags}
                                   detailHref={product.detailHref}
                                   retailPrice={product.retailPrice}
@@ -722,6 +724,8 @@ export function IntentParserDemo() {
                             title={product.title}
                             city={product.city}
                             summary={product.summary}
+                            imageUrl={product.imageUrl}
+                            imageAlt={product.imageAlt}
                             tags={product.tags}
                             detailHref={product.detailHref}
                             retailPrice={product.retailPrice}
