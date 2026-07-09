@@ -1,6 +1,7 @@
 import 'server-only'
 import { db } from '@reddit-monitor/db'
 import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bokunCatalog'
+import { pilotPartnerProducts } from '@/lib/partnerProducts/seed/pilotPartnerProducts'
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 import { getReviewedEnrichmentByProductId, type ReviewedEnrichmentOutput } from '@/lib/reviewedEnrichmentReader'
 import {
@@ -73,6 +74,51 @@ function productFacts(rawJson: unknown): PublicThailandProduct['facts'] {
   }
 }
 
+function partnerSeedProductDetail(id: string): PublicThailandProductDetailResult {
+  const product = pilotPartnerProducts.find(candidate => candidate.id === id)
+
+  if (!product) return { status: 'not-found' }
+
+  return {
+    status: 'found',
+    product: {
+      id: product.id,
+      title: product.title,
+      destination: product.destination,
+      city: product.destination,
+      location: product.destination,
+      imageUrl: null,
+      summary: product.shortSummary,
+      description: product.shortSummary,
+      retailPrice: null,
+      currency: null,
+      detailHref: `/tours/${encodeURIComponent(product.id)}`,
+      facts: {
+        duration: null,
+        meetingPoint: null,
+        pickupAvailable: null,
+        cancellationPolicy: null,
+      },
+      reviewedEnrichment: {
+        cleanedTitle: product.title,
+        shortSummary: product.shortSummary,
+        suggestedTags: product.tags,
+        seoTitle: null,
+        seoDescription: null,
+        reviewedBy: product.reviewedBy,
+        reviewedAt: product.reviewedAt.toISOString(),
+      },
+      bookingPartnerHandoff: {
+        href: product.bookingWidgetUrl,
+        label: 'Check availability',
+        rel: 'nofollow sponsored noopener noreferrer',
+        source: 'booking_partner_verified_public_widget',
+        verifiedBy: 'operator_manual_review',
+      },
+    },
+  }
+}
+
 export async function loadPublicThailandProductDetail(id: string): Promise<PublicThailandProductDetailResult> {
   const normalizedId = id.trim()
   if (!normalizedId) return { status: 'not-found' }
@@ -100,7 +146,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
       },
     })
 
-    if (!product) return { status: 'not-found' }
+    if (!product) return partnerSeedProductDetail(normalizedId)
 
     const eligibility = evaluateThailandProductEligibility({
       title: product.title,

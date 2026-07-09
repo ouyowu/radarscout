@@ -68,6 +68,28 @@ describe('getPublicThailandProduct', () => {
     expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
   })
 
+  it('returns a reviewed partner seed product when the id is not in DB', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(null)
+
+    const result = await getPublicThailandProduct('partner_cm_1236811')
+
+    expect(result).not.toBeNull()
+    expect(result!.id).toBe('partner_cm_1236811')
+    expect(result!.title).toBe('Day for Elephant Half-Day Morning-Bigboy')
+    expect(result!.city).toBe('Chiang Mai')
+    expect(result!.detailHref).toBe('/tours/partner_cm_1236811')
+    expect(result!.retailPrice).toBeNull()
+    expect(result!.currency).toBeNull()
+    expect(result!.bookingPartnerHandoff).toEqual({
+      href: 'https://widgets.bokun.io/online-sales/3f335ed3-148b-4690-b13f-c76a637227db/experience/1236811',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+
   it('returns null for ineligible product (foreign signal in title)', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ title: 'Singapore City Tour', city: 'Bangkok' }),

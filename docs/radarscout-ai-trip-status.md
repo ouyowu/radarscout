@@ -327,6 +327,11 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-09 — `TD-RADARSCOUT-PARTNER-DETAIL-ROUTE-CONSISTENCY-0`: branch
+  `codex/td-partner-detail-route-consistency-0` makes reviewed partner seed
+  product detail routes resolve through `/tours/partner_cm_*` with safe public
+  fields and external booking partner handoff; result: PR open, awaiting human
+  merge.
 - 2026-07-09 — `TD-RADARSCOUT-PROD-DEPLOY-CANDIDATE-B2-REANCHOR`: after merging
   PR #488, production was rechecked and found live at `f78254d` /
   `dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx`; deploy candidate was reanchored to
