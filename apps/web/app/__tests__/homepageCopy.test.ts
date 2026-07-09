@@ -45,7 +45,7 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the AI trip planner with safe planning-first copy', () => {
-    expect(homepageSource).toContain("href: '/ai-trip-planner#intent-demo'")
+    expect(homepageSource).toContain('href="/ai-trip-planner#intent-demo"')
     expect(homepageSource).toContain('Start planning')
     expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
     expect(homepageSource).toContain('Tell RadarScout the kind of Thailand day you want')
@@ -93,7 +93,6 @@ describe('homepage public copy safety', () => {
 
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
     expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
-    expect(homepageSource).toContain('href: chiangMaiPlannerHref')
     expect(homepageSource).toContain('href={chiangMaiPlannerHref}')
     expect(homepageSource).toContain('Plan a Chiang Mai elephant day')
     expect(homepageSource).toContain('Plan with RadarScout')
@@ -104,8 +103,8 @@ describe('homepage public copy safety', () => {
 
   it('instruments the existing RAD-3 Chiang Mai finder entry without adding a new route or changing the href', () => {
     expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
-    expect(homepageSource).toContain("analytics: { event: 'homepage_finder_entry_clicked', props: { source: 'hero' } }")
     expect(homepageSource).toContain('event="homepage_finder_entry_clicked"')
+    expect(homepageSource).toContain('eventProps={{ source: \'hero\' }}')
     expect(homepageSource).toContain('eventProps={{ source: \'section\' }}')
     expect(homepageVisibleCopySources).toContain('track(event, eventProps)')
     expect(homepageVisibleCopySources).not.toMatch(/navigator\.sendBeacon/i)
