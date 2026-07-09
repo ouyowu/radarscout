@@ -4,6 +4,7 @@ import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
+import { Button, Card, Section } from '@/app/_components/design-system'
 import {
   getPublicThailandProduct,
   loadPublicThailandProductDetail,
@@ -195,47 +196,46 @@ function UnavailableState({
     : 'RadarScout could not load this product detail right now. No fallback product has been invented.'
 
   return (
-    <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 text-center shadow-lg">
-          <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+    <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
+      <Section variant="sand" className="min-h-screen">
+        <Card className="mx-auto max-w-3xl p-8 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
             Experience detail
           </p>
-          <h1 className="mt-4 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
+          <h1 className="mt-4 font-rs-display text-[clamp(2.4rem,6vw,4.5rem)] font-semibold leading-[0.96] tracking-[-0.045em]">
             {title}
           </h1>
-          <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+          <p className="mt-5 text-base leading-8 text-rs-muted">
             {body}
           </p>
           {isFromAiTripPlanner ? (
-            <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
+            <p className="mt-4 text-sm leading-6 text-rs-muted">
               Return to the Trip Planner results to compare the other matches. No partner action or current status is recorded from this unavailable detail page.
             </p>
           ) : null}
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link
-              href="/tours"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-sm font-black uppercase tracking-[0.1em] text-white"
-            >
+            <Button href="/tours" className="min-h-[44px] px-6 text-xs">
               Back to tours
-            </Link>
-            <Link
+            </Button>
+            <Button
               href="/destinations/thailand"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[var(--color-border-medium)] bg-white px-6 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]"
+              variant="secondary"
+              className="min-h-[44px] px-6 text-xs"
             >
               Thailand destination
-            </Link>
+            </Button>
             {isFromAiTripPlanner ? (
-              <Link
+              <Button
                 href="/ai-trip-planner#ai-trip-results"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-6 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e]"
+                variant="secondary"
+                className="min-h-[44px] px-6 text-xs"
               >
                 Back to Trip Planner results
-              </Link>
+              </Button>
             ) : null}
           </div>
-        </div>
-      </section>
+        </Card>
+      </Section>
     </main>
   )
 }
@@ -250,35 +250,36 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
 
   const { product } = result
   const rows = factRows(product.facts)
+  const location = productLocation(product)
 
   return (
-    <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
-      <section className="bg-[var(--color-bg-primary)] px-4 py-5 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
+      <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/tours"
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--color-border-light)] bg-white px-5 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
+            className="inline-flex min-h-[44px] items-center rounded-rs-pill border border-rs-sage-200/80 bg-white px-5 text-sm font-semibold uppercase tracking-[0.12em] text-rs-muted transition hover:border-rs-terracotta hover:text-rs-forest-700"
           >
             Back to tours
           </Link>
           {isFromAiTripPlanner ? (
             <Link
               href="/ai-trip-planner#ai-trip-results"
-              className="inline-flex min-h-[44px] items-center rounded-full border border-[#d8eadf] bg-[#f5fbf7] px-5 text-sm font-black uppercase tracking-[0.1em] text-[#0f766e] transition hover:text-[#0b5f59]"
+              className="inline-flex min-h-[44px] items-center rounded-rs-pill border border-rs-sage-200 bg-white px-5 text-sm font-semibold uppercase tracking-[0.12em] text-rs-forest-700 transition hover:border-rs-terracotta"
             >
               Back to Trip Planner results
             </Link>
           ) : null}
         </div>
         {isFromAiTripPlanner ? (
-          <div className="mx-auto mt-4 max-w-7xl rounded-2xl border border-[#d8eadf] bg-[#f5fbf7] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+          <div className="mx-auto mt-4 max-w-7xl rounded-rs-md border border-rs-sage-200/80 bg-white p-4 shadow-rs-soft">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-forest-700">
               Trip Planner context
             </p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+            <p className="mt-2 text-sm leading-6 text-rs-muted">
               You opened this product from RadarScout&apos;s Trip Planner. Review this product detail, then return to compare the other planner matches.
             </p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+            <p className="mt-2 text-sm leading-6 text-rs-muted">
               The return link takes you back to the same Trip Planner results section. No partner action or current status is recorded on this page.
             </p>
           </div>
@@ -298,27 +299,29 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
 
       <DmcTrustBar items={trustItems} />
 
-      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-          <article className="overflow-hidden rounded-[2rem] border border-[var(--color-border-light)] bg-white shadow-lg">
+      <Section variant="sand" className="pt-8" contentClassName="max-w-[1240px]">
+        <div className="grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-start">
+          <Card className="overflow-hidden">
+            <article>
             {product.imageUrl ? (
               <img
                 src={product.imageUrl}
-                alt=""
+                alt={displayTitle(product)}
                 className="h-72 w-full object-cover sm:h-96"
               />
             ) : (
-              <div className="flex h-72 w-full items-center justify-center bg-[var(--color-accent-orange-pale)] px-8 text-center sm:h-96">
-                <p className="font-[var(--font-heading)] text-4xl font-black uppercase tracking-[-0.035em] text-[var(--color-accent-orange-dark)]">
-                  Partner image coming soon
+              <div className="relative flex h-72 w-full items-end overflow-hidden bg-[linear-gradient(135deg,var(--rs-forest-900),var(--rs-forest-700)_45%,var(--rs-sand-100)_78%,var(--rs-terracotta))] px-8 py-7 sm:h-96">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.22),transparent_28%),linear-gradient(0deg,rgba(15,36,28,0.62),transparent_58%)]" />
+                <p className="relative max-w-sm font-rs-display text-4xl font-semibold leading-tight tracking-[-0.035em] text-white">
+                  Partner visual pending
                 </p>
               </div>
             )}
             <div className="p-6">
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
-                {productLocation(product)}
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-forest-500">
+                {location}
               </p>
-              <h1 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
+              <h1 className="mt-3 font-rs-display text-[clamp(2.45rem,6vw,4.75rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-rs-ink">
                 {displayTitle(product)}
               </h1>
               {product.reviewedEnrichment?.suggestedTags && product.reviewedEnrichment.suggestedTags.length > 0 && (
@@ -326,49 +329,50 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   {product.reviewedEnrichment.suggestedTags.map(tag => (
                     <span
                       key={tag}
-                      className="inline-flex items-center rounded-full bg-[var(--color-accent-orange-pale)] px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-[var(--color-accent-orange-dark)]"
+                      className="inline-flex items-center rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-forest-700"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               )}
-              <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+              <p className="mt-5 text-base leading-8 text-rs-muted">
                 {product.description ?? product.summary ?? 'Product description is not available yet. RadarScout does not create placeholder descriptions for real partner records.'}
               </p>
             </div>
-          </article>
+            </article>
+          </Card>
 
-          <aside className="grid gap-5">
-            <div className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-                Price detail
+          <aside className="grid gap-5 lg:sticky lg:top-5">
+            <Card className="p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
+                Product detail
               </p>
-              <p className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-none tracking-[-0.035em]">
+              <p className="mt-3 font-rs-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-[-0.035em] text-rs-ink">
                 {productPrice(product)}
               </p>
-              <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              <p className="mt-4 text-sm leading-7 text-rs-muted">
                 Prices are shown only when provided in the product record. No estimated or invented price is displayed.
               </p>
-            </div>
+            </Card>
 
-            <div className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+            <Card className="p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
                 Planning boundary
               </p>
-              <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              <p className="mt-4 text-sm leading-7 text-rs-muted">
                 RadarScout helps travelers compare details before they continue with a booking partner. Current details should be reviewed on the partner page.
               </p>
-            </div>
+            </Card>
 
-            <div className="rounded-[2rem] bg-[var(--color-bg-dark)] p-6 text-white shadow-lg">
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
+            <div className="rounded-rs-lg bg-rs-forest-900 p-6 text-white shadow-rs-soft">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-sage-200">
                 Handoff boundary
               </p>
-              <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+              <h2 className="mt-3 font-rs-display text-[clamp(1.8rem,3vw,2.6rem)] font-semibold leading-tight tracking-[-0.035em]">
                 Compare details before continuing.
               </h2>
-              <p className="mt-4 text-sm font-semibold leading-7 text-white/75">
+              <p className="mt-4 text-sm leading-7 text-white/75">
                 Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
               {product.bookingPartnerHandoff ? (
@@ -376,24 +380,24 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   href={product.bookingPartnerHandoff.href}
                   target="_blank"
                   rel={product.bookingPartnerHandoff.rel}
-                  className="mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-accent-orange-dark)]"
+                  className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-rs-terracotta-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
                 >
                   {product.bookingPartnerHandoff.label}
                 </a>
               ) : null}
               {product.bookingPartnerHandoff ? (
-                <p className="mt-3 text-xs font-bold leading-6 text-white/65">
+                <p className="mt-3 text-xs font-semibold leading-6 text-white/65">
                   Continue with a booking partner to review current details.
                 </p>
               ) : (
-                <div className="mt-6 rounded-[1.5rem] border border-white/15 bg-white/10 p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#ffd5ad]">
+                <div className="mt-6 rounded-rs-md border border-white/15 bg-white/10 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-sage-200">
                     Planning-only detail
                   </p>
-                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                  <p className="mt-3 text-sm leading-7 text-white/75">
                     RadarScout can help you compare this experience, but a verified booking partner handoff is not available yet.
                   </p>
-                  <p className="mt-3 text-sm font-semibold leading-7 text-white/75">
+                  <p className="mt-3 text-sm leading-7 text-white/75">
                     Use this page for planning and compare other experiences with verified handoff options.
                   </p>
                 </div>
@@ -401,20 +405,19 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             </div>
           </aside>
         </div>
-      </section>
+      </Section>
 
-      <section className="bg-[var(--color-bg-secondary)] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <Section variant="cloud" contentClassName="max-w-[1240px]">
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-ai-feature)]">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-forest-500">
                 Product facts
               </p>
-              <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
+              <h2 className="mt-3 font-rs-display text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-rs-ink">
                 Displayed only when present in the product record.
               </h2>
             </div>
-            <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+            <p className="text-base leading-8 text-rs-muted">
               RadarScout does not add ratings, reviews, supplier names, itineraries, meeting points, or policies unless they come from safe product fields prepared for display.
             </p>
           </div>
@@ -422,25 +425,24 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           {rows.length > 0 ? (
             <div className="mt-8 grid gap-5 md:grid-cols-2">
               {rows.map(row => (
-                <article key={row.label} className="rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                <Card key={row.label} className="p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
                     {row.label}
                   </p>
-                  <p className="mt-3 text-sm font-bold leading-7 text-[var(--color-text-secondary)]">
+                  <p className="mt-3 text-sm font-semibold leading-7 text-rs-muted">
                     {row.value}
                   </p>
-                </article>
+                </Card>
               ))}
             </div>
           ) : (
-            <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-lg">
-              <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+            <Card className="mt-8 p-6">
+              <p className="text-base leading-8 text-rs-muted">
                 Additional facts are not available in the display-safe product data yet.
               </p>
-            </div>
+            </Card>
           )}
-        </div>
-      </section>
+      </Section>
 
       <EditorialBanner
         label="Experience detail"
