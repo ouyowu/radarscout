@@ -7,6 +7,7 @@ import { DmcTrustBar } from '../_components/DmcTrustBar'
 import { EditorialBanner } from '../_components/EditorialBanner'
 import { ExperienceCategoryGrid } from '../_components/ExperienceCategoryGrid'
 import { FAQAccordion } from '../_components/FAQAccordion'
+import { Button, Card, Section } from '../_components/design-system'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -244,10 +245,10 @@ function FilterChip({
     <Link
       href={href}
       className={[
-        'inline-flex min-h-[40px] items-center rounded-full border px-4 text-xs font-black uppercase tracking-[0.1em] transition',
+        'inline-flex min-h-[42px] items-center rounded-rs-pill border px-4 text-xs font-semibold uppercase tracking-[0.12em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rs-terracotta',
         active
-          ? 'border-[var(--color-accent-orange)] bg-[var(--color-accent-orange)] text-white'
-          : 'border-[var(--color-border-light)] bg-white text-[var(--color-text-secondary)] hover:text-[var(--color-accent-orange-dark)]',
+          ? 'border-rs-forest-700 bg-rs-forest-700 text-white'
+          : 'border-rs-sage-200/80 bg-white text-rs-muted hover:border-rs-terracotta hover:text-rs-forest-700',
       ].join(' ')}
     >
       {label}
@@ -264,7 +265,7 @@ function FilterGroup({
 }) {
   return (
     <div>
-      <p className="mb-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-rs-muted">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">{children}</div>
@@ -272,60 +273,60 @@ function FilterGroup({
   )
 }
 
-function formatPrice(product: ProductDisplay) {
-  if (!product.retailPrice) return 'Price not listed'
-  if (!product.currency) return product.retailPrice
-
-  return `${product.currency} ${product.retailPrice}`
-}
-
 function ProductCard({ product }: { product: ProductDisplay }) {
   return (
-    <article className="overflow-hidden rounded-[2rem] border border-[var(--color-border-light)] bg-white shadow-lg">
-      <div className="flex h-56 items-center justify-center bg-[var(--color-accent-orange-pale)]">
-        {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="px-6 text-center">
-            <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-              Supplier image pending
+    <Card className="group h-full bg-white transition duration-200 hover:-translate-y-1 hover:shadow-rs-soft">
+      <article className="flex h-full flex-col">
+        <div className="relative flex aspect-[4/3] items-end overflow-hidden bg-[linear-gradient(135deg,var(--rs-forest-900),var(--rs-forest-700)_45%,var(--rs-sand-100)_78%,var(--rs-terracotta))] p-5">
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.24),transparent_28%),linear-gradient(0deg,rgba(15,36,28,0.62),transparent_55%)]" />
+          <div className="relative">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/82">
+              Partner record
             </p>
-            <p className="mt-2 text-sm font-semibold text-[var(--color-text-secondary)]">
-              Image will appear only when supplied by partner product data.
+            <p className="mt-2 max-w-[16rem] font-rs-display text-2xl font-semibold leading-tight text-white">
+              {product.destination ?? 'Thailand'} experience
             </p>
           </div>
-        )}
-      </div>
-      <div className="p-6">
+        </div>
+
+        <div className="flex flex-1 flex-col p-6">
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-[var(--color-accent-orange-pale)] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-accent-orange-dark)]">
+          <span className="rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-forest-700">
             Thailand
           </span>
           {product.destination ? (
-            <span className="rounded-full bg-[var(--color-bg-muted)] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)]">
+            <span className="rounded-rs-pill bg-rs-sage-200/45 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-muted">
               {product.destination}
             </span>
           ) : null}
         </div>
-        <h3 className="mt-4 font-[var(--font-heading)] text-3xl font-black leading-tight tracking-[-0.035em]">
+        <h3 className="mt-4 font-rs-display text-[clamp(1.4rem,2vw,1.75rem)] font-semibold leading-tight tracking-[-0.02em] text-rs-ink">
           {product.title}
         </h3>
-        <p className="mt-3 min-h-[4.5rem] text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+        <p className="mt-3 min-h-[4.5rem] text-sm leading-7 text-rs-muted">
           {product.summary ?? 'Product details are being prepared from trusted partner records.'}
         </p>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-black uppercase tracking-[0.1em] text-[var(--color-live-inventory)]">
-            {formatPrice(product)}
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
+          <p className="max-w-[12rem] text-xs font-semibold uppercase tracking-[0.12em] text-rs-muted">
+            Review details before partner handoff
           </p>
           <Link
             href={product.detailHref}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-5 text-xs font-black uppercase tracking-[0.1em] text-white"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-rs-terracotta-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rs-terracotta"
           >
             View details
           </Link>
         </div>
       </div>
-    </article>
+      </article>
+    </Card>
   )
 }
 
@@ -347,7 +348,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
         title="Curated Thailand Tours & Private Experiences"
         subtitle="Explore curated day tours, private experiences, transfers, food, culture, and guided itinerary planning from trusted partner records."
         actions={[
-          { label: 'Plan with AI', href: '/ai-trip-planner' },
+          { label: 'Open Trip Planner', href: '/ai-trip-planner' },
           { label: 'View Thailand destination', href: '/destinations/thailand', variant: 'secondary' },
         ]}
         trustNote="Thailand is RadarScout’s first supported destination. Product cards appear only when there is a trusted partner record to show."
@@ -388,37 +389,40 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
         categories={categories}
       />
 
-      <section className="bg-[var(--color-bg-secondary)] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <Section
+        variant="sand"
+        className="border-y border-rs-sage-200/55"
+        contentClassName="max-w-[1240px]"
+      >
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-forest-500">
                 Thailand experience records
               </p>
-              <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-                Real partner product cards, no invented listings.
+              <h2 className="mt-3 font-rs-display text-[clamp(2.35rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-rs-ink">
+                Curated product cards, no invented listings.
               </h2>
             </div>
-            <p className="text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+            <p className="text-base leading-8 text-rs-muted">
               These cards are loaded from RadarScout&apos;s read-only product API and display only Thailand product records that are prepared for comparison. Use the booking partner page to review current details.
             </p>
           </div>
 
-          <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-5 shadow-lg">
-            <div className="mb-6 grid gap-3 border-b border-[var(--color-border-light)] pb-5 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="sticky top-4 z-10 mt-8 rounded-rs-lg border border-rs-sage-200/70 bg-white/94 p-5 shadow-rs-soft backdrop-blur">
+            <div className="mb-6 grid gap-3 border-b border-rs-sage-200/65 pb-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
                   Browse filters
                 </p>
-                <p className="mt-2 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                <p className="mt-2 text-sm leading-7 text-rs-muted">
                   Filter Thailand experience records before continuing with a booking partner.
                 </p>
               </div>
-              <div className="rounded-2xl bg-[var(--color-bg-secondary)] px-4 py-3 text-left lg:text-right">
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+              <div className="rounded-rs-md bg-rs-sand-100 px-4 py-3 text-left lg:text-right">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rs-muted">
                   Current view
                 </p>
-                <p className="mt-1 text-sm font-black text-[var(--color-text-primary)]">
+                <p className="mt-1 text-sm font-semibold text-rs-ink">
                   {currentResultCount}
                 </p>
               </div>
@@ -485,56 +489,52 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
 
               <Link
                 href="/tours"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[var(--color-border-medium)] bg-[var(--color-bg-secondary)] px-5 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill border border-rs-forest-500 bg-rs-sand-50 px-5 text-xs font-semibold uppercase tracking-[0.12em] text-rs-forest-700 transition hover:bg-rs-sand-100"
               >
                 Clear filters
               </Link>
             </div>
-            <div className="mt-5 rounded-[1.5rem] bg-[var(--color-accent-orange-pale)] px-5 py-4">
-              <p className="text-sm font-black text-[var(--color-accent-orange-dark)]">
+            <div className="mt-5 rounded-rs-md bg-rs-sand-100 px-5 py-4">
+              <p className="text-sm font-semibold text-rs-forest-700">
                 {filterSummary}
               </p>
             </div>
           </div>
 
           {products.length > 0 ? (
-            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {products.map(product => (
                 <ProductCard key={String(product.id)} product={product} />
               ))}
             </div>
           ) : (
-            <div className="mt-8 rounded-[2rem] border border-[var(--color-border-light)] bg-white p-8 shadow-lg">
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+            <Card className="mt-8 p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
                 {hasActiveFilters ? 'No products match these filters' : 'Experience records coming online'}
               </p>
-              <h3 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+              <h3 className="mt-3 font-rs-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight tracking-[-0.03em] text-rs-ink">
                 {hasActiveFilters
                   ? 'No trusted partner records match these filters yet.'
                   : 'Thailand experience records are being prepared for display.'}
               </h3>
-              <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-rs-muted">
                 {hasActiveFilters
                   ? 'Try clearing filters or choosing another Thailand city. RadarScout does not add placeholder products to fill filtered results.'
                   : 'The product API returned no display-ready rows right now. RadarScout will show trusted partner product records here when they are ready, without creating placeholder products, prices, ratings, reviews, or names.'}
               </p>
               {hasActiveFilters ? (
-                <Link
-                  href="/tours"
-                  className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-6 text-xs font-black uppercase tracking-[0.1em] text-white"
-                >
+                <Button href="/tours" className="mt-6 min-h-[44px] px-6 text-xs">
                   Clear filters
-                </Link>
+                </Button>
               ) : null}
               {productResponse.error ? (
-                <p className="mt-4 text-xs font-black uppercase tracking-[0.1em] text-[var(--color-coming-soon)]">
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-rs-terracotta">
                   Safe fallback: product feed unavailable
                 </p>
               ) : null}
-            </div>
+            </Card>
           )}
-        </div>
-      </section>
+      </Section>
 
       <EditorialBanner
         label="Coming soon destinations"

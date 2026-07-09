@@ -115,6 +115,8 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Price not listed')
     expect(markup).toContain('trusted partner records')
     expect(markup).toContain('Plan with RadarScout')
+    expect(markup).toContain('Open Trip Planner')
+    expect(markup).toContain('Review details before partner handoff')
     expect(markup).toContain('Non-Thailand destinations remain planning-only.')
     expect(markup).toContain('Why are some destinations still planning-only?')
     expect(markup).toContain('Additional destinations can move beyond planning-only after local supplier coverage')
@@ -123,6 +125,42 @@ describe('tour public copy safety', () => {
     expect(markup).not.toContain('More selected high-demand destinations will be added')
     expect(markup).not.toContain('Can I compare tours from every destination on this page?')
     expect(markup).not.toContain('does not claim current product coverage for every destination')
+    expectSafeTourCopy(markup)
+  })
+
+  it('keeps /tours listing cards safe without exposing price values', async () => {
+    mockFetchJson({
+      products: [
+        {
+          id: 'tour_with_source_image_and_price',
+          title: 'Chiang Mai Food Walk',
+          destination: 'Chiang Mai',
+          summary: 'A reviewed local food experience record.',
+          imageUrl: 'https://cdn.example.com/source-image.jpg',
+          retailPrice: '1200',
+          currency: 'THB',
+          tags: ['Food'],
+          detailHref: '/tours/tour_with_source_image_and_price',
+        },
+      ],
+      meta: {
+        source: 'signed-bokun-supplier-products',
+        inventoryScope: 'thailand-first',
+        bookingEnabled: false,
+        availabilityEnabled: false,
+        count: 1,
+      },
+    })
+
+    const element = await ToursExperienceDiscoveryPage({})
+    const markup = renderToStaticMarkup(element)
+
+    expect(markup).toContain('Chiang Mai Food Walk')
+    expect(markup).toContain('Partner record')
+    expect(markup).toContain('Review details before partner handoff')
+    expect(markup).toContain('https://cdn.example.com/source-image.jpg')
+    expect(markup).not.toContain('THB 1200')
+    expect(markup).not.toContain('Plan with AI')
     expectSafeTourCopy(markup)
   })
 
