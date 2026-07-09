@@ -1,6 +1,6 @@
 # RadarScout Trip Planner — Consolidated Status
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 
 This single document supersedes and replaces the following status/gate/audit
 docs, which have been removed to stop status-doc sprawl:
@@ -96,20 +96,167 @@ preparing a production deploy, anchor the candidate to that code commit, verify
 `git diff --check` is clean, and confirm the exact SHA. Do not treat a
 status-doc merge commit as the release candidate.
 
-## 5. Production status
+### Production deploy candidate (B2 reanchor, 2026-07-09)
 
-Production deploy completed on 2026-07-08 after explicit human approval.
+Step 0 resolved the prior production-state contradiction:
 
 ```text
-Production HEAD: f9fe2b4c0b33c8608a11b8886e2032a1d64de554
-Deployment ID: dpl_dDXEQiC9hA78zwcQ7EfweM6nvRaE
-Deployment URL: https://reddit-monitor-d7jy6dlec-ouyowus-projects.vercel.app
+Current production deployment ID: dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx
+Current production deployment URL:
+https://reddit-monitor-qyz3uo48i-ouyowus-projects.vercel.app
+Current production aliases:
+- https://radarscout.io
+- https://www.radarscout.io
+Current production Git SHA:
+f78254d5ab895a53a1a2a205359f2bd472a32f2c
+Current production commit:
+Wire reviewed partner products into Trip Planner matching
+```
+
+This means the old `dpl_2v7...` observation is obsolete, and the earlier
+`4d5619e` deploy-completion note was also superseded by the later real
+production deployment at `f78254d`.
+
+Current B2 candidate after merging PR #488:
+
+```text
+Candidate SHA: dc3482d86576f151ddc0bb2ed58e905b13302bab
+Candidate commit: Improve partner product matching specificity (#488)
+Base branch: origin/codex/travel-mvp-launch
+Candidate status: latest deployable Trip Planner code commit
+```
+
+Included real product code:
+
+- `8034ed1` — 8 reviewed public widget partner seed records.
+- `f78254d` — reviewed partner products wired into Trip Planner matching and
+  safe external `Check availability` handoff.
+- `dc3482d` — partner matching quality fix for Bigboy, bamboo rafting, Inthanon,
+  and afternoon half-day searches.
+
+Vercel quota / deploy status:
+
+```text
+Vercel CLI can list and inspect deployments.
+Recent Preview deployments exist and one new Preview was observed building,
+so there is no current evidence that Preview deploy quota is fully locked.
+`vercel usage` returned `Costs not found (404)`, so it cannot confirm quota
+state for this team.
+Production deploy quota can only be confirmed by the human-run
+`npx vercel --prod --yes` command. Codex did not run production deploy.
+```
+
+Vercel project:
+
+```text
+Project: ouyowus-projects / reddit-monitor
+Project ID: prj_TG7h3uoTkZR5OdlIoroJOj3T5uUy
+Framework: Next.js
+Root Directory: .
+Build Command: pnpm --filter @reddit-monitor/web build
+Output Directory: apps/web/.next
+Observed production deploy mode: manual CLI production deploy with
+npx vercel --prod --yes.
+```
+
+Local gate, run from clean worktree
+`/private/tmp/radarscout-prod-deploy-candidate-b2` at exactly
+`dc3482d86576f151ddc0bb2ed58e905b13302bab`:
+
+```text
+git status --short: clean
+Prisma generate: passed
+TypeScript: clean
+Full Vitest: passed, 66 files / 976 tests
+Playwright E2E: passed, 60/60
+Next build: passed
+AI Trip local production smoke: passed
+git diff --check: clean
+```
+
+Local production smoke evidence:
+
+```json
+{
+  "ok": true,
+  "failedChecks": [],
+  "status": 200,
+  "title": "Thailand Trip Planner | RadarScout",
+  "robots": "noindex, nofollow",
+  "topMatchHref": "/tours/prod_cm_1?source=ai-trip-planner",
+  "productCardCount": 3,
+  "resultSummaryVisible": true,
+  "noHorizontalOverflow": true,
+  "unsafeNetwork": [],
+  "forbiddenMatches": []
+}
+```
+
+Human-only production deploy command:
+
+```bash
+rm -rf /private/tmp/radarscout-prod-dc3482d
+git -C /Users/ouyowu/reddit-monitor worktree add \
+  /private/tmp/radarscout-prod-dc3482d \
+  dc3482d86576f151ddc0bb2ed58e905b13302bab
+cd /private/tmp/radarscout-prod-dc3482d
+npx vercel link --yes --project reddit-monitor --scope ouyowus-projects
+npx vercel --prod --yes 2>&1 | tee /tmp/vercel-prod-deploy-dc3482d.log
+```
+
+Post-deploy production observation checklist:
+
+```text
+https://radarscout.io/ai-trip-planner and
+https://www.radarscout.io/ai-trip-planner:
+- HTTP 200
+- title: Thailand Trip Planner | RadarScout
+- robots: noindex,nofollow
+- product cards render
+- result summary visible
+- no horizontal overflow
+- unsafe network requests: none
+- forbidden copy: none
+- partner products can appear with external Check availability handoff
+- Bigboy, bamboo rafting, Inthanon, and afternoon half-day prompts return the
+  expected reviewed partner product first in the API-level ranking
+
+https://radarscout.io/chiang-mai/elephant-camp-finder and www equivalent:
+- HTTP 200
+- remains index,follow
+- controlled-open finder still visible
+
+Vercel:
+- production deployment ID changes from dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx
+- deployment metadata Git SHA is dc3482d86576f151ddc0bb2ed58e905b13302bab
+- aliases include radarscout.io and www.radarscout.io
+```
+
+Rollback:
+
+```text
+No DB/schema/env migration is involved. Roll back by restoring the previous
+production deployment in Vercel Dashboard or with Vercel rollback. This is a
+deployment-only rollback.
+```
+
+Status: waiting for explicit human approval and human-run production deploy.
+Codex must not run `vercel --prod`.
+
+## 5. Production status
+
+Production was rechecked on 2026-07-09 before preparing the B2 candidate.
+
+```text
+Production HEAD: f78254d5ab895a53a1a2a205359f2bd472a32f2c
+Deployment ID: dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx
+Deployment URL: https://reddit-monitor-qyz3uo48i-ouyowus-projects.vercel.app
 Target: production
 Status: READY
 Aliases:
 - https://radarscout.io
 - https://www.radarscout.io
-Previous production deployment replaced: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Previous obsolete observation: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
 ```
 
 Post-deploy observation:
@@ -171,14 +318,21 @@ a dedicated SEO readiness task and human approval.
    `/chiang-mai/elephant-camp-finder`.
 2. Choose whether to keep analytics postponed or explicitly approve a provider
    and taxonomy-aligned implementation.
-3. Merge `TD-RADARSCOUT-PRODUCT-MATCHING-6` after review.
-4. After partner product matching reaches production, observe real planner
+3. Deploy B2 candidate `dc3482d86576f151ddc0bb2ed58e905b13302bab` after
+   explicit human approval and human-run production command.
+4. After partner product matching quality reaches production, observe real planner
    searches and handoff clicks.
 5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
    static reviewed handoff insufficient.
 
 ## 8. Execution Log
 
+- 2026-07-09 — `TD-RADARSCOUT-PROD-DEPLOY-CANDIDATE-B2-REANCHOR`: after merging
+  PR #488, production was rechecked and found live at `f78254d` /
+  `dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx`; deploy candidate was reanchored to
+  `dc3482d86576f151ddc0bb2ed58e905b13302bab`; full local gate and AI Trip local
+  production smoke passed; result: waiting for explicit human production deploy
+  approval.
 - 2026-07-09 — `TD-RADARSCOUT-PARTNER-MATCHING-QUALITY-8`: PR #488
   improves reviewed partner product specificity for Bigboy, bamboo rafting,
   Inthanon, and afternoon half-day Trip Planner searches; no seed, widget URL,
@@ -207,10 +361,13 @@ a dedicated SEO readiness task and human approval.
 
 ## 9. Human Approval Queue
 
+- `TD-RADARSCOUT-PROD-DEPLOY-CANDIDATE-B2-REANCHOR` is waiting for explicit
+  human production deploy approval and human-run deploy command for
+  `dc3482d86576f151ddc0bb2ed58e905b13302bab`. Codex must not run
+  `vercel --prod`.
 - `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
   and taxonomy alignment before any provider or tracking network request is
   added.
-- `PRODUCT-MATCHING-6` awaits human PR review/merge after validation.
 - Any Bókun API implementation remains red-zone work. It requires a separate
   human-approved plan, credentials/scope decision, and safety review before any
   code, env, DB, sync, availability, checkout, or booking behavior is added.
