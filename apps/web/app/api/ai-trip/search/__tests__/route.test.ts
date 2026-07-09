@@ -424,6 +424,31 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.some(call => call.search === 'elephants')).toBe(true)
   })
 
+  it.each([
+    ['Chiang Mai Bigboy half day morning elephant', 'partner_cm_1236811'],
+    ['Chiang Mai elephant bamboo rafting nature adventure', 'partner_cm_1236830'],
+    ['Chiang Mai Inthanon Heaven Trail elephant nature', 'partner_cm_1232798'],
+    ['Chiang Mai afternoon half day elephant sanctuary', 'partner_cm_1232731'],
+  ])('uses the full prompt to prioritize specific reviewed partner products: %s', async (prompt, expectedFirstId) => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+      })),
+    }))
+
+    const res = await POST(makeRequest({ prompt }))
+    const body = await res.json()
+    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
+      .map((candidate: { id: string }) => candidate.id)
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(rankedIds[0]).toBe(expectedFirstId)
+  })
+
   it('negated elephant prompt does not search elephant aliases or expose elephants as a positive interest', async () => {
     listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
       Promise.resolve(options.search === 'temples' ? [makeCandidate({ title: 'Chiang Mai Temple Walk' })] : []),

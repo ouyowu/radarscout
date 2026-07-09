@@ -26,6 +26,65 @@ function productSearchText(product: PartnerProduct): string {
   ].join(' '))
 }
 
+function searchTokens(search?: string | null): string[] {
+  if (!search) return []
+
+  const stopWords = new Set([
+    'a',
+    'an',
+    'and',
+    'chiang',
+    'for',
+    'in',
+    'mai',
+    'of',
+    'sanctuary',
+    'the',
+    'thailand',
+    'to',
+    'tour',
+    'trip',
+    'with',
+  ])
+
+  return normalize(search)
+    .split(' ')
+    .filter(token => token.length > 1 && !stopWords.has(token))
+}
+
+function tokenVariants(token: string): string[] {
+  if (token.endsWith('s')) return [token, token.slice(0, -1)]
+
+  return [token, `${token}s`]
+}
+
+function textContainsToken(text: string, token: string): boolean {
+  return tokenVariants(token).some(variant => text.includes(variant))
+}
+
+function scoreProduct(product: PartnerProduct, search?: string | null): number {
+  const tokens = searchTokens(search)
+  if (tokens.length === 0) return 1
+
+  const title = normalize(product.title)
+  const tags = normalize(product.tags.join(' '))
+  const slug = normalize(product.slug)
+  const summary = normalize(product.shortSummary)
+  const partnerName = normalize(product.partnerName)
+  const allText = productSearchText(product)
+
+  return tokens.reduce((score, token) => {
+    if (!textContainsToken(allText, token)) return score
+
+    return score +
+      (textContainsToken(title, token) ? 4 : 0) +
+      (textContainsToken(tags, token) ? 3 : 0) +
+      (textContainsToken(slug, token) ? 2 : 0) +
+      (textContainsToken(summary, token) ? 1 : 0) +
+      (textContainsToken(partnerName, token) ? 1 : 0)
+  }, 0)
+}
+
 function matchesCity(product: PartnerProduct, city?: string | null): boolean {
   if (!city) return true
 
@@ -33,16 +92,7 @@ function matchesCity(product: PartnerProduct, city?: string | null): boolean {
 }
 
 function matchesSearch(product: PartnerProduct, search?: string | null): boolean {
-  if (!search) return true
-
-  const term = normalize(search)
-  if (!term) return true
-
-  const text = productSearchText(product)
-  const singularTerm = term.endsWith('s') ? term.slice(0, -1) : term
-  const pluralTerm = `${term}s`
-
-  return text.includes(term) || text.includes(singularTerm) || text.includes(pluralTerm)
+  return scoreProduct(product, search) > 0
 }
 
 function toCandidate(product: PartnerProduct): AiProductCandidate {
@@ -74,6 +124,9 @@ export function listMatchingPartnerProductCandidates({
   return pilotPartnerProducts
     .filter(product => matchesCity(product, city))
     .filter(product => matchesSearch(product, search))
+    .map((product, index) => ({ product, index, score: scoreProduct(product, search) }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(({ product }) => product)
     .slice(0, take)
     .map(toCandidate)
 }
