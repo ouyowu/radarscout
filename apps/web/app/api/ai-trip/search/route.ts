@@ -32,6 +32,14 @@ const INTEREST_SEARCH_ALIASES: Record<string, string[]> = {
   canals: ['canal'],
 }
 
+const REVIEWED_PARTNER_PROMPT_TERMS = [
+  'bamboo rafting',
+  'inthanon trail',
+  'bigboy',
+  'day for elephant',
+  'pad thai',
+] as const
+
 const META = {
   productRetrievalEnabled: true,
   itineraryGenerationEnabled: false,
@@ -99,6 +107,17 @@ function getInterestSearchTerms(interests: string[]): string[] {
   return terms
 }
 
+function getReviewedPartnerPromptTerms(prompt: string): string[] {
+  const normalizedPrompt = prompt.trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+  const terms: string[] = []
+
+  for (const term of REVIEWED_PARTNER_PROMPT_TERMS) {
+    if (normalizedPrompt.includes(term)) terms.push(term)
+  }
+
+  return terms
+}
+
 function mergeCandidateBuckets(
   buckets: AiProductCandidate[][],
   take: number,
@@ -135,6 +154,7 @@ function mergeCandidateBuckets(
 }
 
 async function queryEligibleCandidates(
+  prompt: string,
   destination: string | null,
   interests: string[],
   take: number,
@@ -143,6 +163,16 @@ async function queryEligibleCandidates(
 
   if (interests.length > 0) {
     const matchBuckets: AiProductCandidate[][] = []
+
+    for (const term of getReviewedPartnerPromptTerms(prompt)) {
+      const partnerMatches = listMatchingPartnerProductCandidates({
+        city,
+        search: term,
+        take,
+      })
+
+      if (partnerMatches.length > 0) matchBuckets.push(partnerMatches)
+    }
 
     for (const term of getInterestSearchTerms(interests)) {
       const matches = await listAiEligibleThailandProducts({
@@ -242,6 +272,7 @@ export async function POST(request: NextRequest) {
         : 'city-specific'
 
     const { candidates, fallbackUsed } = await queryEligibleCandidates(
+      prompt,
       parsed.intent.destination,
       parsed.intent.interests,
       Math.min(DEFAULT_TAKE, MAX_TAKE),

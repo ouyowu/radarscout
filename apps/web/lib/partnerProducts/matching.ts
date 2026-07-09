@@ -26,6 +26,63 @@ function productSearchText(product: PartnerProduct): string {
   ].join(' '))
 }
 
+function searchTokens(search: string): string[] {
+  return normalize(search).split(' ').filter(Boolean)
+}
+
+function tokenVariants(token: string): string[] {
+  const variants = new Set<string>([token])
+
+  if (token.endsWith('s') && token.length > 1) variants.add(token.slice(0, -1))
+  if (!token.endsWith('s')) variants.add(`${token}s`)
+
+  return [...variants]
+}
+
+function textIncludesToken(text: string, token: string): boolean {
+  return tokenVariants(token).some(variant => text.includes(variant))
+}
+
+function scoreField(text: string, tokens: string[], weight: number): number {
+  return tokens.reduce((score, token) => {
+    return score + (textIncludesToken(text, token) ? weight : 0)
+  }, 0)
+}
+
+function productSearchScore(product: PartnerProduct, search?: string | null): number {
+  if (!search) return 1
+
+  const term = normalize(search)
+  if (!term) return 1
+
+  const tokens = searchTokens(term)
+  if (tokens.length === 0) return 1
+
+  const searchableText = productSearchText(product)
+  if (!tokens.every(token => textIncludesToken(searchableText, token))) return 0
+
+  const title = normalize(product.title)
+  const slug = normalize(product.slug)
+  const tags = normalize(product.tags.join(' '))
+  const summary = normalize(product.shortSummary)
+  const partner = normalize(product.partnerName)
+
+  let score = 0
+
+  if (searchableText.includes(term)) score += 100
+  if (title.includes(term)) score += 50
+  if (slug.includes(term)) score += 40
+  if (tags.includes(term)) score += 30
+
+  score += scoreField(title, tokens, 12)
+  score += scoreField(slug, tokens, 10)
+  score += scoreField(tags, tokens, 8)
+  score += scoreField(summary, tokens, 4)
+  score += scoreField(partner, tokens, 2)
+
+  return score
+}
+
 function matchesCity(product: PartnerProduct, city?: string | null): boolean {
   if (!city) return true
 
@@ -33,16 +90,7 @@ function matchesCity(product: PartnerProduct, city?: string | null): boolean {
 }
 
 function matchesSearch(product: PartnerProduct, search?: string | null): boolean {
-  if (!search) return true
-
-  const term = normalize(search)
-  if (!term) return true
-
-  const text = productSearchText(product)
-  const singularTerm = term.endsWith('s') ? term.slice(0, -1) : term
-  const pluralTerm = `${term}s`
-
-  return text.includes(term) || text.includes(singularTerm) || text.includes(pluralTerm)
+  return productSearchScore(product, search) > 0
 }
 
 function toCandidate(product: PartnerProduct): AiProductCandidate {
@@ -74,6 +122,7 @@ export function listMatchingPartnerProductCandidates({
   return pilotPartnerProducts
     .filter(product => matchesCity(product, city))
     .filter(product => matchesSearch(product, search))
+    .sort((a, b) => productSearchScore(b, search) - productSearchScore(a, search))
     .slice(0, take)
     .map(toCandidate)
 }

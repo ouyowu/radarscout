@@ -424,6 +424,46 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.some(call => call.search === 'elephants')).toBe(true)
   })
 
+  it('specific Chiang Mai prompts can surface reviewed bamboo rafting and trail partner products', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+      })),
+    }))
+
+    await POST(makeRequest({ prompt: 'Chiang Mai bamboo rafting elephant nature adventure' }))
+    await POST(makeRequest({ prompt: 'Chiang Mai Inthanon elephant trail' }))
+
+    const bambooCandidateIds = contextMock.buildAiProductContext.mock.calls[0][0]
+      .map((candidate: { id: string }) => candidate.id)
+    const inthanonCandidateIds = contextMock.buildAiProductContext.mock.calls[1][0]
+      .map((candidate: { id: string }) => candidate.id)
+
+    expect(bambooCandidateIds).toContain('partner_cm_1236830')
+    expect(inthanonCandidateIds).toContain('partner_cm_1232798')
+  })
+
+  it('specific Bigboy prompt can surface reviewed Bigboy partner products', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+      })),
+    }))
+
+    await POST(makeRequest({ prompt: 'Chiang Mai Bigboy half day morning elephant' }))
+
+    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
+      .map((candidate: { id: string }) => candidate.id)
+
+    expect(rankedIds).toContain('partner_cm_1236811')
+  })
+
   it('negated elephant prompt does not search elephant aliases or expose elephants as a positive interest', async () => {
     listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
       Promise.resolve(options.search === 'temples' ? [makeCandidate({ title: 'Chiang Mai Temple Walk' })] : []),
