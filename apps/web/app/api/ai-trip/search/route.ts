@@ -138,11 +138,19 @@ async function queryEligibleCandidates(
   destination: string | null,
   interests: string[],
   take: number,
+  promptSearch?: string | null,
 ): Promise<CandidateQueryResult> {
   const city = destination && isCityDestination(destination) ? destination : null
 
   if (interests.length > 0) {
     const matchBuckets: AiProductCandidate[][] = []
+    const promptPartnerMatches = listMatchingPartnerProductCandidates({
+      city,
+      search: promptSearch,
+      take,
+    })
+
+    if (promptPartnerMatches.length > 0) matchBuckets.push(promptPartnerMatches)
 
     for (const term of getInterestSearchTerms(interests)) {
       const matches = await listAiEligibleThailandProducts({
@@ -245,6 +253,7 @@ export async function POST(request: NextRequest) {
       parsed.intent.destination,
       parsed.intent.interests,
       Math.min(DEFAULT_TAKE, MAX_TAKE),
+      parsed.intent.avoid.some(avoid => avoid.toLowerCase() === 'elephants') ? null : prompt,
     )
 
     const context = await buildAiProductContext(candidates)

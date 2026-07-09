@@ -179,6 +179,10 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-09 — `TD-RADARSCOUT-PARTNER-MATCHING-QUALITY-8`: PR #488
+  improves reviewed partner product specificity for Bigboy, bamboo rafting,
+  Inthanon, and afternoon half-day Trip Planner searches; no seed, widget URL,
+  Bókun API/sync, DB, SEO, checkout, payment, or booking behavior changes.
 - 2026-07-08 — `BOKUN-MARKETPLACE-SUPPLIER-CANDIDATE-REVIEW-1`: branch
   `codex/td-bokun-marketplace-supplier-candidate-review-1` documented 18
   read-only Bókun Marketplace candidate products across Chiang Mai, Bangkok, and

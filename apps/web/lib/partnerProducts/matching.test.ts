@@ -35,6 +35,37 @@ describe('listMatchingPartnerProductCandidates', () => {
     expect(candidates.every(candidate => candidate.city === 'Chiang Mai')).toBe(true)
   })
 
+  it('prioritizes product-specific partner matches for Bigboy, bamboo rafting, and Inthanon searches', () => {
+    expect(listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'Bigboy half day morning elephant',
+      take: 3,
+    })[0].id).toBe('partner_cm_1236811')
+
+    expect(listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'elephant bamboo rafting nature adventure',
+      take: 3,
+    })[0].id).toBe('partner_cm_1236830')
+
+    expect(listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'Inthanon Heaven Trail elephant nature',
+      take: 3,
+    })[0].id).toBe('partner_cm_1232798')
+  })
+
+  it('prioritizes afternoon products for afternoon half-day searches', () => {
+    const candidates = listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'afternoon half day elephant sanctuary',
+      take: 3,
+    })
+
+    expect(candidates[0].title).toMatch(/Afternoon/)
+    expect(candidates[0].title).not.toMatch(/Morning/)
+  })
+
   it('does not return Chiang Mai partner products for another city filter', () => {
     expect(listMatchingPartnerProductCandidates({
       city: 'Bangkok',
