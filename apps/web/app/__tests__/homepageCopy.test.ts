@@ -4,8 +4,12 @@ import { metadata } from '../page'
 import { expectNoForbiddenPublicCopy } from './publicSafetyPatterns'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
+const promptHeroSource = readFileSync(new URL('../_components/PromptHero.tsx', import.meta.url), 'utf8')
+const promptHeroHelperSource = readFileSync(new URL('../_components/promptHero.helpers.ts', import.meta.url), 'utf8')
 const homepageVisibleCopySources = [
   homepageSource,
+  promptHeroSource,
+  promptHeroHelperSource,
   readFileSync(new URL('../_components/AdventureHero.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/TrackedLink.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
@@ -15,9 +19,9 @@ const homepageVisibleCopySources = [
 
 describe('homepage public copy safety', () => {
   it('uses traveler-facing homepage metadata without Bókun-heavy wording', () => {
-    expect(metadata.title).toBe('RadarScout | AI-guided Thailand Experience Planner')
+    expect(metadata.title).toBe('RadarScout | Personalized Thailand Experience Planner')
     expect(metadata.description).toBe(
-      'Plan Thailand experiences with guided discovery for elephant care, cooking, nature, family-friendly days, and trusted booking partner handoff.',
+      'Describe your ideal Thailand day and compare hand-picked experiences for elephant care, cooking, nature, and family-friendly days, then continue with a trusted booking partner.',
     )
 
     const metadataCopy = [
@@ -44,31 +48,29 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
-  it('links to the AI trip planner with safe planning-first copy', () => {
-    expect(homepageSource).toContain('href="/ai-trip-planner#intent-demo"')
-    expect(homepageSource).toContain('Start planning')
-    expect(homepageSource).toContain('AI-guided Thailand Experience Planner')
-    expect(homepageSource).toContain('Tell RadarScout the kind of Thailand day you want')
-    expect(homepageSource).toContain('trusted booking partner handoff')
+  it('links to the Trip Planner with safe prompt-first copy', () => {
+    expect(promptHeroSource).toContain('Tell us your ideal Thailand day. We match it to real, reviewed experiences.')
+    expect(promptHeroSource).toContain('Plan my trip')
+    expect(promptHeroSource).toContain('Thailand-first · Personalized matching · Trusted booking partner handoff')
+    expect(promptHeroSource).not.toContain('AI-guided Thailand Experience Planner')
+    expect(promptHeroSource).not.toContain('Tell RadarScout the kind of Thailand day you want')
+    expect(promptHeroSource).not.toContain('Start planning')
+    expect(homepageVisibleCopySources).toContain('trusted booking partner handoff')
   })
 
   it('shows safe homepage planner prompt chips without booking or availability claims', () => {
-    expect(homepageSource).toContain('Start with a travel idea')
-    expect(homepageSource).toContain('Use a prompt, then compare matching experiences.')
-    expect(homepageSource).toContain('buildPlannerIdeaHref')
-    expect(homepageSource).toContain('encodeURIComponent(prompt)')
-    expect(homepageSource).toContain('#intent-demo')
-    expect(homepageSource).toContain('Gentle elephant day in Chiang Mai')
-    expect(homepageSource).toContain('Family-friendly Thailand experience')
-    expect(homepageSource).toContain('Cooking and local food day')
-    expect(homepageSource).toContain('Nature day trip from Chiang Mai')
-    expect(homepageSource).toContain('Bangkok or Pattaya elephant day')
-    expect(homepageSource).toContain('RadarScout helps with guided discovery, comparison, and planning')
-    expect(homepageSource).toContain('Booking partners handle current')
-    expect(homepageSource).toContain('final booking steps')
-    expect(homepageSource).toContain('Prompt links load the planner form only')
-    expect(homepageSource).toContain('Real Thailand experience search starts after you review and')
-    expect(homepageSource).toContain('confirm your trip intent')
+    expect(promptHeroSource).toContain('buildIdeaHref(nextIdea)')
+    expect(promptHeroHelperSource).toContain("const target = '/ai-trip-planner'")
+    expect(promptHeroHelperSource).toContain("const hash = '#intent-demo'")
+    expect(promptHeroHelperSource).toContain('encodeURIComponent(trimmed)')
+    expect(promptHeroHelperSource).toContain('Gentle elephant day in Chiang Mai')
+    expect(promptHeroHelperSource).toContain('Family-friendly Thailand experience')
+    expect(promptHeroHelperSource).toContain('Cooking and local food day')
+    expect(promptHeroHelperSource).toContain('Nature day trip from Chiang Mai')
+    expect(promptHeroSource).not.toContain('Start with a travel idea')
+    expect(promptHeroSource).not.toContain('Use a prompt, then compare matching experiences.')
+    expect(promptHeroHelperSource).not.toContain('Bangkok or Pattaya elephant day')
+    expect(homepageVisibleCopySources).not.toContain('Prompt links load the planner form only')
   })
 
   it('positions the homepage destination rollout as Thailand-first', () => {
@@ -103,15 +105,19 @@ describe('homepage public copy safety', () => {
 
   it('instruments the existing RAD-3 Chiang Mai finder entry without adding a new route or changing the href', () => {
     expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
+    expect(promptHeroSource).toContain("track('homepage_finder_entry_clicked', { source })")
+    expect(promptHeroSource).toContain("go(idea, 'hero_prompt')")
+    expect(promptHeroSource).toContain("go(chip, 'hero_chip')")
     expect(homepageSource).toContain('event="homepage_finder_entry_clicked"')
-    expect(homepageSource).toContain('eventProps={{ source: \'hero\' }}')
     expect(homepageSource).toContain('eventProps={{ source: \'section\' }}')
     expect(homepageVisibleCopySources).toContain('track(event, eventProps)')
     expect(homepageVisibleCopySources).not.toMatch(/navigator\.sendBeacon/i)
     expect(homepageVisibleCopySources).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
 
-  it('keeps homepage AI planning use cases focused on Thailand routes', () => {
+  it('keeps homepage Trip planning use cases focused on Thailand routes', () => {
+    expect(homepageSource).toContain('Trip planning use cases')
+    expect(homepageSource).not.toContain('AI planning use cases')
     expect(homepageSource).toContain('Plan 7 days in Thailand')
     expect(homepageSource).toContain('Compare Bangkok and Chiang Mai day tours')
     expect(homepageSource).toContain('Plan elephant care, cooking, and nature days')

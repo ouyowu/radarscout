@@ -327,6 +327,9 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-09 — `TD-RADARSCOUT-FE-HOME-PROMPT-HERO`: branch
+  `codex/td-radarscout-fe-home-prompt-hero` prepared prompt-first homepage test
+  alignment and gate evidence; result: PR pending, awaiting human merge.
 - 2026-07-09 — `TD-RADARSCOUT-PARTNER-DETAIL-ROUTE-CONSISTENCY-0`: branch
   `codex/td-partner-detail-route-consistency-0` makes reviewed partner seed
   product detail routes resolve through `/tours/partner_cm_*` with safe public

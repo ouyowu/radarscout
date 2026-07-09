@@ -63,41 +63,30 @@ const homepagePromptSearchResponse = {
   },
 }
 
-test.describe('Homepage AI planner entry', () => {
-  test('shows safe AI-guided planning copy and routes users to planner pages', async ({ page }) => {
+test.describe('Homepage Trip Planner entry', () => {
+  test('shows safe personalized planning copy and routes users to planner pages', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page).toHaveTitle('RadarScout | AI-guided Thailand Experience Planner')
-    await expect(page.getByRole('heading', { name: 'AI-guided Thailand Experience Planner' })).toBeVisible()
-    await expect(page.getByText('Tell RadarScout the kind of Thailand day you want.')).toBeVisible()
-
-    await expect(page.getByRole('link', { name: 'Start planning' })).toHaveAttribute(
-      'href',
-      '/ai-trip-planner#intent-demo',
-    )
-    await expect(page.getByRole('link', { name: 'Plan a Chiang Mai elephant day' }).first()).toHaveAttribute(
+    await expect(page).toHaveTitle('RadarScout | Personalized Thailand Experience Planner')
+    await expect(page.getByRole('heading', {
+      name: 'Tell us your ideal Thailand day. We match it to real, reviewed experiences.',
+    })).toBeVisible()
+    await expect(page.getByText('Describe the trip you want')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Plan my trip' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Plan with RadarScout' }).first()).toHaveAttribute(
       'href',
       '/chiang-mai/elephant-camp-finder#plan-with-radarscout',
     )
-
-    await expect(page.getByText('Start with a travel idea')).toBeVisible()
-    await expect(page.getByText('Use a prompt, then compare matching experiences.')).toBeVisible()
-    await expect(page.getByText('Prompt links load the planner form only.')).toBeVisible()
-    await expect(page.getByText('Real Thailand experience search starts after you review and')).toBeVisible()
 
     const promptChips = [
       'Gentle elephant day in Chiang Mai',
       'Family-friendly Thailand experience',
       'Cooking and local food day',
       'Nature day trip from Chiang Mai',
-      'Bangkok or Pattaya elephant day',
     ]
 
     for (const chip of promptChips) {
-      await expect(page.getByRole('link', { name: chip })).toHaveAttribute(
-        'href',
-        `/ai-trip-planner?idea=${encodeURIComponent(chip)}#intent-demo`,
-      )
+      await expect(page.getByRole('button', { name: chip })).toBeVisible()
     }
 
     const pageText = await page.locator('body').innerText()
@@ -110,9 +99,9 @@ test.describe('Homepage AI planner entry', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/')
 
-    await expect(page.getByText('Start with a travel idea')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Gentle elephant day in Chiang Mai' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Bangkok or Pattaya elephant day' })).toBeVisible()
+    await expect(page.getByRole('textbox', { name: 'Describe your ideal Thailand trip' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Gentle elephant day in Chiang Mai' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Nature day trip from Chiang Mai' })).toBeVisible()
 
     const viewport = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
@@ -138,7 +127,7 @@ test.describe('Homepage AI planner entry', () => {
     })
 
     await page.goto('/')
-    await page.getByRole('link', { name: prompt }).click()
+    await page.getByRole('button', { name: prompt }).click()
 
     await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
     await expect(page.locator('#trip-idea')).toHaveValue(prompt)
@@ -169,7 +158,7 @@ test.describe('Homepage AI planner entry', () => {
     })
 
     await page.goto('/')
-    await page.getByRole('link', { name: prompt }).click()
+    await page.getByRole('button', { name: prompt }).click()
 
     await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
     await expect(page.locator('#trip-idea')).toHaveValue(prompt)
@@ -193,9 +182,8 @@ test.describe('Homepage AI planner entry', () => {
     }
   })
 
-  test('Start planning opens the Trip Planner form without automatic product search', async ({ page }) => {
+  test('Plan my trip opens the Trip Planner form without automatic product search', async ({ page }) => {
     let searchRequestCount = 0
-    const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 
     await page.route('/api/ai-trip/search', async route => {
       searchRequestCount += 1
@@ -207,11 +195,11 @@ test.describe('Homepage AI planner entry', () => {
     })
 
     await page.goto('/')
-    await page.getByRole('link', { name: 'Start planning' }).click()
+    await page.getByRole('button', { name: 'Plan my trip' }).click()
 
     await expect(page).toHaveURL('/ai-trip-planner#intent-demo')
     await expect(page.locator('#trip-idea')).toBeVisible()
-    await expect(page.locator('#trip-idea')).toHaveValue(defaultPrompt)
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days food temples elephants, less crowded')
     await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
       'Review or edit the trip idea',
     )
@@ -220,6 +208,32 @@ test.describe('Homepage AI planner entry', () => {
     )
     await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    expect(searchRequestCount).toBe(0)
+  })
+
+  test('homepage hero prompt input opens the Trip Planner form with the typed idea', async ({ page }) => {
+    let searchRequestCount = 0
+    const prompt = 'Bangkok food and temple day'
+
+    await page.route('/api/ai-trip/search', async route => {
+      searchRequestCount += 1
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'no_match', products: [] }),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByRole('textbox', { name: 'Describe your ideal Thailand trip' }).fill(prompt)
+    await page.getByRole('button', { name: 'Plan my trip' }).click()
+
+    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
+    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
+    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
+      'Review or edit the trip idea',
+    )
+    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
     expect(searchRequestCount).toBe(0)
   })
 
@@ -238,7 +252,7 @@ test.describe('Homepage AI planner entry', () => {
     })
 
     await page.goto('/')
-    await page.getByRole('link', { name: 'Plan a Chiang Mai elephant day' }).first().click()
+    await page.getByRole('link', { name: 'Plan with RadarScout' }).first().click()
 
     await expect(page).toHaveURL('/chiang-mai/elephant-camp-finder#plan-with-radarscout')
     await expect(page.locator('#plan-with-radarscout')).toBeVisible()
