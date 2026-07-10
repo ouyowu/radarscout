@@ -105,7 +105,7 @@ export default function LandingPage() {
       <Section
         variant="cloud"
         eyebrow="Reviewed partner examples"
-        title="Featured Thailand experiences for the first traveler test."
+        title="Featured Thailand experiences"
         lead="These cards point to RadarScout detail pages for reviewed partner products. Final operating details stay with the booking partner handoff."
       >
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
