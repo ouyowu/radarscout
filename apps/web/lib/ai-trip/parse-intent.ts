@@ -141,6 +141,9 @@ function normalizeDestination(value: string): string | null {
 
 function extractDestination(prompt: string): string | null {
   const trimmed = prompt.trim()
+  const englishMatch = trimmed.match(/\b(?:in|to|for)\s+([A-Z][A-Za-z\s-]{1,40}?)(?:\s+(?:today|tomorrow|next|for|in|with|and|,|\d)|$)/)
+  if (englishMatch?.[1]) return normalizeDestination(englishMatch[1])
+
   const beforeComma = trimmed.split(/[,，]/)[0]?.trim()
   if (
     beforeComma &&
@@ -149,9 +152,6 @@ function extractDestination(prompt: string): string | null {
   ) {
     return normalizeDestination(beforeComma)
   }
-
-  const englishMatch = trimmed.match(/\b(?:in|to|for)\s+([A-Z][A-Za-z\s-]{1,40}?)(?:\s+(?:today|tomorrow|next|for|in|with|and|,|\d)|$)/)
-  if (englishMatch?.[1]) return normalizeDestination(englishMatch[1])
 
   const chineseMatch = trimmed.match(/^([\u3400-\u9fff]{2,12})\s*\d+\s*(?:天|晚)/)
   if (chineseMatch?.[1]) return chineseMatch[1]
