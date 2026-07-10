@@ -169,8 +169,8 @@ export default function AiTripPlannerPage() {
                   <div className="rounded-2xl bg-[#f5efe8] p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a15d31]">After confirmation</p>
                     <p className="mt-3 text-sm leading-7 text-[#4b5563]">
-                      Read-only Thailand product search after local confirmation, with results clearly marked as comparison-only. Non-Thailand ideas
-                      can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.
+                      Read-only Thailand product search after local confirmation, with reviewed handoff-ready results clearly marked as comparison-only.
+                      Non-Thailand ideas can still be structured as planning text, but product matching stays Thailand-only until coverage is reviewed.
                     </p>
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export default function AiTripPlannerPage() {
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
                 This page positions RadarScout as a Thailand trip planner. The current implementation understands trip intent locally
-                and can return comparison-only product results from Thailand experience records. Non-Thailand ideas can still be structured
+                and can return comparison-only results from reviewed Thailand partner products with a safe public handoff. Non-Thailand ideas can still be structured
                 as planning text, but product matching stays Thailand-only until coverage is reviewed. Current details stay on product pages
                 and booking partner surfaces.
               </p>

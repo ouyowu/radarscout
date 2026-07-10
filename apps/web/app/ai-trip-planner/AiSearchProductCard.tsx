@@ -125,7 +125,7 @@ export function AiSearchProductCard({
       <p className="mt-auto pt-4 text-xs font-bold leading-5 text-[#5a6670]">
         {hasExternalHandoff
           ? 'Continue with the booking partner to review current product details.'
-          : 'Open the product page to review details; booking partner handoff continues from that product page.'}
+          : 'This discovery-only product does not currently have a reviewed booking partner handoff.'}
       </p>
       <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
         {hasExternalHandoff ? (
@@ -142,7 +142,7 @@ export function AiSearchProductCard({
         ) : (
           <Link
             href={buildAiTripPlannerDetailHref(detailHref, id)}
-            aria-label={`View details for ${title}, then continue with the booking partner from that product page`}
+            aria-label={`View details for ${title}; no reviewed booking partner handoff is available`}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             View details

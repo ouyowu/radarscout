@@ -481,7 +481,7 @@ test.describe('Valid Chiang Mai flow', () => {
     expect(receivedPrompt).toBe('Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace')
     await expect(page.getByRole('status')).toContainText('Results ready')
     await expect(page.getByRole('status')).toContainText('Compare the cards below')
-    await expect(page.getByText('Current details stay on product pages; booking partner handoff starts there.')).toBeVisible()
+    await expect(page.getByText('Reviewed matches can continue with a booking partner; planning remains read-only on RadarScout.')).toBeVisible()
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/start with chiang mai elephant sanctuary, then compare the remaining cards below/i)).toBeVisible()
     await expect(page.getByRole('link', { name: /open top match details for chiang mai elephant sanctuary/i })).toHaveAttribute(
@@ -952,16 +952,15 @@ test.describe('Unsupported destination flow (Singapore)', () => {
 
     await expect(page.getByText('Thailand-only search')).toBeVisible()
     await expect(page.getByText(/Try one of these Thailand trip ideas/i)).toBeVisible()
-    await expect(page.getByRole('button', { name: /Chiang Mai elephants and food/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Bangkok food and canals/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Phuket islands and local food/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Pattaya beaches with easy pace/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Thailand multi-city route', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Gentle elephant day in Chiang Mai/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Family-friendly Chiang Mai elephant day/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Chiang Mai cooking and local food/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Chiang Mai nature and elephants/i })).toBeVisible()
 
-    await page.getByRole('button', { name: /Bangkok food and canals/i }).click()
+    await page.getByRole('button', { name: /Chiang Mai cooking and local food/i }).click()
 
     await expect(page.locator('#trip-idea')).toBeFocused()
-    await expect(page.locator('#trip-idea')).toHaveValue('Bangkok 3 days food canals')
+    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai cooking and local food day')
     await expect(page.getByText('Thailand-only search')).toHaveCount(0)
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
 
@@ -988,18 +987,19 @@ test.describe('No match guidance', () => {
     await page.getByRole('button', { name: /confirm trip intent/i }).click()
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
-    await expect(page.getByText('No matching Thailand experiences found')).toBeVisible()
-    await expect(page.getByText(/Try one of these safer next searches/i)).toBeVisible()
-    await expect(page.getByText(/Chiang Mai elephants and food/i)).toBeVisible()
-    await expect(page.getByText(/Bangkok food and canals/i)).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Thailand multi-city route', exact: true })).toBeVisible()
-    await expect(page.getByText(/No product cards are shown until a real eligible product matches/i)).toBeVisible()
+    await expect(page.getByText('No reviewed booking partner match yet')).toBeVisible()
+    await expect(page.getByText(/Try one of these reviewed Chiang Mai searches/i)).toBeVisible()
+    await expect(page.getByText(/Gentle elephant day in Chiang Mai/i)).toBeVisible()
+    await expect(page.getByText(/Family-friendly Chiang Mai elephant day/i)).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Chiang Mai cooking and local food', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Chiang Mai nature and elephants', exact: true })).toBeVisible()
+    await expect(page.getByText(/No product cards are shown until a reviewed handoff-ready product matches/i)).toBeVisible()
     await expect(productCards(page)).toHaveCount(0)
 
-    await page.getByRole('button', { name: /Chiang Mai elephants and food/i }).click()
+    await page.getByRole('button', { name: /Gentle elephant day in Chiang Mai/i }).click()
     await expect(page.locator('#trip-idea')).toBeFocused()
-    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days elephants food')
-    await expect(page.getByText('No matching Thailand experiences found')).toHaveCount(0)
+    await expect(page.locator('#trip-idea')).toHaveValue('Gentle elephant day in Chiang Mai')
+    await expect(page.getByText('No reviewed booking partner match yet')).toHaveCount(0)
     await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
 
     const pageText = await page.locator('body').innerText()
@@ -1021,8 +1021,8 @@ test.describe('No match guidance', () => {
     await page.getByRole('button', { name: /confirm trip intent/i }).click()
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()
 
-    await expect(page.getByText('No matching Thailand experiences found')).toBeVisible()
-    await page.getByRole('link', { name: /refine trip idea after no matching thailand experiences/i }).click()
+    await expect(page.getByText('No reviewed booking partner match yet')).toBeVisible()
+    await page.getByRole('link', { name: /refine trip idea after no reviewed booking partner match/i }).click()
 
     await expect(page).toHaveURL(/#trip-idea$/)
     await expect(page.locator('#trip-idea')).toBeFocused()
@@ -1286,7 +1286,7 @@ test.describe('Product card safety', () => {
     })
 
     for (let i = 0; i < 3; i++) {
-      await expect(cards.nth(i).getByText(/open the product page to review details; booking partner handoff continues from that product page/i)).toBeVisible()
+      await expect(cards.nth(i).getByText(/this discovery-only product does not currently have a reviewed booking partner handoff/i)).toBeVisible()
     }
   })
 
@@ -1296,7 +1296,7 @@ test.describe('Product card safety', () => {
 
     await expect(
       page.getByRole('link', {
-        name: /view details for chiang mai elephant sanctuary, then continue with the booking partner from that product page/i,
+        name: /view details for chiang mai elephant sanctuary; no reviewed booking partner handoff is available/i,
       }),
     ).toHaveAttribute('href', /\/tours\/.*source=ai-trip-planner/)
     await expect(page.getByText(/available now|live availability|instant confirmation|checkout|payment|booking complete/i)).toHaveCount(0)
