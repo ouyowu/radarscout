@@ -80,9 +80,9 @@ test.describe('Homepage Trip Planner entry', () => {
 
     const promptChips = [
       'Gentle elephant day in Chiang Mai',
-      'Family-friendly Thailand experience',
-      'Cooking and local food day',
-      'Nature day trip from Chiang Mai',
+      'Family-friendly elephant sanctuary in Chiang Mai',
+      'Chiang Mai cooking and local food day',
+      'Chiang Mai nature and elephant day trip',
     ]
 
     for (const chip of promptChips) {
@@ -101,7 +101,7 @@ test.describe('Homepage Trip Planner entry', () => {
 
     await expect(page.getByRole('textbox', { name: 'Describe your ideal Thailand trip' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Gentle elephant day in Chiang Mai' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Nature day trip from Chiang Mai' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Chiang Mai nature and elephant day trip' })).toBeVisible()
 
     const viewport = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

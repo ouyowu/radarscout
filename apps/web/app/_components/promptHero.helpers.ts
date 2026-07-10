@@ -1,8 +1,8 @@
 export const exampleChips = [
   'Gentle elephant day in Chiang Mai',
-  'Family-friendly Thailand experience',
-  'Cooking and local food day',
-  'Nature day trip from Chiang Mai',
+  'Family-friendly elephant sanctuary in Chiang Mai',
+  'Chiang Mai cooking and local food day',
+  'Chiang Mai nature and elephant day trip',
 ] as const
 
 /**

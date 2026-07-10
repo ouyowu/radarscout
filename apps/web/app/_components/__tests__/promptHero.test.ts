@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { buildIdeaHref, exampleChips } from '../promptHero.helpers'
+import { parseTripIntent } from '../../../lib/ai-trip/parse-intent'
 
 const source = readFileSync(new URL('../PromptHero.tsx', import.meta.url), 'utf8')
 
@@ -12,8 +13,8 @@ describe('PromptHero idea href', () => {
   })
 
   it('trims whitespace before encoding', () => {
-    expect(buildIdeaHref('  Cooking and local food day  ')).toBe(
-      '/ai-trip-planner?idea=Cooking%20and%20local%20food%20day#intent-demo',
+    expect(buildIdeaHref('  Chiang Mai cooking and local food day  ')).toBe(
+      '/ai-trip-planner?idea=Chiang%20Mai%20cooking%20and%20local%20food%20day#intent-demo',
     )
   })
 
@@ -31,6 +32,15 @@ describe('PromptHero example chips', () => {
 
   it('includes the Chiang Mai elephant starter used by homepage E2E', () => {
     expect(exampleChips).toContain('Gentle elephant day in Chiang Mai')
+  })
+
+  it('keeps every starter compatible with the deterministic Chiang Mai parser flow', () => {
+    for (const chip of exampleChips) {
+      const parsed = parseTripIntent(chip)
+
+      expect(parsed.intent.destination, chip).toBe('Chiang Mai')
+      expect(parsed.intent.interests.length, chip).toBeGreaterThan(0)
+    }
   })
 })
 
