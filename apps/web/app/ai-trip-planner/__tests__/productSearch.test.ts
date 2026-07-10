@@ -425,8 +425,8 @@ describe('AI search product card detail CTA accessibility', () => {
     expect(markup).toContain('min-h-[44px]')
     expect(markup).toContain('flex-wrap')
     expect(markup).toContain('shrink-0')
-    expect(markup).toContain('aria-label="View details for Elephant Sanctuary, then continue with the booking partner from that product page"')
-    expect(markup).toContain('booking partner handoff continues from that product page')
+    expect(markup).toContain('aria-label="View details for Elephant Sanctuary; no reviewed booking partner handoff is available"')
+    expect(markup).toContain('This discovery-only product does not currently have a reviewed booking partner handoff.')
     expect(markup).toContain('href="/tours/prod_1?source=ai-trip-planner"')
   })
 
@@ -454,7 +454,8 @@ describe('AI search product card detail CTA accessibility', () => {
 
 describe('AI Trip successful results next-step copy', () => {
   it('keeps the product-result next step clear and safely scoped', () => {
-    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('Current details stay on product pages')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('Reviewed matches can continue')
+    expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('planning remains read-only')
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).toContain('booking partner')
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/live availability/i)
     expect(AI_TRIP_RESULTS_NEXT_STEP_COPY).not.toMatch(/available now/i)
@@ -468,10 +469,10 @@ describe('AI Trip successful results next-step copy', () => {
 })
 
 describe('AI Trip top-match detail CTA accessibility', () => {
-  it('explains that booking partner handoff happens from the product page', () => {
+  it('does not imply a handoff exists for a discovery-only top match', () => {
     const label = buildAiTripTopMatchDetailAriaLabel('Gentle Elephant Care')
 
-    expect(label).toBe('Open top match details for Gentle Elephant Care, then continue with the booking partner from that product page')
+    expect(label).toBe('Open top match details for Gentle Elephant Care; no reviewed booking partner handoff is available')
     expect(label).not.toMatch(/live availability/i)
     expect(label).not.toMatch(/available now/i)
     expect(label).not.toMatch(/instant confirmation/i)

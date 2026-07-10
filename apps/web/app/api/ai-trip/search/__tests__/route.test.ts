@@ -42,6 +42,10 @@ function makeCandidate(overrides: Record<string, unknown> = {}) {
     detailHref: '/tours/prod_1',
     retailPrice: '49.00',
     currency: 'USD',
+    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
+    ctaLabel: 'Check availability',
+    ctaRel: 'nofollow sponsored noopener noreferrer',
+    externalHandoff: true,
     ...overrides,
   }
 }
@@ -56,8 +60,37 @@ function makeContextItem(overrides: Record<string, unknown> = {}) {
     detailHref: '/tours/prod_1',
     retailPrice: '49.00',
     currency: 'USD',
+    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
+    ctaLabel: 'Check availability',
+    ctaRel: 'nofollow sponsored noopener noreferrer',
+    externalHandoff: true,
     ...overrides,
   }
+}
+
+function makeHandoffContextItem(overrides: Record<string, unknown> = {}) {
+  return makeContextItem({
+    id: 'partner_cm_1232729',
+    title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
+    detailHref: '/tours/partner_cm_1232729',
+    retailPrice: null,
+    currency: null,
+    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+    ctaLabel: 'Check availability',
+    ctaRel: 'nofollow sponsored noopener noreferrer',
+    externalHandoff: true,
+    ...overrides,
+  })
+}
+
+function makeDiscoveryOnlyContextItem(overrides: Record<string, unknown> = {}) {
+  return makeContextItem({
+    ctaHref: null,
+    ctaLabel: null,
+    ctaRel: null,
+    externalHandoff: false,
+    ...overrides,
+  })
 }
 
 describe('POST /api/ai-trip/search — API tests 1–20', () => {
@@ -201,6 +234,63 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(partnerProduct.ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\/online-sales\//)
     expect(body.meta.bookingEnabled).toBe(false)
     expect(body.meta.availabilityEnabled).toBe(false)
+  })
+
+  it('returns only reviewed handoff-ready products in the primary result set', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [
+        makeDiscoveryOnlyContextItem({ id: 'discovery_only' }),
+        makeHandoffContextItem(),
+      ],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai elephants' }))
+    const body = await res.json()
+
+    expect(body.status).toBe('ok')
+    expect(body.products).toEqual([expect.objectContaining({
+      id: 'partner_cm_1232729',
+      externalHandoff: true,
+      ctaLabel: 'Check availability',
+      ctaRel: 'nofollow sponsored noopener noreferrer',
+    })])
+    expect(body.products[0].ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\//)
+  })
+
+  it('returns an honest no-match when eligible discovery products have no reviewed handoff', async () => {
+    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate({ city: 'Bangkok' })])
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeDiscoveryOnlyContextItem({ city: 'Bangkok' })],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Bangkok temples and street food' }))
+    const body = await res.json()
+
+    expect(body.status).toBe('no_match')
+    expect(body.products).toEqual([])
+    expect(body.message).toBe('No reviewed booking partner match is available for this trip idea yet.')
+  })
+
+  it.each([
+    ['non-HTTPS widget URL', { ctaHref: 'http://widgets.bokun.io/online-sales/public-channel/experience/1232729' }],
+    ['lookalike widget host', { ctaHref: 'https://widgets.bokun.io.example.com/online-sales/public-channel/experience/1232729' }],
+    ['non-widget path', { ctaHref: 'https://widgets.bokun.io/account/1232729' }],
+    ['wrong CTA label', { ctaLabel: 'Book now' }],
+    ['missing sponsored rel', { ctaRel: 'noopener noreferrer' }],
+  ])('rejects %s from the primary result set', async (_label, overrides) => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeHandoffContextItem(overrides)],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai elephants' }))
+    const body = await res.json()
+
+    expect(body.status).toBe('no_match')
+    expect(body.products).toEqual([])
   })
 
   // Test 5: Thailand-wide prompt returns eligible Thailand candidates

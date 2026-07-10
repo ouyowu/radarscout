@@ -30,14 +30,13 @@ const examplePrompts = [
   'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace',
 ]
 const noMatchNextSearches = [
-  { label: 'Chiang Mai elephants and food', prompt: 'Chiang Mai 3 days elephants food' },
-  { label: 'Bangkok food and canals', prompt: 'Bangkok 3 days food canals' },
-  { label: 'Phuket islands and local food', prompt: 'Phuket 4 days islands local food' },
-  { label: 'Pattaya beaches with easy pace', prompt: 'Pattaya 2 days beaches easy pace' },
-  { label: 'Thailand multi-city route', prompt: 'Thailand 7 days Bangkok Chiang Mai Phuket food temples beaches, relaxed pace' },
+  { label: 'Gentle elephant day in Chiang Mai', prompt: 'Gentle elephant day in Chiang Mai' },
+  { label: 'Family-friendly Chiang Mai elephant day', prompt: 'Family-friendly elephant sanctuary in Chiang Mai' },
+  { label: 'Chiang Mai cooking and local food', prompt: 'Chiang Mai cooking and local food day' },
+  { label: 'Chiang Mai nature and elephants', prompt: 'Chiang Mai nature and elephant day trip' },
 ]
 
-export const AI_TRIP_RESULTS_NEXT_STEP_COPY = 'Current details stay on product pages; booking partner handoff starts there.'
+export const AI_TRIP_RESULTS_NEXT_STEP_COPY = 'Reviewed matches can continue with a booking partner; planning remains read-only on RadarScout.'
 export const AI_TRIP_INTENT_DEMO_LANDING_COPY =
   'Planner form loaded. Review or edit the trip idea, then confirm trip intent. Product search only runs after you choose to search real Thailand experiences.'
 
@@ -74,7 +73,7 @@ export function canConfirmTripIntent(result: ParseTripIntentResult, isParsedProm
 }
 
 export function buildAiTripTopMatchDetailAriaLabel(title: string): string {
-  return `Open top match details for ${title}, then continue with the booking partner from that product page`
+  return `Open top match details for ${title}; no reviewed booking partner handoff is available`
 }
 
 export function IntentParserDemo() {
@@ -175,7 +174,7 @@ export function IntentParserDemo() {
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
       : searchState.status === 'no_match'
-        ? 'No matching Thailand experiences found. Try a safer suggested search below.'
+        ? 'No reviewed booking partner match yet. Try a reviewed Chiang Mai search below.'
         : searchState.status === 'unsupported_destination'
           ? 'This starter search is limited to Thailand experiences.'
           : 'Search did not complete. Try again with a clearer Thailand trip idea.'
@@ -516,17 +515,17 @@ export function IntentParserDemo() {
               ) : searchState.status === 'no_match' ? (
                 <div className="rounded-[1.25rem] border border-[#e8dfd2] bg-white p-5">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                    <p className="text-sm font-black text-[#5a5147]">No matching Thailand experiences found</p>
+                    <p className="text-sm font-black text-[#5a5147]">No reviewed booking partner match yet</p>
                     <a
                       href="#trip-idea"
-                      aria-label="Refine trip idea after no matching Thailand experiences"
+                      aria-label="Refine trip idea after no reviewed booking partner match"
                       className="text-xs font-black uppercase tracking-[0.12em] text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
                     >
                       Refine trip idea
                     </a>
                   </div>
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#6b7280]">
-                    No Thailand experiences matched your current intent. Try one of these safer next searches:
+                    {searchState.message ?? 'RadarScout only shows primary recommendations when a reviewed product has a safe public booking partner handoff.'} Try one of these reviewed Chiang Mai searches:
                   </p>
                   <ul className="mt-4 grid gap-2 text-sm font-semibold leading-6 text-[#5a6670] sm:grid-cols-2">
                     {noMatchNextSearches.map(nextSearch => (
@@ -542,7 +541,7 @@ export function IntentParserDemo() {
                     ))}
                   </ul>
                   <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
-                    No product cards are shown until a real eligible product matches the confirmed intent.
+                    No product cards are shown until a reviewed handoff-ready product matches the confirmed intent.
                   </p>
                 </div>
               ) : searchState.status === 'ok' && searchState.products.length > 0 ? (
@@ -553,7 +552,7 @@ export function IntentParserDemo() {
                         {searchState.products.length} Thailand experience{searchState.products.length === 1 ? '' : 's'} found
                       </p>
                       <p className="mt-1 text-xs font-semibold text-[#6b7280]">
-                        Comparison only. Current product details and booking partner handoff stay on product pages.
+                        Comparison only on RadarScout. Continue with the booking partner from a reviewed result.
                       </p>
                     </div>
                     <a
@@ -602,7 +601,7 @@ export function IntentParserDemo() {
                       aria-live="polite"
                       className="rounded-2xl border border-[#d8eadf] bg-white px-3 py-2 text-xs font-semibold leading-5 text-[#0f766e] sm:px-4 sm:py-3 sm:text-sm sm:leading-6"
                     >
-                      Results ready. Compare the cards below, then open a product page for current details and booking partner handoff.
+                      Results ready. Compare the cards below; every primary result has a reviewed booking partner handoff.
                     </p>
                     <p className="rounded-2xl border border-[#e8dfd2] bg-[#f7f3ec] px-3 py-2 text-xs font-semibold leading-5 text-[#5a6670] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
                       {AI_TRIP_RESULTS_NEXT_STEP_COPY}

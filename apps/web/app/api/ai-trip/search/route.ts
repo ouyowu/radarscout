@@ -17,6 +17,8 @@ export const dynamic = 'force-dynamic'
 const DEFAULT_TAKE = 6
 const MAX_TAKE = 12
 const MAX_INTEREST_SEARCH_TERMS = 8
+const PUBLIC_HANDOFF_REL = 'nofollow sponsored noopener noreferrer' as const
+const NO_REVIEWED_HANDOFF_MESSAGE = 'No reviewed booking partner match is available for this trip idea yet.'
 
 const INTEREST_SEARCH_ALIASES: Record<string, string[]> = {
   elephant: ['elephants'],
@@ -56,6 +58,26 @@ export type AiTripSearchResponse = {
 type CandidateQueryResult = {
   candidates: AiProductCandidate[]
   fallbackUsed: boolean
+}
+
+function isReviewedHandoffReadyProduct(product: AiProductContextItem): boolean {
+  if (
+    product.externalHandoff !== true ||
+    product.ctaLabel !== 'Check availability' ||
+    product.ctaRel !== PUBLIC_HANDOFF_REL ||
+    !product.ctaHref
+  ) {
+    return false
+  }
+
+  try {
+    const url = new URL(product.ctaHref)
+    return url.protocol === 'https:' &&
+      url.hostname === 'widgets.bokun.io' &&
+      url.pathname.startsWith('/online-sales/')
+  } catch {
+    return false
+  }
 }
 
 function isCityDestination(destination: string): boolean {
@@ -258,6 +280,9 @@ export async function POST(request: NextRequest) {
 
     const context = await buildAiProductContext(candidates)
 
+    const handoffReadyProducts = context.status === 'ok'
+      ? context.items.filter(isReviewedHandoffReadyProduct)
+      : []
     const elapsedMs = Date.now() - startMs
 
     console.log('[ai-trip/search]', JSON.stringify({
@@ -265,16 +290,17 @@ export async function POST(request: NextRequest) {
       destinationCategory,
       candidateCount: candidates.length,
       eligibleCount: candidates.length,
-      resultCount: context.status === 'ok' ? context.items.length : 0,
+      resultCount: handoffReadyProducts.length,
       elapsedMs,
       fallbackUsed,
     }))
 
-    if (context.status === 'no_match') {
+    if (context.status === 'no_match' || handoffReadyProducts.length === 0) {
       return NextResponse.json({
         status: 'no_match',
         intent,
         products: [],
+        message: NO_REVIEWED_HANDOFF_MESSAGE,
         meta: META,
       } satisfies AiTripSearchResponse)
     }
@@ -282,7 +308,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       status: 'ok',
       intent,
-      products: context.items,
+      products: handoffReadyProducts,
       meta: META,
     } satisfies AiTripSearchResponse)
   } catch (err) {
