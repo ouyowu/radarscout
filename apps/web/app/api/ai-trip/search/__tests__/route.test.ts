@@ -348,10 +348,24 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
-  // Test 11: Eligible flow calls listAiEligibleThailandProducts
-  it('eligible Bangkok flow calls listAiEligibleThailandProducts', async () => {
-    await POST(makeRequest({ prompt: 'Bangkok 3 days food' }))
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalled()
+  // Test 11: City-specific searches without reviewed partners avoid discovery-only retrieval.
+  it('eligible Bangkok flow returns no-match without discovery-only retrieval', async () => {
+    const response = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const body = await response.json()
+
+    expect(body.status).toBe('no_match')
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+  })
+
+  it('generic Chiang Mai trip length does not expose unrelated reviewed products', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+
+    const response = await POST(makeRequest({ prompt: 'Chiang Mai 3 days' }))
+    const body = await response.json()
+
+    expect(body.status).toBe('no_match')
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).toHaveBeenCalledWith([])
   })
 
   // Test 12: Eligible flow calls buildAiProductContext without modelFn
@@ -359,7 +373,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
-    await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days' }))
 
     expect(contextMock.buildAiProductContext).toHaveBeenCalledWith(
       expect.any(Array),
@@ -392,7 +406,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem()],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants cooking' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants cooking' }))
     const body = await res.json()
 
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
@@ -412,7 +426,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem()],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants temples food' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants temples food' }))
     const body = await res.json()
 
     const searches = listMock.listAiEligibleThailandProducts.mock.calls
@@ -425,6 +439,28 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(searches).toContain('elephant')
     expect(body.status).toBe('ok')
     expect(body.products).toHaveLength(1)
+  })
+
+  it('starts independent interest lookups concurrently when no reviewed partner match exists', async () => {
+    const resolvers: Array<(value: ReturnType<typeof makeCandidate>[]) => void> = []
+    listMock.listAiEligibleThailandProducts.mockImplementation(() =>
+      new Promise(resolve => resolvers.push(resolve)),
+    )
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const responsePromise = POST(makeRequest({ prompt: 'Thailand 3 days beaches temples' }))
+
+    await vi.waitFor(() => {
+      expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(6)
+    })
+
+    resolvers.forEach((resolve, index) => resolve(index === 0 ? [makeCandidate()] : []))
+
+    const response = await responsePromise
+    expect(response.status).toBe(200)
   })
 
   it('multi-interest results keep later-interest matches when the first parsed interest fills the candidate limit', async () => {
@@ -454,7 +490,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       })),
     }))
 
-    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants food' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants food' }))
     const body = await res.json()
 
     const searches = listMock.listAiEligibleThailandProducts.mock.calls
@@ -479,13 +515,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem()],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Pattaya 2 days elephant food beach' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand anime' }))
     const body = await res.json()
 
     expect(body.status).toBe('ok')
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
     expect(calls.length).toBeGreaterThan(1)
-    expect(calls.at(-1)).toEqual({ city: 'Pattaya', take: expect.any(Number) })
+    expect(calls.at(-1)).toEqual({ city: undefined, take: expect.any(Number) })
   })
 
   it.each([
@@ -512,9 +548,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       .map((candidate: { id: string }) => candidate.id)
     expect(rankedIds.some((id: string) => id.startsWith('partner_cm_'))).toBe(true)
 
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls.every(call => call.city === 'Chiang Mai')).toBe(true)
-    expect(calls.some(call => call.search === 'elephants')).toBe(true)
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
   })
 
   it.each([
@@ -551,12 +585,12 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem({ title: 'Chiang Mai Temple Walk' })],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Chiang Mai temples night market no elephant relaxed evening' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand temples night market no elephant relaxed evening' }))
     const body = await res.json()
 
     expect(res.status).toBe(200)
     expect(body.status).toBe('ok')
-    expect(body.intent.destination).toBe('Chiang Mai')
+    expect(body.intent.destination).toBe('Thailand')
     expect(body.intent.interests).toEqual(expect.arrayContaining(['temples', 'markets']))
     expect(body.intent.interests).not.toContain('elephants')
 
@@ -568,6 +602,19 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(searches).not.toContain('elephant')
   })
 
+  it('city-specific avoid-elephants prompt returns no-match without broad partner or DB fallback', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
+
+    const response = await POST(makeRequest({
+      prompt: 'Chiang Mai temples and markets without elephants',
+    }))
+    const body = await response.json()
+
+    expect(body.status).toBe('no_match')
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).toHaveBeenCalledWith([])
+  })
+
   // Test 15: Response contains no rawJson or eligibility internals
   it('ok response contains no rawJson or eligibility internals', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
@@ -576,7 +623,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem()],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days' }))
     const body = await res.json()
 
     const serialized = JSON.stringify(body)
@@ -613,7 +660,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
   // Test 17: Maximum 12 products
   it('retrieval take is capped at maximum', async () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([])
-    await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days' }))
     const firstCall = listMock.listAiEligibleThailandProducts.mock.calls[0][0]
     expect(firstCall.take).toBeLessThanOrEqual(12)
     expect(firstCall.take).toBeGreaterThanOrEqual(1)
@@ -705,7 +752,7 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
-    await POST(makeRequest({ prompt: 'Phuket 3 days' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days' }))
 
     expect(contextMock.buildAiProductContext).toHaveBeenCalledOnce()
     expect(contextMock.buildAiProductContext).toHaveBeenCalledWith(
@@ -720,7 +767,7 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     )
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
-    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days' }))
     const body = await res.json()
 
     expect(res.status).toBe(200)
@@ -733,7 +780,7 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     listMock.listAiEligibleThailandProducts.mockRejectedValue(new Error('DB connection failed'))
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
-    const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    const res = await POST(makeRequest({ prompt: 'Thailand 3 days' }))
     const body = await res.json()
 
     expect(res.status).toBe(500)
@@ -785,7 +832,7 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
-    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days elephants' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
@@ -800,7 +847,7 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
       .mockResolvedValueOnce([makeCandidate()])  // alias hit
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
-    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants cooking' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days elephants cooking' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
     const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
@@ -820,18 +867,14 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(2)
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls[0]).toMatchObject({ city: 'Chiang Mai', search: 'elephants' })
-    expect(calls[1]).toMatchObject({ city: 'Chiang Mai', search: 'elephant' })
-    expect(calls.every(options => options.search)).toBe(true)
+    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
   })
 
   it('no-interest query: fallbackUsed=false, retrieval called once', async () => {
-    // "Bangkok 3 days" has no interest keywords → interests=[] → no primary search
+    // "Thailand 3 days" has no interest keywords → interests=[] → one fallback search
     listMock.listAiEligibleThailandProducts.mockResolvedValue([])
 
-    await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
+    await POST(makeRequest({ prompt: 'Thailand 3 days' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
     expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(1)

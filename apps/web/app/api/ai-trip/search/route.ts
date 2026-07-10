@@ -163,18 +163,20 @@ async function queryEligibleCandidates(
   promptSearch?: string | null,
 ): Promise<CandidateQueryResult> {
   const city = destination && isCityDestination(destination) ? destination : null
+  const promptPartnerMatches = promptSearch
+    ? listMatchingPartnerProductCandidates({ city, search: promptSearch, take })
+    : []
+
+  if (city) {
+    return { candidates: promptPartnerMatches, fallbackUsed: false }
+  }
 
   if (interests.length > 0) {
     const matchBuckets: AiProductCandidate[][] = []
-    const promptPartnerMatches = listMatchingPartnerProductCandidates({
-      city,
-      search: promptSearch,
-      take,
-    })
 
     if (promptPartnerMatches.length > 0) matchBuckets.push(promptPartnerMatches)
 
-    for (const term of getInterestSearchTerms(interests)) {
+    const termMatchBuckets = await Promise.all(getInterestSearchTerms(interests).map(async term => {
       const matches = await listAiEligibleThailandProducts({
         city: city ?? undefined,
         search: term,
@@ -187,8 +189,10 @@ async function queryEligibleCandidates(
       })
       const combinedMatches = [...matches, ...partnerMatches]
 
-      if (combinedMatches.length > 0) matchBuckets.push(combinedMatches)
-    }
+      return combinedMatches
+    }))
+
+    matchBuckets.push(...termMatchBuckets.filter(matches => matches.length > 0))
 
     const interestMatches = mergeCandidateBuckets(matchBuckets, take)
     if (interestMatches.length > 0) {
