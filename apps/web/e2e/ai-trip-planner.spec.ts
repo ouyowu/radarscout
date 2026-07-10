@@ -1230,6 +1230,15 @@ test.describe('Product card safety', () => {
     expect(resultSummary.toLowerCase()).not.toContain('payment')
   })
 
+  test('product cards do not render prices from the search response', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+    await expect(productCards(page)).toHaveCount(3)
+
+    await expect(page.getByText('From USD 49.00', { exact: true })).toHaveCount(0)
+    await expect(page.getByText('From USD 29.00', { exact: true })).toHaveCount(0)
+  })
+
   test('product cards identify results as read-only comparison matches', async ({ page }) => {
     await confirmChiangMaiIntent(page)
     await page.getByRole('button', { name: /search real thailand experiences/i }).click()

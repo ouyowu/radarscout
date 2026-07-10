@@ -54,17 +54,12 @@ export function AiSearchProductCard({
   imageAlt,
   tags,
   detailHref,
-  retailPrice,
-  currency,
   fitReason,
   ctaHref,
   ctaLabel,
   ctaRel,
   externalHandoff,
 }: AiSearchProductCardProps) {
-  const priceLabel = retailPrice
-    ? `${currency ? `${currency} ` : ''}${retailPrice}`
-    : null
   const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
 
   return (
@@ -132,14 +127,7 @@ export function AiSearchProductCard({
           ? 'Continue with the booking partner to review current product details.'
           : 'Open the product page to review details; booking partner handoff continues from that product page.'}
       </p>
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-        {priceLabel ? (
-          <p className="min-w-0 text-base font-black text-[#101820]">
-            From {priceLabel}
-          </p>
-        ) : (
-          <div />
-        )}
+      <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
         {hasExternalHandoff ? (
           <a
             href={ctaHref ?? undefined}
