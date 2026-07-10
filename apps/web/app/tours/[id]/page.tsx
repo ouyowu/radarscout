@@ -5,6 +5,7 @@ import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { Button, Card, Section } from '@/app/_components/design-system'
+import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 import {
   getPublicThailandProduct,
   loadPublicThailandProductDetail,
@@ -372,14 +373,15 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                 Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
               {product.bookingPartnerHandoff ? (
-                <a
+                <TrackedBookingPartnerHandoff
                   href={product.bookingPartnerHandoff.href}
-                  target="_blank"
                   rel={product.bookingPartnerHandoff.rel}
+                  productId={product.id}
+                  source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
                   className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-rs-terracotta-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
                 >
                   {product.bookingPartnerHandoff.label}
-                </a>
+                </TrackedBookingPartnerHandoff>
               ) : null}
               {product.bookingPartnerHandoff ? (
                 <p className="mt-3 text-xs font-semibold leading-6 text-white/65">
