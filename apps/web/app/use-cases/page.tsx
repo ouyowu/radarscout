@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
         'See how SaaS founders, marketing agencies, and B2B sales teams use RadarScout to find high-intent Reddit conversations.',
       type: 'website',
       url: `${base}/use-cases`,
-      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Use Cases' }],
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'RadarScout Thailand Experience Planner' }],
     },
   }
 }

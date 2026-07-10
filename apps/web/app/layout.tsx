@@ -8,7 +8,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   metadataBase: new URL(base),
   title: {
-    default: 'RadarScout — Thailand Day Tour AI Concierge',
+    default: 'RadarScout — Thailand Experience Planner',
     template: '%s',
   },
   description:
@@ -18,17 +18,15 @@ export const metadata: Metadata = {
     apple: '/logo-icon.svg',
   },
   openGraph: {
-    title: 'RadarScout — Thailand Day Tour AI Concierge',
+    title: 'RadarScout — Thailand Experience Planner',
     description: 'Ask for Thailand experience ideas, compare trip-fit options, and continue with a trusted booking partner.',
     type: 'website',
     url: base,
-    images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Thailand day tour AI concierge' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RadarScout — Thailand Day Tour AI Concierge',
+    title: 'RadarScout — Thailand Experience Planner',
     description: 'Plan Thailand experiences, compare trip-fit options, and continue with a booking partner.',
-    images: [`${base}/og-image.png`],
   },
 }
 

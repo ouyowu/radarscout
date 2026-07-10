@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
         'Free plan with 3 keywords forever. Upgrade to Pro for AI intent scoring, reply drafts, and unlimited alerts.',
       type: 'website',
       url: `${base}/pricing`,
-      images: [{ url: `${base}/og-image.png`, width: 1200, height: 630, alt: 'RadarScout Pricing' }],
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'RadarScout Thailand Experience Planner' }],
     },
   }
 }

@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: base,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RadarScout | Personalized Thailand Experience Planner',
+    description:
+      'Compare Thailand experiences, draft a day plan, and continue with a trusted booking partner when you are ready.',
+  },
 }
 
 const featuredDestinations = [

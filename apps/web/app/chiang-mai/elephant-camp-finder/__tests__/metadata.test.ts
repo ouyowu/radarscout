@@ -37,6 +37,30 @@ describe('Chiang Mai elephant camp finder metadata', () => {
     expect(metadata.robots).toMatchObject({ index: true, follow: true })
   })
 
+  it('publishes honest page-specific social metadata', () => {
+    const title = 'Find the right Chiang Mai experience | RadarScout'
+    const description =
+      'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.'
+
+    expect(metadata.openGraph).toMatchObject({
+      title,
+      description,
+      type: 'website',
+      url: 'https://www.radarscout.io/chiang-mai/elephant-camp-finder',
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'RadarScout Thailand Experience Planner' }],
+    })
+    expect(metadata.twitter).toMatchObject({
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [{ url: '/opengraph-image', alt: 'RadarScout Thailand Experience Planner' }],
+    })
+
+    const socialCopy = JSON.stringify({ openGraph: metadata.openGraph, twitter: metadata.twitter })
+    expect(socialCopy).not.toMatch(/AI concierge/i)
+    expect(socialCopy).not.toMatch(/live availability|available now|instant confirmation|checkout|payment/i)
+  })
+
   it('does not expose forbidden live availability copy in the public intro', () => {
     const publicCopy = [
       ELEPHANT_FINDER_HERO_COPY,
