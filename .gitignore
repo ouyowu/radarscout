@@ -43,3 +43,7 @@ packages/db/node_modules/.prisma/
 
 # Local operator-provided product data — never commit raw partner inputs
 private-inputs/
+
+# Local browser/agent artifacts — never commit generated run logs or archives
+.playwright-mcp/
+_local_archive/
