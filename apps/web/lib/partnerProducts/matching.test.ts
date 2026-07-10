@@ -75,4 +75,19 @@ describe('listMatchingPartnerProductCandidates', () => {
       take: 5,
     })).toEqual([])
   })
+
+  it('does not treat destination and trip-length boilerplate as a product match', () => {
+    expect(listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      search: 'Chiang Mai 3 days',
+      take: 6,
+    })).toEqual([])
+  })
+
+  it('still supports an explicit unfiltered city listing when search is omitted', () => {
+    expect(listMatchingPartnerProductCandidates({
+      city: 'Chiang Mai',
+      take: 3,
+    })).toHaveLength(3)
+  })
 })

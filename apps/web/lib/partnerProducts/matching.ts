@@ -34,9 +34,13 @@ function searchTokens(search?: string | null): string[] {
     'an',
     'and',
     'chiang',
+    'day',
+    'days',
     'for',
     'in',
     'mai',
+    'night',
+    'nights',
     'of',
     'sanctuary',
     'the',
@@ -49,7 +53,7 @@ function searchTokens(search?: string | null): string[] {
 
   return normalize(search)
     .split(' ')
-    .filter(token => token.length > 1 && !stopWords.has(token))
+    .filter(token => token.length > 1 && !/^\d+$/.test(token) && !stopWords.has(token))
 }
 
 function tokenVariants(token: string): string[] {
@@ -64,7 +68,7 @@ function textContainsToken(text: string, token: string): boolean {
 
 function scoreProduct(product: PartnerProduct, search?: string | null): number {
   const tokens = searchTokens(search)
-  if (tokens.length === 0) return 1
+  if (tokens.length === 0) return search?.trim() ? 0 : 1
 
   const title = normalize(product.title)
   const tags = normalize(product.tags.join(' '))
