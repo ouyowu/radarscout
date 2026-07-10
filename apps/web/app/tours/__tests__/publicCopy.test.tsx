@@ -178,8 +178,8 @@ describe('tour public copy safety', () => {
         imageUrl: null,
         summary: null,
         description: null,
-        retailPrice: null,
-        currency: null,
+        retailPrice: '1200',
+        currency: 'THB',
         detailHref: '/tours/tour_without_price',
         facts: {
           duration: null,
@@ -195,7 +195,8 @@ describe('tour public copy safety', () => {
     const markup = renderToStaticMarkup(element)
     const normalizedMarkup = markup.toLowerCase()
 
-    expect(markup).toContain('Price not listed')
+    expect(markup).not.toContain('THB 1200')
+    expect(markup).not.toContain('Prices are shown')
     expect(normalizedMarkup).toContain('booking partner')
     expect(normalizedMarkup).toContain('trusted partner record')
     expect(markup).toContain('Planning-only detail')

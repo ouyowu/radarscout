@@ -121,12 +121,6 @@ function productLocation(product: ProductDetail) {
   return product.city ?? product.location ?? product.destination ?? 'Thailand'
 }
 
-function productPrice(product: ProductDetail) {
-  if (!product.retailPrice) return 'Price not listed'
-
-  return product.currency ? `${product.currency} ${product.retailPrice}` : product.retailPrice
-}
-
 function factRows(facts?: ProductFacts | null) {
   if (!facts) return []
 
@@ -358,18 +352,6 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           </Card>
 
           <aside className="grid gap-5 lg:sticky lg:top-5">
-            <Card className="p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
-                Product detail
-              </p>
-              <p className="mt-3 font-rs-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-[-0.035em] text-rs-ink">
-                {productPrice(product)}
-              </p>
-              <p className="mt-4 text-sm leading-7 text-rs-muted">
-                Prices are shown only when provided in the product record. No estimated or invented price is displayed.
-              </p>
-            </Card>
-
             <Card className="p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
                 Planning boundary
