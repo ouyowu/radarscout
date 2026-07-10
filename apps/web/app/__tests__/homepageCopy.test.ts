@@ -48,6 +48,11 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
+  it('presents reviewed experiences without internal test language', () => {
+    expect(homepageSource).toContain('Featured Thailand experiences')
+    expect(homepageSource).not.toContain('for the first traveler test')
+  })
+
   it('links to the Trip Planner with safe prompt-first copy', () => {
     expect(promptHeroSource).toContain('Tell us your ideal Thailand day. We match it to real, reviewed experiences.')
     expect(promptHeroSource).toContain('Plan my trip')
