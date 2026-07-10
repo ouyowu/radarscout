@@ -398,7 +398,10 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(calls.at(-1)).toEqual({ city: 'Pattaya', take: expect.any(Number) })
   })
 
-  it('compact Chiang Mai interest prompt can use reviewed partner matches without a combined destination fallback', async () => {
+  it.each([
+    'Chiang Mai elephants',
+    'Gentle elephant day in Chiang Mai',
+  ])('Chiang Mai interest prompt can use reviewed partner matches without a combined destination fallback: %s', async prompt => {
     listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
       Promise.resolve(options.search ? [] : [makeCandidate()]),
     )
@@ -407,7 +410,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       items: [makeContextItem()],
     })
 
-    const res = await POST(makeRequest({ prompt: 'Chiang Mai elephants' }))
+    const res = await POST(makeRequest({ prompt }))
     const body = await res.json()
 
     expect(res.status).toBe(200)

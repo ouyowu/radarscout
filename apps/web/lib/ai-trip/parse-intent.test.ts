@@ -63,6 +63,13 @@ describe('parseTripIntent', () => {
     expect(phuket.intent.interests).toContain('beaches')
   })
 
+  it('extracts Chiang Mai from the homepage gentle elephant example', () => {
+    const result = parseTripIntent('Gentle elephant day in Chiang Mai')
+
+    expect(result.intent.destination).toBe('Chiang Mai')
+    expect(result.intent.interests).toContain('elephants')
+  })
+
   it('does not normalize mixed Thailand and foreign destinations as a Thailand prefix', () => {
     const result = parseTripIntent('Thailand and Singapore 7 days')
 
