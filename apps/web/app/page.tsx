@@ -117,7 +117,8 @@ export default function LandingPage() {
               title={product.title}
               summary={product.shortSummary}
               tags={product.tags.slice(0, 3)}
-              imageAlt={`${product.title} visual placeholder`}
+              imageUrl={product.imageUrl}
+              imageAlt={product.imageAlt ?? product.title}
             />
           ))}
         </div>

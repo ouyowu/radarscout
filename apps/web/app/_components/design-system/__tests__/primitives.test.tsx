@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { Button, ExperienceCard, Nav, Section } from '../index'
 
@@ -59,5 +60,39 @@ describe('RadarScout design system primitives', () => {
     ].join('\n')
 
     expect(source).not.toMatch(unsafeCopyPattern)
+  })
+
+  it('renders reviewed partner media with an honest fallback for cards without images', () => {
+    const imageUrl =
+      'https://imgcdn.bokun.tools/example.jpeg?fm=auto&mode=crop&crop=faces&dpr=1&w=596&h=450'
+    const withImage = renderToStaticMarkup(
+      ExperienceCard({
+        title: 'Gentle Chiang Mai day',
+        summary: 'A calm way to compare trusted local experiences.',
+        imageUrl,
+        imageAlt: 'Elephants at a reviewed Chiang Mai experience',
+      }),
+    )
+    const withoutImage = renderToStaticMarkup(
+      ExperienceCard({
+        title: 'Future Thailand experience',
+        summary: 'A planning-only card without reviewed media yet.',
+      }),
+    )
+
+    expect(withImage).toContain('<img')
+    expect(withImage).toContain('https://imgcdn.bokun.tools/example.jpeg')
+    expect(withImage).toContain('alt="Elephants at a reviewed Chiang Mai experience"')
+    expect(withImage).not.toContain('visual placeholder')
+    expect(withoutImage).not.toContain('<img')
+    expect(withoutImage).toContain('linear-gradient')
+  })
+
+  it('passes existing reviewed seed media into homepage experience cards', () => {
+    const homepage = readFileSync('app/page.tsx', 'utf8')
+
+    expect(homepage).toContain('imageUrl={product.imageUrl}')
+    expect(homepage).toContain('imageAlt={product.imageAlt ?? product.title}')
+    expect(homepage).not.toContain('imageAlt={`${product.title} visual placeholder`}')
   })
 })

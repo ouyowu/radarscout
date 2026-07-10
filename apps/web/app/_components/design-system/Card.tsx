@@ -15,6 +15,7 @@ type ExperienceCardProps = {
   eyebrow?: string
   tags?: string[]
   href?: string
+  imageUrl?: string
   imageAlt?: string
   className?: string
 }
@@ -42,15 +43,26 @@ export function ExperienceCard({
   eyebrow,
   tags = [],
   href,
+  imageUrl,
   imageAlt = '',
   className,
 }: ExperienceCardProps) {
   return (
     <Card href={href} className={className} ariaLabel={href ? title : undefined}>
       <div
-        aria-label={imageAlt || undefined}
+        aria-label={!imageUrl ? imageAlt || undefined : undefined}
         className="relative flex aspect-[4/3] items-end bg-[linear-gradient(135deg,var(--rs-forest-700),var(--rs-sand-100)_55%,var(--rs-terracotta))] p-5"
       >
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={imageUrl}
+            alt={imageAlt}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : null}
         <div className="absolute inset-0 bg-rs-forest-900/25" />
         {eyebrow ? (
           <p className="relative text-xs font-semibold uppercase tracking-[0.18em] text-white/90">{eyebrow}</p>
