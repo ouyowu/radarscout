@@ -3,8 +3,9 @@
 This is a STANDING charter. It governs every Codex run on RadarScout. Codex works
 the roadmap continuously and autonomously **inside the green zone**, and
 **hard-stops at the red zone** for human approval. The goal: make real product
-progress without a human reviewing every task — while never letting an agent take
-an irreversible action alone.
+progress without a human reviewing every task. The operator has granted standing
+authorization for fully gated GREEN ZONE merges and production deploys; irreversible
+RED ZONE actions still require separate human approval.
 
 Read on every run, in this order:
 `CLAUDE.md` → this charter → `docs/radarscout-release-sop.md` →
@@ -34,22 +35,23 @@ shipping product over writing docs.
    (if UI) · `build` · `git diff --check`. All green or the task does not proceed.
 6. **Hermes review** — run the Hermes red-line gate. If Hermes flags anything on
    the red list → STOP that task, move it to the Human Approval Queue.
-7. **Open PR — do NOT merge (current policy: PR-only).** If (a) all checks green,
-   (b) Hermes passed, (c) the diff touches only declared files and NO red-zone
-   paths, and (d) it is a green-zone task: open a PR into
-   `codex/travel-mvp-launch` and leave it OPEN for the human to merge. Codex does
-   NOT merge, even in the green zone, under the current policy. The human
-   batch-merges open green PRs when they choose.
-8. **Record** — append one line to the Execution Log in the status doc (task, PR,
-   SHA, result = "PR open, awaiting human merge"). Do NOT create a new status doc.
-   Do NOT open status-only PRs.
-9. **Next** — go to step 1. Keep opening green PRs (up to the daily cap) until
-   blocked or the green queue is empty. Do not wait for the human to merge before
-   starting the next task — branch each new task off `codex/travel-mvp-launch`
-   base (note: it will not yet contain the still-open prior PRs; keep tasks
-   independent so open PRs don't conflict).
+7. **Open PR and merge after independent gates.** If (a) all QA checks are green,
+   (b) Hermes passed, (c) GitHub/Vercel checks are green, (d) the diff touches only
+   declared files and no red-zone paths, and (e) the task is green-zone: open the
+   PR into `codex/travel-mvp-launch`, review the final diff, and merge it. Never
+   merge a task that implemented its own exception to these gates.
+8. **Deploy user-facing green changes.** From a fresh clean worktree at the exact
+   merge SHA, run the release gate and deploy to the existing Vercel project. Then
+   run read-only production smoke. This standing authorization removes per-deploy
+   approval only for green changes; any red-zone change, failed assertion, branch
+   drift, ambiguous provenance, or settings/env change still hard-stops.
+9. **Record** — append one concise line to the single Execution Log (task, PR,
+   merge SHA, deployment ID if applicable, result). Do not create status-only docs
+   or PRs.
+10. **Next** — go to step 1 until the queue is blocked, empty, or a circuit breaker
+   fires.
 
-## GREEN ZONE — Codex may implement, QA, Hermes-check, and open a PR alone (human merges)
+## GREEN ZONE — Codex may implement, QA, Hermes-check, merge, and deploy
 
 - Docs that change a decision or unblock a gate (update in place; never status-only sprawl).
 - Local tooling / scripts + their tests.
@@ -63,7 +65,8 @@ shipping product over writing docs.
 
 ## RED ZONE — STOP and queue for the human. Codex must NOT do these alone.
 
-- Production deploy / `vercel --prod` / promoting any deployment.
+- Any production deploy containing red-zone changes, missing independent QA or
+  Hermes approval, failed checks, ambiguous source SHA, or Vercel settings/env changes.
 - DB / Prisma schema / migration / seed-to-DB / env / `.env*`.
 - SEO: changing any `robots` / `index,follow` / `sitemap` value, or submitting a
   page to Search Console / opening indexing.
@@ -90,8 +93,8 @@ you never idle waiting.
   Approval Queue, wait.
 - Any diff would exceed its declared file scope → STOP, do not force it.
 - Hermes is unavailable / errors → treat as not-passed; do not open the PR.
-- **More than 4 open green PRs in one day → STOP, summarize, wait** for the human
-  to review/merge before opening more. (Daily cap = 4.)
+- **More than 4 automated green merges in one day → STOP and summarize.**
+  (Daily cap = 4.)
 - Green tasks depend on each other (task N needs task N-1 merged first) → STOP and
   note it; do not stack unmerged PRs into a fragile chain. Wait for the human to
   merge the prerequisite.
@@ -106,24 +109,15 @@ you never idle waiting.
 
 ## What the human sees (no per-task review)
 
-The human does NOT review each task synchronously. Codex opens green PRs and
-keeps working. The human checks, when they want:
-- the **open green PRs** (batch-merge the ones they're happy with — up to 4 will
-  be waiting), and
-- the **Execution Log** and **Human Approval Queue** in the status doc.
+The human does not review each green task synchronously. Codex completes the
+gated green loop and the human can audit the **Execution Log** at any time. The
+**Human Approval Queue** contains only true red-zone decisions. A concise report
+must include every automatic merge and production deployment.
 
-Current policy: Codex opens PRs but does NOT merge (green or red). The human
-batch-merges green PRs at their convenience, and acts on red-zone items (deploy
-approval, provide partner data, choose a vendor, approve SEO/DB). This keeps a
-human in the loop on every merge while removing per-task synchronous review.
+## Standing red-zone policy (updated 2026-07-10)
 
-## Current standing red-zone items (as of 2026-07-07)
-
-1. Production deploy of `7d446ee` — blocked by Vercel free-tier deploy quota;
-   needs human to upgrade plan or wait for reset, then run the deploy command in
-   `radarscout-ai-trip-status.md` and say `Approve production deploy — <SHA>`.
-2. `ANALYTICS-PROVIDER-1` — postponed; needs explicit vendor decision.
-3. `PARTNER-PRODUCT-SEED-5` — needs operator's real signed-product data source.
-
-Codex: proceed with the GREEN queue now (start at `SEO-INDEX-GUARD-2`), and leave
-the three items above in the Human Approval Queue.
+Separate human approval remains mandatory for DB/data writes or migrations,
+schema/env/secrets, Bókun API/edit/sync or supplier actions, checkout/payment/
+booking submission, SEO index expansion, ThaiEleHub/Shopify, spending or plan
+upgrades, and any irreversible or out-of-scope action. Ordinary production deploys
+of fully gated green changes are covered by the standing authorization above.

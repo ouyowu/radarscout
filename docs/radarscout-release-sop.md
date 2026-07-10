@@ -11,20 +11,22 @@ Last proven end-to-end: 2026-07-07 (honest-naming + Option B production deploy).
   re-running checks from a clean worktree.
 - **Hermes (supervisor)** — independent PR review. Hard-blocks only on the red
   lines below; advisory on everything else.
-- **Human (you)** — approves merge, deploy, and anything on the red lines.
-  Only the human runs production deploy.
+- **Human (you)** — grants standing green-zone authority and separately approves
+  anything on the red lines.
 - **Advisor (ChatGPT/Claude)** — key-node judgment: safe to merge / preview /
   deploy, or rework.
 
-Principle: **Engineer implements · QA blocks · Hermes supervises · you approve ·
-advisor judges.** No one approves their own work.
+Principle: **Engineer implements · QA blocks · Hermes supervises · standing
+authority ships green work · the human decides red work.** No one may waive the
+gate on their own change.
 
 ## Red lines (Hermes hard-block; human approval required)
 
 ThaiEleHub / Shopify · DB / Prisma schema / migration / env / `.env*` ·
 `robots` / `sitemap` / SEO `index,follow` · checkout / payment / cart / booking /
 availability / inventory behavior · Bókun API / sync · fabricated products /
-prices / suppliers / booking URLs · production deploy.
+prices / suppliers / booking URLs · production deploys that contain red-zone
+changes, require settings/env changes, or lack a clean independently reviewed SHA.
 
 RadarScout = `/Users/ouyowu/reddit-monitor` (repo `ouyowu/radarscout`).
 ThaiEleHub (Shopify theme) is a separate project — never touched by a RadarScout
@@ -42,7 +44,8 @@ task, and vice-versa.
    minimal diff, no scope creep.
 5. **QA** — re-run checks from a clean worktree (do not trust self-report).
 6. **Hermes** — red-line review.
-7. **Human** — read the report; approve or rework.
+7. **Release** — after QA, Hermes, GitHub, and Vercel checks pass, merge the green
+   PR, deploy the exact clean merge SHA when user-facing, and run production smoke.
 
 ## Risk tiers (don't run the full chain on small work)
 
@@ -51,7 +54,7 @@ task, and vice-versa.
 | Docs-only status       | diff check; no PR unless it changes a decision; batch   |
 | Local tooling / scripts| targeted script tests; one smoke if relevant            |
 | UI / product code      | Engineer + QA + Hermes; full local gate                 |
-| Prod deploy            | full gate + human "Approve production deploy" + human runs it |
+| Green prod deploy      | full gate + Hermes + exact clean SHA + automatic smoke/rollback |
 | DB / schema / env / SEO| explicit written plan + human approval before execution |
 
 ## Standard local gate (UI/product code)
@@ -69,18 +72,16 @@ Trip Planner also: `pnpm smoke:ai-trip-local:production` (expect 200, title
 `Thailand Trip Planner | RadarScout`, robots `noindex,nofollow`, cards render,
 unsafeNetwork none, forbiddenMatches none).
 
-## Production deploy (Option B — human only)
+## Production deploy (standing authorization for GREEN ZONE only)
 
 1. **Anchor to the real code SHA**, never a docs/merge commit. The candidate is
    the deployable branch tip; confirm the last real `app/` / `lib/` code commit
    and that its tree matches the tip.
 2. Run the full local gate above from a clean worktree; all green; `git diff
    --check` clean.
-3. Record the candidate in `docs/radarscout-ai-trip-status.md` (update in place):
-   exact SHA, gate results, accepted preview-quota limitation, deploy command,
-   rollback, post-deploy checklist.
-4. **Human approval gate** — human says: `Approve production deploy — <SHA>`.
-5. **Human runs** (agent never does):
+3. Confirm Hermes approval and successful GitHub/Vercel checks. Stop if the diff
+   contains any red-zone path or needs a settings/env change.
+4. Deploy from a fresh clean worktree at the exact merge SHA:
 
    ```bash
    rm -rf /private/tmp/radarscout-prod-<shortsha>
@@ -90,7 +91,7 @@ unsafeNetwork none, forbiddenMatches none).
    npx vercel --prod --yes
    ```
 
-6. **Post-deploy observation** — read-only smoke against the live URL
+5. **Post-deploy observation** — read-only smoke against the live URL
    (`https://www.radarscout.io/ai-trip-planner`): 200, noindex, cards, no unsafe
    network, no forbidden copy; confirm `/chiang-mai/elephant-camp-finder` is the
    only `index:true` marketing page. Record in the status doc.
@@ -101,10 +102,12 @@ No DB/schema is involved in a Trip Planner deploy, so rollback is deployment-onl
 and instant: Vercel dashboard → previous production deployment, or `vercel
 rollback`. If any post-deploy assertion fails, roll back first, investigate after.
 
-## Never automate
+## Never automate under the standing release authorization
 
-Production deploy · SEO `index,follow` opening · DB/schema/env changes. These are
-always explicit, human-approved, one at a time.
+SEO `index,follow` expansion · DB/data writes/schema/migrations/env/secrets ·
+Bókun API/edit/sync or supplier actions · checkout/payment/booking submission ·
+ThaiEleHub/Shopify · spending/plan upgrades · ambiguous or irreversible actions.
+These remain explicit, human-approved, one at a time.
 
 ## Weekly review (keep the org honest)
 
