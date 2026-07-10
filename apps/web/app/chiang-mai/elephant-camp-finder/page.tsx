@@ -10,13 +10,19 @@ import {
 import { elephantCampProfiles } from '@/lib/elephantFinder/elephantCampProfiles'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
+const title = `${ELEPHANT_FINDER_TITLE} | RadarScout`
+const description =
+  'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.'
+const url = `${base}/chiang-mai/elephant-camp-finder`
+const socialImage = { url: '/opengraph-image', width: 1200, height: 630, alt: 'RadarScout Thailand Experience Planner' }
 
 export const metadata: Metadata = {
-  title: `${ELEPHANT_FINDER_TITLE} | RadarScout`,
-  description:
-    'Compare Chiang Mai elephant care, cooking, nature, and family-friendly experiences with a guided planner. RadarScout helps you choose a fit, then continue with a booking partner.',
-  alternates: { canonical: `${base}/chiang-mai/elephant-camp-finder` },
+  title,
+  description,
+  alternates: { canonical: url },
   robots: { index: true, follow: true },
+  openGraph: { title, description, type: 'website', url, images: [socialImage] },
+  twitter: { card: 'summary_large_image', title, description, images: [{ url: socialImage.url, alt: socialImage.alt }] },
 }
 
 export default function ChiangMaiElephantCampFinderPage() {
