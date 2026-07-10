@@ -23,6 +23,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/\bAI trip planner\b/i)
     expect(publicCopy).not.toMatch(/AI-powered/i)
     expect(publicCopy).not.toMatch(/AI-guided/i)
+    expect(publicCopy).not.toMatch(/aria-label=["']AI Trip/i)
     expect(publicCopy).toMatch(/Bangkok/i)
     expect(publicCopy).toMatch(/Chiang Mai/i)
     expect(publicCopy).toMatch(/Pattaya/i)
