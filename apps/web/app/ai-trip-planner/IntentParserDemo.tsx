@@ -663,7 +663,7 @@ export function IntentParserDemo() {
                   ) : null}
                   <section
                     id="ai-trip-comparison-results"
-                    aria-label="AI Trip comparison cards"
+                    aria-label="Trip Planner comparison cards"
                     className="mt-3 scroll-mt-6 sm:mt-4"
                   >
                     {routeStopGroups.length > 1 ? (
