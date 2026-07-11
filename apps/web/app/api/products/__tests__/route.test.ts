@@ -140,6 +140,37 @@ describe('GET /api/products', () => {
     expect(body.products[0]).not.toHaveProperty('rawJson')
   })
 
+  it('continues scanning after an unreviewed page until it finds a publish-ready product', async () => {
+    const unreviewedBatch = Array.from({ length: 50 }, (_, index) => makeProduct({
+      id: `unreviewed_${index}`,
+      title: `Chiang Mai Tour ${index}`,
+    }))
+    const reviewedProduct = makeProduct({ id: 'reviewed_later', title: 'Chiang Mai Reviewed Tour' })
+
+    dbMock.bokunProduct.findMany.mockImplementation(async ({ skip }: { skip: number }) => (
+      skip === 0 ? unreviewedBatch : [reviewedProduct]
+    ))
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => (
+      ids.includes('reviewed_later')
+        ? new Map([['reviewed_later', {
+            cleanedTitle: 'Reviewed Chiang Mai Tour',
+            shortSummary: 'Human-reviewed summary.',
+            suggestedTags: ['Chiang Mai'],
+            seoTitle: null,
+            seoDescription: null,
+            reviewedBy: 'operator@radarscout.io',
+            reviewedAt: '2026-07-11T00:00:00.000Z',
+          }]])
+        : new Map()
+    ))
+
+    const response = await GET(makeRequest({ take: '1' }))
+    const body = await response.json()
+
+    expect(body.products.map((product: { id: string }) => product.id)).toEqual(['reviewed_later'])
+    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(2)
+  })
+
   it('returns eligible products filtered by city', async () => {
     dbMock.bokunProduct.findMany.mockResolvedValueOnce([
       makeProduct({ id: 'bkk_1', city: 'Bangkok', title: 'Bangkok Temple Tour' }),
