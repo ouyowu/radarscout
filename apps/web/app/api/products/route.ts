@@ -54,6 +54,11 @@ type ProductWithImage = {
   imageUrl: string | null
 }
 
+type PublicListProduct = {
+  id: string
+  [key: string]: unknown
+}
+
 function meta(count: number, filters: ProductFilters): ProductMeta {
   return {
     source: PRODUCT_SOURCE,
@@ -168,10 +173,11 @@ export async function GET(request: NextRequest) {
       ...(hasPrice === false ? { retailPrice: null as null } : {}),
     }
 
-    const collected: ProductWithImage[] = []
+    const databaseProducts: PublicListProduct[] = []
+    const databaseTake = Math.max(0, take - seedProducts.length)
     let skip = 0
 
-    while (collected.length < take && skip < SCAN_LIMIT) {
+    while (databaseProducts.length < databaseTake && skip < SCAN_LIMIT) {
       const batch = await db.bokunProduct.findMany({
         where,
         orderBy: [{ city: 'asc' }, { title: 'asc' }, { id: 'asc' }],
@@ -199,8 +205,9 @@ export async function GET(request: NextRequest) {
 
       if (batch.length === 0) break
 
+      const eligibleBatch: ProductWithImage[] = []
+
       for (const product of batch) {
-        if (collected.length >= take) break
 
         const imageUrl = toReadOnlyBokunCatalogProduct(product).imageUrl
 
@@ -214,34 +221,39 @@ export async function GET(request: NextRequest) {
         })
         if (!eligibility.eligible) continue
 
-        collected.push({ product, imageUrl })
+        eligibleBatch.push({ product, imageUrl })
+      }
+
+      const enrichmentMap = eligibleBatch.length > 0
+        ? await getReviewedEnrichmentsByProductIds(
+            eligibleBatch.map(({ product }) => product.id),
+          )
+        : new Map()
+
+      for (const { product, imageUrl } of eligibleBatch) {
+        if (databaseProducts.length >= databaseTake) break
+
+        const enrichment = enrichmentMap.get(product.id) ?? null
+        const handoff = resolveReviewedProductHandoff({
+          publicProductId: product.id,
+          bokunActivityId: product.bokunActivityId,
+        })
+
+        if (!isDatabaseProductPublishReady({ enrichment, handoff })) continue
+
+        databaseProducts.push({
+          ...toReadOnlyBokunCatalogProduct(product),
+          title: enrichment!.cleanedTitle,
+          summary: enrichment!.shortSummary,
+          imageUrl,
+          tags: enrichment!.suggestedTags,
+          bookingPartnerHandoff: handoff,
+        })
       }
 
       skip += batch.length
       if (batch.length < SCAN_BATCH_SIZE) break
     }
-
-    const enrichmentMap = await getReviewedEnrichmentsByProductIds(
-      collected.map(({ product }) => product.id),
-    )
-    const databaseProducts = collected.flatMap(({ product, imageUrl }: ProductWithImage) => {
-      const enrichment = enrichmentMap.get(product.id) ?? null
-      const handoff = resolveReviewedProductHandoff({
-        publicProductId: product.id,
-        bokunActivityId: product.bokunActivityId,
-      })
-
-      if (!isDatabaseProductPublishReady({ enrichment, handoff })) return []
-
-      return [{
-        ...toReadOnlyBokunCatalogProduct(product),
-        title: enrichment!.cleanedTitle,
-        summary: enrichment!.shortSummary,
-        imageUrl,
-        tags: enrichment!.suggestedTags,
-        bookingPartnerHandoff: handoff,
-      }]
-    })
 
     const products = [...seedProducts, ...databaseProducts]
       .filter((product, index, all) => all.findIndex(candidate => candidate.id === product.id) === index)
