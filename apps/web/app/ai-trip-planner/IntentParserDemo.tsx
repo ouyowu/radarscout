@@ -370,7 +370,8 @@ export function IntentParserDemo() {
           </div>
         </div>
         <p className="mt-3 text-sm font-semibold leading-6 text-[#5a6670]">
-          Confirmation only saves this understanding in the current browser session. It does not generate an itinerary or start a booking partner action.
+          Confirmation saves this understanding in the current browser session. A reviewed day-trip sequence appears only after you run product search;
+          no external partner link opens during confirmation.
         </p>
         {!hasPromptText ? (
           <p className="mt-2 text-sm font-semibold leading-6 text-[#a35c09]">
@@ -457,7 +458,8 @@ export function IntentParserDemo() {
                 Search real Thailand experiences
               </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
-                Returns real eligible products from trusted local operators. No booking partner action or current status claim.
+                Returns reviewed Thailand products and a structured day-trip sequence. Check availability opens the external booking partner;
+                RadarScout does not claim current product status.
               </p>
             </div>
             <button

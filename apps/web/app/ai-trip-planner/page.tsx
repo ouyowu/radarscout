@@ -42,7 +42,7 @@ const differentiators = [
   },
   {
     title: 'Transparent planning mode',
-    body: 'This page can show comparison-only product results, while current product details and booking partner handoff stay on product pages.',
+    body: 'This page can show comparison-only product results and a structured day-trip itinerary. Current product details stay on product pages, and the reviewed handoff opens the external booking partner.',
   },
 ]
 
@@ -60,7 +60,7 @@ const steps = [
   {
     label: 'Step 3',
     title: 'Search read-only Thailand experiences',
-    body: 'After local confirmation, RadarScout can show comparison-only product results while current product details and booking partner handoff stay on product pages.',
+    body: 'After local confirmation and search, RadarScout can show comparison-only product results plus a structured day-trip itinerary. Current product details remain on product pages.',
   },
 ]
 
@@ -71,11 +71,11 @@ const transparencyPoints = [
   'Reviewed coverage first',
 ]
 
-const notConnected = [
+const capabilityBoundaries = [
+  { label: 'Structured day-trip itinerary', status: 'After search' },
   { label: 'Current product details', status: 'Product page only' },
-  { label: 'Booking partner handoff', status: 'Product page only' },
-  { label: 'External partner steps', status: 'Product page only' },
-  { label: 'AI-generated itinerary', status: 'Future stage' },
+  { label: 'Booking partner handoff', status: 'External link' },
+  { label: 'External partner steps', status: 'Booking partner only' },
 ]
 
 const destinationStarters = [
@@ -330,9 +330,9 @@ export default function AiTripPlannerPage() {
             </div>
 
             <div className="rounded-[1.75rem] border border-white/12 bg-white/8 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f8d7bf]">What stays outside this planner</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f8d7bf]">Current planner boundaries</p>
               <div className="mt-6 space-y-3">
-                {notConnected.map(item => (
+                {capabilityBoundaries.map(item => (
                   <div
                     key={item.label}
                     className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm"
@@ -358,8 +358,8 @@ export default function AiTripPlannerPage() {
             Start with a custom trip idea, then compare Thailand experiences.
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#6b7280]">
-            This workspace understands travel intent locally and keeps product search transparent. Email capture is not part of this page and no booking
-            partner handoff starts from this planner page.
+            This workspace understands travel intent locally, builds a reviewed day-trip sequence after search, and keeps product matching transparent.
+            The reviewed handoff opens an external booking partner; current details and all partner steps remain there.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <a
