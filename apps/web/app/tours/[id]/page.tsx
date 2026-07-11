@@ -4,6 +4,7 @@ import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
+import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
 import { Button, Card, Section } from '@/app/_components/design-system'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 import {
@@ -192,9 +193,10 @@ function UnavailableState({
     : 'RadarScout could not load this product detail right now. No fallback product has been invented.'
 
   return (
-    <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
-      <Section variant="sand" className="min-h-screen">
-        <Card className="mx-auto max-w-3xl p-8 text-center">
+    <PublicSiteShell>
+      <main className="min-h-[70vh] bg-rs-sand-50 text-rs-ink">
+        <Section variant="sand" className="min-h-[70vh]">
+          <Card className="mx-auto max-w-3xl p-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
             Experience detail
           </p>
@@ -230,9 +232,10 @@ function UnavailableState({
               </Button>
             ) : null}
           </div>
-        </Card>
-      </Section>
-    </main>
+          </Card>
+        </Section>
+      </main>
+    </PublicSiteShell>
   )
 }
 
@@ -249,7 +252,8 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
   const location = productLocation(product)
 
   return (
-    <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
+    <PublicSiteShell>
+      <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
       <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
@@ -453,6 +457,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
       />
 
       <FAQAccordion items={faqItems} title="Tour detail FAQ" />
-    </main>
+      </main>
+    </PublicSiteShell>
   )
 }

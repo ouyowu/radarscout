@@ -4,17 +4,19 @@ import { metadata } from '../page'
 import { expectNoForbiddenPublicCopy } from './publicSafetyPatterns'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
+const publicSiteShellSource = readFileSync(new URL('../_components/PublicSiteShell.tsx', import.meta.url), 'utf8')
 const promptHeroSource = readFileSync(new URL('../_components/PromptHero.tsx', import.meta.url), 'utf8')
 const promptHeroHelperSource = readFileSync(new URL('../_components/promptHero.helpers.ts', import.meta.url), 'utf8')
+const publicSiteContentSource = readFileSync(new URL('../_content/publicSite.ts', import.meta.url), 'utf8')
 const homepageVisibleCopySources = [
   homepageSource,
   promptHeroSource,
   promptHeroHelperSource,
-  readFileSync(new URL('../_components/AdventureHero.tsx', import.meta.url), 'utf8'),
+  publicSiteShellSource,
+  publicSiteContentSource,
+  readFileSync(new URL('../_components/SiteNav.tsx', import.meta.url), 'utf8'),
+  readFileSync(new URL('../_components/SiteFooter.tsx', import.meta.url), 'utf8'),
   readFileSync(new URL('../_components/TrackedLink.tsx', import.meta.url), 'utf8'),
-  readFileSync(new URL('../_components/PartnerInventoryNotice.tsx', import.meta.url), 'utf8'),
-  readFileSync(new URL('../_components/SupplierPartnerCTA.tsx', import.meta.url), 'utf8'),
-  readFileSync(new URL('../../lib/global-destinations.ts', import.meta.url), 'utf8'),
 ].join('\n')
 
 describe('homepage public copy safety', () => {
@@ -42,15 +44,25 @@ describe('homepage public copy safety', () => {
 
   it('does not use available-now wording in visible FAQ copy', () => {
     expect(homepageSource).not.toMatch(/available now/i)
-    expect(homepageSource).toContain('How broad is RadarScout coverage today?')
-    expect(homepageSource).toContain('RadarScout is Thailand-first')
-    expect(homepageSource).toContain('Other destination pages stay planning-only')
+    expect(publicSiteContentSource).toContain('What does RadarScout help me plan?')
+    expect(publicSiteContentSource).toContain('Coverage expands city by city')
     expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
   it('presents reviewed experiences without internal test language', () => {
-    expect(homepageSource).toContain('Featured Thailand experiences')
+    expect(homepageSource).toContain('Reviewed Thailand day trips')
+    expect(homepageSource).toContain('Start with real experiences, not an endless catalogue.')
     expect(homepageSource).not.toContain('for the first traveler test')
+  })
+
+  it('uses the shared public site shell and keeps the homepage Thailand day-trip focused', () => {
+    expect(homepageSource).toContain('<PublicSiteShell>')
+    expect(publicSiteShellSource).toContain('<SiteNav />')
+    expect(publicSiteShellSource).toContain('<SiteFooter />')
+    expect(homepageSource).not.toContain("destination.slug === 'japan'")
+    expect(homepageSource).not.toContain("destination.slug === 'france'")
+    expect(homepageSource).not.toContain('Plan 7 days in Thailand')
+    expect(homepageSource).not.toContain('other destinations')
   })
 
   it('links to the Trip Planner with safe prompt-first copy', () => {
@@ -60,7 +72,7 @@ describe('homepage public copy safety', () => {
     expect(promptHeroSource).not.toContain('AI-guided Thailand Experience Planner')
     expect(promptHeroSource).not.toContain('Tell RadarScout the kind of Thailand day you want')
     expect(promptHeroSource).not.toContain('Start planning')
-    expect(homepageVisibleCopySources).toContain('trusted booking partner handoff')
+    expect(homepageVisibleCopySources).toMatch(/trusted booking partner handoff/i)
   })
 
   it('shows safe homepage planner prompt chips without booking or availability claims', () => {
@@ -79,10 +91,9 @@ describe('homepage public copy safety', () => {
   })
 
   it('positions the homepage destination rollout as Thailand-first', () => {
-    expect(homepageSource).toContain('Thailand-first rollout')
-    expect(homepageSource).toContain('Thailand is live first. Other destinations stay planning-only.')
-    expect(homepageSource).toContain('Thailand first, then selected destinations')
-    expect(homepageSource).toContain('current product coverage on Thailand experiences')
+    expect(promptHeroSource).toContain('Thailand-first')
+    expect(homepageVisibleCopySources).toContain('Thailand day-trip discovery')
+    expect(publicSiteContentSource).toContain('Coverage expands city by city')
     expect(homepageSource).not.toContain('Selected top travel destinations, not worldwide noise.')
     expect(homepageSource).not.toContain('selected high-demand travel destinations')
     expect(homepageSource).not.toContain('selected top travel destinations')
@@ -93,18 +104,18 @@ describe('homepage public copy safety', () => {
   })
 
   it('keeps supplier partner copy aligned with Thailand-first coverage', () => {
-    expect(homepageVisibleCopySources).toContain('onboarding trusted Thailand suppliers')
-    expect(homepageVisibleCopySources).toContain('future destination partners')
+    expect(publicSiteContentSource).toContain('Supplier partners')
+    expect(publicSiteContentSource).toContain('RadarScout%20Supplier%20Partnership%20Inquiry')
     expect(homepageVisibleCopySources).not.toContain('onboarding trusted suppliers in selected top travel destinations')
   })
 
   it('links to the Chiang Mai finder with safe guided-planner copy', () => {
     expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
     expect(homepageSource).toContain('href={chiangMaiPlannerHref}')
-    expect(homepageSource).toContain('Plan a Chiang Mai elephant day')
+    expect(homepageSource).toContain('Plan a Chiang Mai elephant, food, or nature day.')
     expect(homepageSource).toContain('Plan with RadarScout')
-    expect(homepageSource).toContain('guided planner')
-    expect(homepageSource).toContain('compare experiences')
+    expect(homepageSource).toContain('guided finder')
+    expect(homepageSource).toContain('compare reviewed matches')
     expect(homepageSource).toContain('booking partner')
   })
 
@@ -120,39 +131,20 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
 
-  it('keeps homepage Trip planning use cases focused on Thailand routes', () => {
-    expect(homepageSource).toContain('Trip planning use cases')
-    expect(homepageSource).not.toContain('AI planning use cases')
-    expect(homepageSource).toContain('Plan 7 days in Thailand')
-    expect(homepageSource).toContain('Compare Bangkok and Chiang Mai day tours')
-    expect(homepageSource).toContain('Plan elephant care, cooking, and nature days')
-    expect(homepageSource).toContain('Prepare Pattaya or Phuket day-trip ideas')
-    expect(homepageSource).toContain('Find food, culture, transfers, and local Thailand activities')
-    expect(homepageSource).toContain('Match Thailand routes to realistic daily timing')
+  it('keeps homepage planning examples focused on Thailand day trips', () => {
+    expect(publicSiteContentSource).toContain('Describe your ideal day')
+    expect(publicSiteContentSource).toContain('Compare reviewed matches')
+    expect(publicSiteContentSource).toContain('Check current details')
+    expect(homepageSource).not.toContain('Plan 7 days in Thailand')
     expect(homepageSource).not.toContain('Build an Austria + Germany + France route')
     expect(homepageSource).not.toContain('Prepare a World Cup 2026 travel plan')
   })
 
-  it('exposes safe homepage entry points for B2B partner paths', () => {
-    expect(homepageSource).toContain('<SupplierPartnerCTA showPartnerPathLinks />')
-    expect(homepageVisibleCopySources).toContain("href: '/partners'")
-    expect(homepageVisibleCopySources).toContain("href: '/suppliers'")
-    expect(homepageVisibleCopySources).toContain("href: '/destination-partners'")
-    expect(homepageVisibleCopySources).toContain('Choose a partner path')
-    expect(homepageVisibleCopySources).toContain('For travel partners')
-    expect(homepageVisibleCopySources).toContain('For local suppliers')
-    expect(homepageVisibleCopySources).toContain('For destination partners')
-  })
-
-  it('uses a structured mailto intake for homepage supplier interest', () => {
-    expect(homepageVisibleCopySources).toContain('supplierPartnerMailtoBody')
-    expect(homepageVisibleCopySources).toContain('[RadarScout homepage supplier interest]')
-    expect(homepageVisibleCopySources).toContain('Destination focus:')
-    expect(homepageVisibleCopySources).toContain('Public experience or partner page:')
-    expect(homepageVisibleCopySources).toContain('Traveler audience:')
-    expect(homepageVisibleCopySources).toContain('Best contact path:')
-    expect(homepageVisibleCopySources).toContain('What you want RadarScout to check:')
-    expect(homepageVisibleCopySources).toContain('encodeURIComponent(supplierPartnerMailtoBody)')
+  it('keeps public navigation focused on traveler tasks', () => {
+    expect(publicSiteContentSource).toContain("{ href: '/ai-trip-planner', label: 'Plan a day' }")
+    expect(publicSiteContentSource).toContain("{ href: '/tours', label: 'Experiences' }")
+    expect(publicSiteContentSource).toContain("{ href: '/destinations', label: 'Destinations' }")
+    expect(publicSiteContentSource).not.toContain('AI Planner')
   })
 
   it('does not introduce forbidden booking or availability claims in homepage copy', () => {

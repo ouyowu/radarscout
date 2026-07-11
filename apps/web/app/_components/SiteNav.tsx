@@ -1,15 +1,10 @@
 import Link from 'next/link'
-
-const links = [
-  { href: '/destinations', label: 'Destinations' },
-  { href: '/tours', label: 'Tours' },
-  { href: '/ai-trip-planner', label: 'AI Planner' },
-]
+import { publicNavLinks } from '../_content/publicSite'
 
 export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border-light)] bg-[var(--color-bg-primary)]/95 backdrop-blur">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <input type="checkbox" id="nav-open" className="peer sr-only" aria-label="Toggle navigation" />
 
         <div className="flex min-h-16 items-center justify-between">
@@ -18,7 +13,7 @@ export function SiteNav() {
           </Link>
 
           <div className="hidden items-center gap-7 lg:flex">
-            {links.map(link => (
+            {publicNavLinks.map(link => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -31,7 +26,7 @@ export function SiteNav() {
               href="/ai-trip-planner"
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition hover:bg-[var(--color-accent-orange-dark)]"
             >
-              Start planning
+              Plan a day
             </Link>
           </div>
 
@@ -46,7 +41,7 @@ export function SiteNav() {
 
         <div className="hidden border-t border-[var(--color-border-light)] py-3 peer-checked:block lg:hidden">
           <div className="flex flex-col gap-1">
-            {links.map(link => (
+            {publicNavLinks.map(link => (
               <Link
                 key={link.href}
                 href={link.href}

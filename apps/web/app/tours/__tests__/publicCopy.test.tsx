@@ -107,24 +107,24 @@ describe('tour public copy safety', () => {
       },
     })
 
-    const element = await ToursExperienceDiscoveryPage({
-      searchParams: { hasPrice: 'false' },
-    })
+    const element = await ToursExperienceDiscoveryPage({})
     const markup = renderToStaticMarkup(element)
 
-    expect(markup).toContain('Price not listed')
+    expect(markup).not.toContain('Price not listed')
+    expect(markup).not.toContain('All prices')
+    expect(markup).not.toContain('Has price')
     expect(markup).toContain('trusted partner records')
-    expect(markup).toContain('Plan with RadarScout')
-    expect(markup).toContain('Open Trip Planner')
+    expect(markup).toContain('Plan my day')
     expect(markup).toContain('Review details before partner handoff')
-    expect(markup).toContain('Non-Thailand destinations remain planning-only.')
-    expect(markup).toContain('Why are some destinations still planning-only?')
-    expect(markup).toContain('Additional destinations can move beyond planning-only after local supplier coverage')
-    expect(markup).toContain('keeps non-Thailand destinations planning-only until trusted product records are ready')
+    expect(markup).toContain('Why are some cities not shown yet?')
+    expect(markup).toContain('Coverage expands city by city')
     expect(markup).not.toContain('Japan, France, and other selected destinations remain planning-only.')
     expect(markup).not.toContain('More selected high-demand destinations will be added')
     expect(markup).not.toContain('Can I compare tours from every destination on this page?')
     expect(markup).not.toContain('does not claim current product coverage for every destination')
+    expect((markup.match(/<h1/g) ?? [])).toHaveLength(1)
+    expect(markup).toContain('aria-label="Main navigation"')
+    expect(markup).toContain('aria-label="Footer navigation"')
     expectSafeTourCopy(markup)
   })
 
@@ -156,11 +156,11 @@ describe('tour public copy safety', () => {
     const markup = renderToStaticMarkup(element)
 
     expect(markup).toContain('Chiang Mai Food Walk')
-    expect(markup).toContain('Partner record')
     expect(markup).toContain('Review details before partner handoff')
     expect(markup).toContain('https://cdn.example.com/source-image.jpg')
     expect(markup).not.toContain('THB 1200')
     expect(markup).not.toContain('Plan with AI')
+    expect(markup.indexOf('City')).toBeLessThan(markup.indexOf('Explore by interest'))
     expectSafeTourCopy(markup)
   })
 
@@ -204,6 +204,8 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('Use this page for planning and compare other experiences with verified handoff options')
     expect(markup).not.toContain('Trip Planner context')
     expect(markup).not.toContain('Check availability')
+    expect(markup).toContain('aria-label="Main navigation"')
+    expect(markup).toContain('aria-label="Footer navigation"')
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })

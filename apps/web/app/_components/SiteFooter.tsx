@@ -1,13 +1,5 @@
 import Link from 'next/link'
-
-const footerLinks = [
-  { href: '/destinations', label: 'Destinations' },
-  { href: '/tours', label: 'Tours' },
-  { href: '/ai-trip-planner', label: 'AI Planner' },
-  { href: 'mailto:hello@radarscout.io?subject=RadarScout%20Supplier%20Partnership%20Inquiry', label: 'Supplier partners' },
-  { href: '/privacy-policy', label: 'Privacy' },
-  { href: '/terms-of-service', label: 'Terms' },
-]
+import { publicFooterGroups } from '../_content/publicSite'
 
 export function SiteFooter() {
   return (
@@ -18,19 +10,28 @@ export function SiteFooter() {
             Radar<span className="text-[var(--color-accent-orange-dark)]">Scout</span>
           </p>
           <p className="mt-2 max-w-xs text-sm font-semibold leading-6 text-[var(--color-text-secondary)]">
-            AI-guided Thailand travel discovery with safe booking partner handoff.
+            Personalized Thailand day-trip discovery with safe booking partner handoff.
           </p>
         </div>
 
-        <nav className="flex flex-wrap gap-x-5 gap-y-3" aria-label="Footer navigation">
-          {footerLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-bold text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
-            >
-              {link.label}
-            </Link>
+        <nav className="grid gap-5 sm:grid-cols-3" aria-label="Footer navigation">
+          {publicFooterGroups.map(group => (
+            <div key={group.label}>
+              <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-primary)]">
+                {group.label}
+              </p>
+              <div className="mt-3 flex flex-col gap-2">
+                {group.links.map(link => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-bold text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
