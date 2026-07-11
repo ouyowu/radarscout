@@ -51,7 +51,7 @@ export function ExperienceCard({
     <Card href={href} className={className} ariaLabel={href ? title : undefined}>
       <div
         aria-label={!imageUrl ? imageAlt || undefined : undefined}
-        className="relative flex aspect-[4/3] items-end bg-[linear-gradient(135deg,var(--rs-forest-700),var(--rs-sand-100)_55%,var(--rs-terracotta))] p-5"
+        className="relative flex aspect-[2/1] items-end bg-[linear-gradient(135deg,var(--rs-sand-100),#feeabf_55%,var(--rs-terracotta))] p-5"
       >
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -63,12 +63,12 @@ export function ExperienceCard({
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : null}
-        <div className="absolute inset-0 bg-rs-forest-900/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-rs-forest-900/55 via-transparent to-transparent" />
         {eyebrow ? (
           <p className="relative text-xs font-semibold uppercase tracking-[0.18em] text-white/90">{eyebrow}</p>
         ) : null}
       </div>
-      <div className="space-y-4 p-5">
+      <div className="space-y-4 p-5 sm:p-6">
         <h3 className="font-rs-display text-[clamp(1.25rem,2vw,1.375rem)] font-medium leading-tight text-rs-ink">{title}</h3>
         <p className="line-clamp-3 text-sm leading-6 text-rs-muted">{summary}</p>
         {tags.length > 0 ? (

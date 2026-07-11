@@ -26,62 +26,94 @@ export function PromptHero() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-[var(--color-bg-dark)] text-white">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#0f241c_0%,#1b4638_54%,#3a2a17_100%)]" />
-      <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.10)_1px,transparent_0)] [background-size:26px_26px]" />
+    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#fffaf5_0%,#fff3ee_55%,#feeabf_145%)] text-rs-ink">
+      <div className="absolute -left-24 top-20 h-72 w-72 rounded-full bg-[#f9ab00]/10 blur-3xl" />
+      <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-rs-trust/10 blur-3xl" />
 
-      <div className="relative mx-auto max-w-4xl px-4 py-20 text-center sm:px-6 lg:py-28">
-        <p className="text-xs font-black uppercase tracking-[0.24em] text-[var(--color-accent-orange)]">
-          Thailand, thoughtfully planned
-        </p>
+      <div className="relative mx-auto grid max-w-[1240px] gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-24">
+        <div>
+          <p className="inline-flex rounded-rs-pill border border-rs-sage-200 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-rs-forest-700 shadow-sm">
+            Thailand day trips, thoughtfully planned
+          </p>
 
-        <h1 className="mx-auto mt-5 max-w-3xl font-[var(--font-heading)] text-4xl font-black leading-[1.02] tracking-[-0.04em] sm:text-6xl">
-          Tell us your ideal Thailand day. We match it to real, reviewed experiences.
-        </h1>
+          <h1 className="mt-6 max-w-3xl font-rs-display text-[clamp(2.75rem,6vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-rs-ink">
+            Tell us your ideal Thailand day. We match it to real, reviewed experiences.
+          </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base font-semibold leading-8 text-white/80 sm:text-lg">
-          Describe the trip you want — elephants, food, nature, family days, city time — and
-          compare hand-picked Thailand experiences, then continue with a trusted booking partner.
-        </p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-rs-muted">
+            Describe elephants, food, nature, family time, or city culture. RadarScout turns your idea into a clear day-trip brief and reviewed experience matches.
+          </p>
 
-        <form onSubmit={handleSubmit} className="mx-auto mt-9 flex max-w-2xl flex-col gap-3 sm:flex-row">
-          <label htmlFor="hero-trip-idea" className="sr-only">
-            Describe your ideal Thailand trip
-          </label>
-          <input
-            id="hero-trip-idea"
-            name="idea"
-            type="text"
-            value={idea}
-            onChange={event => setIdea(event.target.value)}
-            placeholder="e.g. Gentle elephant day in Chiang Mai with cooking and nature"
-            className="min-h-[56px] w-full flex-1 rounded-full border border-white/15 bg-white px-6 text-base font-semibold text-[var(--color-text-primary)] shadow-2xl outline-none placeholder:text-[var(--color-text-secondary)] focus:ring-4 focus:ring-white/40"
-          />
-          <button
-            type="submit"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-8 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[var(--color-accent-orange-dark)]"
-          >
-            Plan my trip
-          </button>
-        </form>
-
-        <div className="mx-auto mt-6 flex max-w-2xl flex-wrap items-center justify-center gap-2.5">
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-white/55">Try</span>
-          {exampleChips.map(chip => (
+          <form onSubmit={handleSubmit} className="mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+            <label htmlFor="hero-trip-idea" className="sr-only">
+              Describe your ideal Thailand trip
+            </label>
+            <input
+              id="hero-trip-idea"
+              name="idea"
+              type="text"
+              value={idea}
+              onChange={event => setIdea(event.target.value)}
+              placeholder="e.g. Gentle elephant and cooking day in Chiang Mai"
+              className="min-h-[60px] w-full flex-1 rounded-rs-pill border border-[var(--color-border-light)] bg-white px-6 text-base font-semibold text-rs-ink shadow-rs-soft outline-none placeholder:text-rs-muted focus:border-rs-trust focus:ring-4 focus:ring-rs-trust/15"
+            />
             <button
-              key={chip}
-              type="button"
-              onClick={() => go(chip, 'hero_chip')}
-              className="inline-flex min-h-[38px] items-center rounded-full border border-white/20 bg-white/10 px-4 text-sm font-bold text-white/90 transition hover:bg-white/20"
+              type="submit"
+              className="inline-flex min-h-[60px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-8 text-sm font-bold text-rs-ink shadow-rs-soft transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta-600"
             >
-              {chip}
+              Plan my trip
             </button>
-          ))}
+          </form>
+
+          <div className="mt-5 flex max-w-2xl flex-wrap items-center gap-2">
+            <span className="mr-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-muted">Popular ideas</span>
+            {exampleChips.map(chip => (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => go(chip, 'hero_chip')}
+                className="inline-flex min-h-[40px] items-center rounded-rs-pill border border-[var(--color-border-light)] bg-white/80 px-4 text-sm font-semibold text-rs-ink transition hover:border-rs-terracotta hover:bg-white"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-rs-forest-700">
+            <span>✓ Reviewed products</span>
+            <span>✓ Real operator media</span>
+            <span>✓ Safe partner handoff</span>
+          </div>
+          <p className="sr-only">Thailand-first · Personalized matching · Trusted booking partner handoff</p>
         </div>
 
-        <p className="mx-auto mt-8 max-w-xl text-xs font-bold uppercase tracking-[0.12em] text-white/55">
-          Thailand-first · Personalized matching · Trusted booking partner handoff
-        </p>
+        <div className="relative mx-auto w-full max-w-lg">
+          <div className="absolute -inset-5 rotate-2 rounded-[2.5rem] bg-rs-terracotta/15" />
+          <div className="relative rounded-[2rem] border border-[var(--color-border-light)] bg-white p-6 shadow-[0_24px_60px_rgba(45,52,54,0.12)] sm:p-8">
+            <div className="flex items-center justify-between gap-4 border-b border-[var(--color-border-light)] pb-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rs-trust">Your day, structured</p>
+                <h2 className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">From one idea to clear choices</h2>
+              </div>
+              <span className="rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold text-rs-muted">3 steps</span>
+            </div>
+            <ol className="mt-6 space-y-4">
+              {[
+                ['1', 'Share the day you want', 'City, interests, pace, group, and preferences'],
+                ['2', 'Review the trip brief', 'See what RadarScout understood before matching'],
+                ['3', 'Compare real experiences', 'Open details, then check with the booking partner'],
+              ].map(([number, title, body]) => (
+                <li key={number} className="flex gap-4 rounded-rs-md bg-rs-sand-50 p-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rs-terracotta text-sm font-bold text-rs-ink">{number}</span>
+                  <div>
+                    <p className="font-semibold text-rs-ink">{title}</p>
+                    <p className="mt-1 text-sm leading-6 text-rs-muted">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -7,17 +7,25 @@ const unsafeCopyPattern =
   /live availability|available now|instant confirmation|checkout|payment|booking complete|Bókun backend|Bókun database|Bókun-powered|partner rate|supplier net rate|commission/i
 
 describe('RadarScout design system primitives', () => {
-  it('exposes additive design tokens without external font or asset imports', () => {
+  it('exposes the approved warm travel palette and build-time self-hosted font variables', () => {
     const globals = readFileSync('app/globals.css', 'utf8')
     const tailwind = readFileSync('tailwind.config.ts', 'utf8')
+    const layout = readFileSync('app/layout.tsx', 'utf8')
 
-    expect(globals).toContain('--rs-forest-900: #0f241c')
-    expect(globals).toContain('--rs-terracotta: #d57c48')
-    expect(globals).toContain('--rs-radius-lg: 1.75rem')
-    expect(globals).toContain('--rs-font-display')
+    expect(globals).toContain('--rs-ink: #2d3436')
+    expect(globals).toContain('--rs-sand-50: #fffaf5')
+    expect(globals).toContain('--rs-terracotta: #f9ab00')
+    expect(globals).toContain('--rs-terracotta-600: #e37400')
+    expect(globals).toContain('--rs-trust: #2a9d8f')
+    expect(globals).toContain('--rs-radius-lg: 2rem')
+    expect(globals).toContain('--rs-font-display: var(--font-fraunces)')
+    expect(globals).toContain('--rs-font-body: var(--font-source-sans-3)')
+    expect(layout).toContain("import { Fraunces, Source_Sans_3 } from 'next/font/google'")
+    expect(layout).toContain("variable: '--font-fraunces'")
+    expect(layout).toContain("variable: '--font-source-sans-3'")
     expect(tailwind).toContain("'rs-display'")
     expect(tailwind).toContain("'rs-soft'")
-    expect(`${globals}\n${tailwind}`).not.toMatch(/fonts\.googleapis|cdn\./i)
+    expect(`${globals}\n${tailwind}\n${layout}`).not.toMatch(/fonts\.googleapis|cdn\./i)
   })
 
   it('renders a primary button primitive with the expedition CTA treatment', () => {
@@ -26,6 +34,7 @@ describe('RadarScout design system primitives', () => {
     expect(element.props.href).toBe('/ai-trip-planner')
     expect(element.props.className).toContain('rounded-rs-pill')
     expect(element.props.className).toContain('bg-rs-terracotta')
+    expect(element.props.className).toContain('text-rs-ink')
     expect(element.props.className).toContain('min-h-[52px]')
   })
 
@@ -60,6 +69,7 @@ describe('RadarScout design system primitives', () => {
     ].join('\n')
 
     expect(source).not.toMatch(unsafeCopyPattern)
+    expect(source).toContain('aspect-[2/1]')
   })
 
   it('renders reviewed partner media with an honest fallback for cards without images', () => {

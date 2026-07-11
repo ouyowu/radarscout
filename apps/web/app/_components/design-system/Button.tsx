@@ -15,7 +15,7 @@ type ButtonProps = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-rs-terracotta text-white shadow-rs-soft hover:bg-rs-terracotta-600',
+    'bg-rs-terracotta text-rs-ink shadow-rs-soft hover:bg-rs-terracotta-600 hover:text-white',
   secondary:
     'border border-rs-forest-500 bg-transparent text-rs-forest-700 hover:bg-rs-sand-100',
   ghost:
