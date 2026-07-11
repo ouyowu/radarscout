@@ -286,6 +286,8 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
         eyebrow={product.reviewedEnrichment ? 'Curated experience' : 'Trusted local experience'}
         title={displayTitle(product)}
         subtitle={displaySummary(product)}
+        imageUrl={product.imageUrl ?? undefined}
+        imageAlt={product.imageUrl ? displayTitle(product) : undefined}
         actions={[
           { label: 'Back to tours', href: '/tours' },
           { label: 'Plan Thailand trip', href: '/destinations/thailand', variant: 'secondary' },
@@ -330,9 +332,9 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-forest-500">
                 {location}
               </p>
-              <h1 className="mt-3 font-rs-display text-[clamp(2.45rem,6vw,4.75rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-rs-ink">
-                {displayTitle(product)}
-              </h1>
+              <h2 className="mt-3 font-rs-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight tracking-[-0.035em] text-rs-ink">
+                Experience overview
+              </h2>
               {product.reviewedEnrichment?.suggestedTags && product.reviewedEnrichment.suggestedTags.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {product.reviewedEnrichment.suggestedTags.map(tag => (
@@ -353,15 +355,6 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           </Card>
 
           <aside className="grid gap-5 lg:sticky lg:top-5">
-            <Card className="p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
-                Planning boundary
-              </p>
-              <p className="mt-4 text-sm leading-7 text-rs-muted">
-                RadarScout helps travelers compare details before they continue with a booking partner. Current details should be reviewed on the partner page.
-              </p>
-            </Card>
-
             <div className="rounded-rs-lg bg-rs-forest-900 p-6 text-white shadow-rs-soft">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-sage-200">
                 Handoff boundary
@@ -401,6 +394,15 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                 </div>
               )}
             </div>
+
+            <Card className="p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rs-terracotta">
+                Planning boundary
+              </p>
+              <p className="mt-4 text-sm leading-7 text-rs-muted">
+                RadarScout helps travelers compare details before they continue with a booking partner. Current details should be reviewed on the partner page.
+              </p>
+            </Card>
           </aside>
         </div>
       </Section>

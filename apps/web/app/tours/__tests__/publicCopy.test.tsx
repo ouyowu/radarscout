@@ -250,6 +250,8 @@ describe('tour public copy safety', () => {
     expect(markup).toContain('target="_blank"')
     expect(markup).toContain('rel="nofollow sponsored noopener noreferrer"')
     expect(markup).toContain('Continue with a booking partner')
+    expect((markup.match(/<h1/g) ?? [])).toHaveLength(1)
+    expect(markup.indexOf('Check availability')).toBeLessThan(markup.indexOf('Planning boundary'))
     expect(fetchMock).not.toHaveBeenCalled()
     expectSafeTourCopy(markup)
   })
