@@ -777,6 +777,10 @@ test.describe('Valid Chiang Mai flow', () => {
     await expect(itinerary.getByText('Old City Temple Walk')).toBeVisible()
     await expect(itinerary.getByText(/1 day remains open/i)).toBeVisible()
     await expect(itinerary.getByRole('link', { name: 'Review product details' }).first()).toHaveAttribute('href', /source=ai-trip-planner/)
+    const mapLink = itinerary.getByRole('link', { name: 'Open Chiang Mai area map' })
+    await expect(mapLink).toBeVisible()
+    await expect(mapLink).toHaveAttribute('href', 'https://www.openstreetmap.org/search?query=Chiang%20Mai%2C%20Thailand')
+    await expect(mapLink).toHaveAttribute('rel', 'noopener noreferrer')
     await expect(itinerary.getByText(/hotel|flight|price|available now|instant confirmation|checkout|payment/i)).toHaveCount(0)
   })
 

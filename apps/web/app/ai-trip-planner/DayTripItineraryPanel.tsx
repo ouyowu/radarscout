@@ -1,11 +1,14 @@
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import { buildAiTripPlannerDetailHref } from './AiSearchProductCard'
+import { buildOpenStreetMapSearchHref, getItineraryDestinations } from './dayTripMap'
 
 type DayTripItineraryPanelProps = {
   itinerary: DayTripItinerary
 }
 
 export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps) {
+  const destinations = getItineraryDestinations(itinerary)
+
   return (
     <section
       aria-label="Suggested Thailand day trips"
@@ -22,6 +25,36 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
           Built from reviewed day-tour suggestions that matched your trip idea. This is a planning sequence; current product details stay on product pages.
         </p>
       </div>
+
+      {destinations.length > 0 ? (
+        <div
+          aria-label="Destination map overview"
+          className="border-b border-[#d8eadf] bg-[#e7f5f2] px-4 py-4 sm:px-5"
+        >
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
+            Map overview
+          </p>
+          <h4 className="mt-1.5 text-lg font-black text-[#101820]">
+            Explore destination areas
+          </h4>
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+            These links show destination areas only. Exact meeting and pickup details remain on each product page.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {destinations.map(destination => (
+              <a
+                key={destination}
+                href={buildOpenStreetMapSearchHref(destination)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:text-[#0f766e]"
+              >
+                Open {destination} area map
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <ol className="grid gap-px bg-[#d8eadf] sm:grid-cols-2 xl:grid-cols-3">
         {itinerary.days.map(day => (
