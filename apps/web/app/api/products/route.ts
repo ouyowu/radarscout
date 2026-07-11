@@ -5,6 +5,7 @@ import { evaluateThailandProductEligibility } from '@/lib/productEligibility/tha
 import { getReviewedEnrichmentsByProductIds } from '@/lib/reviewedEnrichmentReader'
 import { resolveReviewedProductHandoff } from '@/lib/publicProducts/ownerManagedProductHandoffMappings'
 import { isDatabaseProductPublishReady } from '@/lib/publicProducts/publicProductReviewGate'
+import { pilotPartnerProducts } from '@/lib/partnerProducts/seed/pilotPartnerProducts'
 
 export const dynamic = 'force-dynamic'
 
@@ -105,6 +106,35 @@ function parseBooleanFilter(value: string | null): boolean | null {
   return null
 }
 
+function reviewedSeedProducts(filters: ProductFilters) {
+  return pilotPartnerProducts.flatMap(product => {
+    if (filters.city && product.destination !== filters.city) return []
+    if (filters.hasPrice === true) return []
+    if (filters.hasImage === true && !product.imageUrl) return []
+    if (filters.hasImage === false && product.imageUrl) return []
+
+    return [{
+      id: product.id,
+      title: product.title,
+      destination: product.destination,
+      imageUrl: product.imageUrl ?? null,
+      summary: product.shortSummary,
+      retailPrice: null,
+      currency: null,
+      detailHref: `/tours/${encodeURIComponent(product.id)}`,
+      supplierName: product.partnerName,
+      tags: product.tags,
+      bookingPartnerHandoff: {
+        href: product.bookingWidgetUrl,
+        label: 'Check availability' as const,
+        rel: 'nofollow sponsored noopener noreferrer' as const,
+        source: 'booking_partner_verified_public_widget' as const,
+        verifiedBy: 'operator_manual_review' as const,
+      },
+    }]
+  })
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const take = parseTake(searchParams.get('take'))
@@ -129,6 +159,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const seedProducts = reviewedSeedProducts(filters).slice(0, take)
     const where = {
       active: true as const,
       supplierId: { not: null as null },
@@ -193,7 +224,7 @@ export async function GET(request: NextRequest) {
     const enrichmentMap = await getReviewedEnrichmentsByProductIds(
       collected.map(({ product }) => product.id),
     )
-    const products = collected.flatMap(({ product, imageUrl }: ProductWithImage) => {
+    const databaseProducts = collected.flatMap(({ product, imageUrl }: ProductWithImage) => {
       const enrichment = enrichmentMap.get(product.id) ?? null
       const handoff = resolveReviewedProductHandoff({
         publicProductId: product.id,
@@ -211,6 +242,10 @@ export async function GET(request: NextRequest) {
         bookingPartnerHandoff: handoff,
       }]
     })
+
+    const products = [...seedProducts, ...databaseProducts]
+      .filter((product, index, all) => all.findIndex(candidate => candidate.id === product.id) === index)
+      .slice(0, take)
 
     return NextResponse.json({
       products,

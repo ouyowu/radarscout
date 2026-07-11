@@ -23,6 +23,11 @@ const handoffMock = vi.hoisted(() => ({
 }))
 vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMock)
 
+const partnerSeedMock = vi.hoisted(() => ({
+  pilotPartnerProducts: [] as Array<Record<string, unknown>>,
+}))
+vi.mock('@/lib/partnerProducts/seed/pilotPartnerProducts', () => partnerSeedMock)
+
 import { GET } from '../route'
 
 function makeRequest(query: Record<string, string> = {}) {
@@ -58,6 +63,7 @@ function makeProductWithImage(overrides: Record<string, unknown> = {}) {
 describe('GET /api/products', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    partnerSeedMock.pilotPartnerProducts = []
     enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => new Map(
       ids.map(id => [id, {
         cleanedTitle: `Reviewed ${id}`,
@@ -76,6 +82,30 @@ describe('GET /api/products', () => {
       source: 'booking_partner_verified_public_widget',
       verifiedBy: 'operator_manual_review',
     })
+  })
+
+  it('keeps reviewed static partner seed products visible when database rows are not publish-ready', async () => {
+    partnerSeedMock.pilotPartnerProducts = Array.from({ length: 8 }, (_, index) => ({
+      id: `partner_cm_${index}`,
+      destination: 'Chiang Mai',
+      title: `Reviewed Chiang Mai experience ${index}`,
+      shortSummary: 'A reviewed partner experience.',
+      tags: ['Chiang Mai'],
+      partnerName: 'Reviewed partner',
+      bookingWidgetUrl: `https://widgets.bokun.io/online-sales/channel/experience/${index}`,
+      imageUrl: `https://imgcdn.bokun.tools/${index}.jpeg`,
+    }))
+    dbMock.bokunProduct.findMany.mockResolvedValue([])
+
+    const response = await GET(makeRequest({ city: 'chiang-mai', take: '8' }))
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.products).toHaveLength(8)
+    expect(body.products.every((product: { id: string }) => product.id.startsWith('partner_cm_'))).toBe(true)
+    expect(body.products.every((product: { imageUrl: string | null }) => Boolean(product.imageUrl))).toBe(true)
+    expect(body.products.every((product: { bookingPartnerHandoff?: { label?: string } }) =>
+      product.bookingPartnerHandoff?.label === 'Check availability')).toBe(true)
   })
 
   it('returns empty list without DB call when destination is not thailand', async () => {
