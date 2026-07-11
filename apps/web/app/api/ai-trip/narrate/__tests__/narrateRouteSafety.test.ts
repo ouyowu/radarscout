@@ -8,7 +8,7 @@ const routeSource = readFileSync(
 )
 
 describe('ai-trip narrate route safety', () => {
-  it('is feature-flagged off without a model key', () => {
+  it('requires an explicit feature flag in addition to model and limiter configuration', () => {
     expect(routeSource).toContain('isNarrationEnabled()')
     expect(routeSource).toContain('narrationEnabled: false')
     expect(routeSource).toContain('503')
@@ -16,6 +16,7 @@ describe('ai-trip narrate route safety', () => {
 
   it('rate limits anonymous traffic and fails closed if the limiter is down', () => {
     expect(routeSource).toContain("key: 'ai-trip-narrate'")
+    expect(routeSource).toContain("scope: 'global'")
     expect(routeSource).toMatch(/catch\s*\{\s*\n?\s*return NextResponse\.json\(\{ narrationEnabled: false \}/)
   })
 
@@ -36,5 +37,10 @@ describe('ai-trip narrate route safety', () => {
   it('streams as uncached plain text', () => {
     expect(routeSource).toContain("'Cache-Control': 'no-store'")
     expect(routeSource).toContain("'Content-Type': 'text/plain; charset=utf-8'")
+  })
+
+  it('cancels and times out the paid provider request with the browser request', () => {
+    expect(routeSource).toContain('signal: request.signal')
+    expect(routeSource).toContain('NARRATION_REQUEST_TIMEOUT_MS')
   })
 })

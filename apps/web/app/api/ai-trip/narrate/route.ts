@@ -14,6 +14,7 @@ import { rateLimit } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
+const NARRATION_REQUEST_TIMEOUT_MS = 45_000
 
 // Streams display-only narrative text for a gated itinerary. The itinerary is
 // rebuilt server-side through the same review-gated pipeline as /search —
@@ -30,7 +31,21 @@ export async function POST(request: NextRequest) {
   // rejecting, which would otherwise hang the request.
   try {
     const limited = await Promise.race([
-      rateLimit(request, { key: 'ai-trip-narrate', max: 10, windowSeconds: 600 }),
+      (async () => {
+        const perIpLimit = await rateLimit(request, {
+          key: 'ai-trip-narrate',
+          max: 10,
+          windowSeconds: 600,
+        })
+        if (perIpLimit) return perIpLimit
+
+        return rateLimit(request, {
+          key: 'ai-trip-narrate',
+          max: 100,
+          windowSeconds: 600,
+          scope: 'global',
+        })
+      })(),
       new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error('rate limiter timeout')), 2000)
       }),
@@ -77,6 +92,9 @@ export async function POST(request: NextRequest) {
           max_tokens: NARRATION_MAX_TOKENS,
           system: NARRATION_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: buildNarrationUserMessage(itinerary) }],
+        }, {
+          signal: request.signal,
+          timeout: NARRATION_REQUEST_TIMEOUT_MS,
         })
 
         for await (const event of messageStream) {
@@ -105,6 +123,7 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'no-store',
       'X-Accel-Buffering': 'no',
+      'X-Content-Type-Options': 'nosniff',
     },
   })
 }

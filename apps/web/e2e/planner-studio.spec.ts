@@ -107,3 +107,27 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   expect(searchRequests).toBe(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
+
+test('guided studio labels optional streamed narration as AI-generated display text', async ({ page }) => {
+  await page.route('/api/ai-trip/search', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(REVIEWED_ROUTE_RESPONSE),
+    })
+  })
+  await page.route('/api/ai-trip/narrate', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/plain; charset=utf-8',
+      body: 'Day 1: Compare the reviewed Chiang Mai experience at a relaxed pace.',
+    })
+  })
+
+  await page.goto('/planner')
+  await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
+
+  await expect(page.getByText('Route story · AI-generated text')).toBeVisible()
+  await expect(page.getByText(/Compare the reviewed Chiang Mai experience/)).toBeVisible()
+  await expect(page.getByText(/verify every detail on each product page/i)).toBeVisible()
+})

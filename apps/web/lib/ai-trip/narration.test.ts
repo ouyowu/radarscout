@@ -52,10 +52,14 @@ const itinerary: DayTripItinerary = {
 describe('narration feature flag and model', () => {
   const originalKey = process.env.ANTHROPIC_API_KEY
   const originalModel = process.env.AI_TRIP_NARRATION_MODEL
+  const originalEnabled = process.env.AI_TRIP_NARRATION_ENABLED
+  const originalRedisUrl = process.env.REDIS_URL
 
   beforeEach(() => {
     delete process.env.ANTHROPIC_API_KEY
     delete process.env.AI_TRIP_NARRATION_MODEL
+    delete process.env.AI_TRIP_NARRATION_ENABLED
+    delete process.env.REDIS_URL
   })
 
   afterEach(() => {
@@ -63,11 +67,19 @@ describe('narration feature flag and model', () => {
     else process.env.ANTHROPIC_API_KEY = originalKey
     if (originalModel === undefined) delete process.env.AI_TRIP_NARRATION_MODEL
     else process.env.AI_TRIP_NARRATION_MODEL = originalModel
+    if (originalEnabled === undefined) delete process.env.AI_TRIP_NARRATION_ENABLED
+    else process.env.AI_TRIP_NARRATION_ENABLED = originalEnabled
+    if (originalRedisUrl === undefined) delete process.env.REDIS_URL
+    else process.env.REDIS_URL = originalRedisUrl
   })
 
-  it('is disabled without a model key and enabled with one', () => {
+  it('requires the explicit flag, model key, and Redis cost limiter', () => {
     expect(isNarrationEnabled()).toBe(false)
     process.env.ANTHROPIC_API_KEY = 'test-key'
+    expect(isNarrationEnabled()).toBe(false)
+    process.env.AI_TRIP_NARRATION_ENABLED = 'true'
+    expect(isNarrationEnabled()).toBe(false)
+    process.env.REDIS_URL = 'redis://localhost:6379'
     expect(isNarrationEnabled()).toBe(true)
   })
 
@@ -100,6 +112,18 @@ describe('narration model input', () => {
     expect(message).not.toContain('partner_cm_1')
     expect(message).not.toContain('detailHref')
     expect(message).not.toContain('handoff')
+  })
+
+  it('redacts URLs and contact details that appear inside reviewed display fields', () => {
+    const unsafeItinerary = structuredClone(itinerary)
+    unsafeItinerary.tripSpec.destination = 'Chiang Mai https://example.com'
+    unsafeItinerary.days[0].experience.summary = 'Contact hello@example.com or +66 81 234 5678.'
+
+    const message = buildNarrationUserMessage(unsafeItinerary)
+
+    expect(message).not.toContain('https://')
+    expect(message).not.toContain('hello@example.com')
+    expect(message).not.toContain('+66 81 234 5678')
   })
 
   it('constrains the system prompt against commerce and logistics claims', () => {
@@ -139,6 +163,16 @@ describe('narration stream sanitizer', () => {
 
     expect(out).not.toMatch(/availability/i)
     expect(out).not.toMatch(/booking/i)
+  })
+
+  it('redacts URLs and contact details from streamed output', () => {
+    const out = runThrough([
+      'See https://example.com or email guide@example.com and call +66 81 234 5678 for details.',
+    ])
+
+    expect(out).not.toContain('https://')
+    expect(out).not.toContain('guide@example.com')
+    expect(out).not.toContain('+66 81 234 5678')
   })
 
   it('emits whole words only while holding back the stream tail', () => {

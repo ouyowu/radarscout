@@ -3,12 +3,22 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function rateLimit(
   req: NextRequest,
-  { key, max, windowSeconds }: { key: string; max: number; windowSeconds: number },
+  {
+    key,
+    max,
+    windowSeconds,
+    scope = 'ip',
+  }: {
+    key: string
+    max: number
+    windowSeconds: number
+    scope?: 'ip' | 'global'
+  },
 ): Promise<NextResponse | null> {
   const rawIp = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? ''
   // Only accept valid IPv4/IPv6 to prevent attacker-controlled key flooding
   const ip = /^[0-9a-fA-F.:]{2,45}$/.test(rawIp) ? rawIp : 'unknown'
-  const redisKey = `${key}:${ip}`
+  const redisKey = `${key}:${scope === 'global' ? 'global' : ip}`
 
   // Atomic: increment and set TTL only on first request within the window
   const count = (await redis.eval(
