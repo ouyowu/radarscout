@@ -49,10 +49,18 @@ describe('planner studio public copy safety', () => {
     expect(pageSource).toMatch(/robots: \{ index: false, follow: false \}/)
   })
 
-  it('only calls the guarded ai-trip search endpoint', () => {
+  it('only calls the guarded ai-trip endpoints', () => {
     const studioSource = readPlannerSource('PlannerStudio.tsx')
 
     expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/search'/)
-    expect(studioSource).not.toMatch(/fetch\('\/api\/(?!ai-trip\/search)/)
+    expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/narrate'/)
+    expect(studioSource).not.toMatch(/fetch\('\/api\/(?!ai-trip\/(search|narrate))/)
+  })
+
+  it('labels streamed narration honestly as AI-generated display text', () => {
+    const studioSource = readPlannerSource('PlannerStudio.tsx')
+
+    expect(studioSource).toMatch(/AI-generated text/)
+    expect(studioSource).toMatch(/verify every detail on each product page/i)
   })
 })
