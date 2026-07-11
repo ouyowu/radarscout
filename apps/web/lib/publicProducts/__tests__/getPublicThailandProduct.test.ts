@@ -16,6 +16,12 @@ const enrichmentMock = vi.hoisted(() => ({
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
 
+const handoffMock = vi.hoisted(() => ({
+  resolveReviewedProductHandoff: vi.fn(),
+}))
+
+vi.mock('../ownerManagedProductHandoffMappings', () => handoffMock)
+
 import { getPublicThailandProduct } from '../getPublicThailandProduct'
 
 function makeProduct(overrides: Record<string, unknown> = {}) {
@@ -29,6 +35,7 @@ function makeProduct(overrides: Record<string, unknown> = {}) {
     retailPrice: { toString: () => '49.00' },
     currency: 'USD',
     rawJson: {},
+    bokunActivityId: '1232729',
     lastSyncedAt: null,
     supplier: null,
     ...overrides,
@@ -50,6 +57,14 @@ function makeEnrichment() {
 describe('getPublicThailandProduct', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
   })
 
   it('returns null for empty id', async () => {
@@ -123,47 +138,45 @@ describe('getPublicThailandProduct', () => {
     expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
   })
 
-  it('returns public-safe product shape for eligible product', async () => {
+  it('returns human-reviewed product shape for eligible product', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
 
     const result = await getPublicThailandProduct('prod_abc')
 
     expect(result).not.toBeNull()
     expect(result!.id).toBe('prod_abc')
-    expect(result!.title).toBe('Chiang Mai Elephant Sanctuary')
+    expect(result!.title).toBe('Ethical Elephant Sanctuary Chiang Mai')
     expect(result!.city).toBe('Chiang Mai')
     expect(result!.detailHref).toBe('/tours/prod_abc')
     expect(result!).toHaveProperty('reviewedEnrichment')
   })
 
-  it('does not include handoff for an owner-managed profile until the public product mapping is reviewed', async () => {
+  it('hides a database product until the public product mapping is reviewed', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ bokunActivityId: '1232729' }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(null)
 
     const result = await getPublicThailandProduct('prod_abc')
 
-    expect(result).not.toHaveProperty('bookingPartnerHandoff')
+    expect(result).toBeNull()
   })
 
-  it('does not include booking partner handoff when no owner-managed profile matches', async () => {
+  it('hides a database product when no verified handoff matches', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ bokunActivityId: '999999999' }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(null)
 
     const result = await getPublicThailandProduct('prod_abc')
 
-    expect(result).not.toHaveProperty('bookingPartnerHandoff')
+    expect(result).toBeNull()
   })
 
   it('does not expose rawJson in the returned product', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ rawJson: { keyPhoto: { originalUrl: 'https://cdn.example.com/img.jpg' }, secret: 'internal' } }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
 
     const result = await getPublicThailandProduct('prod_abc')
 
@@ -191,14 +204,13 @@ describe('getPublicThailandProduct', () => {
     expect(result!.reviewedEnrichment).toEqual(makeEnrichment())
   })
 
-  it('returns null reviewedEnrichment when no enrichment exists for eligible product', async () => {
+  it('hides an eligible database product when no reviewed enrichment exists', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
     enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
 
     const result = await getPublicThailandProduct('prod_abc')
 
-    expect(result).not.toBeNull()
-    expect(result!.reviewedEnrichment).toBeNull()
+    expect(result).toBeNull()
   })
 
   it('returns null on DB error', async () => {
@@ -213,14 +225,20 @@ describe('getPublicThailandProduct', () => {
 describe('getPublicThailandProduct — cities outside original seven-city list', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
   })
 
   it('returns eligible product for Chiang Rai (not in old whitelist)', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ id: 'cr_1', title: 'Chiang Rai Temple Tour', city: 'Chiang Rai', location: null }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('cr_1')
 
     expect(result).not.toBeNull()
@@ -232,8 +250,6 @@ describe('getPublicThailandProduct — cities outside original seven-city list',
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ id: 'hh_1', title: 'Hua Hin Beach Cycling Tour', city: 'Hua Hin', location: null }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('hh_1')
 
     expect(result).not.toBeNull()
@@ -244,8 +260,6 @@ describe('getPublicThailandProduct — cities outside original seven-city list',
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ id: 'pn_1', title: 'Phang Nga Bay James Bond Island Tour', city: 'Phang Nga', location: null }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('pn_1')
 
     expect(result).not.toBeNull()
@@ -256,8 +270,6 @@ describe('getPublicThailandProduct — cities outside original seven-city list',
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ id: 'th_1', title: 'Thailand Private Tour', city: null, location: null }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('th_1')
 
     expect(result).not.toBeNull()
@@ -268,8 +280,6 @@ describe('getPublicThailandProduct — cities outside original seven-city list',
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ id: 'loc_1', title: 'Beach Tour', city: null, location: 'Phuket , Thailand' }),
     )
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('loc_1')
 
     expect(result).not.toBeNull()

@@ -2,6 +2,8 @@ import 'server-only'
 import { db } from '@reddit-monitor/db'
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 import { getReviewedEnrichmentsByProductIds } from '@/lib/reviewedEnrichmentReader'
+import { resolveReviewedProductHandoff } from '@/lib/publicProducts/ownerManagedProductHandoffMappings'
+import { isDatabaseProductPublishReady } from '@/lib/publicProducts/publicProductReviewGate'
 
 const AI_SCAN_BATCH_SIZE = 50
 const AI_SCAN_LIMIT = 500
@@ -38,6 +40,7 @@ type RawRow = {
   location: string | null
   retailPrice: { toString(): string } | null
   currency: string | null
+  bokunActivityId: string | null
 }
 
 export async function listAiEligibleThailandProducts(
@@ -69,6 +72,7 @@ export async function listAiEligibleThailandProducts(
           location: true,
           retailPrice: true,
           currency: true,
+          bokunActivityId: true,
         },
       })
 
@@ -99,20 +103,31 @@ export async function listAiEligibleThailandProducts(
     const enrichmentMap = await getReviewedEnrichmentsByProductIds(eligibleIds)
 
     // Phase 3: map enrichment to candidates
-    return eligible.map(product => {
+    return eligible.flatMap(product => {
       const enrichment = enrichmentMap.get(product.id) ?? null
-      return {
+      const handoff = resolveReviewedProductHandoff({
+        publicProductId: product.id,
+        bokunActivityId: product.bokunActivityId,
+      })
+
+      if (!isDatabaseProductPublishReady({ enrichment, handoff })) return []
+
+      return [{
         id: product.id,
         title: product.title,
-        cleanedTitle: enrichment?.cleanedTitle ?? null,
+        cleanedTitle: enrichment!.cleanedTitle,
         city: product.city,
         location: product.location,
-        summary: enrichment?.shortSummary ?? null,
-        suggestedTags: enrichment?.suggestedTags ?? [],
+        summary: enrichment!.shortSummary,
+        suggestedTags: enrichment!.suggestedTags,
         detailHref: `/tours/${encodeURIComponent(product.id)}`,
         retailPrice: product.retailPrice != null ? String(product.retailPrice) : null,
         currency: product.currency ?? null,
-      }
+        ctaHref: handoff!.href,
+        ctaLabel: handoff!.label,
+        ctaRel: handoff!.rel,
+        externalHandoff: true,
+      }]
     })
   } catch {
     return []

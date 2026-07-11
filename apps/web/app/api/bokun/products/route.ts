@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
+import { getReviewedEnrichmentsByProductIds } from '@/lib/reviewedEnrichmentReader'
+import { resolveReviewedProductHandoff } from '@/lib/publicProducts/ownerManagedProductHandoffMappings'
+import { isDatabaseProductPublishReady } from '@/lib/publicProducts/publicProductReviewGate'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,6 +12,7 @@ type CatalogSupplier = {
 
 type CatalogProduct = {
   id: string
+  bokunActivityId: string | null
   title: string
   excerpt: string | null
   city: string | null
@@ -36,15 +40,6 @@ function asRecord(value: unknown): Record<string, unknown> {
 
 function readString(value: unknown): string | null {
   return typeof value === 'string' && value.trim() ? value.trim() : null
-}
-
-function stripHtml(value: string | null): string | null {
-  if (!value) return null
-
-  return value
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
 }
 
 function findImageUrl(rawJson: unknown): string | null {
@@ -92,6 +87,7 @@ export async function GET(request: NextRequest) {
       take,
       select: {
         id: true,
+        bokunActivityId: true,
         title: true,
         excerpt: true,
         city: true,
@@ -109,12 +105,20 @@ export async function GET(request: NextRequest) {
       },
     }) as CatalogProduct[]
 
-    return NextResponse.json({
-      count: products.length,
-      products: products.map(product => ({
+    const enrichmentMap = await getReviewedEnrichmentsByProductIds(products.map(product => product.id))
+    const publishableProducts = products.flatMap(product => {
+      const enrichment = enrichmentMap.get(product.id) ?? null
+      const handoff = resolveReviewedProductHandoff({
+        publicProductId: product.id,
+        bokunActivityId: product.bokunActivityId,
+      })
+
+      if (!isDatabaseProductPublishReady({ enrichment, handoff })) return []
+
+      return [{
         id: product.id,
-        title: product.title,
-        excerpt: product.excerpt,
+        title: enrichment!.cleanedTitle,
+        excerpt: enrichment!.shortSummary,
         city: product.city,
         location: product.location,
         retailPrice: product.retailPrice?.toString() ?? null,
@@ -122,9 +126,15 @@ export async function GET(request: NextRequest) {
         active: product.active,
         lastSyncedAt: product.lastSyncedAt,
         imageUrl: findImageUrl(product.rawJson),
-        summary: stripHtml(readString(asRecord(product.rawJson).summary)) ?? product.excerpt,
+        summary: enrichment!.shortSummary,
         supplier: product.supplier ? { title: product.supplier.title } : null,
-      })),
+        bookingPartnerHandoff: handoff,
+      }]
+    })
+
+    return NextResponse.json({
+      count: publishableProducts.length,
+      products: publishableProducts,
     })
   } catch {
     return NextResponse.json({

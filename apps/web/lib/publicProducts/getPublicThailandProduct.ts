@@ -8,6 +8,7 @@ import {
   type PublicBookingPartnerHandoff,
 } from './bookingPartnerHandoff'
 import { resolveReviewedProductHandoff } from './ownerManagedProductHandoffMappings'
+import { isDatabaseProductPublishReady } from './publicProductReviewGate'
 
 export type PublicThailandProduct = {
   id: string
@@ -165,24 +166,31 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
       bokunActivityId: product.bokunActivityId,
     })
 
+    if (!isDatabaseProductPublishReady({
+      enrichment: reviewedEnrichment,
+      handoff: bookingPartnerHandoff,
+    })) {
+      return { status: 'not-found' }
+    }
+
     return {
       status: 'found',
       product: {
         id: shaped.id,
-        title: shaped.title,
+        title: reviewedEnrichment!.cleanedTitle!,
         destination: shaped.destination ?? 'Thailand',
         city: product.city,
         location: product.location,
         imageUrl: shaped.imageUrl,
         imageGalleryUrls: shaped.imageUrl ? [shaped.imageUrl] : [],
-        summary: shaped.summary,
-        description: productDescription(product.rawJson, product.description) ?? shaped.summary,
+        summary: reviewedEnrichment!.shortSummary!,
+        description: reviewedEnrichment!.shortSummary!,
         retailPrice: shaped.retailPrice,
         currency: shaped.currency,
         detailHref: shaped.detailHref,
         facts: productFacts(product.rawJson),
         reviewedEnrichment,
-        ...(bookingPartnerHandoff ? { bookingPartnerHandoff } : {}),
+        bookingPartnerHandoff: bookingPartnerHandoff!,
       },
     }
   } catch {

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@reddit-monitor/db'
 import { toReadOnlyBokunCatalogProduct, type BokunCatalogRecord } from '@/lib/bokunCatalog'
 import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
+import { getReviewedEnrichmentsByProductIds } from '@/lib/reviewedEnrichmentReader'
+import { resolveReviewedProductHandoff } from '@/lib/publicProducts/ownerManagedProductHandoffMappings'
+import { isDatabaseProductPublishReady } from '@/lib/publicProducts/publicProductReviewGate'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,7 +49,7 @@ type ProductFilters = {
 }
 
 type ProductWithImage = {
-  product: BokunCatalogRecord
+  product: BokunCatalogRecord & { bokunActivityId: string | null }
   imageUrl: string | null
 }
 
@@ -145,6 +148,7 @@ export async function GET(request: NextRequest) {
         skip,
         select: {
           id: true,
+          bokunActivityId: true,
           title: true,
           description: true,
           excerpt: true,
@@ -160,7 +164,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-      }) as BokunCatalogRecord[]
+      }) as Array<BokunCatalogRecord & { bokunActivityId: string | null }>
 
       if (batch.length === 0) break
 
@@ -186,13 +190,31 @@ export async function GET(request: NextRequest) {
       if (batch.length < SCAN_BATCH_SIZE) break
     }
 
-    return NextResponse.json({
-      products: collected.map(({ product, imageUrl }: ProductWithImage) => ({
+    const enrichmentMap = await getReviewedEnrichmentsByProductIds(
+      collected.map(({ product }) => product.id),
+    )
+    const products = collected.flatMap(({ product, imageUrl }: ProductWithImage) => {
+      const enrichment = enrichmentMap.get(product.id) ?? null
+      const handoff = resolveReviewedProductHandoff({
+        publicProductId: product.id,
+        bokunActivityId: product.bokunActivityId,
+      })
+
+      if (!isDatabaseProductPublishReady({ enrichment, handoff })) return []
+
+      return [{
         ...toReadOnlyBokunCatalogProduct(product),
+        title: enrichment!.cleanedTitle,
+        summary: enrichment!.shortSummary,
         imageUrl,
-        tags: [],
-      })),
-      meta: meta(collected.length, filters),
+        tags: enrichment!.suggestedTags,
+        bookingPartnerHandoff: handoff,
+      }]
+    })
+
+    return NextResponse.json({
+      products,
+      meta: meta(products.length, filters),
     })
   } catch {
     return NextResponse.json({

@@ -13,6 +13,16 @@ vi.mock('@reddit-monitor/db', () => ({
   db: dbMock,
 }))
 
+const enrichmentMock = vi.hoisted(() => ({
+  getReviewedEnrichmentsByProductIds: vi.fn(),
+}))
+vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
+
+const handoffMock = vi.hoisted(() => ({
+  resolveReviewedProductHandoff: vi.fn(),
+}))
+vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMock)
+
 import { GET } from '../route'
 
 function makeRequest(query: Record<string, string> = {}) {
@@ -23,6 +33,7 @@ function makeRequest(query: Record<string, string> = {}) {
 function makeProduct(overrides: Record<string, unknown> = {}) {
   return {
     id: 'product_abc',
+    bokunActivityId: '1232729',
     title: 'Chiang Mai Elephant Sanctuary',
     description: null,
     excerpt: null,
@@ -47,6 +58,24 @@ function makeProductWithImage(overrides: Record<string, unknown> = {}) {
 describe('GET /api/products', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => new Map(
+      ids.map(id => [id, {
+        cleanedTitle: `Reviewed ${id}`,
+        shortSummary: 'Human-reviewed summary.',
+        suggestedTags: ['Thailand'],
+        seoTitle: null,
+        seoDescription: null,
+        reviewedBy: 'operator@radarscout.io',
+        reviewedAt: '2026-07-11T00:00:00.000Z',
+      }]),
+    ))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
   })
 
   it('returns empty list without DB call when destination is not thailand', async () => {

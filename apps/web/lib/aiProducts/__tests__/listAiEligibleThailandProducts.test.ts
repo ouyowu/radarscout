@@ -16,6 +16,12 @@ const enrichmentMock = vi.hoisted(() => ({
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
 
+const handoffMock = vi.hoisted(() => ({
+  resolveReviewedProductHandoff: vi.fn(),
+}))
+
+vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMock)
+
 import { listAiEligibleThailandProducts } from '../listAiEligibleThailandProducts'
 
 function makeRow(overrides: Record<string, unknown> = {}) {
@@ -26,14 +32,38 @@ function makeRow(overrides: Record<string, unknown> = {}) {
     location: null,
     retailPrice: null,
     currency: null,
+    bokunActivityId: '1232729',
     ...overrides,
+  }
+}
+
+function reviewedMap(ids: string[]) {
+  return new Map(ids.map(id => [id, {
+    cleanedTitle: `Reviewed ${id}`,
+    shortSummary: 'Human-reviewed summary.',
+    suggestedTags: ['Thailand'],
+    seoTitle: null,
+    seoDescription: null,
+    reviewedBy: 'operator@radarscout.io',
+    reviewedAt: '2026-07-11T00:00:00.000Z',
+  }]))
+}
+
+function reviewedHandoff() {
+  return {
+    href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+    label: 'Check availability',
+    rel: 'nofollow sponsored noopener noreferrer',
+    source: 'booking_partner_verified_public_widget',
+    verifiedBy: 'operator_manual_review',
   }
 }
 
 describe('listAiEligibleThailandProducts — retrieval', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => reviewedMap(ids))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(reviewedHandoff())
   })
 
   // Test 1: Eligible Bangkok product is returned
@@ -224,8 +254,12 @@ describe('listAiEligibleThailandProducts — retrieval', () => {
     expect(Object.keys(item).sort()).toEqual([
       'city',
       'cleanedTitle',
+      'ctaHref',
+      'ctaLabel',
+      'ctaRel',
       'currency',
       'detailHref',
+      'externalHandoff',
       'id',
       'location',
       'retailPrice',
@@ -234,12 +268,30 @@ describe('listAiEligibleThailandProducts — retrieval', () => {
       'title',
     ])
   })
+
+  it('hides database products without complete review or verified handoff', async () => {
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow()])
+      .mockResolvedValue([])
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+
+    expect(await listAiEligibleThailandProducts()).toEqual([])
+
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(reviewedMap(['prod_1']))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(null)
+    dbMock.bokunProduct.findMany
+      .mockResolvedValueOnce([makeRow()])
+      .mockResolvedValue([])
+
+    expect(await listAiEligibleThailandProducts()).toEqual([])
+  })
 })
 
 describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => reviewedMap(ids))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(reviewedHandoff())
   })
 
   it('spans multiple batches — second batch called with incremented skip after full first batch', async () => {
@@ -270,8 +322,8 @@ describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => 
       suggestedTags: ['Elephants', 'Nature'],
       seoTitle: null,
       seoDescription: null,
-      reviewedBy: null,
-      reviewedAt: null,
+      reviewedBy: 'operator@radarscout.io',
+      reviewedAt: '2026-07-11T00:00:00.000Z',
     })
     enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(enrichmentMap)
 
@@ -330,7 +382,8 @@ describe('listAiEligibleThailandProducts — multi-batch and enrichment', () => 
 describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => reviewedMap(ids))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(reviewedHandoff())
   })
 
   // Test 22: Popular-products fallback remains Thailand-only
@@ -372,12 +425,12 @@ describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)'
     const enrichmentMap = new Map()
     enrichmentMap.set('eligible_reviewed', {
       cleanedTitle: 'Reviewed Title',
-      shortSummary: null,
-      suggestedTags: [],
+      shortSummary: 'Human-reviewed summary.',
+      suggestedTags: ['Thailand'],
       seoTitle: null,
       seoDescription: null,
       reviewedBy: 'editor',
-      reviewedAt: null,
+      reviewedAt: '2026-07-11T00:00:00.000Z',
     })
     enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(enrichmentMap)
 
@@ -423,7 +476,8 @@ describe('listAiEligibleThailandProducts — fallback scenarios (tests 22–25)'
 describe('listAiEligibleThailandProducts — query count and performance (H1–H9)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockResolvedValue(new Map())
+    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => reviewedMap(ids))
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue(reviewedHandoff())
   })
 
   // H1: Six returned products do not cause six separate enrichment queries

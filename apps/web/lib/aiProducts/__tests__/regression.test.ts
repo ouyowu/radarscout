@@ -23,6 +23,11 @@ const enrichmentMockForPublic = vi.hoisted(() => ({
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMockForPublic)
 
+const handoffMockForPublic = vi.hoisted(() => ({
+  resolveReviewedProductHandoff: vi.fn(),
+}))
+vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMockForPublic)
+
 vi.mock('@/lib/bokunCatalog', () => ({
   toReadOnlyBokunCatalogProduct: (product: { id: string; title: string; city: string | null; location: string | null }) => ({
     id: product.id,
@@ -42,6 +47,22 @@ import { listPublicThailandProducts } from '@/lib/publicProducts/listPublicThail
 describe('Regression 26: Public product APIs remain unchanged', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMockForPublic.getReviewedEnrichmentByProductId.mockResolvedValue({
+      cleanedTitle: 'Reviewed Bangkok Temple Tour',
+      shortSummary: 'Human-reviewed summary.',
+      suggestedTags: ['Bangkok'],
+      seoTitle: null,
+      seoDescription: null,
+      reviewedBy: 'operator@radarscout.io',
+      reviewedAt: '2026-07-11T00:00:00.000Z',
+    })
+    handoffMockForPublic.resolveReviewedProductHandoff.mockReturnValue({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
   })
 
   it('getPublicThailandProduct still returns null for ineligible (foreign) product', async () => {
@@ -55,6 +76,7 @@ describe('Regression 26: Public product APIs remain unchanged', () => {
       retailPrice: null,
       currency: null,
       rawJson: {},
+      bokunActivityId: '1232729',
       lastSyncedAt: null,
       supplier: null,
     })
@@ -79,8 +101,6 @@ describe('Regression 26: Public product APIs remain unchanged', () => {
       lastSyncedAt: null,
       supplier: null,
     })
-    enrichmentMockForPublic.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const result = await getPublicThailandProduct('bkk_1')
 
     expect(result).not.toBeNull()
@@ -156,6 +176,7 @@ import { getReviewedEnrichmentByProductId } from '@/lib/reviewedEnrichmentReader
 describe('Regression 29: Internal reviewed-enrichment retrieval is not gated by AI eligibility', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMockForPublic.getReviewedEnrichmentByProductId.mockResolvedValue(null)
   })
 
   it('getReviewedEnrichmentByProductId can be called for any product ID without eligibility check', async () => {
