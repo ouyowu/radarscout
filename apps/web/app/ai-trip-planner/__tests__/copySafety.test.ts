@@ -51,7 +51,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toContain('Thailand experience catalog')
     expect(publicCopy).toContain('Booking partner handoff')
     expect(publicCopy).toContain('Current product details')
-    expect(publicCopy).toContain('AI-generated itinerary')
+    expect(publicCopy).toContain('Structured day-trip itinerary')
     expect(publicCopy).toContain('Suggested planning outline')
     expect(publicCopy).toContain('rule-based planning guide')
     expect(publicCopy).toContain('Planner safety status')
@@ -136,6 +136,21 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).not.toMatch(/all destinations/i)
     expect(publicCopy).not.toMatch(/every destination/i)
     expect(publicCopy).not.toMatch(/every country/i)
+  })
+
+  it('describes the live itinerary and external handoff capabilities consistently', () => {
+    const publicCopy = [
+      readAiTripPlannerSource('page.tsx'),
+      readAiTripPlannerSource('IntentParserDemo.tsx'),
+    ].join('\n')
+
+    expect(publicCopy).toContain('Structured day-trip itinerary')
+    expect(publicCopy).toContain('After search')
+    expect(publicCopy).toContain('Check availability opens the external booking partner')
+    expect(publicCopy).not.toMatch(/does not generate an itinerary/i)
+    expect(publicCopy).not.toMatch(/AI-generated itinerary/i)
+    expect(publicCopy).not.toMatch(/no booking partner handoff starts from this planner page/i)
+    expect(publicCopy).not.toMatch(/No booking partner action or current status claim/i)
   })
 
   it('keeps product result cards compact on mobile after adding fit signals', () => {
