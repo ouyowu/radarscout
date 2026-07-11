@@ -41,12 +41,12 @@ function createMessage(message: Omit<StudioMessage, 'id'>): StudioMessage {
 function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage {
   if (response.status === 'ok' && response.products.length > 0) {
     const itineraryNote = response.itinerary
-      ? ` I arranged ${response.itinerary.days.length} of them into a day-by-day route on the right — every stop keeps a reviewed booking partner handoff.`
-      : ' Compare them on the right; every match keeps a reviewed booking partner handoff.'
+      ? ` I arranged ${response.itinerary.days.length} of them into a day-by-day route on the right — every stop links to reviewed product details before the booking partner handoff.`
+      : ' Compare them on the right; every match links to reviewed product details before the booking partner handoff.'
 
     return createMessage({
       role: 'guide',
-      content: `Found ${response.products.length} reviewed Thailand experience${response.products.length === 1 ? '' : 's'} for this idea.${itineraryNote} Want to adjust the plan? Just tell me what to change.`,
+      content: `Found ${response.products.length} reviewed Thailand experience${response.products.length === 1 ? '' : 's'} for this idea.${itineraryNote} Add another interest, or use Start over to change the destination or duration.`,
     })
   }
 
@@ -184,17 +184,17 @@ export function PlannerStudio() {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
       <section
         aria-label="Guided planning conversation"
-        className="flex flex-col overflow-hidden rounded-[1.75rem] border border-[#ece3d6] bg-white shadow-[0_30px_60px_rgba(17,24,39,0.06)]"
+        className="flex flex-col overflow-hidden rounded-rs-lg border border-rs-sage-200/70 bg-white shadow-rs-soft"
       >
-        <div className="flex items-center justify-between border-b border-[#ece3d6] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-rs-sage-200/70 px-5 py-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">Planning guide</p>
-            <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-[#101820]">Describe the trip in your own words</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-500">Planning guide</p>
+            <h2 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.02em] text-rs-ink">Describe the trip in your own words</h2>
           </div>
           <button
             type="button"
             onClick={handleStartOver}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#ded7ca] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#5a5147] transition hover:border-[#0f766e] hover:text-[#0f766e]"
+            className="inline-flex min-h-[44px] items-center rounded-rs-pill border border-rs-sage-200 px-4 text-xs font-bold uppercase tracking-[0.12em] text-rs-muted transition hover:border-rs-forest-500 hover:text-rs-forest-700"
           >
             Start over
           </button>
@@ -212,15 +212,15 @@ export function PlannerStudio() {
               <div
                 className={
                   message.role === 'guide'
-                    ? 'max-w-[85%] rounded-[1.25rem] rounded-bl-md bg-[#f5fbf7] px-4 py-3'
-                    : 'max-w-[85%] rounded-[1.25rem] rounded-br-md bg-[#1e2d59] px-4 py-3'
+                    ? 'max-w-[85%] rounded-[1.25rem] rounded-bl-md bg-rs-sage-100 px-4 py-3'
+                    : 'max-w-[85%] rounded-[1.25rem] rounded-br-md bg-rs-terracotta px-4 py-3'
                 }
               >
                 <p
                   className={
                     message.role === 'guide'
-                      ? 'text-sm font-semibold leading-6 text-[#1f2937]'
-                      : 'text-sm font-semibold leading-6 text-white'
+                      ? 'text-sm font-semibold leading-6 text-rs-ink'
+                      : 'text-sm font-semibold leading-6 text-rs-ink'
                   }
                 >
                   {message.content}
@@ -230,7 +230,7 @@ export function PlannerStudio() {
                     {message.understoodChips.map(chip => (
                       <span
                         key={chip}
-                        className="rounded-full bg-[#e7f5f2] px-2.5 py-1 text-xs font-black text-[#0f766e]"
+                        className="rounded-rs-pill bg-white px-2.5 py-1 text-xs font-bold text-rs-forest-700"
                       >
                         {chip}
                       </span>
@@ -245,7 +245,7 @@ export function PlannerStudio() {
                         type="button"
                         onClick={() => handleChip(chip)}
                         disabled={isSearching}
-                        className="min-h-[40px] rounded-full border border-[#0f766e]/30 bg-white px-3 py-1.5 text-left text-xs font-black leading-5 text-[#0f766e] transition hover:border-[#0f766e] hover:bg-[#e7f5f2] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-[40px] rounded-rs-pill border border-rs-forest-500/30 bg-white px-3 py-1.5 text-left text-xs font-bold leading-5 text-rs-forest-700 transition hover:border-rs-forest-500 hover:bg-rs-sage-100 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {chip}
                       </button>
@@ -260,7 +260,7 @@ export function PlannerStudio() {
               <p
                 role="status"
                 aria-live="polite"
-                className="max-w-[85%] rounded-[1.25rem] rounded-bl-md bg-[#f5fbf7] px-4 py-3 text-sm font-semibold leading-6 text-[#0f766e]"
+                className="max-w-[85%] rounded-[1.25rem] rounded-bl-md bg-rs-sage-100 px-4 py-3 text-sm font-semibold leading-6 text-rs-forest-700"
               >
                 Searching read-only Thailand experience records…
               </p>
@@ -269,7 +269,7 @@ export function PlannerStudio() {
           <div ref={conversationEndRef} />
         </div>
 
-        <form onSubmit={handleSubmit} className="border-t border-[#ece3d6] px-5 py-4">
+        <form onSubmit={handleSubmit} className="border-t border-rs-sage-200/70 px-5 py-4">
           <label htmlFor="planner-studio-input" className="sr-only">
             Trip idea message
           </label>
@@ -281,17 +281,17 @@ export function PlannerStudio() {
               maxLength={PARSER_PROMPT_LIMIT}
               onChange={event => setDraft(event.target.value)}
               placeholder="e.g. Chiang Mai 3 days elephants and food"
-              className="min-h-[52px] w-full rounded-full border border-[#ded7ca] bg-[#fffdf7] px-5 text-sm font-semibold text-[#101820] outline-none focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20"
+              className="min-h-[52px] w-full rounded-rs-pill border border-rs-sage-200 bg-rs-sand-50 px-5 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20"
             />
             <button
               type="submit"
               disabled={isSearching || draft.trim().length === 0}
-              className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-full bg-[#0f766e] px-6 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#0b5f59] disabled:cursor-not-allowed disabled:bg-[#c7beb1]"
+              className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold uppercase tracking-[0.12em] text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white disabled:cursor-not-allowed disabled:bg-rs-sage-200"
             >
               Send
             </button>
           </div>
-          <p className="mt-3 text-xs font-semibold leading-5 text-[#5a6670]">
+          <p className="mt-3 text-xs font-semibold leading-5 text-rs-muted">
             Local parsing first; product matching stays Thailand-only and comparison-only. The reviewed handoff opens an external booking partner.
           </p>
         </form>
@@ -302,42 +302,42 @@ export function PlannerStudio() {
           <div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#1e2d59]">Your route workspace</p>
-                <h2 className="mt-1 text-2xl font-black tracking-[-0.025em] text-[#101820]">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Your route workspace</p>
+                <h2 className="mt-1 font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink">
                   {itinerary.tripSpec.destination} · {itinerary.tripSpec.durationDays} day
                   {itinerary.tripSpec.durationDays === 1 ? '' : 's'}
                 </h2>
               </div>
-              <p className="text-xs font-semibold text-[#5a6670]">
+              <p className="text-xs font-semibold text-rs-muted">
                 {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
               </p>
             </div>
             <DayTripItineraryPanel itinerary={itinerary} />
-            <p className="mt-4 text-sm font-semibold leading-6 text-[#5a6670]">
+            <p className="mt-4 text-sm font-semibold leading-6 text-rs-muted">
               Want the full comparison grid for this idea?{' '}
               <Link
                 href={`/ai-trip-planner?idea=${encodeURIComponent(currentIdea)}#intent-demo`}
-                className="font-black text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                className="font-bold text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
               >
                 Open it in the full Thailand trip planner
               </Link>
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-[1.75rem] border border-[#ece3d6] bg-[#1e2d59] text-white">
+          <div className="overflow-hidden rounded-rs-lg border border-rs-forest-500/20 bg-rs-forest-900 text-white shadow-rs-soft">
             <div className="px-6 py-8 sm:px-8 sm:py-10">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#f8d7bf]">Route preview</p>
-              <h2 className="mt-3 text-2xl font-black tracking-[-0.02em] sm:text-3xl">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ffd67a]">Route preview</p>
+              <h2 className="mt-3 font-rs-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
                 Your day-by-day Thailand route appears here
               </h2>
               <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-white/80">
                 Once the guide has a destination and trip length, it builds a reviewed day-trip sequence with a schematic route map,
-                real experience photos, and a booking partner handoff on every stop.
+                real experience photos, and a reviewed product-detail path on every stop.
               </p>
               <ol className="mt-6 grid gap-3 sm:grid-cols-3">
                 {['Describe the trip', 'Confirm what was understood', 'Compare the reviewed route'].map((step, index) => (
                   <li key={step} className="rounded-2xl border border-white/12 bg-white/8 px-4 py-4">
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f8d7bf]">Step {index + 1}</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ffd67a]">Step {index + 1}</p>
                     <p className="mt-2 text-sm font-semibold leading-6 text-white/90">{step}</p>
                   </li>
                 ))}

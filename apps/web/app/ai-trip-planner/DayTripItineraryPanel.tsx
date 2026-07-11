@@ -99,22 +99,12 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
                   ))}
                 </div>
               ) : null}
-              <div className="mt-auto flex flex-col gap-2 pt-4">
-                <a
-                  href={day.experience.handoff.href}
-                  target="_blank"
-                  rel={day.experience.handoff.rel}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-4 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
-                >
-                  {day.experience.handoff.label}
-                </a>
-                <a
-                  href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
-                  className="text-sm font-black text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
-                >
-                  Review product details
-                </a>
-              </div>
+              <a
+                href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
+                className="mt-auto pt-4 text-sm font-black text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
+              >
+                Review product details
+              </a>
             </article>
           </li>
         ))}

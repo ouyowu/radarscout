@@ -104,6 +104,7 @@ export function lookupThailandCity(city: string): { x: number; y: number } | nul
 export function buildThailandRouteMapModel(itinerary: DayTripItinerary): ThailandRouteMapModel {
   const stopsByCity = new Map<string, ThailandRouteMapStop>()
   const orderedStops: ThailandRouteMapStop[] = []
+  const dayRouteStops: ThailandRouteMapStop[] = []
   const unmappedCities: string[] = []
   const seenUnmapped = new Set<string>()
 
@@ -116,6 +117,7 @@ export function buildThailandRouteMapModel(itinerary: DayTripItinerary): Thailan
 
     if (existing) {
       existing.dayNumbers.push(day.dayNumber)
+      dayRouteStops.push(existing)
       continue
     }
 
@@ -137,11 +139,15 @@ export function buildThailandRouteMapModel(itinerary: DayTripItinerary): Thailan
     }
     stopsByCity.set(key, stop)
     orderedStops.push(stop)
+    dayRouteStops.push(stop)
   }
 
   const segments: ThailandRouteMapModel['segments'] = []
-  for (let index = 1; index < orderedStops.length; index += 1) {
-    segments.push({ from: orderedStops[index - 1], to: orderedStops[index] })
+  for (let index = 1; index < dayRouteStops.length; index += 1) {
+    const from = dayRouteStops[index - 1]
+    const to = dayRouteStops[index]
+    if (from.city.toLowerCase() === to.city.toLowerCase()) continue
+    segments.push({ from, to })
   }
 
   return { stops: orderedStops, segments, unmappedCities }

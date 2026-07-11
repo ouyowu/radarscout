@@ -54,6 +54,17 @@ describe('thailand route map model', () => {
     expect(model.segments[0].to.city).toBe('Bangkok')
   })
 
+  it('preserves return legs when a route revisits a city', () => {
+    const model = buildThailandRouteMapModel(itineraryWithCities(['Chiang Mai', 'Bangkok', 'Chiang Mai']))
+
+    expect(model.stops).toHaveLength(2)
+    expect(model.stops[0]).toMatchObject({ city: 'Chiang Mai', dayNumbers: [1, 3] })
+    expect(model.segments.map(segment => [segment.from.city, segment.to.city])).toEqual([
+      ['Chiang Mai', 'Bangkok'],
+      ['Bangkok', 'Chiang Mai'],
+    ])
+  })
+
   it('lists unknown cities separately instead of guessing coordinates', () => {
     const model = buildThailandRouteMapModel(itineraryWithCities(['Chiang Mai', 'Chiang Rai', null]))
 

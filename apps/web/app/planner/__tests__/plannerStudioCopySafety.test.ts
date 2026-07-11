@@ -38,6 +38,11 @@ describe('planner studio public copy safety', () => {
     expect(publicCopy).not.toMatch(/hotel|flight|airport/i)
   })
 
+  it('does not claim append-only local parsing can replace earlier choices', () => {
+    expect(publicCopy).not.toMatch(/tell me what to change/i)
+    expect(publicCopy).toMatch(/use Start over to change the destination or duration/i)
+  })
+
   it('keeps the studio out of search indexes while it is a guarded surface', () => {
     const pageSource = readPlannerSource('page.tsx')
 

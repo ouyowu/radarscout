@@ -24,6 +24,7 @@ import { metadata as chiangMaiFinderMetadata } from '../chiang-mai/elephant-camp
 import { metadata as contactMetadata } from '../contact/page'
 import { metadata as demoMetadata } from '../demo/page'
 import { metadata as homeMetadata } from '../page'
+import { metadata as plannerStudioMetadata } from '../planner/page'
 import { metadata as privacyMetadata } from '../privacy-policy/page'
 import { metadata as termsMetadata } from '../terms-of-service/page'
 import { generateMetadata as generateTourDetailMetadata } from '../tours/[id]/page'
@@ -74,6 +75,7 @@ describe('controlled SEO opening guard', () => {
 
     expect(urls).toEqual([...CURRENT_INDEXABLE_SITEMAP_URLS].sort())
     expect(urls).not.toContain(`${BASE}/ai-trip-planner`)
+    expect(urls).not.toContain(`${BASE}/planner`)
     expect(urls).not.toContain(`${BASE}/tours/prod_cm_1`)
     expect(urls.some(url => url.includes('/tours/'))).toBe(false)
   })
@@ -90,6 +92,7 @@ describe('controlled SEO opening guard', () => {
     expect(termsMetadata.robots).toBeUndefined()
     expect(chiangMaiFinderMetadata.robots).toMatchObject({ index: true, follow: true })
     expect(aiTripPlannerMetadata.robots).toMatchObject({ index: false, follow: false })
+    expect(plannerStudioMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(demoMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(tourDetailMetadata.robots).toMatchObject({ index: false, follow: false })
   })
