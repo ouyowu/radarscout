@@ -4,22 +4,17 @@ import { db } from '@reddit-monitor/db'
 export const dynamic = 'force-dynamic'
 
 type CatalogSupplier = {
-  bokunVendorId: string
   title: string
-  status: string | null
 } | null
 
 type CatalogProduct = {
   id: string
-  bokunActivityId: string
   title: string
   excerpt: string | null
   city: string | null
   location: string | null
   retailPrice: { toString(): string } | null
-  netSettlementPrice: { toString(): string } | null
   currency: string | null
-  commissionPercent: { toString(): string } | null
   active: boolean
   lastSyncedAt: Date | null
   rawJson: unknown
@@ -97,23 +92,18 @@ export async function GET(request: NextRequest) {
       take,
       select: {
         id: true,
-        bokunActivityId: true,
         title: true,
         excerpt: true,
         city: true,
         location: true,
         retailPrice: true,
-        netSettlementPrice: true,
         currency: true,
-        commissionPercent: true,
         active: true,
         lastSyncedAt: true,
         rawJson: true,
         supplier: {
           select: {
-            bokunVendorId: true,
             title: true,
-            status: true,
           },
         },
       },
@@ -122,13 +112,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       count: products.length,
       products: products.map(product => ({
-        ...product,
+        id: product.id,
+        title: product.title,
+        excerpt: product.excerpt,
+        city: product.city,
+        location: product.location,
         retailPrice: product.retailPrice?.toString() ?? null,
-        netSettlementPrice: product.netSettlementPrice?.toString() ?? null,
-        commissionPercent: product.commissionPercent?.toString() ?? null,
+        currency: product.currency,
+        active: product.active,
+        lastSyncedAt: product.lastSyncedAt,
         imageUrl: findImageUrl(product.rawJson),
         summary: stripHtml(readString(asRecord(product.rawJson).summary)) ?? product.excerpt,
-        rawJson: undefined,
+        supplier: product.supplier ? { title: product.supplier.title } : null,
       })),
     })
   } catch {
