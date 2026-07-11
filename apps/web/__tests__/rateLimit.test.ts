@@ -63,4 +63,11 @@ describe('rateLimit', () => {
     const [, , redisKey] = mockEval.mock.calls[0]
     expect(redisKey).toBe('rl:test:203.0.113.42')
   })
+
+  it('uses one shared key for a global cost cap', async () => {
+    mockEval.mockResolvedValue(1)
+    await rateLimit(makeReq('203.0.113.42'), { ...config, scope: 'global' })
+    const [, , redisKey] = mockEval.mock.calls[0]
+    expect(redisKey).toBe('rl:test:global')
+  })
 })
