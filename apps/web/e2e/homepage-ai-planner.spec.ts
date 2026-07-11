@@ -57,7 +57,7 @@ const homepagePromptSearchResponse = {
   ],
   meta: {
     productRetrievalEnabled: true,
-    itineraryGenerationEnabled: false,
+    itineraryGenerationEnabled: true,
     bookingEnabled: false,
     availabilityEnabled: false,
   },

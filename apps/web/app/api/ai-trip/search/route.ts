@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { parseTripIntent, PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
+import { buildDayTripItinerary } from '@/lib/ai-trip/day-trip-itinerary'
+import type { DayTripItinerary, DayTripSpec } from '@/lib/ai-trip/itinerary-contract'
 import { isThailandCompatibleDestination } from '@/lib/aiProducts/destinationIntent'
 import {
   listAiEligibleThailandProducts,
@@ -36,7 +38,7 @@ const INTEREST_SEARCH_ALIASES: Record<string, string[]> = {
 
 const META = {
   productRetrievalEnabled: true,
-  itineraryGenerationEnabled: false,
+  itineraryGenerationEnabled: true,
   bookingEnabled: false,
   availabilityEnabled: false,
 } as const
@@ -51,6 +53,8 @@ export type AiTripSearchResponse = {
     interests: string[]
   }
   products: AiProductContextItem[]
+  tripSpec?: DayTripSpec
+  itinerary?: DayTripItinerary
   message?: string
   meta: AiTripSearchMeta
 }
@@ -309,10 +313,22 @@ export async function POST(request: NextRequest) {
       } satisfies AiTripSearchResponse)
     }
 
+    const itinerary = parsed.intent.destination && parsed.intent.durationDays
+      ? buildDayTripItinerary({
+          destination: parsed.intent.destination,
+          durationDays: parsed.intent.durationDays,
+          interests: parsed.intent.interests,
+          pace: parsed.intent.pace,
+          travelerType: parsed.intent.travelerType,
+          groupSize: parsed.intent.groupSize,
+        }, handoffReadyProducts)
+      : null
+
     return NextResponse.json({
       status: 'ok',
       intent,
       products: handoffReadyProducts,
+      ...(itinerary ? { tripSpec: itinerary.tripSpec, itinerary } : {}),
       meta: META,
     } satisfies AiTripSearchResponse)
   } catch (err) {
