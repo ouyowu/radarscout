@@ -19,6 +19,11 @@ const enrichmentMock = vi.hoisted(() => ({
 
 vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
 
+const handoffMock = vi.hoisted(() => ({
+  resolveReviewedProductHandoff: vi.fn(),
+}))
+vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMock)
+
 import { GET } from '../route'
 
 const FORBIDDEN_ENRICHMENT_KEYS = [
@@ -59,6 +64,7 @@ function makeProduct(overrides: Record<string, unknown> = {}) {
     retailPrice: { toString: () => '49.00' },
     currency: 'USD',
     rawJson: {},
+    bokunActivityId: '1232729',
     ...overrides,
   }
 }
@@ -78,6 +84,14 @@ function makeEnrichment() {
 describe('GET /api/products/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
+    handoffMock.resolveReviewedProductHandoff.mockReturnValue({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      label: 'Check availability',
+      rel: 'nofollow sponsored noopener noreferrer',
+      source: 'booking_partner_verified_public_widget',
+      verifiedBy: 'operator_manual_review',
+    })
   })
 
   it('returns 404 when the product is not found', async () => {
@@ -102,16 +116,14 @@ describe('GET /api/products/[id]', () => {
     expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
   })
 
-  it('returns product with reviewedEnrichment: null when no enrichment exists', async () => {
+  it('returns 404 when no human-reviewed enrichment exists', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
     enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
     const body = await response.json()
 
-    expect(response.status).toBe(200)
-    expect(body.product).not.toBeNull()
-    expect(body.product.reviewedEnrichment).toBeNull()
+    expect(response.status).toBe(404)
+    expect(body.product).toBeNull()
     expect(enrichmentMock.getReviewedEnrichmentByProductId).toHaveBeenCalledWith('product_abc')
   })
 
@@ -201,13 +213,12 @@ describe('GET /api/products/[id]', () => {
 
   it('returns core product fields alongside reviewedEnrichment', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
 
     const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
     const body = await response.json()
 
     expect(body.product.id).toBe('product_abc')
-    expect(body.product.title).toBe('Chiang Mai Elephant Sanctuary')
+    expect(body.product.title).toBe('Ethical Elephant Sanctuary Chiang Mai')
     expect(body.product.city).toBe('Chiang Mai')
     expect(body.product.detailHref).toBe('/tours/product_abc')
     expect(body.product).toHaveProperty('reviewedEnrichment')
@@ -224,14 +235,13 @@ describe('GET /api/products/[id]', () => {
         supplierRate: '10.00',
       },
     }))
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
     const body = await response.json()
 
     expect(response.status).toBe(200)
     expect(Object.keys(body).sort()).toEqual(['meta', 'product'])
     expect(Object.keys(body.product).sort()).toEqual([
+      'bookingPartnerHandoff',
       'city',
       'currency',
       'description',
@@ -335,8 +345,6 @@ describe('GET /api/products/[id] — Thailand eligibility guardrail', () => {
 
   it('returns 200 for eligible product (regression — existing behavior preserved)', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct())
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
     const body = await response.json()
 
@@ -352,8 +360,6 @@ describe('GET /api/products/[id] — Thailand eligibility guardrail', () => {
       city: 'Chiang Rai',
       location: null,
     }))
-    enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(null)
-
     const response = await GET(makeRequest('chiang_rai_1'), makeParams('chiang_rai_1'))
     const body = await response.json()
 
