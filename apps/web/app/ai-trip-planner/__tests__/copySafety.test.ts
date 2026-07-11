@@ -15,6 +15,7 @@ describe('AI trip planner public copy safety', () => {
       readAiTripPlannerSource('page.tsx'),
       readAiTripPlannerSource('IntentParserDemo.tsx'),
       readAiTripPlannerSource('AiSearchProductCard.tsx'),
+      readAiTripPlannerSource('DayTripItineraryPanel.tsx'),
     ].join('\n')
 
     expect(publicCopy).toMatch(/Thailand trip planner/i)
@@ -42,6 +43,7 @@ describe('AI trip planner public copy safety', () => {
       readAiTripPlannerSource('IntentParserDemo.tsx'),
       readAiTripPlannerSource('IntentParserPanels.tsx'),
       readAiTripPlannerSource('ItineraryPlaceholderShell.tsx'),
+      readAiTripPlannerSource('DayTripItineraryPanel.tsx'),
       readAiTripPlannerSource('resultFitSummary.ts'),
       readFileSync(join(process.cwd(), 'lib', 'ai-trip', 'placeholder-itinerary.ts'), 'utf8'),
     ].join('\n')
