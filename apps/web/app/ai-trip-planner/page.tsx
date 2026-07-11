@@ -145,6 +145,12 @@ export default function AiTripPlannerPage() {
                 >
                   Browse destination starters
                 </Link>
+                <Link
+                  href="/planner"
+                  className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#f8d7bf]/40 bg-[#f8d7bf]/10 px-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#f8d7bf] transition hover:bg-[#f8d7bf]/20"
+                >
+                  Try Planner Studio
+                </Link>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
                 {transparencyPoints.map(point => (

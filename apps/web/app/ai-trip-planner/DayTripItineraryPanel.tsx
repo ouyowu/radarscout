@@ -1,7 +1,8 @@
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import { buildAiTripPlannerDetailHref } from './AiSearchProductCard'
-import { buildOpenStreetMapSearchHref, getItineraryDestinations } from './dayTripMap'
+import { getItineraryDestinations } from './dayTripMap'
 import { buildTripSpecChips } from './dayTripSpecSummary'
+import { ThailandRouteMap } from './ThailandRouteMap'
 
 type DayTripItineraryPanelProps = {
   itinerary: DayTripItinerary
@@ -50,20 +51,10 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
             Explore destination areas
           </h4>
           <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
-            These links show destination areas only. Exact meeting and pickup details remain on each product page.
+            The schematic map shows destination areas only. Exact meeting and pickup details remain on each product page.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {destinations.map(destination => (
-              <a
-                key={destination}
-                href={buildOpenStreetMapSearchHref(destination)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 text-xs font-black uppercase tracking-[0.1em] text-[#1e2d59] transition hover:text-[#0f766e]"
-              >
-                Open {destination} area map
-              </a>
-            ))}
+          <div className="mt-4">
+            <ThailandRouteMap itinerary={itinerary} />
           </div>
         </div>
       ) : null}
@@ -108,12 +99,22 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
                   ))}
                 </div>
               ) : null}
-              <a
-                href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
-                className="mt-auto pt-4 text-sm font-black text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
-              >
-                Review product details
-              </a>
+              <div className="mt-auto flex flex-col gap-2 pt-4">
+                <a
+                  href={day.experience.handoff.href}
+                  target="_blank"
+                  rel={day.experience.handoff.rel}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-4 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+                >
+                  {day.experience.handoff.label}
+                </a>
+                <a
+                  href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
+                  className="text-sm font-black text-[#1e2d59] underline decoration-[#1e2d59]/30 underline-offset-4 hover:text-[#0f766e]"
+                >
+                  Review product details
+                </a>
+              </div>
             </article>
           </li>
         ))}
