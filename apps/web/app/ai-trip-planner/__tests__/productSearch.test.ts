@@ -57,7 +57,7 @@ function makeOkResponse(overrides: Partial<AiTripSearchResponse> = {}): AiTripSe
     ],
     meta: {
       productRetrievalEnabled: true,
-      itineraryGenerationEnabled: false,
+      itineraryGenerationEnabled: true,
       bookingEnabled: false,
       availabilityEnabled: false,
     },
@@ -116,7 +116,7 @@ describe('unsupported_destination response shape (test 23)', () => {
       message: 'RadarScout currently searches Thailand experiences only.',
       meta: {
         productRetrievalEnabled: true,
-        itineraryGenerationEnabled: false,
+        itineraryGenerationEnabled: true,
         bookingEnabled: false,
         availabilityEnabled: false,
       },
@@ -282,7 +282,7 @@ describe('no_match response (test 29)', () => {
       products: [],
       meta: {
         productRetrievalEnabled: true,
-        itineraryGenerationEnabled: false,
+        itineraryGenerationEnabled: true,
         bookingEnabled: false,
         availabilityEnabled: false,
       },
@@ -308,10 +308,10 @@ describe('response meta capability flags (tests 30–32)', () => {
     expect(ok.meta.availabilityEnabled).toBe(false)
   })
 
-  // Test 32: itineraryGenerationEnabled is always false in search response
-  it('itineraryGenerationEnabled is always false in search response', () => {
+  // Test 32: structured day-tour itinerary generation is enabled in search responses
+  it('itineraryGenerationEnabled is true in search responses', () => {
     const ok = makeOkResponse()
-    expect(ok.meta.itineraryGenerationEnabled).toBe(false)
+    expect(ok.meta.itineraryGenerationEnabled).toBe(true)
   })
 })
 

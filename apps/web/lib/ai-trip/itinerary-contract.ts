@@ -66,3 +66,44 @@ export type ItineraryContractResult = {
   warnings: string[]
   capabilityFlags: ItineraryCapabilityFlags
 }
+
+export type DayTripSpec = {
+  destination: string
+  durationDays: number
+  interests: string[]
+  pace: TripIntent['pace']
+  travelerType: TripIntent['travelerType']
+  groupSize: number | null
+  contentScope: 'day_tours_only'
+}
+
+export type DayTripExperience = {
+  productId: string
+  title: string
+  city: string | null
+  summary: string | null
+  imageUrl: string | null
+  imageAlt: string | null
+  tags: string[]
+  detailHref: string
+  handoff: {
+    label: 'Check availability'
+    href: string
+    rel: 'nofollow sponsored noopener noreferrer'
+  }
+}
+
+export type DayTripItinerary = {
+  version: 1
+  tripSpec: DayTripSpec
+  days: Array<{
+    dayNumber: number
+    experience: DayTripExperience
+  }>
+  unfilledDayCount: number
+  safety: {
+    availabilityChecked: false
+    bookingCompleted: false
+    paymentHandled: false
+  }
+}

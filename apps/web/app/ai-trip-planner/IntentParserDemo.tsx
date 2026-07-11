@@ -242,7 +242,7 @@ export function IntentParserDemo() {
       const data = await res.json() as AiTripSearchResponse
       setSearchState(data)
     } catch {
-      setSearchState({ status: 'error', products: [], meta: { productRetrievalEnabled: true, itineraryGenerationEnabled: false, bookingEnabled: false, availabilityEnabled: false } })
+      setSearchState({ status: 'error', products: [], meta: { productRetrievalEnabled: true, itineraryGenerationEnabled: true, bookingEnabled: false, availabilityEnabled: false } })
     } finally {
       setIsSearching(false)
     }

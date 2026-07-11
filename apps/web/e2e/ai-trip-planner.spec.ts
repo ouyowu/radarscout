@@ -40,7 +40,7 @@ const OK_RESPONSE: AiTripSearchResponse = {
   ],
   meta: {
     productRetrievalEnabled: true,
-    itineraryGenerationEnabled: false,
+    itineraryGenerationEnabled: true,
     bookingEnabled: false,
     availabilityEnabled: false,
   },
@@ -93,7 +93,7 @@ const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   message: 'RadarScout currently searches Thailand experiences only.',
   meta: {
     productRetrievalEnabled: true,
-    itineraryGenerationEnabled: false,
+    itineraryGenerationEnabled: true,
     bookingEnabled: false,
     availabilityEnabled: false,
   },
@@ -105,7 +105,7 @@ const NO_MATCH_RESPONSE: AiTripSearchResponse = {
   products: [],
   meta: {
     productRetrievalEnabled: true,
-    itineraryGenerationEnabled: false,
+    itineraryGenerationEnabled: true,
     bookingEnabled: false,
     availabilityEnabled: false,
   },
@@ -118,7 +118,7 @@ const MIXED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   message: 'RadarScout currently searches Thailand experiences only.',
   meta: {
     productRetrievalEnabled: true,
-    itineraryGenerationEnabled: false,
+    itineraryGenerationEnabled: true,
     bookingEnabled: false,
     availabilityEnabled: false,
   },

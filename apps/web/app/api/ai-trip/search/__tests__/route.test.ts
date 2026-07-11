@@ -194,6 +194,38 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.intent.destination).toBe('Chiang Mai')
     expect(body.products).toHaveLength(1)
     expect(body.products[0].id).toBe('prod_1')
+    expect(body.tripSpec).toEqual({
+      destination: 'Chiang Mai',
+      durationDays: 3,
+      interests: ['elephants'],
+      pace: 'unspecified',
+      travelerType: 'unspecified',
+      groupSize: null,
+      contentScope: 'day_tours_only',
+    })
+    expect(body.itinerary).toMatchObject({
+      version: 1,
+      tripSpec: body.tripSpec,
+      days: [{
+        dayNumber: 1,
+        experience: {
+          productId: 'prod_1',
+          title: 'Chiang Mai Elephant Sanctuary',
+          handoff: {
+            label: 'Check availability',
+            href: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
+            rel: 'nofollow sponsored noopener noreferrer',
+          },
+        },
+      }],
+      unfilledDayCount: 2,
+      safety: {
+        availabilityChecked: false,
+        bookingCompleted: false,
+        paymentHandled: false,
+      },
+    })
+    expect(JSON.stringify(body.itinerary)).not.toMatch(/retailPrice|currency|hotel|flight/i)
   })
 
   it('Chiang Mai prompt includes reviewed partner handoff candidates when matching DB products are absent', async () => {
@@ -708,7 +740,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const body = await res.json()
 
     expect(body.meta.productRetrievalEnabled).toBe(true)
-    expect(body.meta.itineraryGenerationEnabled).toBe(false)
+    expect(body.meta.itineraryGenerationEnabled).toBe(true)
     expect(body.meta.bookingEnabled).toBe(false)
     expect(body.meta.availabilityEnabled).toBe(false)
   })
