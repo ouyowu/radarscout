@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { parseTripIntent } from '../../lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '../../lib/ai-trip/intent-schema'
 import { ItineraryPlaceholderShell } from './ItineraryPlaceholderShell'
+import { DayTripItineraryPanel } from './DayTripItineraryPanel'
 import {
   CapabilityStatusPanel,
   LocalConfirmationPanel,
@@ -607,6 +608,9 @@ export function IntentParserDemo() {
                       {AI_TRIP_RESULTS_NEXT_STEP_COPY}
                     </p>
                   </section>
+                  {searchState.itinerary ? (
+                    <DayTripItineraryPanel itinerary={searchState.itinerary} />
+                  ) : null}
                   {resultFitSummary ? (
                     <section
                       aria-label="Result fit summary"

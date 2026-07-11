@@ -6,6 +6,71 @@ import type { AiTripSearchResponse } from '../app/api/ai-trip/search/route'
 const OK_RESPONSE: AiTripSearchResponse = {
   status: 'ok',
   intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants', 'temples', 'food'] },
+  tripSpec: {
+    destination: 'Chiang Mai',
+    durationDays: 3,
+    interests: ['elephants', 'temples', 'food'],
+    pace: 'moderate',
+    travelerType: 'couple',
+    groupSize: 2,
+    contentScope: 'day_tours_only',
+  },
+  itinerary: {
+    version: 1,
+    tripSpec: {
+      destination: 'Chiang Mai',
+      durationDays: 3,
+      interests: ['elephants', 'temples', 'food'],
+      pace: 'moderate',
+      travelerType: 'couple',
+      groupSize: 2,
+      contentScope: 'day_tours_only',
+    },
+    days: [
+      {
+        dayNumber: 1,
+        experience: {
+          productId: 'prod_cm_1',
+          title: 'Chiang Mai Elephant Sanctuary',
+          city: 'Chiang Mai',
+          summary: 'A half-day ethical elephant experience in Mae Rim.',
+          imageUrl: null,
+          imageAlt: null,
+          tags: ['Elephants', 'Nature'],
+          detailHref: '/tours/prod_cm_1',
+          handoff: {
+            label: 'Check availability',
+            href: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_cm_1',
+            rel: 'nofollow sponsored noopener noreferrer',
+          },
+        },
+      },
+      {
+        dayNumber: 2,
+        experience: {
+          productId: 'prod_cm_2',
+          title: 'Old City Temple Walk',
+          city: 'Chiang Mai',
+          summary: 'A guided walk through historic temples of the old city.',
+          imageUrl: null,
+          imageAlt: null,
+          tags: ['Temples', 'Culture'],
+          detailHref: '/tours/prod_cm_2',
+          handoff: {
+            label: 'Check availability',
+            href: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_cm_2',
+            rel: 'nofollow sponsored noopener noreferrer',
+          },
+        },
+      },
+    ],
+    unfilledDayCount: 1,
+    safety: {
+      availabilityChecked: false,
+      bookingCompleted: false,
+      paymentHandled: false,
+    },
+  },
   products: [
     {
       id: 'prod_cm_1',
@@ -697,6 +762,22 @@ test.describe('Valid Chiang Mai flow', () => {
     // Product cards are identified by their unique "View details" CTA
     await expect(productCards(page)).toHaveCount(3)
     await expect(page.getByText(/why this fits/i)).toHaveCount(3)
+  })
+
+  test('successful search renders the structured day-tour itinerary without inventing missing days', async ({ page }) => {
+    await confirmChiangMaiIntent(page)
+    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
+
+    const itinerary = page.getByRole('region', { name: /suggested thailand day trips/i })
+    await expect(itinerary).toBeVisible()
+    await expect(itinerary.getByRole('heading', { name: 'Your suggested Thailand day trips' })).toBeVisible()
+    await expect(itinerary.getByText('Day 1', { exact: true })).toBeVisible()
+    await expect(itinerary.getByText('Day 2', { exact: true })).toBeVisible()
+    await expect(itinerary.getByText('Chiang Mai Elephant Sanctuary')).toBeVisible()
+    await expect(itinerary.getByText('Old City Temple Walk')).toBeVisible()
+    await expect(itinerary.getByText(/1 day remains open/i)).toBeVisible()
+    await expect(itinerary.getByRole('link', { name: 'Review product details' }).first()).toHaveAttribute('href', /source=ai-trip-planner/)
+    await expect(itinerary.getByText(/hotel|flight|price|available now|instant confirmation|checkout|payment/i)).toHaveCount(0)
   })
 
   test('successful search can jump directly to comparison cards', async ({ page }) => {
