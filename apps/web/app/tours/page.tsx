@@ -192,7 +192,7 @@ function ProductCard({ product }: { product: ProductDisplay }) {
   return (
     <Card href={product.detailHref} ariaLabel={`View ${product.title}`} className="group h-full transition duration-200 hover:-translate-y-1">
       <article className="flex h-full flex-col">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[linear-gradient(135deg,var(--rs-forest-900),var(--rs-forest-700)_45%,var(--rs-sand-100)_78%,var(--rs-terracotta))]">
+        <div className="relative aspect-[2/1] overflow-hidden bg-[linear-gradient(135deg,#feeabf,var(--rs-sand-100)_55%,var(--rs-trust))]">
           {product.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={product.imageUrl} alt={product.title} loading="lazy" className="h-full w-full object-cover" />
@@ -235,7 +235,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
   return (
     <PublicSiteShell>
       <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
-        <section className="border-b border-rs-sage-200/70 bg-rs-cloud px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <section className="border-b border-[var(--color-border-light)] bg-[linear-gradient(135deg,#fffaf5_0%,#fff3ee_75%,#feeabf_155%)] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="mx-auto grid max-w-[1240px] gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-forest-500">Thailand day trips</p>
@@ -246,7 +246,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
                 Browse real experience records, narrow the city or photo coverage, and inspect one detail page before continuing with a booking partner.
               </p>
             </div>
-            <Link href="/ai-trip-planner" className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-rs-terracotta-600">
+            <Link href="/ai-trip-planner" className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white">
               Plan my day
             </Link>
           </div>

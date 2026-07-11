@@ -29,7 +29,7 @@ export function Section({
   contentClassName,
 }: SectionProps) {
   return (
-    <section className={cn('py-16 sm:py-24 lg:py-32', variantClasses[variant], className)}>
+    <section className={cn('py-14 sm:py-20 lg:py-24', variantClasses[variant], className)}>
       <div className={cn('mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8', contentClassName)}>
         {eyebrow || title || lead ? (
           <div className="mb-10 max-w-3xl">

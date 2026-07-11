@@ -71,7 +71,7 @@ test.describe('Homepage Trip Planner entry', () => {
     await expect(page.getByRole('heading', {
       name: 'Tell us your ideal Thailand day. We match it to real, reviewed experiences.',
     })).toBeVisible()
-    await expect(page.getByText('Describe the trip you want')).toBeVisible()
+    await expect(page.getByText('Thailand day trips, thoughtfully planned')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Plan my trip' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Plan with RadarScout' }).first()).toHaveAttribute(
       'href',

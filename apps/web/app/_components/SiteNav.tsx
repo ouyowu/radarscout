@@ -3,13 +3,13 @@ import { publicNavLinks } from '../_content/publicSite'
 
 export function SiteNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border-light)] bg-[var(--color-bg-primary)]/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border-light)] bg-rs-sand-50/95 backdrop-blur-xl">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <input type="checkbox" id="nav-open" className="peer sr-only" aria-label="Toggle navigation" />
 
-        <div className="flex min-h-16 items-center justify-between">
-          <Link href="/" className="font-[var(--font-heading)] text-2xl font-black tracking-[-0.04em] text-[var(--color-text-primary)]">
-            Radar<span className="text-[var(--color-accent-orange-dark)]">Scout</span>
+        <div className="flex min-h-[72px] items-center justify-between">
+          <Link href="/" className="font-rs-display text-2xl font-semibold tracking-[-0.04em] text-rs-ink">
+            Radar<span className="text-rs-terracotta-600">Scout</span>
           </Link>
 
           <div className="hidden items-center gap-7 lg:flex">
@@ -17,14 +17,14 @@ export function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-black uppercase tracking-[0.08em] text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
+                className="text-sm font-semibold text-rs-muted transition hover:text-rs-ink"
               >
                 {link.label}
               </Link>
             ))}
             <Link
               href="/ai-trip-planner"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition hover:bg-[var(--color-accent-orange-dark)]"
+              className="inline-flex min-h-[46px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Plan a day
             </Link>
@@ -32,10 +32,10 @@ export function SiteNav() {
 
           <label
             htmlFor="nav-open"
-            className="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[var(--color-border-light)] bg-white text-[var(--color-text-primary)] lg:hidden"
+            className="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-rs-pill border border-[var(--color-border-light)] bg-white px-4 text-rs-ink lg:hidden"
             aria-label="Open navigation menu"
           >
-            <span className="text-sm font-black uppercase tracking-[0.08em]">Menu</span>
+            <span className="text-sm font-semibold">Menu</span>
           </label>
         </div>
 
@@ -45,7 +45,7 @@ export function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex min-h-[44px] items-center rounded-2xl px-3 text-sm font-black uppercase tracking-[0.08em] text-[var(--color-text-secondary)] hover:bg-white"
+                className="flex min-h-[44px] items-center rounded-rs-sm px-3 text-sm font-semibold text-rs-muted hover:bg-white hover:text-rs-ink"
               >
                 {link.label}
               </Link>

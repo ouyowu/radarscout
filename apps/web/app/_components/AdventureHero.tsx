@@ -24,7 +24,7 @@ type AdventureHeroProps = {
 }
 
 export function AdventureHero({
-  eyebrow = 'AI-guided travel planning',
+  eyebrow = 'Thoughtful travel planning',
   title,
   subtitle,
   actions = [],
@@ -33,23 +33,23 @@ export function AdventureHero({
   trustNote,
 }: AdventureHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-[var(--color-bg-secondary)] px-4 py-16 text-[var(--color-text-primary)] sm:px-6 lg:px-8 lg:py-24">
-      <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,rgba(26,26,26,0.08)_1px,transparent_0)] [background-size:24px_24px]" />
+    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#fffaf5_0%,#fff3ee_70%,#feeabf_150%)] px-4 py-14 text-rs-ink sm:px-6 lg:px-8 lg:py-20">
+      <div className="absolute -right-20 top-10 h-72 w-72 rounded-full bg-rs-trust/10 blur-3xl" />
       <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
         <div>
           <ScriptLabel>{eyebrow}</ScriptLabel>
-          <h1 className="mt-4 max-w-4xl font-[var(--font-heading)] text-5xl font-black leading-[0.95] tracking-[-0.045em] sm:text-7xl">
+          <h1 className="mt-4 max-w-4xl font-rs-display text-[clamp(2.75rem,7vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
             {title}
           </h1>
-          <p className="mt-6 max-w-3xl text-lg font-semibold leading-8 text-[var(--color-text-secondary)]">
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-rs-muted">
             {subtitle}
           </p>
           {actions.length > 0 ? (
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               {actions.map(action => {
                 const className = action.variant === 'secondary'
-                  ? 'inline-flex min-h-[44px] items-center justify-center border border-[var(--color-text-primary)] bg-white px-7 text-sm font-black uppercase tracking-[0.1em] text-[var(--color-text-primary)]'
-                  : 'inline-flex min-h-[44px] items-center justify-center bg-[var(--color-accent-orange)] px-7 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-accent-orange-dark)]'
+                  ? 'inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-rs-forest-500 bg-white px-7 text-sm font-semibold text-rs-forest-700'
+                  : 'inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white'
 
                 return action.analytics ? (
                   <TrackedLink
@@ -70,18 +70,18 @@ export function AdventureHero({
             </div>
           ) : null}
           {trustNote ? (
-            <p className="mt-5 border-l-4 border-[var(--color-accent-orange)] bg-[var(--color-accent-orange-pale)] px-4 py-3 text-sm font-bold leading-6 text-[#7c4a03]">
+            <p className="mt-5 rounded-rs-sm border border-rs-sage-200 bg-white/75 px-4 py-3 text-sm font-semibold leading-6 text-rs-forest-700">
               {trustNote}
             </p>
           ) : null}
         </div>
-        <div className="relative min-h-[320px] overflow-hidden rounded-[2rem] bg-[var(--color-bg-muted)] shadow-2xl">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-rs-lg border border-[var(--color-border-light)] bg-rs-sand-100 shadow-rs-soft">
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt={imageAlt} className="h-full min-h-[320px] w-full object-cover" />
+            <img src={imageUrl} alt={imageAlt} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full min-h-[320px] items-end bg-[linear-gradient(135deg,#1a1a1a,#4a7c59_55%,#ff9933)] p-8">
-              <p className="max-w-sm font-[var(--font-heading)] text-5xl font-black leading-none text-white">
+            <div className="flex h-full items-end bg-[linear-gradient(135deg,#feeabf,#fff3ee_55%,#2a9d8f)] p-8">
+              <p className="max-w-sm font-rs-display text-4xl font-semibold leading-none text-rs-ink">
                 Curated local experiences, not endless listings.
               </p>
             </div>

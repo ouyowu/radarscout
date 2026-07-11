@@ -119,7 +119,7 @@ export default function LandingPage() {
               href={chiangMaiPlannerHref}
               event="homepage_finder_entry_clicked"
               eventProps={{ source: 'section' }}
-              className="relative inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-rs-terracotta-600"
+              className="relative inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Plan with RadarScout
             </TrackedLink>

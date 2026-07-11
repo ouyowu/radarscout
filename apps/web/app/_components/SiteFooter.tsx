@@ -3,13 +3,13 @@ import { publicFooterGroups } from '../_content/publicSite'
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-[var(--color-border-light)] bg-[var(--color-bg-secondary)] px-4 py-10 sm:px-6 lg:px-8">
+    <footer className="border-t border-[var(--color-border-light)] bg-rs-sand-100 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-[1fr_1.3fr_auto] md:items-start">
         <div>
-          <p className="font-[var(--font-heading)] text-2xl font-black tracking-[-0.04em] text-[var(--color-text-primary)]">
-            Radar<span className="text-[var(--color-accent-orange-dark)]">Scout</span>
+          <p className="font-rs-display text-2xl font-semibold tracking-[-0.04em] text-rs-ink">
+            Radar<span className="text-rs-terracotta-600">Scout</span>
           </p>
-          <p className="mt-2 max-w-xs text-sm font-semibold leading-6 text-[var(--color-text-secondary)]">
+          <p className="mt-2 max-w-xs text-sm leading-6 text-rs-muted">
             Personalized Thailand day-trip discovery with safe booking partner handoff.
           </p>
         </div>
@@ -17,7 +17,7 @@ export function SiteFooter() {
         <nav className="grid gap-5 sm:grid-cols-3" aria-label="Footer navigation">
           {publicFooterGroups.map(group => (
             <div key={group.label}>
-              <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--color-text-primary)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-rs-ink">
                 {group.label}
               </p>
               <div className="mt-3 flex flex-col gap-2">
@@ -25,7 +25,7 @@ export function SiteFooter() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-bold text-[var(--color-text-secondary)] transition hover:text-[var(--color-accent-orange-dark)]"
+                    className="text-sm font-semibold text-rs-muted transition hover:text-rs-terracotta-600"
                   >
                     {link.label}
                   </Link>
@@ -35,7 +35,7 @@ export function SiteFooter() {
           ))}
         </nav>
 
-        <p className="text-sm font-semibold text-[var(--color-text-muted)]">
+        <p className="text-sm text-rs-muted">
           © {new Date().getFullYear()} RadarScout
         </p>
       </div>

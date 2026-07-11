@@ -1,6 +1,6 @@
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
-html, body { background: white !important; }
+html, body { background: #fffaf5; }
 
 @tailwind base;
 @tailwind components;
@@ -8,22 +8,23 @@ html, body { background: white !important; }
 
 @layer base {
   :root {
-    /* RadarScout "Immersive Expedition" design tokens.
-       These are additive for the public frontend redesign and do not change
-       existing page behavior until components opt in. */
-    --rs-ink: #14201b;
-    --rs-forest-900: #0f241c;
-    --rs-forest-700: #1b4638;
-    --rs-forest-500: #2e6b55;
-    --rs-sage-200: #cbd8cf;
-    --rs-terracotta: #d57c48;
-    --rs-terracotta-600: #c0662f;
-    --rs-sand-50: #f7f2ea;
-    --rs-sand-100: #efe6d8;
+    /* Warm travel UI: original RadarScout implementation informed by the
+       approved visual audit. The CTA orange comes from the owner-supplied
+       reference image. */
+    --rs-ink: #2d3436;
+    --rs-forest-900: #214f4b;
+    --rs-forest-700: #2a6f66;
+    --rs-forest-500: #2a9d8f;
+    --rs-trust: #2a9d8f;
+    --rs-sage-200: #d9ece8;
+    --rs-terracotta: #f9ab00;
+    --rs-terracotta-600: #e37400;
+    --rs-sand-50: #fffaf5;
+    --rs-sand-100: #fff3ee;
     --rs-cloud: #ffffff;
-    --rs-muted: #6b7b72;
-    --rs-font-display: Fraunces, Georgia, Cambria, "Times New Roman", Times, serif;
-    --rs-font-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --rs-muted: #66706f;
+    --rs-font-display: var(--font-fraunces), Georgia, Cambria, "Times New Roman", Times, serif;
+    --rs-font-body: var(--font-source-sans-3), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     --rs-space-1: 0.25rem;
     --rs-space-2: 0.5rem;
     --rs-space-3: 0.75rem;
@@ -34,41 +35,41 @@ html, body { background: white !important; }
     --rs-space-16: 4rem;
     --rs-space-24: 6rem;
     --rs-space-32: 8rem;
-    --rs-radius-sm: 0.625rem;
-    --rs-radius-md: 1.125rem;
-    --rs-radius-lg: 1.75rem;
+    --rs-radius-sm: 0.875rem;
+    --rs-radius-md: 1.75rem;
+    --rs-radius-lg: 2rem;
     --rs-radius-pill: 9999px;
-    --rs-shadow-soft: 0 20px 40px rgba(15, 36, 28, 0.1);
+    --rs-shadow-soft: 0 12px 30px rgba(45, 52, 54, 0.08);
 
-    --font-display: Georgia, Cambria, "Times New Roman", Times, serif;
-    --color-accent-orange: #ff9933;
-    --color-accent-orange-dark: #e67300;
-    --color-accent-orange-light: #ffecd9;
-    --color-accent-orange-pale: #fff4e6;
-    --color-bg-primary: #fdfcf4;
-    --color-bg-secondary: #fcfaee;
-    --color-bg-muted: #efebdb;
+    --font-display: var(--rs-font-display);
+    --color-accent-orange: #f9ab00;
+    --color-accent-orange-dark: #e37400;
+    --color-accent-orange-light: #fbc040;
+    --color-accent-orange-pale: #feeabf;
+    --color-bg-primary: #fffaf5;
+    --color-bg-secondary: #fff3ee;
+    --color-bg-muted: #f6eeeb;
     --color-bg-card: #ffffff;
-    --color-bg-dark: #1a1a1a;
-    --color-text-primary: #1a1a1a;
-    --color-text-secondary: #4a4a4a;
-    --color-text-muted: #888888;
+    --color-bg-dark: #214f4b;
+    --color-text-primary: #2d3436;
+    --color-text-secondary: #566260;
+    --color-text-muted: #7a8583;
     --color-text-inverse: #ffffff;
-    --color-border-light: #e8e4d6;
-    --color-border-medium: #d4cfc0;
-    --color-live-inventory: #4a7c59;
-    --color-coming-soon: #d97706;
-    --color-ai-feature: #3b82f6;
-    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-heading: 'Palanquin Dark', 'Bebas Neue', Impact, sans-serif;
-    --font-script: 'Caveat', 'Dancing Script', 'Mansalva', cursive;
+    --color-border-light: #f0e5e2;
+    --color-border-medium: #dfd0cc;
+    --color-live-inventory: #2a9d8f;
+    --color-coming-soon: #e37400;
+    --color-ai-feature: #2a9d8f;
+    --font-body: var(--rs-font-body);
+    --font-heading: var(--rs-font-display);
+    --font-script: var(--rs-font-display);
   }
 
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--rs-font-display);
+    font-weight: 600;
     letter-spacing: -0.025em;
   }
 }
@@ -80,7 +81,7 @@ html, body { background: white !important; }
 }
 
 /* Prevent layout shift on font load */
-html { font-display: optional; }
+body { font-family: var(--rs-font-body); }
 
 /* ── Ambient blob drift ───────────────────────────────────────────── */
 @keyframes blob-drift {

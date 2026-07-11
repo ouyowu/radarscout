@@ -253,7 +253,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
 
   return (
     <PublicSiteShell>
-      <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
+      <main className={`min-h-screen bg-rs-sand-50 text-rs-ink ${product.bookingPartnerHandoff ? 'pb-20 md:pb-0' : ''}`}>
       <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
@@ -305,20 +305,6 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-start">
           <Card className="overflow-hidden">
             <article>
-            {product.imageUrl ? (
-              <img
-                src={product.imageUrl}
-                alt={displayTitle(product)}
-                className="h-72 w-full object-cover sm:h-96"
-              />
-            ) : (
-              <div className="relative flex h-72 w-full items-end overflow-hidden bg-[linear-gradient(135deg,var(--rs-forest-900),var(--rs-forest-700)_45%,var(--rs-sand-100)_78%,var(--rs-terracotta))] px-8 py-7 sm:h-96">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.22),transparent_28%),linear-gradient(0deg,rgba(15,36,28,0.62),transparent_58%)]" />
-                <p className="relative max-w-sm font-rs-display text-4xl font-semibold leading-tight tracking-[-0.035em] text-white">
-                  Partner visual pending
-                </p>
-              </div>
-            )}
             {product.imageGalleryUrls && product.imageGalleryUrls.length > 1 ? (
               <div className="grid grid-cols-3 gap-2 border-b border-rs-sage-200/70 bg-white p-3 sm:grid-cols-4">
                 {product.imageGalleryUrls.slice(1, 5).map((imageUrl, index) => (
@@ -375,7 +361,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   rel={product.bookingPartnerHandoff.rel}
                   productId={product.id}
                   source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
-                  className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-rs-terracotta-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
+                  className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
                 >
                   {product.bookingPartnerHandoff.label}
                 </TrackedBookingPartnerHandoff>
@@ -458,6 +444,19 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
 
       <FAQAccordion items={faqItems} title="Tour detail FAQ" />
       </main>
+      {product.bookingPartnerHandoff ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-border-light)] bg-white/95 p-3 shadow-[0_-10px_30px_rgba(45,52,54,0.10)] backdrop-blur md:hidden">
+          <TrackedBookingPartnerHandoff
+            href={product.bookingPartnerHandoff.href}
+            rel={product.bookingPartnerHandoff.rel}
+            productId={product.id}
+            source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
+            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink"
+          >
+            {product.bookingPartnerHandoff.label}
+          </TrackedBookingPartnerHandoff>
+        </div>
+      ) : null}
     </PublicSiteShell>
   )
 }

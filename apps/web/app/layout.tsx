@@ -1,7 +1,19 @@
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
+import { Fraunces, Source_Sans_3 } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
+
+const sourceSans = Source_Sans_3({
+  subsets: ['latin'],
+  variable: '--font-source-sans-3',
+  display: 'swap',
+})
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -32,8 +44,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={GeistSans.variable}>
-      <body className="bg-white font-sans text-gray-900">
+    <html lang="en" className={`${fraunces.variable} ${sourceSans.variable}`}>
+      <body className="bg-rs-sand-50 font-rs-body text-rs-ink">
         {children}
         <Analytics />
       </body>
