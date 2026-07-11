@@ -1,6 +1,7 @@
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import { buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import { buildOpenStreetMapSearchHref, getItineraryDestinations } from './dayTripMap'
+import { buildTripSpecChips } from './dayTripSpecSummary'
 
 type DayTripItineraryPanelProps = {
   itinerary: DayTripItinerary
@@ -8,6 +9,7 @@ type DayTripItineraryPanelProps = {
 
 export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps) {
   const destinations = getItineraryDestinations(itinerary)
+  const tripSpecChips = buildTripSpecChips(itinerary.tripSpec)
 
   return (
     <section
@@ -24,6 +26,16 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
         <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#5a6670]">
           Built from reviewed day-tour suggestions that matched your trip idea. This is a planning sequence; current product details stay on product pages.
         </p>
+        <div aria-label="Trip plan overview" className="mt-3 flex flex-wrap gap-2">
+          {tripSpecChips.map(chip => (
+            <span
+              key={chip}
+              className="rounded-full bg-[#e7f5f2] px-3 py-1 text-xs font-black text-[#0f766e]"
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
       </div>
 
       {destinations.length > 0 ? (
