@@ -111,7 +111,7 @@ test.describe('Homepage Trip Planner entry', () => {
     expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth + 1)
   })
 
-  test('homepage prompt chip opens the Trip Planner form with safe prefill and no search request', async ({
+  test('homepage prompt chip opens Planner Studio with safe prefill and no search request', async ({
     page,
   }) => {
     let searchRequestCount = 0
@@ -129,20 +129,15 @@ test.describe('Homepage Trip Planner entry', () => {
     await page.goto('/')
     await page.getByRole('button', { name: prompt }).click()
 
-    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
-    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
-    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
-      'Review or edit the trip idea',
-    )
-    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
-      'Product search only runs after you choose',
-    )
-    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
-    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    await expect(page).toHaveURL(`/planner?idea=${encodeURIComponent(prompt)}`)
+    await expect(page.locator('#planner-studio-input')).toHaveValue(prompt)
+    await expect(page.getByRole('heading', {
+      name: 'Talk through a Thailand trip, get a reviewed route.',
+    })).toBeVisible()
     expect(searchRequestCount).toBe(0)
   })
 
-  test('homepage prompt chip can confirm and search real Thailand comparison cards safely', async ({
+  test('homepage prompt chip can send and search the reviewed Planner Studio route safely', async ({
     page,
   }) => {
     let searchRequestCount = 0
@@ -160,20 +155,13 @@ test.describe('Homepage Trip Planner entry', () => {
     await page.goto('/')
     await page.getByRole('button', { name: prompt }).click()
 
-    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
-    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
+    await expect(page).toHaveURL(`/planner?idea=${encodeURIComponent(prompt)}`)
+    await expect(page.locator('#planner-studio-input')).toHaveValue(prompt)
     expect(searchRequestCount).toBe(0)
 
-    await page.getByRole('button', { name: /confirm trip intent/i }).click()
-    await expect(page.getByRole('button', { name: /search real thailand experiences/i })).toBeEnabled()
-    expect(searchRequestCount).toBe(0)
-
-    await page.getByRole('button', { name: /search real thailand experiences/i }).click()
-
-    await expect(page.getByRole('status')).toContainText('Results ready')
-    await expect(page.getByRole('link', { name: /review comparison cards/i })).toBeVisible()
-    await expect(page.getByRole('link', { name: /view details/i })).toHaveCount(3)
-    await expect(page.locator('#ai-trip-comparison-results')).toBeVisible()
+    await page.getByRole('button', { name: 'Send' }).click()
+    await page.getByRole('button', { name: '1 day' }).click()
+    await expect(page.getByText(/Found 3 reviewed Thailand experiences/)).toBeVisible()
     expect(searchRequestCount).toBe(1)
 
     const pageText = await page.locator('body').innerText()
@@ -182,7 +170,7 @@ test.describe('Homepage Trip Planner entry', () => {
     }
   })
 
-  test('Plan my trip opens the Trip Planner form without automatic product search', async ({ page }) => {
+  test('Plan my trip opens Planner Studio without automatic product search', async ({ page }) => {
     let searchRequestCount = 0
 
     await page.route('/api/ai-trip/search', async route => {
@@ -197,21 +185,13 @@ test.describe('Homepage Trip Planner entry', () => {
     await page.goto('/')
     await page.getByRole('button', { name: 'Plan my trip' }).click()
 
-    await expect(page).toHaveURL('/ai-trip-planner#intent-demo')
-    await expect(page.locator('#trip-idea')).toBeVisible()
-    await expect(page.locator('#trip-idea')).toHaveValue('Chiang Mai 3 days food temples elephants, less crowded')
-    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
-      'Review or edit the trip idea',
-    )
-    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
-      'Product search only runs after you choose',
-    )
-    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
-    await expect(page.getByRole('button', { name: /confirm trip intent/i })).toBeEnabled()
+    await expect(page).toHaveURL('/planner')
+    await expect(page.locator('#planner-studio-input')).toBeVisible()
+    await expect(page.locator('#planner-studio-input')).toHaveValue('')
     expect(searchRequestCount).toBe(0)
   })
 
-  test('homepage hero prompt input opens the Trip Planner form with the typed idea', async ({ page }) => {
+  test('homepage hero prompt input opens Planner Studio with the typed idea', async ({ page }) => {
     let searchRequestCount = 0
     const prompt = 'Bangkok food and temple day'
 
@@ -228,12 +208,8 @@ test.describe('Homepage Trip Planner entry', () => {
     await page.getByRole('textbox', { name: 'Describe your ideal Thailand trip' }).fill(prompt)
     await page.getByRole('button', { name: 'Plan my trip' }).click()
 
-    await expect(page).toHaveURL(`/ai-trip-planner?idea=${encodeURIComponent(prompt)}#intent-demo`)
-    await expect(page.locator('#trip-idea')).toHaveValue(prompt)
-    await expect(page.getByRole('note', { name: 'Planner landing guidance' })).toContainText(
-      'Review or edit the trip idea',
-    )
-    await expect(page.getByTestId('ai-trip-intent-summary')).toBeVisible()
+    await expect(page).toHaveURL(`/planner?idea=${encodeURIComponent(prompt)}`)
+    await expect(page.locator('#planner-studio-input')).toHaveValue(prompt)
     expect(searchRequestCount).toBe(0)
   })
 
