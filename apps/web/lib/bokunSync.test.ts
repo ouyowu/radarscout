@@ -100,4 +100,55 @@ describe('syncBokunCatalog', () => {
     expect(result.productsUpserted).toBe(1)
     expect(mocks.productUpsert.mock.calls[0][0].create.city).toBe('Bangkok')
   })
+
+  it('does not match Thai city aliases inside unrelated English words', async () => {
+    mocks.fetchActiveBokunActivities.mockResolvedValue({
+      ok: true,
+      status: 200,
+      body: {
+        count: 2,
+        items: [
+          {
+            ...product('1152682', 'Mysterious desert day tour', 40),
+            excerpt: 'Explore an extraterrestrial landscape with a local guide.',
+          },
+          {
+            ...product('1053961', 'National park and lake day trip', 50),
+            excerpt: 'Enjoy a smoothly orchestrated day from start to finish.',
+          },
+        ],
+      },
+    })
+
+    const result = await syncBokunCatalog({
+      queries: ['day trip'],
+      pageSize: 100,
+      maxPages: 1,
+    })
+
+    expect(result.productsUpserted).toBe(0)
+    expect(result.skippedProducts).toBe(2)
+    expect(mocks.supplierUpsert).not.toHaveBeenCalled()
+    expect(mocks.productUpsert).not.toHaveBeenCalled()
+  })
+
+  it('still matches a standalone short Thai city alias', async () => {
+    mocks.fetchActiveBokunActivities.mockResolvedValue({
+      ok: true,
+      status: 200,
+      body: {
+        count: 1,
+        items: [product('900001', 'Trat mangrove and island day tour', 60)],
+      },
+    })
+
+    const result = await syncBokunCatalog({
+      queries: ['trat'],
+      pageSize: 100,
+      maxPages: 1,
+    })
+
+    expect(result.productsUpserted).toBe(1)
+    expect(mocks.productUpsert.mock.calls[0][0].create.city).toBe('Trat')
+  })
 })

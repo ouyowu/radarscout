@@ -77,6 +77,15 @@ const CITY_ALIASES: Array<[string, string[]]> = [
   ['Ao Nang', ['ao nang', 'aonang']],
 ]
 
+function includesCityAlias(haystack: string, alias: string): boolean {
+  const escapedAlias = alias
+    .toLowerCase()
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    .replace(/\s+/g, '\\s+')
+
+  return new RegExp(`(^|[^a-z0-9])${escapedAlias}($|[^a-z0-9])`).test(haystack)
+}
+
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {}
 }
@@ -126,7 +135,7 @@ function detectCity(item: BokunSearchResult): string | null {
     .toLowerCase()
 
   return CITY_ALIASES.find(([, aliases]) =>
-    aliases.some(alias => haystack.includes(alias.toLowerCase())),
+    aliases.some(alias => includesCityAlias(haystack, alias)),
   )?.[0] ?? null
 }
 
