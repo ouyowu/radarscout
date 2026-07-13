@@ -49,18 +49,19 @@ describe('planner studio public copy safety', () => {
     expect(pageSource).toMatch(/robots: \{ index: false, follow: false \}/)
   })
 
-  it('only calls the guarded ai-trip endpoints', () => {
+  it('only calls the guarded deterministic search endpoint', () => {
     const studioSource = readPlannerSource('PlannerStudio.tsx')
 
     expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/search'/)
-    expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/narrate'/)
-    expect(studioSource).not.toMatch(/fetch\('\/api\/(?!ai-trip\/(search|narrate))/)
+    expect(studioSource).not.toMatch(/fetch\('\/api\/ai-trip\/narrate'/)
+    expect(studioSource).not.toMatch(/fetch\('\/api\/(?!ai-trip\/search)/)
   })
 
-  it('labels streamed narration honestly as AI-generated display text', () => {
+  it('labels the zero-cost route overview honestly as local output', () => {
     const studioSource = readPlannerSource('PlannerStudio.tsx')
 
-    expect(studioSource).toMatch(/AI-generated text/)
-    expect(studioSource).toMatch(/verify every detail on each product page/i)
+    expect(studioSource).toMatch(/Route overview · built locally/)
+    expect(studioSource).toMatch(/buildDeterministicRouteOverview/)
+    expect(studioSource).not.toMatch(/AI-generated text/)
   })
 })
