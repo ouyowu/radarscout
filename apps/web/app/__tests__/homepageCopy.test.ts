@@ -140,7 +140,9 @@ describe('homepage public copy safety', () => {
   })
 
   it('keeps public navigation focused on traveler tasks', () => {
-    expect(publicSiteContentSource).toContain("{ href: '/ai-trip-planner', label: 'Plan a day' }")
+    expect(publicSiteContentSource).toContain("{ href: '/planner', label: 'Plan a day' }")
+    expect(publicSiteContentSource).not.toContain("{ href: '/ai-trip-planner', label: 'Plan a day' }")
+    expect(homepageVisibleCopySources).not.toContain('href="/ai-trip-planner"')
     expect(publicSiteContentSource).toContain("{ href: '/tours', label: 'Experiences' }")
     expect(publicSiteContentSource).toContain("{ href: '/destinations', label: 'Destinations' }")
     expect(publicSiteContentSource).not.toContain('AI Planner')

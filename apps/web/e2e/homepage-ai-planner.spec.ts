@@ -73,6 +73,11 @@ test.describe('Homepage Trip Planner entry', () => {
     })).toBeVisible()
     await expect(page.getByText('Thailand day trips, thoughtfully planned')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Plan my trip' })).toBeVisible()
+    const planDayLinks = page.getByRole('link', { name: 'Plan a day' })
+    expect(await planDayLinks.count()).toBeGreaterThan(0)
+    for (let index = 0; index < await planDayLinks.count(); index += 1) {
+      await expect(planDayLinks.nth(index)).toHaveAttribute('href', '/planner')
+    }
     await expect(page.getByRole('link', { name: 'Plan with RadarScout' }).first()).toHaveAttribute(
       'href',
       '/chiang-mai/elephant-camp-finder#plan-with-radarscout',

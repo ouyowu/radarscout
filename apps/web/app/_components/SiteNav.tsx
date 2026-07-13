@@ -23,7 +23,7 @@ export function SiteNav() {
               </Link>
             ))}
             <Link
-              href="/ai-trip-planner"
+              href="/planner"
               className="inline-flex min-h-[46px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Plan a day
