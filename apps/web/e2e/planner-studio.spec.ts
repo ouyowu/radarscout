@@ -131,3 +131,44 @@ test('guided studio labels optional streamed narration as AI-generated display t
   await expect(page.getByText(/Compare the reviewed Chiang Mai experience/)).toBeVisible()
   await expect(page.getByText(/verify every detail on each product page/i)).toBeVisible()
 })
+
+test('guided studio accepts duration before destination without repeating the destination question', async ({ page }) => {
+  await page.goto('/planner')
+
+  const input = page.getByRole('textbox', { name: 'Trip idea message' })
+  await input.fill('3 days')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await expect(page.getByText(/Where in Thailand are you thinking/)).toBeVisible()
+
+  await input.fill('Bangkok')
+  await page.getByRole('button', { name: 'Send' }).click()
+
+  await expect(page.getByText(/Anything you want the days to focus on/)).toBeVisible()
+  await expect(page.getByText(/Where in Thailand are you thinking/)).toHaveCount(1)
+})
+
+test('guided studio treats free-form interest text as an answer instead of asking again', async ({ page }) => {
+  let searchRequests = 0
+  await page.route('/api/ai-trip/search', async route => {
+    searchRequests += 1
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(REVIEWED_ROUTE_RESPONSE),
+    })
+  })
+
+  await page.goto('/planner')
+
+  const input = page.getByRole('textbox', { name: 'Trip idea message' })
+  await input.fill('Chiang Mai 3 days')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await expect(page.getByText(/Anything you want the days to focus on/)).toBeVisible()
+
+  await input.fill('somewhere quiet')
+  await page.getByRole('button', { name: 'Send' }).click()
+
+  await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
+  await expect(page.getByText(/Anything you want the days to focus on/)).toHaveCount(1)
+  expect(searchRequests).toBe(1)
+})
