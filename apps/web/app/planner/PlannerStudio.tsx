@@ -81,12 +81,16 @@ type PlannerStudioProps = {
 
 export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
   const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
-  const [messages, setMessages] = useState<StudioMessage[]>([
+  const [messages, setMessages] = useState<StudioMessage[]>(() => [
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
   ])
   const [draft, setDraft] = useState(safeInitialIdea)
   const [ideaParts, setIdeaParts] = useState<string[]>([])
   const [interestsSkipped, setInterestsSkipped] = useState(false)
+  // True while the guide's most recent question was the interests prompt. Any
+  // traveler reply then counts as their interests answer — even free-form text
+  // the local matcher doesn't recognize — so we advance instead of re-asking.
+  const [awaitingInterests, setAwaitingInterests] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [narration, setNarration] = useState<{ text: string; done: boolean } | null>(null)
@@ -184,6 +188,8 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
     const step = decideNextGuideStep(result, { interestsSkipped: skipped })
     const understoodChips = summarizeUnderstoodIntent(result)
 
+    setAwaitingInterests(step.kind === 'ask_interests')
+
     setMessages(current => [
       ...current,
       createMessage({
@@ -204,7 +210,11 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
     if (isSearching) return
     if (!content && !options?.skipInterests) return
 
-    const skipped = interestsSkipped || Boolean(options?.skipInterests)
+    // Once the guide has asked for interests, any non-empty reply is the
+    // traveler's answer. Treat it as resolved so free-form wording the local
+    // matcher can't map to a known interest doesn't loop the same question.
+    const answersInterestPrompt = awaitingInterests && content.length > 0
+    const skipped = interestsSkipped || Boolean(options?.skipInterests) || answersInterestPrompt
     const parts = content ? [...ideaParts, content] : ideaParts
 
     setMessages(current => [
@@ -237,6 +247,7 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
     setMessages([createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS })])
     setIdeaParts([])
     setInterestsSkipped(false)
+    setAwaitingInterests(false)
     setSearchState(null)
     setDraft('')
   }

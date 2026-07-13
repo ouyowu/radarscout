@@ -64,6 +64,22 @@ describe('planner studio guided conversation', () => {
     expect(merged.intent.interests.length).toBeGreaterThan(0)
   })
 
+  it('floats the destination-bearing message to the front when merging', () => {
+    expect(mergeTripIdea(['3 days', 'Bangkok'])).toBe('Bangkok, 3 days')
+    // A message that already leads with the destination is left untouched.
+    expect(mergeTripIdea(['Chiang Mai', '3 days'])).toBe('Chiang Mai, 3 days')
+  })
+
+  it('resolves the destination even when duration is answered first', () => {
+    const merged = parseMergedTripIdea(['3 days', 'Bangkok'])
+
+    expect(merged.intent.destination).toBe('Bangkok')
+    expect(merged.intent.durationDays).toBe(3)
+
+    const step = decideNextGuideStep(merged, { interestsSkipped: false })
+    expect(step.kind).not.toBe('ask_destination')
+  })
+
   it('summarizes understood intent as readable chips', () => {
     const chips = summarizeUnderstoodIntent(parseTripIntent('Chiang Mai 3 days elephants, avoid crowds'))
 
