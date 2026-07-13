@@ -77,8 +77,7 @@ describe('homepage public copy safety', () => {
 
   it('shows safe homepage planner prompt chips without booking or availability claims', () => {
     expect(promptHeroSource).toContain('buildIdeaHref(nextIdea)')
-    expect(promptHeroHelperSource).toContain("const target = '/ai-trip-planner'")
-    expect(promptHeroHelperSource).toContain("const hash = '#intent-demo'")
+    expect(promptHeroHelperSource).toContain("const target = '/planner'")
     expect(promptHeroHelperSource).toContain('encodeURIComponent(trimmed)')
     expect(promptHeroHelperSource).toContain('Gentle elephant day in Chiang Mai')
     expect(promptHeroHelperSource).toContain('Family-friendly elephant sanctuary in Chiang Mai')

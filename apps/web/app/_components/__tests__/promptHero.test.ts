@@ -6,21 +6,21 @@ import { parseTripIntent } from '../../../lib/ai-trip/parse-intent'
 const source = readFileSync(new URL('../PromptHero.tsx', import.meta.url), 'utf8')
 
 describe('PromptHero idea href', () => {
-  it('encodes the prompt and lands on the planner intent anchor', () => {
+  it('encodes the prompt and lands in Planner Studio', () => {
     expect(buildIdeaHref('Gentle elephant day in Chiang Mai')).toBe(
-      '/ai-trip-planner?idea=Gentle%20elephant%20day%20in%20Chiang%20Mai#intent-demo',
+      '/planner?idea=Gentle%20elephant%20day%20in%20Chiang%20Mai',
     )
   })
 
   it('trims whitespace before encoding', () => {
     expect(buildIdeaHref('  Chiang Mai cooking and local food day  ')).toBe(
-      '/ai-trip-planner?idea=Chiang%20Mai%20cooking%20and%20local%20food%20day#intent-demo',
+      '/planner?idea=Chiang%20Mai%20cooking%20and%20local%20food%20day',
     )
   })
 
-  it('falls back to the bare planner anchor when the prompt is empty or blank', () => {
-    expect(buildIdeaHref('')).toBe('/ai-trip-planner#intent-demo')
-    expect(buildIdeaHref('   ')).toBe('/ai-trip-planner#intent-demo')
+  it('falls back to the bare Planner Studio when the prompt is empty or blank', () => {
+    expect(buildIdeaHref('')).toBe('/planner')
+    expect(buildIdeaHref('   ')).toBe('/planner')
   })
 })
 

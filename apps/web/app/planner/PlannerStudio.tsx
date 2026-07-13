@@ -75,11 +75,16 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
   })
 }
 
-export function PlannerStudio() {
+type PlannerStudioProps = {
+  initialIdea?: string
+}
+
+export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
+  const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
   const [messages, setMessages] = useState<StudioMessage[]>([
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
   ])
-  const [draft, setDraft] = useState('')
+  const [draft, setDraft] = useState(safeInitialIdea)
   const [ideaParts, setIdeaParts] = useState<string[]>([])
   const [interestsSkipped, setInterestsSkipped] = useState(false)
   const [isSearching, setIsSearching] = useState(false)

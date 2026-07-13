@@ -13,7 +13,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function PlannerStudioPage() {
+type PlannerStudioPageProps = {
+  searchParams?: {
+    idea?: string | string[]
+  }
+}
+
+export default function PlannerStudioPage({ searchParams }: PlannerStudioPageProps) {
+  const initialIdea = typeof searchParams?.idea === 'string' ? searchParams.idea : ''
+
   return (
     <PublicSiteShell>
       <main className="min-h-screen bg-rs-sand-50 font-rs-body text-rs-ink">
@@ -45,7 +53,7 @@ export default function PlannerStudioPage() {
 
         <section className="px-4 py-10 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <PlannerStudio />
+            <PlannerStudio initialIdea={initialIdea} />
           </div>
         </section>
       </main>
