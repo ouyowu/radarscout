@@ -1,5 +1,6 @@
 import { db } from '@reddit-monitor/db'
 import { BokunSearchResult, fetchActiveBokunActivities } from '@/lib/bokun'
+import { evaluateThailandProductEligibility } from '@/lib/productEligibility/thailandEligibility'
 
 type SyncBokunCatalogParams = {
   queries?: string[]
@@ -31,14 +32,26 @@ type SupplierSnapshot = {
 }
 
 const DEFAULT_SYNC_QUERIES = [
-  '',
   'bangkok',
   'chiang mai',
+  'chiang rai',
   'phuket',
   'pattaya',
   'krabi',
   'koh samui',
   'ayutthaya',
+  'hua hin',
+  'khao lak',
+  'phang nga',
+  'phi phi',
+  'koh tao',
+  'koh phangan',
+  'sukhothai',
+  'kanchanaburi',
+  'trat',
+  'koh chang',
+  'railay',
+  'ao nang',
 ]
 
 const CITY_ALIASES: Array<[string, string[]]> = [
@@ -49,6 +62,19 @@ const CITY_ALIASES: Array<[string, string[]]> = [
   ['Krabi', ['krabi', '甲米']],
   ['Koh Samui', ['koh samui', 'samui', '苏梅', '苏梅岛']],
   ['Ayutthaya', ['ayutthaya', '大城']],
+  ['Chiang Rai', ['chiang rai', 'chiangrai', '清莱']],
+  ['Hua Hin', ['hua hin', 'huahin', '华欣']],
+  ['Khao Lak', ['khao lak', 'khaolak']],
+  ['Phang Nga', ['phang nga', 'phangnga']],
+  ['Phi Phi', ['phi phi', 'koh phi phi', 'ko phi phi']],
+  ['Koh Tao', ['koh tao', 'ko tao']],
+  ['Koh Phangan', ['koh phangan', 'ko phangan', 'koh pha ngan']],
+  ['Sukhothai', ['sukhothai']],
+  ['Kanchanaburi', ['kanchanaburi']],
+  ['Trat', ['trat']],
+  ['Koh Chang', ['koh chang', 'ko chang']],
+  ['Railay', ['railay']],
+  ['Ao Nang', ['ao nang', 'aonang']],
 ]
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -91,6 +117,9 @@ function detectCity(item: BokunSearchResult): string | null {
     readString(raw.city),
     readString(raw.country),
     readString(raw.address),
+    readString(raw.locationCode),
+    JSON.stringify(raw.places ?? ''),
+    JSON.stringify(raw.googlePlace ?? ''),
   ]
     .filter(Boolean)
     .join(' ')
@@ -193,6 +222,16 @@ export async function syncBokunCatalog(
   const syncedAt = new Date()
 
   for (const item of seen.values()) {
+    const city = detectCity(item)
+    const eligibility = evaluateThailandProductEligibility({
+      title: item.title,
+      city,
+      location: item.location,
+      description: item.excerpt,
+    })
+
+    if (!eligibility.eligible) continue
+
     const supplier = extractSupplier(item)
     const supplierRow = supplier
       ? await db.bokunSupplier.upsert({
@@ -226,7 +265,7 @@ export async function syncBokunCatalog(
         title: item.title,
         description: readString(asRecord(item.raw).description),
         excerpt: item.excerpt,
-        city: detectCity(item),
+        city,
         location: item.location,
         retailPrice: retail.amount,
         netSettlementPrice: net.amount,
@@ -242,7 +281,7 @@ export async function syncBokunCatalog(
         title: item.title,
         description: readString(asRecord(item.raw).description),
         excerpt: item.excerpt,
-        city: detectCity(item),
+        city,
         location: item.location,
         retailPrice: retail.amount,
         netSettlementPrice: net.amount,
