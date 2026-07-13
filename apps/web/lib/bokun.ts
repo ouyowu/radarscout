@@ -205,7 +205,12 @@ async function fetchBokunActivitySearch(params: {
   const result = await bokunRequest(pathWithQuery, {
     method: 'POST',
     body: JSON.stringify({
-      text: params.query,
+      textFilter: {
+        text: params.query,
+        searchFullText: true,
+        searchKeywords: true,
+        searchTitle: true,
+      },
       page: params.page ?? 1,
       pageSize: params.pageSize ?? 100,
       flags: ['ACTIVE'],

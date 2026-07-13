@@ -2,6 +2,7 @@ import {
   resolveOwnerManagedProfileHandoff,
   type PublicBookingPartnerHandoff,
 } from './bookingPartnerHandoff'
+import { resolveReviewedResaleProductHandoff } from './reviewedResaleProductHandoffMappings'
 
 export type PublicProductOwnerManagedHandoffMapping = {
   publicProductId: string
@@ -30,7 +31,7 @@ export function resolveReviewedProductHandoff({
     candidate.publicProductId === normalizedProductId,
   )
 
-  if (!mapping) return null
+  if (!mapping) return resolveReviewedResaleProductHandoff(normalizedActivityId)
   if (mapping.ownerManagedBokunId !== normalizedActivityId) return null
 
   return resolveOwnerManagedProfileHandoff(mapping.ownerManagedBokunId)
