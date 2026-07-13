@@ -30,10 +30,25 @@ export const REVIEWED_RETRY_CHIPS = [
   'Chiang Mai nature and elephant day trip',
 ]
 
+// The local parser reads the destination from the text before the first comma,
+// so the order the traveler supplies fields must not decide whether we can find
+// the destination. If a later message is the one carrying the destination (e.g.
+// duration first, then city), float that part to the front before merging so the
+// same merged string is parsed correctly here and by the search API.
+function orderPartsDestinationFirst(parts: string[]): string[] {
+  const cleaned = parts.map(part => part.trim()).filter(Boolean)
+  const firstDestinationIndex = cleaned.findIndex(
+    part => parseTripIntent(part).intent.destination != null,
+  )
+
+  if (firstDestinationIndex <= 0) return cleaned
+
+  const [destinationPart] = cleaned.splice(firstDestinationIndex, 1)
+  return [destinationPart, ...cleaned]
+}
+
 export function mergeTripIdea(parts: string[]): string {
-  return parts
-    .map(part => part.trim())
-    .filter(Boolean)
+  return orderPartsDestinationFirst(parts)
     .join(', ')
     .slice(0, PARSER_PROMPT_LIMIT)
 }
