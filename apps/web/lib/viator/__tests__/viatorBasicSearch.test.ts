@@ -69,6 +69,7 @@ describe('searchViatorSandboxProducts', () => {
         body: JSON.stringify({
           filtering: { destination: '5267' },
           pagination: { start: 1, count: 5 },
+          currency: 'THB',
         }),
       }),
     )

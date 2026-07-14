@@ -133,6 +133,7 @@ export async function searchViatorSandboxProducts(
       body: JSON.stringify({
         filtering: { destination: destinationId },
         pagination: { start: 1, count },
+        currency: 'THB',
       }),
     })
   } catch {
