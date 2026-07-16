@@ -4,6 +4,7 @@ export const VIATOR_PRODUCTION_PRODUCT_SEARCH_URL = 'https://api.viator.com/part
 const cities = Object.freeze({
   bangkok: { city: 'Bangkok', destinationId: '343' },
   'chiang-mai': { city: 'Chiang Mai', destinationId: '5267' },
+  'chiang-rai': { city: 'Chiang Rai', destinationId: '5268' },
   phuket: { city: 'Phuket', destinationId: '349' },
   krabi: { city: 'Krabi', destinationId: '348' },
   pattaya: { city: 'Pattaya', destinationId: '344' },
