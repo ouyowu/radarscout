@@ -22,7 +22,10 @@ const handoffMock = vi.hoisted(() => ({
 
 vi.mock('../ownerManagedProductHandoffMappings', () => handoffMock)
 
-import { getPublicThailandProduct } from '../getPublicThailandProduct'
+import {
+  getPublicThailandProduct,
+  loadPublicThailandProductDetail,
+} from '../getPublicThailandProduct'
 
 function makeProduct(overrides: Record<string, unknown> = {}) {
   return {
@@ -102,6 +105,32 @@ describe('getPublicThailandProduct', () => {
       source: 'booking_partner_verified_public_widget',
       verifiedBy: 'operator_manual_review',
     })
+    expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
+  })
+
+  it('returns a reviewed Viator product without requiring the legacy database', async () => {
+    const result = await loadPublicThailandProductDetail('viator_6467bkknight')
+
+    expect(result).toMatchObject({
+      status: 'found',
+      product: {
+        id: 'viator_6467bkknight',
+        city: 'Bangkok',
+        title: 'Bangkok by Night: Temples, Markets and Food Tuk-Tuk Tour',
+        detailHref: '/tours/viator_6467bkknight',
+        retailPrice: null,
+        currency: null,
+        bookingPartnerHandoff: {
+          label: 'Check availability',
+          rel: 'nofollow sponsored noopener noreferrer',
+          source: 'operator_verified_public_link',
+          verifiedBy: 'operator_manual_review',
+        },
+      },
+    })
+    expect(result.status === 'found' && result.product.bookingPartnerHandoff?.href)
+      .toContain('viator.com')
+    expect(dbMock.bokunProduct.findFirst).not.toHaveBeenCalled()
     expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
   })
 
