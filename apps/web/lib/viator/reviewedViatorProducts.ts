@@ -1,3 +1,5 @@
+import { reviewedViatorBatch2ProductSeedRecords } from './reviewedViatorBatch2Products'
+
 const REVIEWED_AT = '2026-07-16T00:00:00.000Z'
 
 const cityDestinationIds = {
@@ -346,8 +348,13 @@ const reviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
   },
 ]
 
+const allReviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
+  ...reviewedViatorProductSeedRecords,
+  ...reviewedViatorBatch2ProductSeedRecords,
+]
+
 export function loadReviewedViatorProducts(
-  records: readonly ReviewedViatorProduct[] = reviewedViatorProductSeedRecords,
+  records: readonly ReviewedViatorProduct[] = allReviewedViatorProductSeedRecords,
 ): ReviewedViatorProduct[] {
   return records.map((record) => {
     const result = validateReviewedViatorProduct(record)

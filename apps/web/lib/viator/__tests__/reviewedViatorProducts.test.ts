@@ -6,10 +6,10 @@ import {
 } from '../reviewedViatorProducts'
 
 describe('reviewedViatorProducts', () => {
-  it('loads the 16 operator-approved Thailand products with safe handoff and image URLs', () => {
+  it('loads the 71 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
     const products = loadReviewedViatorProducts()
 
-    expect(products).toHaveLength(16)
+    expect(products).toHaveLength(71)
     expect(new Set(products.map((product) => product.city))).toEqual(new Set([
       'Bangkok',
       'Chiang Mai',
@@ -34,8 +34,12 @@ describe('reviewedViatorProducts', () => {
       ])
       expect(product.productUrl).toMatch(/^https:\/\/(?:[^/]+\.)?viator\.com\//)
       expect(product.imageUrl).toMatch(/^https:\/\//)
-      expect(product.reviewedAt).toBe('2026-07-16T00:00:00.000Z')
+      expect(Number.isNaN(Date.parse(product.reviewedAt))).toBe(false)
     }
+
+    expect(products.some((product) => product.productCode === '5553790P1')).toBe(true)
+    expect(products.some((product) => product.productCode === '157340P38')).toBe(false)
+    expect(products.some((product) => product.productCode === '90546P33')).toBe(false)
   })
 
   it('fails closed when a seed record includes commercial or raw upstream data', () => {

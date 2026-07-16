@@ -1,0 +1,82 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+
+import {
+  buildViatorThailandBatch2DetailReview,
+  fetchViatorProductDetailForReview,
+} from '../viator-thailand-batch-2-detail-review.mjs'
+
+const candidate = {
+  city: 'Bangkok',
+  destinationId: '343',
+  productCode: '5553790P1',
+  title: 'Floating market day trip',
+  productUrl: 'https://www.viator.com/tours/Bangkok/floating-market/d343-5553790P1?pid=P00309837',
+  imageUrl: 'https://images.example.test/floating-market.jpg',
+  disposition: 'requires_detail_review',
+  reason: 'requires_product_detail_review',
+}
+
+test('keeps only non-commercial product detail fields in the private detail review', async () => {
+  const result = await fetchViatorProductDetailForReview(candidate, {
+    apiKey: 'production-test-key',
+    fetchFn: async () => new Response(JSON.stringify({
+      productCode: '5553790P1',
+      description: 'A market and canal day trip from Bangkok.',
+      inclusions: [{ otherDescription: 'Lunch' }],
+      exclusions: [{ description: 'Personal expenses' }],
+      itinerary: { duration: { fixedDurationInMinutes: 420 } },
+      pricingInfo: { pricingType: 'PER_PERSON' },
+      bookingRequirements: { minTravelers: 1 },
+      supplier: { name: 'Not public' },
+      reviews: { totalReviews: 100 },
+    }), { status: 200 }),
+  })
+
+  assert.deepEqual(result, {
+    ok: true,
+    detail: {
+      city: 'Bangkok',
+      destinationId: '343',
+      productCode: '5553790P1',
+      title: 'Floating market day trip',
+      productUrl: 'https://www.viator.com/tours/Bangkok/floating-market/d343-5553790P1?pid=P00309837',
+      imageUrl: 'https://images.example.test/floating-market.jpg',
+      description: 'A market and canal day trip from Bangkok.',
+      inclusionHighlights: ['Lunch'],
+      exclusionHighlights: ['Personal expenses'],
+      durationMinutes: 420,
+    },
+  })
+})
+
+test('fails closed when the Viator product code does not match the reviewed candidate', async () => {
+  const result = await fetchViatorProductDetailForReview(candidate, {
+    apiKey: 'production-test-key',
+    fetchFn: async () => new Response(JSON.stringify({ productCode: 'OTHER' }), { status: 200 }),
+  })
+
+  assert.deepEqual(result, { ok: false, reason: 'mismatched_product' })
+})
+
+test('builds a private detail-review bundle only for candidates that passed title triage', async () => {
+  const result = await buildViatorThailandBatch2DetailReview({
+    status: 'detail_review_required',
+    candidates: [
+      candidate,
+      { ...candidate, productCode: '5567417P3', disposition: 'already_public' },
+    ],
+  }, {
+    apiKey: 'production-test-key',
+    fetchedAt: '2026-07-16T00:00:00.000Z',
+    fetchProduct: async (value) => ({
+      ok: true,
+      detail: { ...value, description: 'Safe summary source.', inclusionHighlights: [], exclusionHighlights: [], durationMinutes: null },
+    }),
+  })
+
+  assert.equal(result.ok, true)
+  assert.equal(result.review.status, 'pending_human_detail_review')
+  assert.equal(result.review.candidateCount, 1)
+  assert.equal(result.review.candidates[0].productCode, '5553790P1')
+})
