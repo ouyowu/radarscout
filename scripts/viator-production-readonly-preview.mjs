@@ -6,6 +6,7 @@ const cities = Object.freeze({
   'chiang-mai': { city: 'Chiang Mai', destinationId: '5267' },
   'chiang-rai': { city: 'Chiang Rai', destinationId: '5268' },
   'hua-hin': { city: 'Hua Hin', destinationId: '22968' },
+  'khao-sok': { city: 'Khao Sok', destinationId: '51065' },
   phuket: { city: 'Phuket', destinationId: '349' },
   krabi: { city: 'Krabi', destinationId: '348' },
   pattaya: { city: 'Pattaya', destinationId: '344' },
