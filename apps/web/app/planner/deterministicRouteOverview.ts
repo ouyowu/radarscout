@@ -8,8 +8,12 @@ export function buildDeterministicRouteOverview(itinerary: DayTripItinerary): st
   const matchCount = itinerary.days.length
   const routeDays = itinerary.days
     .map(day => {
-      const city = day.experience.city ? ` in ${day.experience.city}` : ''
-      return `Day ${day.dayNumber}, ${day.experience.title}${city}`
+      const city = day.experience.city
+      const titleIncludesCity = city && day.experience.title.trim().toLowerCase().endsWith(
+        ` in ${city.toLowerCase()}`,
+      )
+      const citySuffix = city && !titleIncludesCity ? ` in ${city}` : ''
+      return `Day ${day.dayNumber}, ${day.experience.title}${citySuffix}`
     })
     .join('; ')
 

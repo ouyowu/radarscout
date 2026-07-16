@@ -68,4 +68,23 @@ describe('deterministic route overview', () => {
       '1 day remains unfilled',
     )
   })
+
+  it('does not repeat a city already present at the end of an experience title', () => {
+    const titledWithCity: DayTripItinerary = {
+      ...itinerary,
+      days: [
+        {
+          ...itinerary.days[0],
+          experience: {
+            ...itinerary.days[0].experience,
+            title: 'Gentle elephant care day in Chiang Mai',
+          },
+        },
+      ],
+    }
+
+    expect(buildDeterministicRouteOverview(titledWithCity)).toContain(
+      'Day 1, Gentle elephant care day in Chiang Mai.',
+    )
+  })
 })
