@@ -6,10 +6,10 @@ import {
 } from '../reviewedViatorProducts'
 
 describe('reviewedViatorProducts', () => {
-  it('loads the 71 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
+  it('loads the 77 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
     const products = loadReviewedViatorProducts()
 
-    expect(products).toHaveLength(71)
+    expect(products).toHaveLength(77)
     expect(new Set(products.map((product) => product.city))).toEqual(new Set([
       'Bangkok',
       'Chiang Mai',
@@ -38,6 +38,10 @@ describe('reviewedViatorProducts', () => {
     }
 
     expect(products.some((product) => product.productCode === '5553790P1')).toBe(true)
+    expect(products.filter((product) => product.city === 'Chiang Mai')).toHaveLength(10)
+    expect(products.some((product) => product.productCode === '345511P1')).toBe(true)
+    expect(products.some((product) => product.productCode === '157340P45')).toBe(true)
+    expect(products.some((product) => product.productCode === '5554656P4')).toBe(false)
     expect(products.some((product) => product.productCode === '157340P38')).toBe(false)
     expect(products.some((product) => product.productCode === '90546P33')).toBe(false)
   })

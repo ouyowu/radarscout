@@ -48,6 +48,22 @@ describe('listMatchingReviewedViatorProductCandidates', () => {
     expect(candidates.every(candidate => candidate.city === 'Krabi')).toBe(true)
   })
 
+  it('matches newly reviewed Chiang Mai food and adventure experiences without calling the Viator API', () => {
+    const cooking = listMatchingReviewedViatorProductCandidates({
+      city: 'Chiang Mai',
+      search: 'cooking class food',
+      take: 3,
+    })
+    const zipline = listMatchingReviewedViatorProductCandidates({
+      city: 'Chiang Mai',
+      search: 'zipline adventure',
+      take: 3,
+    })
+
+    expect(cooking.some(candidate => candidate.id === 'viator_345511p1')).toBe(true)
+    expect(zipline.some(candidate => candidate.id === 'viator_157340p45')).toBe(true)
+  })
+
   it('never exposes commercial or raw source fields in an AI candidate', () => {
     const [candidate] = listMatchingReviewedViatorProductCandidates({
       city: 'Koh Samui',
