@@ -9,7 +9,10 @@ import {
   homepageSteps,
   homepageTrustItems,
 } from './_content/publicSite'
-import { pilotPartnerProducts } from '@/lib/partnerProducts/seed/pilotPartnerProducts'
+import {
+  loadReviewedViatorProducts,
+  type ViatorThailandCity,
+} from '@/lib/viator/reviewedViatorProducts'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -33,8 +36,11 @@ export const metadata: Metadata = {
   },
 }
 
-const featuredPartnerExperiences = pilotPartnerProducts.slice(0, 4)
-const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'
+const featuredViatorCities = ['Bangkok', 'Chiang Mai', 'Phuket', 'Krabi'] as const satisfies readonly ViatorThailandCity[]
+const featuredViatorExperiences = featuredViatorCities.flatMap(city =>
+  loadReviewedViatorProducts().filter(product => product.city === city).slice(0, 1),
+)
+const thailandPlannerHref = '/planner'
 
 export default function LandingPage() {
   return (
@@ -56,20 +62,20 @@ export default function LandingPage() {
         <Section
           variant="cloud"
           eyebrow="Reviewed Thailand day trips"
-          title="Start with real experiences, not an endless catalogue."
-          lead="Each card links to a RadarScout detail page for a reviewed partner product. Current operating details stay with the booking partner."
+          title="Start with reviewed Thailand day trips across cities."
+          lead="Each card links to a RadarScout detail page for a reviewed Viator experience. Current operating details stay with the booking partner."
         >
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {featuredPartnerExperiences.map(product => (
+            {featuredViatorExperiences.map(product => (
               <ExperienceCard
                 key={product.id}
                 href={`/tours/${encodeURIComponent(product.id)}`}
-                eyebrow={product.destination}
+                eyebrow={product.city}
                 title={product.title}
                 summary={product.shortSummary}
                 tags={product.tags.slice(0, 3)}
                 imageUrl={product.imageUrl}
-                imageAlt={product.imageAlt ?? product.title}
+                imageAlt={product.title}
               />
             ))}
           </div>
@@ -107,21 +113,21 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(213,124,72,0.24),transparent_30%),linear-gradient(135deg,var(--rs-forest-900),var(--rs-forest-700))]" />
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="relative">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-sage-200">First active city flow</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-sage-200">Thailand day-trip planner</p>
               <h2 className="mt-4 max-w-3xl font-rs-display text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-white">
-                Plan a Chiang Mai elephant, food, or nature day.
+                Build a Thailand day plan from your city.
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/74">
-                Use the guided finder to choose your travel style, compare reviewed matches, and inspect the suggested day before opening a product detail.
+                Use the guided planner to choose your travel style, compare reviewed matches, and inspect the suggested day before opening a product detail.
               </p>
             </div>
             <TrackedLink
-              href={chiangMaiPlannerHref}
+              href={thailandPlannerHref}
               event="homepage_finder_entry_clicked"
-              eventProps={{ source: 'section' }}
+              eventProps={{ source: 'thailand_planner_section' }}
               className="relative inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
-              Plan with RadarScout
+              Plan my Thailand day
             </TrackedLink>
           </div>
         </Section>
