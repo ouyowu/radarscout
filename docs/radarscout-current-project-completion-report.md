@@ -29,7 +29,7 @@ The product should be evaluated as a **live MVP / closed-beta discovery funnel**
 | --- | --- | --- |
 | \`/\` | 200 | Main RadarScout entry point. |
 | \`/planner\` | 200, \`noindex,nofollow\` | Guided Planner Studio for a multi-day Thailand route concept and recommended day experiences. |
-| \`/ai-trip-planner\` | 200 | Guided Thailand trip-planning and result flow. |
+| \`/ai-trip-planner\` | 200, \`noindex,nofollow\` | Guided Thailand trip-planning and result flow. |
 | \`/chiang-mai/elephant-camp-finder\` | sitemap-listed | Existing focused Chiang Mai finder. |
 
 Production verification on 2026-07-16 confirmed that \`radarscout.io\` and \`www.radarscout.io\` point to deployment \`dpl_5mxVYaJfNLrAeJK2r9Y8rLco8bEH\`.
@@ -43,6 +43,8 @@ Production verification on 2026-07-16 confirmed that \`radarscout.io\` and \`www
 - Result cards keep the external CTA label **Check availability** and use \`rel="nofollow sponsored noopener noreferrer"\`.
 
 ### Public data safety
+
+The following safety claim applies specifically to the **public static Viator seed and Planner result path**. It is not a blanket assurance about every legacy public API route in the repository.
 
 The public static product representation intentionally contains only:
 
@@ -77,7 +79,7 @@ The shared handoff helper rejects non-HTTPS URLs and always creates a handoff wi
 4. \`/privacy-policy\`
 5. \`/terms-of-service\`
 
-\`/planner\` is confirmed \`noindex,nofollow\` and is absent from the sitemap.
+\`/planner\` is confirmed \`noindex,nofollow\` and is absent from the sitemap. The sitemap implementation is dynamic and can append reviewed tour-detail candidates; that candidate list is currently empty.
 
 ## 3. Catalog status
 
@@ -98,11 +100,15 @@ Batch 2 added products across Bangkok, Chiang Mai, Phuket, Krabi, Pattaya, and K
 - This keeps visitor requests independent of provider API latency, API quota, upstream price changes, and accidental raw-field exposure.
 - Every future product batch must remain private until it passes the same human review and safe-public-seed process.
 
-### Bókun status
+### Bókun and database-backed legacy route status
 
 The public Planner is intentionally **Viator-only**. Bókun products are not returned in current Planner search results.
 
-The repository still contains legacy Bókun-related code and routes. That is not proof that Bókun is part of the current public Planner. An independent review should nevertheless inspect every public Bókun endpoint for authorization, commercial-field exposure, and whether it is still necessary.
+This is structural rather than merely data-dependent: the Planner retrieval pipeline calls the reviewed Viator matcher and has no database-product candidate branch.
+
+The repository still contains legacy Bókun- and database-backed public routes. In the audited baseline, \`/api/bokun/products\` and \`/api/products\` select fields such as retail price, currency, and supplier title. Current handoff mapping arrays are empty, so those routes fail closed and return no publishable products today. That is a useful current safety state, but it is not a durable field-level guarantee: adding a mapping could make those fields public unless the routes are hardened or retired.
+
+The general reviewed-handoff gate also still accepts \`widgets.bokun.io\` URLs. That branch is not used by the current Viator-only Planner, but it is active legacy policy and should not be described as inert code.
 
 ## 4. Booking and commercial boundaries
 
@@ -166,13 +172,15 @@ This validates the release mechanics and core safe-handoff behavior. It does **n
 
 ### P0 — audit before broadening traffic or catalog
 
-1. **Legacy public APIs:** audit all public API routes, especially legacy Bókun and Stripe-related routes, for unauthenticated access, raw commercial data, and accidental product-flow exposure.
-2. **Provider-license compliance:** verify the exact Viator Affiliate/API content-display, image, caching, attribution, and deep-link requirements against the active affiliate agreement and API documentation.
-3. **Affiliate URL integrity:** verify every reviewed seed URL includes the correct affiliate identifier and reaches an appropriate Viator product page.
+1. **Fail-open ThaiNight feed:** \`/api/thainight/intelligence\` currently authorizes every request when \`THAINIGHT_FEED_TOKEN\` is absent and accepts a token in the query string. Its response can include match, score, keyword, and campaign data. Production environment state was not inspected, so this report does not claim a confirmed live leak; however, the code must be changed to fail closed and use a header-only secret before broadening traffic.
+2. **Legacy public product APIs:** harden or retire \`/api/bokun/products\` and \`/api/products\` so a future mapping entry cannot expose retail price, currency, supplier title, or raw-JSON-derived output without an explicit safe public contract.
+3. **Unauthenticated inquiry writes:** \`/api/booking-inquiries\` accepts traveler PII writes without an observed rate limit or CAPTCHA. Determine whether this route is still required; if so, add abuse controls before promoting it as a public contact path.
+4. **Provider-license compliance:** verify the exact Viator Affiliate/API content-display, image, caching, attribution, and deep-link requirements against the active affiliate agreement and API documentation.
+5. **Affiliate URL integrity:** verify every reviewed seed URL includes the correct affiliate identifier and reaches an appropriate Viator product page.
 
 ### P1 — improve the live MVP based on evidence
 
-1. Collect real traveler sessions and measure the funnel:
+1. Verify real traveler sessions and the already-configured funnel events:
    - homepage/planner entry;
    - completed search;
    - result-card visibility;
@@ -183,7 +191,7 @@ This validates the release mechanics and core safe-handoff behavior. It does **n
 
 ### P2 — later, only if product evidence supports it
 
-1. Controlled SEO expansion beyond the existing indexable surfaces.
+1. Controlled SEO expansion beyond the existing indexable surfaces, only after the Viator license review and safe tour-detail candidate policy are complete.
 2. A real-time provider integration, only after a separate product, commercial, and security decision.
 3. Optional paid LLM narration, only with a spending cap, abuse protection, truthful public copy, and explicit approval.
 
@@ -209,13 +217,14 @@ ef651c5ea62fa06c2b719fafc06214d45c546fb7
 Answer these questions with direct code evidence:
 
 1. Can any public route expose Viator or Bókun commercial/private fields, raw provider payloads, API keys, or internal review data?
-2. Is the public Planner truly Viator-only in every normal user path, with no legacy Bókun fallback?
-3. Are all public handoffs limited to safe external affiliate links, with no RadarScout checkout, payment, inventory, or confirmation behavior?
-4. Does the product review gate fail closed if a product lacks a verified safe public handoff?
-5. Are legacy APIs, Stripe routes, Bókun routes, and internal review routes correctly access-controlled or clearly isolated from the public product path?
-6. Is the Viator static seed validation sufficient to prevent forbidden fields and malformed/out-of-scope URLs?
-7. Are the index/noindex and sitemap decisions internally consistent?
-8. What are the three highest-leverage product changes after security/compliance findings are resolved?
+2. Does \`/api/thainight/intelligence\` fail closed when its secret is missing, and can its query-string token transport be removed without breaking an approved client?
+3. Is the public Planner truly Viator-only in every normal user path, with no legacy Bókun fallback?
+4. Are all public handoffs limited to safe external affiliate links, with no RadarScout checkout, payment, inventory, or confirmation behavior?
+5. Does the product review gate fail closed if a product lacks a verified safe public handoff?
+6. Are legacy APIs, Stripe routes, Bókun routes, and internal review routes correctly access-controlled or clearly isolated from the public product path?
+7. Is the Viator static seed validation sufficient to prevent forbidden fields and malformed/out-of-scope URLs?
+8. Are the index/noindex and sitemap decisions internally consistent?
+9. What are the three highest-leverage product changes after the confirmed security/compliance findings are resolved?
 
 Suggested verification commands:
 
@@ -240,7 +249,7 @@ RadarScout has crossed the important threshold from a prototype to a live, safe 
 
 The principal unfinished work is not “more infrastructure.” It is:
 
-1. independently auditing the public/legacy API surface and provider-license compliance;
+1. closing the fail-open ThaiNight feed and independently auditing the remaining public/legacy API surface;
 2. obtaining real traveler behavior data;
 3. improving relevance and catalog coverage from that evidence; and
 4. finishing a consistent conversion-focused frontend.
