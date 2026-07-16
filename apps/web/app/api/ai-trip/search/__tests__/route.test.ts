@@ -3,11 +3,9 @@ import { NextRequest } from 'next/server'
 
 vi.mock('server-only', () => ({}))
 
-const listMock = vi.hoisted(() => ({ listAiEligibleThailandProducts: vi.fn() }))
 const contextMock = vi.hoisted(() => ({ buildAiProductContext: vi.fn() }))
 const assertMock = vi.hoisted(() => ({ assertAllProductsThailandEligible: vi.fn((candidates: unknown[]) => candidates) }))
 
-vi.mock('@/lib/aiProducts/listAiEligibleThailandProducts', () => listMock)
 vi.mock('@/lib/aiProducts/buildAiProductContext', () => contextMock)
 vi.mock('@/lib/aiProducts/assertAllProductsThailandEligible', () => ({
   ...assertMock,
@@ -30,37 +28,17 @@ function makeRequest(body: unknown): NextRequest {
   })
 }
 
-function makeCandidate(overrides: Record<string, unknown> = {}) {
-  return {
-    id: 'prod_1',
-    title: 'Chiang Mai Elephant Sanctuary',
-    cleanedTitle: null,
-    city: 'Chiang Mai',
-    location: 'Mae Rim',
-    summary: 'Half-day ethical elephant visit.',
-    suggestedTags: ['Elephants', 'Nature'],
-    detailHref: '/tours/prod_1',
-    retailPrice: '49.00',
-    currency: 'USD',
-    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
-    ctaLabel: 'Check availability',
-    ctaRel: 'nofollow sponsored noopener noreferrer',
-    externalHandoff: true,
-    ...overrides,
-  }
-}
-
 function makeContextItem(overrides: Record<string, unknown> = {}) {
   return {
-    id: 'prod_1',
-    title: 'Chiang Mai Elephant Sanctuary',
+    id: 'viator_191442p6',
+    title: 'Doi Inthanon, Waterfall+Royal Project from Chiang Mai with Lunch',
     city: 'Chiang Mai',
-    summary: 'Half-day ethical elephant visit.',
-    tags: ['Elephants', 'Nature'],
-    detailHref: '/tours/prod_1',
-    retailPrice: '49.00',
-    currency: 'USD',
-    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
+    summary: 'A Chiang Mai day trip to Doi Inthanon, waterfalls and the Royal Project.',
+    tags: ['Nature', 'Waterfalls'],
+    detailHref: '/tours/viator_191442p6',
+    retailPrice: null,
+    currency: null,
+    ctaHref: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-191442P6?pid=P00309837',
     ctaLabel: 'Check availability',
     ctaRel: 'nofollow sponsored noopener noreferrer',
     externalHandoff: true,
@@ -70,15 +48,6 @@ function makeContextItem(overrides: Record<string, unknown> = {}) {
 
 function makeHandoffContextItem(overrides: Record<string, unknown> = {}) {
   return makeContextItem({
-    id: 'partner_cm_1232729',
-    title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
-    detailHref: '/tours/partner_cm_1232729',
-    retailPrice: null,
-    currency: null,
-    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
-    ctaLabel: 'Check availability',
-    ctaRel: 'nofollow sponsored noopener noreferrer',
-    externalHandoff: true,
     ...overrides,
   })
 }
@@ -96,7 +65,6 @@ function makeDiscoveryOnlyContextItem(overrides: Record<string, unknown> = {}) {
 describe('POST /api/ai-trip/search — API tests 1–20', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
   })
 
@@ -131,7 +99,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(res.status).not.toBe(400)
   })
 
-  it('oversized prompt (601+ chars) is rejected before calling parseTripIntent-dependent retrieval', async () => {
+  it('oversized prompt (601+ chars) is rejected before product selection', async () => {
     // Thailand in first 600 chars, Singapore appended after char 600 — must be rejected before parsing
     const thaiPart = 'Bangkok 3 days food temples '.repeat(22).slice(0, 600) // exactly 600
     const withForeignSuffix = thaiPart + ' Singapore beaches'
@@ -142,7 +110,6 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
     expect(res.status).toBe(400)
     expect(body.status).toBe('invalid_request')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
     expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
@@ -177,10 +144,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.status).toBe('invalid_request')
   })
 
-  // Test 4: Chiang Mai prompt returns eligible Chiang Mai candidates
-  it('Chiang Mai prompt calls retrieval and returns products', async () => {
-    const candidate = makeCandidate()
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([candidate])
+  // Test 4: Chiang Mai prompt returns reviewed Viator candidates.
+  it('Chiang Mai prompt returns reviewed Viator products', async () => {
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
       items: [makeContextItem()],
@@ -193,43 +158,14 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.status).toBe('ok')
     expect(body.intent.destination).toBe('Chiang Mai')
     expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('prod_1')
-    expect(body.tripSpec).toEqual({
-      destination: 'Chiang Mai',
-      durationDays: 3,
-      interests: ['elephants'],
-      pace: 'unspecified',
-      travelerType: 'unspecified',
-      groupSize: null,
-      contentScope: 'day_tours_only',
-    })
-    expect(body.itinerary).toMatchObject({
-      version: 1,
-      tripSpec: body.tripSpec,
-      days: [{
-        dayNumber: 1,
-        experience: {
-          productId: 'prod_1',
-          title: 'Chiang Mai Elephant Sanctuary',
-          handoff: {
-            label: 'Check availability',
-            href: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_1',
-            rel: 'nofollow sponsored noopener noreferrer',
-          },
-        },
-      }],
-      unfilledDayCount: 2,
-      safety: {
-        availabilityChecked: false,
-        bookingCompleted: false,
-        paymentHandled: false,
-      },
-    })
-    expect(JSON.stringify(body.itinerary)).not.toMatch(/retailPrice|currency|hotel|flight/i)
+    expect(body.products[0].id).toBe('viator_191442p6')
+    expect(body.products[0].ctaHref).toMatch(/^https:\/\/www\.viator\.com\//)
+    expect(body.products[0].retailPrice).toBeNull()
+    expect(body.products[0].currency).toBeNull()
+    expect(JSON.stringify(body.products)).not.toMatch(/hotel|flight/i)
   })
 
-  it('Chiang Mai prompt includes reviewed partner handoff candidates when matching DB products are absent', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
+  it('Chiang Mai prompt exposes only reviewed Viator handoffs', async () => {
     contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<Record<string, unknown>>) => ({
       status: 'ok',
       items: candidates.map(candidate => makeContextItem({
@@ -250,26 +186,17 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
     const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
     const body = await res.json()
-    const partnerProduct = body.products.find((product: { id: string }) => product.id === 'partner_cm_1232729')
 
     expect(res.status).toBe(200)
     expect(body.status).toBe('ok')
-    expect(partnerProduct).toMatchObject({
-      title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
-      city: 'Chiang Mai',
-      retailPrice: null,
-      currency: null,
-      ctaLabel: 'Check availability',
-      ctaRel: 'nofollow sponsored noopener noreferrer',
-      externalHandoff: true,
-    })
-    expect(partnerProduct.ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\/online-sales\//)
+    expect(body.products).not.toHaveLength(0)
+    expect(body.products.every((product: { id: string }) => product.id.startsWith('viator_'))).toBe(true)
+    expect(body.products.every((product: { ctaHref: string }) => product.ctaHref.startsWith('https://www.viator.com/'))).toBe(true)
     expect(body.meta.bookingEnabled).toBe(false)
     expect(body.meta.availabilityEnabled).toBe(false)
   })
 
   it('returns only reviewed handoff-ready products in the primary result set', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
       items: [
@@ -283,16 +210,15 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
     expect(body.status).toBe('ok')
     expect(body.products).toEqual([expect.objectContaining({
-      id: 'partner_cm_1232729',
+      id: 'viator_191442p6',
       externalHandoff: true,
       ctaLabel: 'Check availability',
       ctaRel: 'nofollow sponsored noopener noreferrer',
     })])
-    expect(body.products[0].ctaHref).toMatch(/^https:\/\/widgets\.bokun\.io\//)
+    expect(body.products[0].ctaHref).toMatch(/^https:\/\/www\.viator\.com\//)
   })
 
   it('returns an honest no-match when eligible discovery products have no reviewed handoff', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate({ city: 'Bangkok' })])
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
       items: [makeDiscoveryOnlyContextItem({ city: 'Bangkok' })],
@@ -307,9 +233,9 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
   })
 
   it.each([
-    ['non-HTTPS widget URL', { ctaHref: 'http://widgets.bokun.io/online-sales/public-channel/experience/1232729' }],
-    ['lookalike widget host', { ctaHref: 'https://widgets.bokun.io.example.com/online-sales/public-channel/experience/1232729' }],
-    ['non-widget path', { ctaHref: 'https://widgets.bokun.io/account/1232729' }],
+    ['non-HTTPS affiliate URL', { ctaHref: 'http://www.viator.com/tours/Chiang-Mai/example/d5267-191442P6?pid=P00309837' }],
+    ['lookalike affiliate host', { ctaHref: 'https://www.viator.com.example.com/tours/Chiang-Mai/example/d5267-191442P6?pid=P00309837' }],
+    ['missing affiliate id', { ctaHref: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-191442P6' }],
     ['wrong CTA label', { ctaLabel: 'Book now' }],
     ['missing sponsored rel', { ctaRel: 'noopener noreferrer' }],
   ])('rejects %s from the primary result set', async (_label, overrides) => {
@@ -325,30 +251,14 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products).toEqual([])
   })
 
-  // Test 5: Thailand-wide prompt returns eligible Thailand candidates
-  it('Thailand-wide prompt does not force city filter', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    await POST(makeRequest({ prompt: 'Thailand 5 days beaches temples' }))
-
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls
-    const firstCall = calls[0][0]
-    // "Thailand" destination should not pass city filter
-    expect(firstCall.city).toBeFalsy()
-  })
-
-  // Test 6: Singapore prompt returns unsupported_destination
-  it('Singapore prompt returns unsupported_destination without calling retrieval', async () => {
+  // Test 5: Singapore prompt returns unsupported_destination.
+  it('Singapore prompt returns unsupported_destination without product selection', async () => {
     const res = await POST(makeRequest({ prompt: 'Singapore 3 days city tour' }))
     const body = await res.json()
 
     expect(res.status).toBe(200)
     expect(body.status).toBe('unsupported_destination')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
   // Test 7: Tokyo prompt returns unsupported_destination
@@ -365,13 +275,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const body = await res.json()
 
     expect(body.status).toBe('unsupported_destination')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
-  // Test 9: Unsupported destination does not call product retrieval
-  it('unsupported destination never calls listAiEligibleThailandProducts', async () => {
+  // Test 9: Unsupported destination does not build product context.
+  it('unsupported destination never builds product context', async () => {
     await POST(makeRequest({ prompt: 'Bali 3 days' }))
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
+    expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
   // Test 10: Unsupported destination does not call model context/model function
@@ -380,23 +290,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
   })
 
-  // Test 11: City-specific searches without reviewed partners avoid discovery-only retrieval.
-  it('eligible Bangkok flow returns no-match without discovery-only retrieval', async () => {
-    const response = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
-    const body = await response.json()
-
-    expect(body.status).toBe('no_match')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
-  })
-
-  it('generic Chiang Mai trip length uses reviewed Chiang Mai candidates without DB retrieval', async () => {
+  it('generic Chiang Mai trip length uses reviewed Viator candidates', async () => {
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     const response = await POST(makeRequest({ prompt: 'Chiang Mai 3 days' }))
     const body = await response.json()
 
     expect(body.status).toBe('no_match')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
     expect(contextMock.buildAiProductContext).toHaveBeenCalledWith(expect.arrayContaining([
       expect.objectContaining({
         id: expect.stringMatching(/^viator_/),
@@ -407,9 +307,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     ]))
   })
 
-  // Test 12: Eligible flow calls buildAiProductContext without modelFn
+  // Test 8: Eligible flow calls buildAiProductContext without modelFn.
   it('eligible flow calls buildAiProductContext without modelFn', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     await POST(makeRequest({ prompt: 'Thailand 3 days' }))
@@ -422,9 +321,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(callArgs).toHaveLength(1) // only candidates, no options with modelFn
   })
 
-  // Test 13: No eligible products returns no_match
+  // Test 9: Context without a reviewed handoff returns no_match.
   it('no eligible products returns no_match status', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     const res = await POST(makeRequest({ prompt: 'Phuket 3 days' }))
@@ -434,194 +332,37 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products).toEqual([])
   })
 
-  // Test 14: Interest-specific retrieval tries safe aliases before returning no_match.
-  it('interest search tries singular aliases before returning products', async () => {
-    listMock.listAiEligibleThailandProducts
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([makeCandidate()])
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants cooking' }))
-    const body = await res.json()
-
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls[0].search).toBe('elephants')
-    expect(calls[1].search).toBe('cooking')
-    expect(calls[2].search).toBe('elephant')
-    expect(calls.every(options => options.search)).toBe(true)
-    expect(body.status).toBe('ok')
-  })
-
-  it('multi-interest search reaches later interests before alias budget is exhausted', async () => {
-    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
-      Promise.resolve(options.search === 'elephant' ? [makeCandidate()] : []),
-    )
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants temples food' }))
-    const body = await res.json()
-
-    const searches = listMock.listAiEligibleThailandProducts.mock.calls
-      .map(call => call[0].search)
-      .filter(Boolean)
-
-    expect(searches).toContain('food')
-    expect(searches).toContain('temples')
-    expect(searches).toContain('elephants')
-    expect(searches).toContain('elephant')
-    expect(body.status).toBe('ok')
-    expect(body.products).toHaveLength(1)
-  })
-
-  it('starts independent interest lookups concurrently when no reviewed partner match exists', async () => {
-    const resolvers: Array<(value: ReturnType<typeof makeCandidate>[]) => void> = []
-    listMock.listAiEligibleThailandProducts.mockImplementation(() =>
-      new Promise(resolve => resolvers.push(resolve)),
-    )
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    const responsePromise = POST(makeRequest({ prompt: 'Thailand 3 days beaches temples' }))
-
-    await vi.waitFor(() => {
-      expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(6)
-    })
-
-    resolvers.forEach((resolve, index) => resolve(index === 0 ? [makeCandidate()] : []))
-
-    const response = await responsePromise
-    expect(response.status).toBe(200)
-  })
-
-  it('multi-interest results keep later-interest matches when the first parsed interest fills the candidate limit', async () => {
-    const foodCandidates = Array.from({ length: 6 }, (_, index) =>
-      makeCandidate({
-        id: `food-${index + 1}`,
-        title: `Chiang Mai Local Food Walk ${index + 1}`,
-        suggestedTags: ['Food'],
-      }),
-    )
-    const elephantCandidate = makeCandidate({
-      id: 'elephant-1',
-      title: 'Chiang Mai Elephant Care',
-      suggestedTags: ['Elephants'],
-    })
-
-    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) => {
-      if (options.search === 'food') return Promise.resolve(foodCandidates)
-      if (options.search === 'elephants') return Promise.resolve([elephantCandidate])
-      return Promise.resolve([])
-    })
-    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
+  it('does not inject legacy Bókun partner candidates for a Chiang Mai request', async () => {
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<Record<string, unknown>>) => ({
       status: 'ok',
       items: candidates.map(candidate => makeContextItem({
         id: candidate.id,
         title: candidate.title,
+        city: candidate.city,
+        summary: candidate.summary,
+        tags: candidate.suggestedTags,
+        detailHref: candidate.detailHref,
+        ctaHref: candidate.ctaHref,
+        ctaLabel: candidate.ctaLabel,
+        ctaRel: candidate.ctaRel,
+        externalHandoff: candidate.externalHandoff,
       })),
     }))
 
-    const res = await POST(makeRequest({ prompt: 'Thailand 3 days elephants food' }))
-    const body = await res.json()
-
-    const searches = listMock.listAiEligibleThailandProducts.mock.calls
-      .map(call => call[0].search)
-      .filter(Boolean)
-    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
-      .map((candidate: { id: string }) => candidate.id)
-
-    expect(res.status).toBe(200)
-    expect(body.status).toBe('ok')
-    expect(searches).toContain('elephants')
-    expect(rankedIds).toContain('elephant-1')
-    expect(rankedIds.slice(0, 3)).toContain('elephant-1')
-  })
-
-  it('interest searches fall back to destination-only products when all terms miss', async () => {
-    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
-      Promise.resolve(options.search ? [] : [makeCandidate()]),
-    )
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    const res = await POST(makeRequest({ prompt: 'Thailand anime' }))
-    const body = await res.json()
-
-    expect(body.status).toBe('ok')
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls.length).toBeGreaterThan(1)
-    expect(calls.at(-1)).toEqual({ city: undefined, take: expect.any(Number) })
-  })
-
-  it.each([
-    'Chiang Mai elephants',
-    'Gentle elephant day in Chiang Mai',
-  ])('Chiang Mai interest prompt can use reviewed partner matches without a combined destination fallback: %s', async prompt => {
-    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
-      Promise.resolve(options.search ? [] : [makeCandidate()]),
-    )
-    contextMock.buildAiProductContext.mockResolvedValue({
-      status: 'ok',
-      items: [makeContextItem()],
-    })
-
-    const res = await POST(makeRequest({ prompt }))
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai temples and waterfalls' }))
     const body = await res.json()
 
     expect(res.status).toBe(200)
     expect(body.status).toBe('ok')
-    expect(body.intent.destination).toBe('Chiang Mai')
-    expect(body.intent.interests).toContain('elephants')
-
-    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
-      .map((candidate: { id: string }) => candidate.id)
-    expect(rankedIds.some((id: string) => id.startsWith('partner_cm_'))).toBe(true)
-
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
-  })
-
-  it.each([
-    ['Chiang Mai Bigboy half day morning elephant', 'partner_cm_1236811'],
-    ['Chiang Mai elephant bamboo rafting nature adventure', 'partner_cm_1236830'],
-    ['Chiang Mai Inthanon Heaven Trail elephant nature', 'partner_cm_1232798'],
-    ['Chiang Mai afternoon half day elephant sanctuary', 'partner_cm_1232731'],
-  ])('uses the full prompt to prioritize specific reviewed partner products: %s', async (prompt, expectedFirstId) => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
-    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<{ id: string; title: string }>) => ({
-      status: 'ok',
-      items: candidates.map(candidate => makeContextItem({
-        id: candidate.id,
-        title: candidate.title,
-      })),
-    }))
-
-    const res = await POST(makeRequest({ prompt }))
-    const body = await res.json()
-    const rankedIds = contextMock.buildAiProductContext.mock.calls[0][0]
-      .map((candidate: { id: string }) => candidate.id)
-
-    expect(res.status).toBe(200)
-    expect(body.status).toBe('ok')
-    expect(rankedIds[0]).toBe(expectedFirstId)
+    expect(body.products.every((product: { id: string }) => product.id.startsWith('viator_'))).toBe(true)
+    expect(JSON.stringify(body.products)).not.toContain('bokun.io')
+    expect(JSON.stringify(body.products)).not.toContain('partner_cm_')
   })
 
   it('negated elephant prompt does not search elephant aliases or expose elephants as a positive interest', async () => {
-    listMock.listAiEligibleThailandProducts.mockImplementation((options: { search?: string }) =>
-      Promise.resolve(options.search === 'temples' ? [makeCandidate({ title: 'Chiang Mai Temple Walk' })] : []),
-    )
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
-      items: [makeContextItem({ title: 'Chiang Mai Temple Walk' })],
+      items: [makeContextItem({ title: 'Thailand Temple Walk' })],
     })
 
     const res = await POST(makeRequest({ prompt: 'Thailand temples night market no elephant relaxed evening' }))
@@ -633,15 +374,9 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.intent.interests).toEqual(expect.arrayContaining(['temples', 'markets']))
     expect(body.intent.interests).not.toContain('elephants')
 
-    const searches = listMock.listAiEligibleThailandProducts.mock.calls
-      .map(call => call[0].search)
-      .filter(Boolean)
-    expect(searches).toContain('temples')
-    expect(searches).not.toContain('elephants')
-    expect(searches).not.toContain('elephant')
   })
 
-  it('city-specific avoid-elephants prompt returns no-match without broad partner or DB fallback', async () => {
+  it('city-specific avoid-elephants prompt does not fall back to a legacy source', async () => {
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     const response = await POST(makeRequest({
@@ -650,13 +385,11 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const body = await response.json()
 
     expect(body.status).toBe('no_match')
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
     expect(contextMock.buildAiProductContext).toHaveBeenCalledWith([])
   })
 
   // Test 15: Response contains no rawJson or eligibility internals
   it('ok response contains no rawJson or eligibility internals', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
       items: [makeContextItem()],
@@ -676,7 +409,6 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
   // Test 16: Response contains no prompt/provider/secrets/commission/payment terms
   it('ok response contains no prompt internals, secrets, or payment terms', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
       items: [makeContextItem()],
@@ -696,23 +428,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(serialized).not.toContain('apiKey')
   })
 
-  // Test 17: Maximum 12 products
-  it('retrieval take is capped at maximum', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
-    await POST(makeRequest({ prompt: 'Thailand 3 days' }))
-    const firstCall = listMock.listAiEligibleThailandProducts.mock.calls[0][0]
-    expect(firstCall.take).toBeLessThanOrEqual(12)
-    expect(firstCall.take).toBeGreaterThanOrEqual(1)
-  })
-
-  // Test 18: No duplicate IDs (deferred to retrieval layer — list function guarantees this)
+  // Test 17: No duplicate IDs.
   it('response products have no duplicate IDs', async () => {
     const items = [
       makeContextItem({ id: 'p1' }),
       makeContextItem({ id: 'p2' }),
       makeContextItem({ id: 'p3' }),
     ]
-    listMock.listAiEligibleThailandProducts.mockResolvedValue(items.map(i => makeCandidate({ id: i.id })))
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items })
 
     const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
@@ -722,14 +444,13 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  // Test 19: Stable output order (preserves retrieval order)
+  // Test 18: Stable output order.
   it('response preserves the order returned by buildAiProductContext', async () => {
     const items = [
       makeContextItem({ id: 'a', title: 'A' }),
       makeContextItem({ id: 'b', title: 'B' }),
       makeContextItem({ id: 'c', title: 'C' }),
     ]
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items })
 
     const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
@@ -738,9 +459,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products.map((p: { id: string }) => p.id)).toEqual(['a', 'b', 'c'])
   })
 
-  // Test 20: Capability flags are correct
+  // Test 19: Capability flags are correct.
   it('response meta has correct capability flags', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
@@ -770,7 +490,6 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
   it('IneligibleProductInContextError from buildAiProductContext causes 500 error response (not ineligible product exposure)', async () => {
     const { IneligibleProductInContextError } = await import('@/lib/aiProducts/assertAllProductsThailandEligible')
 
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockRejectedValue(
       new IneligibleProductInContextError([{ productId: 'foreign_prod', reasons: ['foreign signal'] }]),
     )
@@ -786,54 +505,20 @@ describe('POST /api/ai-trip/search — security/regression tests 33–34', () =>
     expect(body.products).toEqual([])
   })
 
-  // Test 34: buildAiProductContext runtime guard is called on every eligible response
+  // Test 34: buildAiProductContext runtime guard is called on every eligible response.
   it('buildAiProductContext is always called after eligible candidate retrieval', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     await POST(makeRequest({ prompt: 'Thailand 3 days' }))
 
     expect(contextMock.buildAiProductContext).toHaveBeenCalledOnce()
     expect(contextMock.buildAiProductContext).toHaveBeenCalledWith(
-      expect.arrayContaining([expect.objectContaining({ id: 'prod_1' })]),
+      expect.arrayContaining([expect.objectContaining({ id: expect.stringMatching(/^viator_/) })]),
     )
-  })
-
-  // No application-level timeout: slow retrieval that eventually resolves must return success
-  it('slow retrieval that eventually resolves returns ok status (no application-level timeout)', async () => {
-    listMock.listAiEligibleThailandProducts.mockImplementation(
-      () => new Promise(resolve => setTimeout(() => resolve([makeCandidate()]), 50)),
-    )
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
-
-    const res = await POST(makeRequest({ prompt: 'Thailand 3 days' }))
-    const body = await res.json()
-
-    expect(res.status).toBe(200)
-    expect(body.status).toBe('ok')
-    expect(body.products).toHaveLength(1)
-  })
-
-  // Actual retrieval rejection returns safe generic 500 (no partial products, no internal error detail)
-  it('retrieval rejection returns safe generic 500 with empty products', async () => {
-    listMock.listAiEligibleThailandProducts.mockRejectedValue(new Error('DB connection failed'))
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
-
-    const res = await POST(makeRequest({ prompt: 'Thailand 3 days' }))
-    const body = await res.json()
-
-    expect(res.status).toBe(500)
-    expect(body.status).toBe('error')
-    expect(body.products).toEqual([])
-    // Internal error must not be surfaced in the response
-    const serialized = JSON.stringify(body)
-    expect(serialized).not.toContain('DB connection failed')
-    expect(serialized).not.toContain('Error')
   })
 
   // Telemetry: ok response does not expose timing internals in the JSON body
   it('ok response does not expose timing or telemetry fields in the public JSON', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     const res = await POST(makeRequest({ prompt: 'Bangkok 3 days' }))
@@ -867,60 +552,19 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     return JSON.parse(call[1] as string)
   }
 
-  it('interest primary hit: fallbackUsed=false, retrieval stays interest-scoped', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
-
-    await POST(makeRequest({ prompt: 'Thailand 3 days elephants' }))
+  it('city-specific Viator results do not report a fallback', async () => {
+    await POST(makeRequest({ prompt: 'Chiang Mai 3 days' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls.length).toBeGreaterThan(0)
-    expect(calls.every(options => options.search)).toBe(true)
   })
 
-  it('interest primary miss with successful alias: fallbackUsed=false and no destination fallback', async () => {
-    listMock.listAiEligibleThailandProducts
-      .mockResolvedValueOnce([])              // primary miss
-      .mockResolvedValueOnce([])              // next interest primary miss
-      .mockResolvedValueOnce([makeCandidate()])  // alias hit
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
-
-    await POST(makeRequest({ prompt: 'Thailand 3 days elephants cooking' }))
-
-    expect(getSearchLog().fallbackUsed).toBe(false)
-    const calls = listMock.listAiEligibleThailandProducts.mock.calls.map(call => call[0])
-    expect(calls[0].search).toBe('elephants')
-    expect(calls[1].search).toBe('cooking')
-    expect(calls[2].search).toBe('elephant')
-    expect(calls.every(options => options.search)).toBe(true)
-  })
-
-  it('interest primary miss with reviewed partner aliases: fallbackUsed=false and skips destination fallback', async () => {
-    listMock.listAiEligibleThailandProducts
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([makeCandidate()])
-    contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
-
-    await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
-
-    expect(getSearchLog().fallbackUsed).toBe(false)
-    expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
-  })
-
-  it('no-interest query: fallbackUsed=false, retrieval called once', async () => {
-    // "Thailand 3 days" has no interest keywords → interests=[] → one fallback search
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([])
-
+  it('a Thailand-wide request with no interests does not report a fallback', async () => {
     await POST(makeRequest({ prompt: 'Thailand 3 days' }))
 
     expect(getSearchLog().fallbackUsed).toBe(false)
-    expect(listMock.listAiEligibleThailandProducts).toHaveBeenCalledTimes(1)
   })
 
   it('telemetry contains only approved keys (no raw destination, city, prompt, ids, titles, reasons)', async () => {
-    listMock.listAiEligibleThailandProducts.mockResolvedValue([makeCandidate()])
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'ok', items: [makeContextItem()] })
 
     await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
@@ -934,8 +578,8 @@ describe('POST /api/ai-trip/search — fallbackUsed telemetry', () => {
     const logStr = JSON.stringify(log)
     expect(logStr).not.toContain('Chiang Mai')      // no raw city
     expect(logStr).not.toContain('elephants')        // no raw prompt/interests
-    expect(logStr).not.toContain('prod_1')           // no product IDs
-    expect(logStr).not.toContain('Chiang Mai Elephant Sanctuary')  // no titles
+    expect(logStr).not.toContain('viator_191442p6')  // no product IDs
+    expect(logStr).not.toContain('Doi Inthanon')     // no titles
     expect(logStr).not.toContain('rawJson')          // no rawJson
     expect(logStr).not.toContain('"eligible"')       // no bare eligibility status key
     // destinationCategory must be one of the allowed values only
