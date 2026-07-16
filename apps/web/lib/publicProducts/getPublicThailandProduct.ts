@@ -6,9 +6,11 @@ import { evaluateThailandProductEligibility } from '@/lib/productEligibility/tha
 import { getReviewedEnrichmentByProductId, type ReviewedEnrichmentOutput } from '@/lib/reviewedEnrichmentReader'
 import {
   type PublicBookingPartnerHandoff,
+  validatePublicBookingPartnerHandoff,
 } from './bookingPartnerHandoff'
 import { resolveReviewedProductHandoff } from './ownerManagedProductHandoffMappings'
 import { isDatabaseProductPublishReady } from './publicProductReviewGate'
+import { loadReviewedViatorProducts } from '@/lib/viator/reviewedViatorProducts'
 
 export type PublicThailandProduct = {
   id: string
@@ -122,11 +124,64 @@ function partnerSeedProductDetail(id: string): PublicThailandProductDetailResult
   }
 }
 
+function reviewedViatorProductDetail(id: string): PublicThailandProductDetailResult | null {
+  const product = loadReviewedViatorProducts().find(candidate => candidate.id === id)
+  if (!product) return null
+
+  const bookingPartnerHandoff = validatePublicBookingPartnerHandoff({
+    href: product.productUrl,
+    source: 'operator_verified_public_link',
+    verifiedBy: 'operator_manual_review',
+  })
+
+  if (!bookingPartnerHandoff) return { status: 'not-found' }
+
+  return {
+    status: 'found',
+    product: {
+      id: product.id,
+      title: product.title,
+      destination: product.city,
+      city: product.city,
+      location: product.city,
+      imageUrl: product.imageUrl,
+      imageGalleryUrls: [product.imageUrl],
+      summary: product.shortSummary,
+      description: product.shortSummary,
+      retailPrice: null,
+      currency: null,
+      detailHref: `/tours/${encodeURIComponent(product.id)}`,
+      facts: {
+        duration: null,
+        meetingPoint: null,
+        pickupAvailable: null,
+        cancellationPolicy: null,
+      },
+      reviewedEnrichment: {
+        cleanedTitle: product.title,
+        shortSummary: product.shortSummary,
+        suggestedTags: [...product.tags],
+        seoTitle: null,
+        seoDescription: null,
+        reviewedBy: 'operator_manual_review',
+        reviewedAt: product.reviewedAt,
+      },
+      bookingPartnerHandoff,
+    },
+  }
+}
+
 export async function loadPublicThailandProductDetail(id: string): Promise<PublicThailandProductDetailResult> {
   const normalizedId = id.trim()
   if (!normalizedId) return { status: 'not-found' }
 
   try {
+    const viatorDetail = reviewedViatorProductDetail(normalizedId)
+    if (viatorDetail) return viatorDetail
+
+    const partnerDetail = partnerSeedProductDetail(normalizedId)
+    if (partnerDetail.status === 'found') return partnerDetail
+
     const product = await db.bokunProduct.findFirst({
       where: {
         id: normalizedId,
@@ -149,7 +204,7 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
       },
     })
 
-    if (!product) return partnerSeedProductDetail(normalizedId)
+    if (!product) return { status: 'not-found' }
 
     const eligibility = evaluateThailandProductEligibility({
       title: product.title,
