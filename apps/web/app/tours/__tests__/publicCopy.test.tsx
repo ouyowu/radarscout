@@ -41,14 +41,6 @@ function expectSafeTourCopy(markup: string) {
   }
 }
 
-function mockFetchJson(payload: unknown) {
-  vi.stubGlobal('fetch', vi.fn(async () => ({
-    ok: true,
-    status: 200,
-    json: async () => payload,
-  })))
-}
-
 function makeTourDetailProduct(overrides: Record<string, unknown> = {}) {
   return {
     id: 'tour_state_test',
@@ -84,38 +76,21 @@ describe('tour public copy safety', () => {
   })
 
   it('renders /tours without tourist-facing backend, rate, payment, or availability claims', async () => {
-    mockFetchJson({
-      products: [
-        {
-          id: 'tour_without_price',
-          title: 'Chiang Mai Elephant Care',
-          destination: 'Chiang Mai',
-          summary: null,
-          imageUrl: null,
-          retailPrice: null,
-          currency: null,
-          tags: [],
-          detailHref: '/tours/tour_without_price',
-        },
-      ],
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        count: 1,
-      },
-    })
-
     const element = await ToursExperienceDiscoveryPage({})
     const markup = renderToStaticMarkup(element)
 
     expect(markup).not.toContain('Price not listed')
     expect(markup).not.toContain('All prices')
     expect(markup).not.toContain('Has price')
-    expect(markup).toContain('trusted partner records')
+    expect(markup).toContain('reviewed Viator experience records')
     expect(markup).toContain('Plan my day')
     expect(markup).toContain('Review details before partner handoff')
+    expect(markup).toContain('Plan for')
+    expect(markup).toContain('It shapes the plan, not an unreviewed product-suitability claim.')
+    expect(markup).toContain('Build a route')
+    expect(markup).toContain('Choose a trip length to continue with a day-by-day route in the planner.')
+    expect(markup).toContain('Experience results pages')
+    expect(markup).toContain('Page 1 of')
     expect(markup).toContain('Why are some cities not shown yet?')
     expect(markup).toContain('Coverage expands city by city')
     expect(markup).not.toContain('Japan, France, and other selected destinations remain planning-only.')
@@ -129,38 +104,15 @@ describe('tour public copy safety', () => {
   })
 
   it('keeps /tours listing cards safe without exposing price values', async () => {
-    mockFetchJson({
-      products: [
-        {
-          id: 'tour_with_source_image_and_price',
-          title: 'Chiang Mai Food Walk',
-          destination: 'Chiang Mai',
-          summary: 'A reviewed local food experience record.',
-          imageUrl: 'https://cdn.example.com/source-image.jpg',
-          retailPrice: '1200',
-          currency: 'THB',
-          tags: ['Food'],
-          detailHref: '/tours/tour_with_source_image_and_price',
-        },
-      ],
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        count: 1,
-      },
-    })
-
     const element = await ToursExperienceDiscoveryPage({})
     const markup = renderToStaticMarkup(element)
 
-    expect(markup).toContain('Chiang Mai Food Walk')
+    expect(markup).toContain('href="/tours/viator_')
     expect(markup).toContain('Review details before partner handoff')
-    expect(markup).toContain('https://cdn.example.com/source-image.jpg')
-    expect(markup).not.toContain('THB 1200')
+    expect(markup).toContain('https://media-cdn.tripadvisor.com/')
+    expect(markup).not.toContain('THB ')
     expect(markup).not.toContain('Plan with AI')
-    expect(markup.indexOf('City')).toBeLessThan(markup.indexOf('Explore by interest'))
+    expect(markup.indexOf('Day length')).toBeLessThan(markup.indexOf('Explore by interest'))
     expectSafeTourCopy(markup)
   })
 
