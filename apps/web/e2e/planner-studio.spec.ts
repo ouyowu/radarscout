@@ -108,7 +108,8 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
 
-test('guided studio labels optional streamed narration as AI-generated display text', async ({ page }) => {
+test('guided studio shows a local route overview without calling paid narration', async ({ page }) => {
+  let narrationRequests = 0
   await page.route('/api/ai-trip/search', async route => {
     await route.fulfill({
       status: 200,
@@ -117,19 +118,18 @@ test('guided studio labels optional streamed narration as AI-generated display t
     })
   })
   await page.route('/api/ai-trip/narrate', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'text/plain; charset=utf-8',
-      body: 'Day 1: Compare the reviewed Chiang Mai experience at a relaxed pace.',
-    })
+    narrationRequests += 1
+    await route.abort()
   })
 
   await page.goto('/planner')
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
-  await expect(page.getByText('Route story · AI-generated text')).toBeVisible()
-  await expect(page.getByText(/Compare the reviewed Chiang Mai experience/)).toBeVisible()
-  await expect(page.getByText(/verify every detail on each product page/i)).toBeVisible()
+  await expect(page.getByText('Route overview · built locally')).toBeVisible()
+  await expect(page.getByText(/currently includes 1 reviewed day-tour match/i)).toBeVisible()
+  await expect(page.getByText(/2 days remain unfilled because RadarScout only uses reviewed matches/i)).toBeVisible()
+  await expect(page.getByText('Route story · AI-generated text')).toHaveCount(0)
+  expect(narrationRequests).toBe(0)
 })
 
 test('guided studio accepts duration before destination without repeating the destination question', async ({ page }) => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import { DayTripItineraryPanel } from '../ai-trip-planner/DayTripItineraryPanel'
@@ -13,6 +13,7 @@ import {
   SKIP_INTERESTS_CHIP,
   summarizeUnderstoodIntent,
 } from './plannerConversation'
+import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
 
 type StudioMessage = {
   id: number
@@ -93,69 +94,15 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
   const [awaitingInterests, setAwaitingInterests] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
-  const [narration, setNarration] = useState<{ text: string; done: boolean } | null>(null)
-  const narrationAbortRef = useRef<AbortController | null>(null)
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [messages, isSearching, narration])
-
-  const stopNarration = useCallback(() => {
-    narrationAbortRef.current?.abort()
-    narrationAbortRef.current = null
-  }, [])
-
-  useEffect(() => stopNarration, [stopNarration])
-
-  // Additive extra: streams display-only narrative text for the itinerary the
-  // guarded search already returned. Disabled server-side unless a model key
-  // is configured; every failure path degrades silently to no narration.
-  async function streamNarration(parts: string[]) {
-    stopNarration()
-    const controller = new AbortController()
-    narrationAbortRef.current = controller
-    setNarration({ text: '', done: false })
-
-    try {
-      const res = await fetch('/api/ai-trip/narrate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: mergeTripIdea(parts) }),
-        signal: controller.signal,
-      })
-
-      if (!res.ok || !res.body) {
-        setNarration(null)
-        return
-      }
-
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let text = ''
-
-      for (;;) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        text += decoder.decode(value, { stream: true })
-        setNarration({ text, done: false })
-      }
-
-      text += decoder.decode()
-      setNarration(text.trim() ? { text, done: true } : null)
-    } catch {
-      if (!controller.signal.aborted) setNarration(null)
-    } finally {
-      if (narrationAbortRef.current === controller) narrationAbortRef.current = null
-    }
-  }
+  }, [messages, isSearching, searchState])
 
   async function runSearch(parts: string[]) {
     setIsSearching(true)
     setSearchState(null)
-    stopNarration()
-    setNarration(null)
 
     try {
       const res = await fetch('/api/ai-trip/search', {
@@ -166,10 +113,6 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
       const data = await res.json() as AiTripSearchResponse
       setSearchState(data)
       setMessages(current => [...current, buildResultGuideMessage(data)])
-
-      if (data.status === 'ok' && data.itinerary) {
-        void streamNarration(parts)
-      }
     } catch {
       setMessages(current => [
         ...current,
@@ -242,8 +185,6 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
   }
 
   function handleStartOver() {
-    stopNarration()
-    setNarration(null)
     setMessages([createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS })])
     setIdeaParts([])
     setInterestsSkipped(false)
@@ -255,6 +196,7 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
   const currentIdea = mergeTripIdea(ideaParts)
+  const routeOverview = itinerary ? buildDeterministicRouteOverview(itinerary) : null
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
@@ -342,21 +284,15 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
               </p>
             </div>
           ) : null}
-          {narration ? (
+          {routeOverview ? (
             <div className="flex justify-start">
               <div className="max-w-[85%] rounded-[1.25rem] rounded-bl-md border border-[#d8eadf] bg-white px-4 py-3">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#8a4b25]">
-                  Route story · AI-generated text
+                  Route overview · built locally
                 </p>
                 <p className="mt-2 whitespace-pre-wrap text-sm font-semibold leading-6 text-[#1f2937]">
-                  {narration.text}
-                  {!narration.done ? <span className="ml-0.5 inline-block animate-pulse">▍</span> : null}
+                  {routeOverview}
                 </p>
-                {narration.done ? (
-                  <p className="mt-2 text-xs font-semibold leading-5 text-[#5a6670]">
-                    Generated wording for the reviewed route above — verify every detail on each product page.
-                  </p>
-                ) : null}
               </div>
             </div>
           ) : null}
