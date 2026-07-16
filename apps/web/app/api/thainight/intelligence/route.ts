@@ -58,9 +58,9 @@ type ThaiNightPayloadItem = {
 
 function isAuthorized(request: NextRequest): boolean {
   const token = process.env.THAINIGHT_FEED_TOKEN
-  if (!token) return true
-  return request.nextUrl.searchParams.get('token') === token ||
-    request.headers.get('x-thainight-token') === token
+  if (!token) return false
+
+  return request.headers.get('x-thainight-token') === token
 }
 
 function escapeXml(value: string): string {
