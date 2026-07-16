@@ -165,6 +165,10 @@ test('parses only an approved Thailand city and bounded private-review page', ()
     ok: true,
     input: { cityKey: 'khao-sok', count: 3, start: 1 },
   })
+  assert.deepEqual(parsePreviewArgs(['--city', 'Mae Hong Son', '--count', '5']), {
+    ok: true,
+    input: { cityKey: 'mae-hong-son', count: 5, start: 1 },
+  })
   assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--count', '21']), { ok: false, reason: 'invalid_count' })
   assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--start', '101']), { ok: false, reason: 'invalid_start' })
   assert.deepEqual(parsePreviewArgs(['--count', '5']), { ok: false, reason: 'invalid_city' })
