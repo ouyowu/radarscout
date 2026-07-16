@@ -98,10 +98,11 @@ RadarScout exposes partner feeds for thainight:
   - `?category=scam`
   - `?limit=25`
 
-If `THAINIGHT_FEED_TOKEN` is set, thainight must send either:
+The feed requires `THAINIGHT_FEED_TOKEN` to be configured. thainight must send it in the request header:
 
-- query parameter: `?token=...`
 - header: `x-thainight-token: ...`
+
+Query-string tokens are intentionally not accepted because URLs can be logged.
 
 ## Content loop
 
