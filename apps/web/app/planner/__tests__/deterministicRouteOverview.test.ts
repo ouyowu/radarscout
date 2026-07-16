@@ -47,4 +47,25 @@ describe('deterministic route overview', () => {
       'Your 3-day Chiang Mai route currently includes 1 reviewed day-tour match: Day 1, Gentle elephant care day in Chiang Mai. 2 days remain unfilled because RadarScout only uses reviewed matches. Review each product page for current details.',
     )
   })
+
+  it('uses the correct plural form for multiple reviewed day-tour matches', () => {
+    const twoDayItinerary: DayTripItinerary = {
+      ...itinerary,
+      days: [
+        ...itinerary.days,
+        {
+          ...itinerary.days[0],
+          dayNumber: 2,
+        },
+      ],
+      unfilledDayCount: 1,
+    }
+
+    expect(buildDeterministicRouteOverview(twoDayItinerary)).toContain(
+      '2 reviewed day-tour matches:',
+    )
+    expect(buildDeterministicRouteOverview(twoDayItinerary)).toContain(
+      '1 day remains unfilled',
+    )
+  })
 })
