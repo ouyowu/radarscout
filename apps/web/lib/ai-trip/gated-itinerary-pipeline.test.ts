@@ -26,10 +26,10 @@ function handoffProduct(ctaHref: string) {
 }
 
 describe('isReviewedHandoffReadyProduct', () => {
-  it('keeps reviewed Bókun widget handoffs eligible', () => {
+  it('rejects legacy Bókun widget handoffs from the public Viator Planner', () => {
     expect(isReviewedHandoffReadyProduct(handoffProduct(
       'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
-    ))).toBe(true)
+    ))).toBe(false)
   })
 
   it('allows only reviewed Viator affiliate handoffs with an affiliate id', () => {
@@ -75,6 +75,22 @@ describe('isReviewedHandoffReadyProduct', () => {
         ['availability', 'inventory', 'reviews', 'rating', 'raw', 'supplier'].includes(key),
       ),
     )).toBe(true)
+    expect(result.itinerary).toEqual(expect.objectContaining({
+      tripSpec: expect.objectContaining({ destination: 'Phuket', durationDays: 3 }),
+      days: expect.arrayContaining([
+        expect.objectContaining({
+          experience: expect.objectContaining({
+            handoff: expect.objectContaining({
+              label: 'Check availability',
+              rel: 'nofollow sponsored noopener noreferrer',
+            }),
+          }),
+        }),
+      ]),
+    }))
+    expect(result.itinerary?.days).toHaveLength(3)
+    expect(result.itinerary?.unfilledDayCount).toBe(0)
+    expect(result.itinerary?.days.every(day => day.experience.handoff.href.startsWith('https://www.viator.com/'))).toBe(true)
   })
 
   it('uses only reviewed Viator candidates for the public Planner', async () => {

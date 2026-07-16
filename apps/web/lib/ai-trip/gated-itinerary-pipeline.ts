@@ -63,16 +63,7 @@ export function isReviewedHandoffReadyProduct(product: AiProductContextItem): bo
     return false
   }
 
-  try {
-    const url = new URL(product.ctaHref)
-    const isBokunWidget = url.protocol === 'https:' &&
-      url.hostname === 'widgets.bokun.io' &&
-      url.pathname.startsWith('/online-sales/')
-
-    return isBokunWidget || isReviewedViatorAffiliateUrl(product.ctaHref)
-  } catch {
-    return false
-  }
+  return isReviewedViatorAffiliateUrl(product.ctaHref)
 }
 
 function isCityDestination(destination: string): boolean {
