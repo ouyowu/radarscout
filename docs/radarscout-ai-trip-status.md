@@ -327,6 +327,10 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-16 — `TD-RADARSCOUT-VIATOR-REVIEWED-PUBLIC-INTEGRATION-1`: PR #534
+  (`010133d`) routes the 16 already reviewed static Viator Thailand products
+  through deterministic Planner matching; full QA and Hermes red-line review
+  passed; result: PR open, awaiting human merge.
 - 2026-07-09 — `TD-RADARSCOUT-FE-HOME-PROMPT-HERO`: branch
   `codex/td-radarscout-fe-home-prompt-hero` prepared prompt-first homepage test
   alignment and gate evidence; result: PR pending, awaiting human merge.

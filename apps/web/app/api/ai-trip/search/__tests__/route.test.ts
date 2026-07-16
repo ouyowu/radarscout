@@ -389,7 +389,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
   })
 
-  it('generic Chiang Mai trip length does not expose unrelated reviewed products', async () => {
+  it('generic Chiang Mai trip length uses reviewed Chiang Mai candidates without DB retrieval', async () => {
     contextMock.buildAiProductContext.mockResolvedValue({ status: 'no_match' })
 
     const response = await POST(makeRequest({ prompt: 'Chiang Mai 3 days' }))
@@ -397,7 +397,14 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
     expect(body.status).toBe('no_match')
     expect(listMock.listAiEligibleThailandProducts).not.toHaveBeenCalled()
-    expect(contextMock.buildAiProductContext).toHaveBeenCalledWith([])
+    expect(contextMock.buildAiProductContext).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.stringMatching(/^viator_/),
+        city: 'Chiang Mai',
+        retailPrice: null,
+        currency: null,
+      }),
+    ]))
   })
 
   // Test 12: Eligible flow calls buildAiProductContext without modelFn

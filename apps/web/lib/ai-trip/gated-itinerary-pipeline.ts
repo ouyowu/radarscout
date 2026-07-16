@@ -12,6 +12,10 @@ import {
   type AiProductContextItem,
 } from '@/lib/aiProducts/buildAiProductContext'
 import { listMatchingPartnerProductCandidates } from '@/lib/partnerProducts/matching'
+import {
+  isReviewedViatorAffiliateUrl,
+  listMatchingReviewedViatorProductCandidates,
+} from '@/lib/viator/reviewedViatorMatching'
 
 // Shared guarded retrieval pipeline for AI-trip surfaces. Every consumer gets
 // the same review gate: only reviewed products with a verified public booking
@@ -65,9 +69,11 @@ export function isReviewedHandoffReadyProduct(product: AiProductContextItem): bo
 
   try {
     const url = new URL(product.ctaHref)
-    return url.protocol === 'https:' &&
+    const isBokunWidget = url.protocol === 'https:' &&
       url.hostname === 'widgets.bokun.io' &&
       url.pathname.startsWith('/online-sales/')
+
+    return isBokunWidget || isReviewedViatorAffiliateUrl(product.ctaHref)
   } catch {
     return false
   }
@@ -159,15 +165,23 @@ export async function queryEligibleCandidates(
   const promptPartnerMatches = promptSearch
     ? listMatchingPartnerProductCandidates({ city, search: promptSearch, take })
     : []
+  const promptViatorMatches = promptSearch
+    ? listMatchingReviewedViatorProductCandidates({ city, search: promptSearch, take })
+    : []
 
   if (city) {
-    return { candidates: promptPartnerMatches, fallbackUsed: false }
+    return {
+      candidates: mergeCandidateBuckets([promptPartnerMatches, promptViatorMatches], take),
+      fallbackUsed: false,
+    }
   }
 
   if (interests.length > 0) {
     const matchBuckets: AiProductCandidate[][] = []
 
-    if (promptPartnerMatches.length > 0) matchBuckets.push(promptPartnerMatches)
+    if (promptPartnerMatches.length > 0 || promptViatorMatches.length > 0) {
+      matchBuckets.push([...promptPartnerMatches, ...promptViatorMatches])
+    }
 
     const termMatchBuckets = await Promise.all(getInterestSearchTerms(interests).map(async term => {
       const matches = await listAiEligibleThailandProducts({
@@ -180,7 +194,12 @@ export async function queryEligibleCandidates(
         search: term,
         take,
       })
-      const combinedMatches = [...matches, ...partnerMatches]
+      const viatorMatches = listMatchingReviewedViatorProductCandidates({
+        city,
+        search: term,
+        take,
+      })
+      const combinedMatches = [...matches, ...partnerMatches, ...viatorMatches]
 
       return combinedMatches
     }))
@@ -194,12 +213,20 @@ export async function queryEligibleCandidates(
 
     const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
     const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
-    return { candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback]], take), fallbackUsed: true }
+    const viatorFallback = listMatchingReviewedViatorProductCandidates({ city, take })
+    return {
+      candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback, ...viatorFallback]], take),
+      fallbackUsed: true,
+    }
   }
 
   const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
   const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
-  return { candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback]], take), fallbackUsed: false }
+  const viatorFallback = listMatchingReviewedViatorProductCandidates({ city, take })
+  return {
+    candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback, ...viatorFallback]], take),
+    fallbackUsed: false,
+  }
 }
 
 export async function runGatedItineraryPipeline(prompt: string): Promise<GatedItineraryPipelineResult> {
