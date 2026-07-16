@@ -52,6 +52,10 @@ describe('auditViatorCatalogCoverage', () => {
         city: 'Bangkok',
         productCount: 2,
         missingProducts: 1,
+        durationCoverage: expect.arrayContaining([
+          expect.objectContaining({ duration: 'half-day', productCount: 0, covered: false }),
+          expect.objectContaining({ duration: 'full-day', productCount: 0, covered: false }),
+        ]),
         themeCoverage: expect.arrayContaining([
           expect.objectContaining({ theme: 'food', productCount: 1, covered: true }),
         ]),
@@ -66,6 +70,43 @@ describe('auditViatorCatalogCoverage', () => {
         needsNewCandidateBatch: true,
       }),
     ])
+  })
+
+  it('reports reviewed half-day and full-day choices separately from multi-day capacity', () => {
+    const report = auditViatorCatalogCoverage([
+      product({
+        id: 'viator_half_day',
+        productCode: 'HALF',
+        title: 'Bangkok half-day culture walk',
+      }),
+      product({
+        id: 'viator_full_day',
+        productCode: 'FULL',
+        title: 'Bangkok full-day food and temples tour',
+      }),
+      product({
+        id: 'viator_day_trip',
+        productCode: 'DAY_TRIP',
+        title: 'Bangkok day trip by river',
+      }),
+    ], {
+      targets: [
+        {
+          city: 'Bangkok',
+          minimumProducts: 3,
+          minimumProductsByTheme: 1,
+          themes: ['culture', 'food'],
+          requestedDayCounts: [1, 3],
+        },
+      ],
+    })
+
+    expect(report.cities[0]).toEqual(expect.objectContaining({
+      durationCoverage: [
+        expect.objectContaining({ duration: 'half-day', productCount: 1, covered: true }),
+        expect.objectContaining({ duration: 'full-day', productCount: 1, covered: true }),
+      ],
+    }))
   })
 
   it('audits the current reviewed seed against the approved Thailand-city priorities', () => {

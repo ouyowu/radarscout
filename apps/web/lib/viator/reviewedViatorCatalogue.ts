@@ -39,7 +39,10 @@ function productText(product: ReviewedViatorProduct): string {
   return `${product.title} ${product.shortSummary} ${product.tags.join(' ')}`.toLowerCase()
 }
 
-function hasDuration(product: ReviewedViatorProduct, duration: ReviewedViatorCatalogueDuration): boolean {
+export function hasReviewedViatorCatalogueDuration(
+  product: ReviewedViatorProduct,
+  duration: ReviewedViatorCatalogueDuration,
+): boolean {
   const pattern = duration === 'half-day' ? /\bhalf[-\s]?day\b/ : /\bfull[-\s]?day\b/
   return pattern.test(productText(product))
 }
@@ -51,7 +54,7 @@ export function listReviewedViatorCatalogueProducts(
   return products.filter(product => {
     if (filters.city && product.city !== cityForSlug(filters.city)) return false
     if (filters.theme && !hasTheme(product, filters.theme)) return false
-    if (filters.duration && !hasDuration(product, filters.duration)) return false
+    if (filters.duration && !hasReviewedViatorCatalogueDuration(product, filters.duration)) return false
     return true
   })
 }

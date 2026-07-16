@@ -2,6 +2,10 @@ import {
   loadReviewedViatorProducts,
   type ReviewedViatorProduct,
 } from './reviewedViatorProducts'
+import {
+  hasReviewedViatorCatalogueDuration,
+  type ReviewedViatorCatalogueDuration,
+} from './reviewedViatorCatalogue'
 
 const themeTags = {
   culture: ['culture', 'temples', 'history', 'markets', 'city'],
@@ -11,6 +15,11 @@ const themeTags = {
 } as const
 
 export type CatalogTheme = keyof typeof themeTags
+
+const requiredCatalogueDurations: readonly ReviewedViatorCatalogueDuration[] = [
+  'half-day',
+  'full-day',
+]
 
 export type ViatorCatalogCoverageTarget = {
   city: string
@@ -106,6 +115,13 @@ export type MultiDayCoverage = {
   covered: boolean
 }
 
+export type DurationCoverage = {
+  duration: ReviewedViatorCatalogueDuration
+  productCount: number
+  minimumProducts: 1
+  covered: boolean
+}
+
 export type CityCatalogCoverage = {
   city: string
   productCount: number
@@ -113,6 +129,7 @@ export type CityCatalogCoverage = {
   missingProducts: number
   themeCoverage: ThemeCoverage[]
   multiDayCoverage: MultiDayCoverage[]
+  durationCoverage: DurationCoverage[]
   needsNewCandidateBatch: boolean
 }
 
@@ -157,6 +174,18 @@ export function auditViatorCatalogCoverage(
         availableDistinctExperiences: productCount,
         covered: productCount >= days,
       }))
+      const durationCoverage = requiredCatalogueDurations.map((duration) => {
+        const productCountForDuration = productsForCity.filter((product) => (
+          hasReviewedViatorCatalogueDuration(product, duration)
+        )).length
+
+        return {
+          duration,
+          productCount: productCountForDuration,
+          minimumProducts: 1 as const,
+          covered: productCountForDuration >= 1,
+        }
+      })
 
       return {
         city: target.city,
@@ -165,9 +194,11 @@ export function auditViatorCatalogCoverage(
         missingProducts,
         themeCoverage,
         multiDayCoverage,
+        durationCoverage,
         needsNewCandidateBatch: missingProducts > 0
           || themeCoverage.some((coverage) => !coverage.covered)
-          || multiDayCoverage.some((coverage) => !coverage.covered),
+          || multiDayCoverage.some((coverage) => !coverage.covered)
+          || durationCoverage.some((coverage) => !coverage.covered),
       }
     }),
   }
