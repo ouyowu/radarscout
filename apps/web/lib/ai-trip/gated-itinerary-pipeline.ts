@@ -3,15 +3,11 @@ import { buildDayTripItinerary } from './day-trip-itinerary'
 import type { DayTripItinerary } from './itinerary-contract'
 import type { ParseTripIntentResult } from './intent-schema'
 import { isThailandCompatibleDestination } from '@/lib/aiProducts/destinationIntent'
-import {
-  listAiEligibleThailandProducts,
-  type AiProductCandidate,
-} from '@/lib/aiProducts/listAiEligibleThailandProducts'
+import type { AiProductCandidate } from '@/lib/aiProducts/listAiEligibleThailandProducts'
 import {
   buildAiProductContext,
   type AiProductContextItem,
 } from '@/lib/aiProducts/buildAiProductContext'
-import { listMatchingPartnerProductCandidates } from '@/lib/partnerProducts/matching'
 import {
   isReviewedViatorAffiliateUrl,
   listMatchingReviewedViatorProductCandidates,
@@ -162,16 +158,13 @@ export async function queryEligibleCandidates(
   promptSearch?: string | null,
 ): Promise<CandidateQueryResult> {
   const city = destination && isCityDestination(destination) ? destination : null
-  const promptPartnerMatches = promptSearch
-    ? listMatchingPartnerProductCandidates({ city, search: promptSearch, take })
-    : []
   const promptViatorMatches = promptSearch
     ? listMatchingReviewedViatorProductCandidates({ city, search: promptSearch, take })
     : []
 
   if (city) {
     return {
-      candidates: mergeCandidateBuckets([promptPartnerMatches, promptViatorMatches], take),
+      candidates: promptViatorMatches,
       fallbackUsed: false,
     }
   }
@@ -179,30 +172,17 @@ export async function queryEligibleCandidates(
   if (interests.length > 0) {
     const matchBuckets: AiProductCandidate[][] = []
 
-    if (promptPartnerMatches.length > 0 || promptViatorMatches.length > 0) {
-      matchBuckets.push([...promptPartnerMatches, ...promptViatorMatches])
+    if (promptViatorMatches.length > 0) {
+      matchBuckets.push(promptViatorMatches)
     }
 
-    const termMatchBuckets = await Promise.all(getInterestSearchTerms(interests).map(async term => {
-      const matches = await listAiEligibleThailandProducts({
-        city: city ?? undefined,
-        search: term,
-        take,
-      })
-      const partnerMatches = listMatchingPartnerProductCandidates({
+    const termMatchBuckets = getInterestSearchTerms(interests).map(term =>
+      listMatchingReviewedViatorProductCandidates({
         city,
         search: term,
         take,
-      })
-      const viatorMatches = listMatchingReviewedViatorProductCandidates({
-        city,
-        search: term,
-        take,
-      })
-      const combinedMatches = [...matches, ...partnerMatches, ...viatorMatches]
-
-      return combinedMatches
-    }))
+      }),
+    )
 
     matchBuckets.push(...termMatchBuckets.filter(matches => matches.length > 0))
 
@@ -211,20 +191,16 @@ export async function queryEligibleCandidates(
       return { candidates: interestMatches, fallbackUsed: false }
     }
 
-    const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
-    const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
-    const viatorFallback = listMatchingReviewedViatorProductCandidates({ city, take })
+    const fallback = listMatchingReviewedViatorProductCandidates({ city, take })
     return {
-      candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback, ...viatorFallback]], take),
+      candidates: fallback,
       fallbackUsed: true,
     }
   }
 
-  const fallback = await listAiEligibleThailandProducts({ city: city ?? undefined, take })
-  const partnerFallback = listMatchingPartnerProductCandidates({ city, take })
-  const viatorFallback = listMatchingReviewedViatorProductCandidates({ city, take })
+  const fallback = listMatchingReviewedViatorProductCandidates({ city, take })
   return {
-    candidates: mergeCandidateBuckets([[...fallback, ...partnerFallback, ...viatorFallback]], take),
+    candidates: fallback,
     fallbackUsed: false,
   }
 }

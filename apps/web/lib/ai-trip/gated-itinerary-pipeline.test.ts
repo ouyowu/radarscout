@@ -4,6 +4,7 @@ vi.mock('server-only', () => ({}))
 
 import {
   isReviewedHandoffReadyProduct,
+  queryEligibleCandidates,
   runGatedItineraryPipeline,
 } from './gated-itinerary-pipeline'
 
@@ -73,6 +74,21 @@ describe('isReviewedHandoffReadyProduct', () => {
       !Object.keys(product).some(key =>
         ['availability', 'inventory', 'reviews', 'rating', 'raw', 'supplier'].includes(key),
       ),
+    )).toBe(true)
+  })
+
+  it('uses only reviewed Viator candidates for the public Planner', async () => {
+    const result = await queryEligibleCandidates(
+      'Chiang Mai',
+      ['elephants'],
+      6,
+      'Chiang Mai 3 days elephants',
+    )
+
+    expect(result.candidates).not.toHaveLength(0)
+    expect(result.candidates.every(candidate => candidate.id.startsWith('viator_'))).toBe(true)
+    expect(result.candidates.every(candidate =>
+      candidate.ctaHref?.startsWith('https://www.viator.com/'),
     )).toBe(true)
   })
 })
