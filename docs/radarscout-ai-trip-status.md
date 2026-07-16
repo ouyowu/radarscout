@@ -327,6 +327,10 @@ a dedicated SEO readiness task and human approval.
 
 ## 8. Execution Log
 
+- 2026-07-16 — `TD-RADARSCOUT-VIATOR-PRODUCTION-READONLY-PREVIEW-1`: PR #535
+  (`a4a0e90`) adds a local-only, bounded Viator Production API candidate preview
+  tool with no persistence; one approved Phuket probe returned 5 safe candidates.
+  Hermes red-line review passed; result: PR open, awaiting human merge.
 - 2026-07-16 — `TD-RADARSCOUT-VIATOR-REVIEWED-PUBLIC-INTEGRATION-1`: PR #534
   (`010133d`) routes the 16 already reviewed static Viator Thailand products
   through deterministic Planner matching; full QA and Hermes red-line review
