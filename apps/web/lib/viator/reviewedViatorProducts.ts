@@ -1,4 +1,5 @@
 import { reviewedViatorBatch2ProductSeedRecords } from './reviewedViatorBatch2Products'
+import { reviewedViatorBatch3ChiangMaiProductSeedRecords } from './reviewedViatorBatch3ChiangMaiProducts'
 
 const REVIEWED_AT = '2026-07-16T00:00:00.000Z'
 
@@ -351,6 +352,7 @@ const reviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
 const allReviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
   ...reviewedViatorProductSeedRecords,
   ...reviewedViatorBatch2ProductSeedRecords,
+  ...reviewedViatorBatch3ChiangMaiProductSeedRecords,
 ]
 
 export function loadReviewedViatorProducts(
