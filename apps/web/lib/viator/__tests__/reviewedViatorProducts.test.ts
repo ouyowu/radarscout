@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { isThailandCompatibleDestination } from '../../aiProducts/destinationIntent'
 import {
   loadReviewedViatorProducts,
   validateReviewedViatorProduct,
@@ -48,6 +49,7 @@ describe('reviewedViatorProducts', () => {
       expect(product.productUrl).toMatch(/^https:\/\/(?:[^/]+\.)?viator\.com\//)
       expect(product.imageUrl).toMatch(/^https:\/\//)
       expect(Number.isNaN(Date.parse(product.reviewedAt))).toBe(false)
+      expect(isThailandCompatibleDestination(product.city)).toBe(true)
     }
 
     expect(products.some((product) => product.productCode === '5553790P1')).toBe(true)
