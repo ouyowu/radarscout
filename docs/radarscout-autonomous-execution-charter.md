@@ -8,7 +8,10 @@ authorization for fully gated GREEN ZONE merges and production deploys; irrevers
 RED ZONE actions still require separate human approval.
 
 Read on every run, in this order:
-`CLAUDE.md` → this charter → `docs/radarscout-release-sop.md` →
+`AGENTS.md` → `CLAUDE.md` → this charter →
+`docs/radarscout-codex-goal-cn.md` →
+`docs/radarscout-unified-architecture-v2-cn.md` →
+`docs/radarscout-release-sop.md` →
 `docs/radarscout-codex-task-queue.md` → `docs/radarscout-ai-trip-status.md`.
 
 Repo: `/Users/ouyowu/reddit-monitor` (`ouyowu/radarscout`). Base branch:
@@ -16,7 +19,7 @@ Repo: `/Users/ouyowu/reddit-monitor` (`ouyowu/radarscout`). Base branch:
 
 ## Objective
 
-Advance RadarScout toward real traffic → conversions → signed partner products,
+Advance RadarScout toward real traffic → conversions → reviewed Viator products,
 by executing the roadmap in `radarscout-codex-task-queue.md` in order, one focused
 branch per task, smallest safe diff, highest real-product-value first. Prefer
 shipping product over writing docs.
@@ -58,10 +61,9 @@ shipping product over writing docs.
 - Tests, guards, regression coverage.
 - UI / product code that touches **none** of the red-zone paths below and keeps
   all existing copySafety / metadata / sitemap tests green.
-- From the current queue: `SEO-INDEX-GUARD-2`, `SEARCH-CONSOLE-CHECKLIST-3`,
-  `PARTNER-PRODUCT-MODEL-4`, `PRODUCT-MATCHING-6` (only after 4 and 5 exist, and
-  only if booking/availability stay OFF and copySafety stays green),
-  `BOKUN-API-DISCOVERY-7` (docs only).
+- Only tasks currently marked GREEN in `docs/radarscout-codex-task-queue.md`.
+  Historical completed Bókun, analytics and frontend briefs are audit records,
+  not work to repeat.
 
 ## RED ZONE — STOP and queue for the human. Codex must NOT do these alone.
 
@@ -71,12 +73,13 @@ shipping product over writing docs.
 - SEO: changing any `robots` / `index,follow` / `sitemap` value, or submitting a
   page to Search Console / opening indexing.
 - checkout / payment / cart / booking submission / availability / inventory behavior.
-- Bókun API / sync / widget-URL changes.
-- Partner product **data** that would have to be invented (`PARTNER-PRODUCT-SEED-5`
-  needs the operator's real signed-product source — never fabricate products,
-  prices, suppliers, or booking URLs → queue for human data).
-- `ANALYTICS-PROVIDER-1` (postponed by existing decision; needs an explicit vendor
-  choice → human).
+- Provider API access-level, write, booking or sync changes; legacy Bókun
+  API/sync/widget reactivation.
+- Product or SEO-candidate **data** that would have to be invented. Never
+  fabricate products, prices, suppliers, affiliate URLs, permissions or review
+  records.
+- `SEO-CANDIDATE-UNLOCK-2B` until Viator terms and the operator's written pilot
+  allowlist exist.
 - ThaiEleHub / Shopify anything.
 - Anything ambiguous, out of declared scope, or conflicting with an existing
   decision doc.
@@ -117,7 +120,7 @@ must include every automatic merge and production deployment.
 ## Standing red-zone policy (updated 2026-07-10)
 
 Separate human approval remains mandatory for DB/data writes or migrations,
-schema/env/secrets, Bókun API/edit/sync or supplier actions, checkout/payment/
+schema/env/secrets, provider API/edit/sync or supplier actions, checkout/payment/
 booking submission, SEO index expansion, ThaiEleHub/Shopify, spending or plan
 upgrades, and any irreversible or out-of-scope action. Ordinary production deploys
 of fully gated green changes are covered by the standing authorization above.

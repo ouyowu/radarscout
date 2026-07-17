@@ -1,5 +1,18 @@
 # AGENTS.md
 
+## RadarScout Current Product Contract
+
+Before selecting or implementing RadarScout work, read:
+
+1. `docs/radarscout-codex-goal-cn.md`
+2. `docs/radarscout-unified-architecture-v2-cn.md`
+3. `docs/radarscout-codex-task-queue.md`
+
+The repository snapshot is authoritative when these documents drift. Update the
+documents instead of building a second implementation. Current public product
+discovery is Viator-affiliate-first; legacy Bókun surfaces are dormant and must
+not be reactivated without a separate explicit task.
+
 ## 1. Think Before Coding
 - State assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them.
@@ -66,7 +79,11 @@ packages/mailer/  # Email templates + Resend client
 ### What NOT to do
 - Don't add AI/semantic features unless explicitly asked.
 - Don't add logging frameworks — use console.log for now.
-- Don't add analytics — not needed for MVP.
+- Don't add a second analytics provider. Vercel Web Analytics is the approved
+  provider and is already integrated.
+- First-party affiliate handoff tracking is required for the north-star metric.
+  Never send PII, raw prompts, complete partner URLs, prices, availability,
+  ratings, reviews, checkout state, or booking state in analytics events.
 
 ## Agent skills
 

@@ -24,7 +24,7 @@ gate on their own change.
 
 ThaiEleHub / Shopify · DB / Prisma schema / migration / env / `.env*` ·
 `robots` / `sitemap` / SEO `index,follow` · checkout / payment / cart / booking /
-availability / inventory behavior · Bókun API / sync · fabricated products /
+availability / inventory behavior · provider API writes / booking / sync · fabricated products /
 prices / suppliers / booking URLs · production deploys that contain red-zone
 changes, require settings/env changes, or lack a clean independently reviewed SHA.
 
@@ -105,7 +105,7 @@ rollback`. If any post-deploy assertion fails, roll back first, investigate afte
 ## Never automate under the standing release authorization
 
 SEO `index,follow` expansion · DB/data writes/schema/migrations/env/secrets ·
-Bókun API/edit/sync or supplier actions · checkout/payment/booking submission ·
+provider API/edit/sync or supplier actions · checkout/payment/booking submission ·
 ThaiEleHub/Shopify · spending/plan upgrades · ambiguous or irreversible actions.
 These remain explicit, human-approved, one at a time.
 

@@ -8,22 +8,25 @@ checks, manual verification, PR URL, mergeable status, blockers).
 Global red lines (Hermes blocks on any of these unless the brief explicitly
 allows it): ThaiEleHub / Shopify, DB / Prisma schema / migration / env / `.env*`,
 `robots` / `sitemap` / SEO index policy, checkout / payment / availability
-behavior, Bókun API / sync, fabricated products / prices / suppliers / booking
-URLs. Production deploy, SEO index opening, and DB changes always require
-explicit human approval and are never automated.
+behavior, provider API writes / booking integration, legacy Bókun API / sync,
+fabricated products / prices / suppliers / booking URLs. Production deploy,
+SEO index opening, and DB changes always require explicit human approval and
+are never automated.
 
-Ground truth refreshed 2026-07-10 (verify before each task — "Step 0: is it
+Ground truth refreshed 2026-07-17 (verify before each task — "Step 0: is it
 already built?"):
 - Homepage finder entry already exists (`app/page.tsx`).
 - `/chiang-mai/elephant-camp-finder` already `robots: { index: true, follow: true }`
   and already listed in `app/sitemap.ts`.
 - `app/robots.ts` disallows the reddit-tool marketing routes; finder is allowed.
-- Analytics: Vercel Web Analytics was selected by human approval on 2026-07-08.
-  The implementation should use the approved event taxonomy in
-  `docs/radarscout-traveler-funnel-plausible-decision-2.md`.
-- Production at `b7befb7` already includes the prompt-first homepage, reviewed
-  partner products and media, matching, the tours listing restyle, and the tour
-  detail restyle. Do not reopen FE-1/2/3/4 as implementation tasks.
+- Analytics: Vercel Web Analytics and the approved event taxonomy are already
+  integrated. Production dashboard observability still requires a normal-browser
+  check; event code existing does not prove a dashboard count.
+- The safe development base audited for this consolidation is
+  `origin/codex/travel-mvp-launch@cc720a0`. Production deployment identity must
+  be verified read-only before making live-state claims.
+- The reviewed public catalogue is Viator-first. Legacy Bókun product publication
+  must not be reactivated by a current task.
 
 ## Now / Next / Later (current product order)
 
@@ -50,11 +53,10 @@ do not guess at matching improvements.
 
 - Improve matching from real search terms and zero-result / weak-result evidence,
   not imagined queries.
-- Add more reviewed partner products using the existing human-provided,
-  gitignored input → validated static seed workflow. Prove Chiang Mai first;
-  expand destinations only when the observed demand supports it.
+- Add more reviewed Viator products through the existing read-only candidate →
+  human review → validated static seed workflow.
 - Review handoff quality using real clicks and product-detail behavior. Preserve
-  the external public Bókun widget handoff; no availability or payment behavior.
+  the reviewed Viator affiliate handoff; no availability or payment behavior.
 
 ### LATER — after the finder proves demand and handoff conversion
 
@@ -62,7 +64,7 @@ do not guess at matching improvements.
 - Email capture for visitors who do not continue to a booking partner.
 - Optional real LLM planning only if user behavior demonstrates a need for richer
   itinerary generation (separate scope and approval).
-- Bókun API / sync only if public-widget handoff is demonstrably insufficient
+- Provider booking APIs only if affiliate handoff is demonstrably insufficient
   (RED ZONE; separate explicit approval).
 
 Completed foundations: analytics provider, SEO index guard, Search Console
@@ -81,7 +83,7 @@ be selected again.
 
 ---
 
-## TD-RADARSCOUT-ANALYTICS-PROVIDER-1
+## TD-RADARSCOUT-ANALYTICS-PROVIDER-1 — COMPLETED
 
 Decision 2026-07-08: human approved proceeding with analytics provider work.
 Vendor selected: Vercel Web Analytics. Plausible remains unselected.
@@ -151,6 +153,54 @@ Checks: `tsc --noEmit`;
 
 Hermes focus: block if the diff changes any index/robots/sitemap value rather
 than just asserting it.
+
+---
+
+## TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B — HUMAN-GATED
+
+Why: the reviewed Viator catalogue exists, but `tourDetailSeoCandidates` is
+empty. The existing fail-closed gate should be populated only for a small,
+operator-approved SEO pilot after Viator licensing is clear.
+
+Blocked until the operator supplies both:
+
+1. Written Viator terms covering public display, images, caching, attribution,
+   deep links and the meaning of “Viator unique content must not be indexed”.
+2. A 5–10 product pilot allowlist. Each record must include `publicProductId`,
+   `reviewedBy`, `approvedAt`, `reviewNote` and
+   `expectedCanonicalPath`.
+
+Step 0:
+
+- Re-read the current candidate module, metadata helper, sitemap and index guard.
+- Confirm the allowlist is still empty and report current production/SEO truth.
+- If licensing or the operator allowlist is missing, stop without editing code.
+
+Implementation:
+
+- Add only operator-supplied ids.
+- Keep every absent id `noindex` and out of sitemap.
+- Move the guard to the approved policy; do not delete or weaken it.
+- Do not change Viator seed data, product matching, affiliate URLs, copy,
+  prices, availability, ratings, DB, schema or env.
+
+Gate:
+
+- Open a focused PR and stop.
+- Merge, production deploy and SEO opening each require explicit human approval.
+- After deployment, verify one approved and one unapproved detail page, sitemap,
+  canonical metadata and `booking_partner_handoff_clicked`.
+
+Acceptance:
+
+- Only the written pilot allowlist is indexable.
+- All other product details remain fail-closed.
+- Existing TypeScript, SEO, Viator, sitemap, public-copy, E2E and build checks
+  pass against the actual task-start baseline.
+
+Hermes focus: block any unlisted id, weakened guard, Viator unique-content
+assumption, seed/handoff mutation, automatic merge, deploy or Search Console
+submission.
 
 ---
 
@@ -385,14 +435,12 @@ if any step attempts an actual production deploy without recorded human approval
 ## Frontend redesign — "Immersive Expedition" (GREEN ZONE, 4 staged PRs)
 
 Governing spec: `docs/radarscout-frontend-design.md` (original design system; NOT
-a copy of any third-party site or theme). Do these in order; each is one branch
-off `codex/travel-mvp-launch`, full gate, open PR, do NOT merge. Every step must
-keep the DESIGN.md §0 guardrails: no cart/checkout/price/availability/rating;
-detail CTA = "Check availability" → partner Bókun widget URL; `copySafety`,
-`publicCopySafety`, `seoIndexGuard` tests green; no robots/sitemap/DB/env/Bókun
-API/ThaiEleHub changes; self-hosted fonts, no third-party CDN, no third-party
-assets. Steps 2–4 each depend on Step 1 being merged (charter dependency rule —
-if FE-1 is unmerged, stop and wait).
+a copy of any third-party site or theme). These tasks are historical/completed.
+Their current safety interpretation is: no cart/checkout/price/availability/
+rating; detail CTA = "Check availability" → reviewed Viator affiliate URL;
+`copySafety`, `publicCopySafety`, `seoIndexGuard` tests green; no robots/
+sitemap/DB/env/provider-API/ThaiEleHub changes; self-hosted fonts, no third-party
+CDN or copied third-party assets.
 
 ### TD-RADARSCOUT-FE-DESIGN-TOKENS-1 — COMPLETED (#492)
 
@@ -519,7 +567,7 @@ buy-box.
 
 Scope: immersive experience hero, optional gallery (owned/licensed/placeholder
 images only), description + "why this fits" chips (reuse existing fit signals),
-**sticky "Check availability" action → the partner Bókun widget URL**
+**sticky "Check availability" action → the reviewed Viator affiliate URL**
 (`rel="nofollow sponsored noopener noreferrer"`, external), reuse existing safe
 handoff/return copy, related-experiences cards. Keep `getTourDetailRobots` gating
 and the source-param return path intact.
@@ -529,7 +577,7 @@ the tour-detail robots gating or source-param behavior; sitemap/robots/DB/env/
 Bókun API; third-party assets.
 
 Acceptance: detail matches blueprint; the only booking action is the external
-"Check availability" handoff to the Bókun widget URL; `copySafety`/`publicCopy`/
+"Check availability" handoff to the reviewed Viator affiliate URL; `copySafety`/`publicCopy`/
 `seoIndexGuard` + tour-detail tests green; no overflow.
 
 Checks: `tsc`; `vitest run app/tours app/ai-trip-planner app/chiang-mai`;
