@@ -312,21 +312,42 @@ Regression coverage:
 Do not open additional `index,follow` pages or add routes to the sitemap without
 a dedicated SEO readiness task and human approval.
 
-## 7. Recommended next real product work
+## 7. Current Phase 1 evidence and next action
 
-1. Observe real production behavior for `/ai-trip-planner` and
-   `/chiang-mai/elephant-camp-finder`.
-2. Choose whether to keep analytics postponed or explicitly approve a provider
-   and taxonomy-aligned implementation.
-3. Deploy B2 candidate `dc3482d86576f151ddc0bb2ed58e905b13302bab` after
-   explicit human approval and human-run production command.
-4. After partner product matching quality reaches production, observe real planner
-   searches and handoff clicks.
-5. Revisit Bókun API only after traffic, handoff intent, and partner demand make
-   static reviewed handoff insufficient.
+- Production is `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`, built from app-code SHA
+  `cc720a0a8c99cd4a11a51b7d43d19971517bd707`, with aliases
+  `radarscout.io` and `www.radarscout.io`. The current development base adds only
+  the docs-only goal reconciliation at `349fee6`.
+- Vercel reports Web Analytics enabled and `hasData: true`. The project is on
+  Hobby, which provides pageview analytics but not custom events. The operator
+  has chosen not to upgrade yet, so `booking_partner_handoff_clicked` remains
+  unobservable in the dashboard. Do not add another analytics provider.
+- Live smoke passed for homepage, `/planner`, `/ai-trip-planner`, `/tours`, one
+  Viator detail route, `sitemap.xml`, `robots.txt` and the Vercel Insights
+  script. The public search returned six Viator affiliate handoffs with the
+  required `nofollow sponsored noopener noreferrer` relation.
+- The live tour-detail pilot routes remain `noindex, nofollow` and absent from
+  the sitemap, as required before human SEO approval.
+- Viator's official Basic Access documentation supports product merchandising
+  and Viator checkout handoff. Its certification rules require attraction,
+  review and `viatorUniqueContent` content to remain non-indexable. RadarScout's
+  seed validator already rejects those protected/raw/commercial fields.
+- The next action is operator approval of a 5–10 product SEO pilot allowlist for
+  `TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B`. No index policy is changed by this
+  observation.
 
 ## 8. Execution Log
 
+- 2026-07-17 — Phase 1 evidence refresh: merged goal reconciliation PR #548 at
+  `349fee6`; verified production at `cc720a0` /
+  `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`; confirmed Vercel Web Analytics has
+  pageview data but Hobby cannot expose the approved custom funnel events;
+  audited the 71-record Viator seed provenance and official indexing rules.
+  Result: Q1 public-document evidence is sufficient for a conservative pilot;
+  SEO remains blocked on an operator-approved product id allowlist. Hermes did
+  not return a verdict, so the operator explicitly approved a one-time manual
+  red-line review fallback for this docs-only evidence update; no standing
+  exception was created.
 - 2026-07-16 — `TD-RADARSCOUT-VIATOR-PRODUCTION-READONLY-PREVIEW-1`: PR #535
   (`a4a0e90`) adds a local-only, bounded Viator Production API candidate preview
   tool with no persistence; one approved Phuket probe returned 5 safe candidates.
@@ -377,13 +398,15 @@ a dedicated SEO readiness task and human approval.
 
 ## 9. Human Approval Queue
 
-- `TD-RADARSCOUT-PROD-DEPLOY-CANDIDATE-B2-REANCHOR` is waiting for explicit
-  human production deploy approval and human-run deploy command for
-  `dc3482d86576f151ddc0bb2ed58e905b13302bab`. Codex must not run
-  `vercel --prod`.
-- `ANALYTICS-PROVIDER-1` remains postponed. Needs an explicit vendor decision
-  and taxonomy alignment before any provider or tracking network request is
-  added.
-- Any Bókun API implementation remains red-zone work. It requires a separate
-  human-approved plan, credentials/scope decision, and safety review before any
-  code, env, DB, sync, availability, checkout, or booking behavior is added.
+- `TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B` needs operator approval of a small
+  pilot allowlist. Recommended review shortlist (not yet approved):
+  `viator_6467bkknight`, `viator_163642p1`, `viator_191442p6`,
+  `viator_163642p25`, `viator_160694p9`, `viator_44720p2`. All six currently
+  return 200, remain `noindex, nofollow`, show `Check availability`, and hand off
+  through a PID-tagged Viator affiliate URL.
+- Enabling index/follow for any shortlist item, merging that policy, deploying
+  it, and submitting it to Search Console are separate human approvals.
+- Vercel Analytics stays on Hobby by operator decision. Do not upgrade or add a
+  second analytics vendor automatically.
+- Legacy Bókun API/publication remains dormant red-zone work and is not part of
+  the current Viator-first product path.

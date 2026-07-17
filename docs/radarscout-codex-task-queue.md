@@ -20,11 +20,15 @@ already built?"):
   and already listed in `app/sitemap.ts`.
 - `app/robots.ts` disallows the reddit-tool marketing routes; finder is allowed.
 - Analytics: Vercel Web Analytics and the approved event taxonomy are already
-  integrated. Production dashboard observability still requires a normal-browser
-  check; event code existing does not prove a dashboard count.
+  integrated. The production project reports Web Analytics enabled with pageview
+  data, but it is on Vercel Hobby, where custom events are not available. The
+  operator has chosen not to upgrade yet, so the north-star custom event remains
+  operationally unobservable; do not add another analytics provider.
 - The safe development base audited for this consolidation is
-  `origin/codex/travel-mvp-launch@cc720a0`. Production deployment identity must
-  be verified read-only before making live-state claims.
+  `origin/codex/travel-mvp-launch@349fee6`. The current production app-code
+  deployment is `cc720a0` / `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`; the only base
+  commit after it is the docs-only goal reconciliation. Vercel marked that
+  production build `gitDirty=1`, so the next release must use a clean worktree.
 - The reviewed public catalogue is Viator-first. Legacy Bókun product publication
   must not be reactivated by a current task.
 
@@ -162,13 +166,30 @@ Why: the reviewed Viator catalogue exists, but `tourDetailSeoCandidates` is
 empty. The existing fail-closed gate should be populated only for a small,
 operator-approved SEO pilot after Viator licensing is clear.
 
-Blocked until the operator supplies both:
+The public-document Q1 review is complete for a conservative pilot surface:
 
-1. Written Viator terms covering public display, images, caching, attribution,
-   deep links and the meaning of “Viator unique content must not be indexed”.
-2. A 5–10 product pilot allowlist. Each record must include `publicProductId`,
-   `reviewedBy`, `approvedAt`, `reviewNote` and
-   `expectedCanonicalPath`.
+- Viator Basic Access expressly supports merchandising product titles,
+  descriptions and main images in search/product-detail pages that refer the
+  traveler to Viator for the transaction.
+- RadarScout's current seed keeps API-derived title, main image and affiliate
+  deep link, while `shortSummary` and tags are RadarScout-authored review data.
+- The seed validator rejects `viatorUniqueContent`, reviews, ratings, raw
+  responses, pricing, availability and booking fields.
+- Content from Viator attraction/review endpoints and every
+  `viatorUniqueContent` object remains non-indexable. This is not blanket
+  permission to index every Viator response field.
+
+Official evidence:
+
+- <https://partnerresources.viator.com/travel-commerce/levels-of-access/>
+- <https://partnerresources.viator.com/travel-commerce/technical-guide/>
+- <https://partnerresources.viator.com/travel-commerce/certification/>
+- <https://partnerresources.viator.com/travel-commerce/affiliate/>
+
+Still blocked until the operator supplies a 5–10 product pilot allowlist. Each
+record must include `publicProductId`, `reviewedBy`, `approvedAt`, `reviewNote`
+and `expectedCanonicalPath`. The eventual index-policy change, merge and
+production deploy remain separate human approvals.
 
 Step 0:
 
