@@ -2,7 +2,9 @@
 
 ## 1. Project Role
 
-This repo powers RadarScout, an AI travel planning and Bókun-backed product catalog project.
+This repo powers RadarScout, a Thailand day-tour planning product with a
+reviewed Viator affiliate catalogue and external partner handoff. Legacy Bókun
+code remains dormant and is not the current public catalogue source.
 
 Claude Code is an implementation agent, not the product manager.
 
@@ -24,7 +26,7 @@ Before doing anything:
 2. Follow the strictest rule when files conflict.
 3. Do not broaden the task.
 4. Do not run database migrations unless the task explicitly approves one target environment.
-5. Do not modify public API, frontend, Bókun sync, Prisma schema, or migrations unless explicitly allowed.
+5. Do not modify public API, frontend, provider integrations, Prisma schema, or migrations unless explicitly allowed.
 6. Return changed files, commands run, checks, and manual safety checks.
 
 ## 3. Branch And PR Workflow
@@ -102,9 +104,19 @@ Approve production migrate deploy.
 
 Without that exact approval, do not run production migration.
 
-## 5. Bókun Rules
+## 5. External Product Provider Rules
 
-Bókun is a source of real travel product data.
+Current public direction:
+
+- Reviewed Viator affiliate seed data is the public planner/catalogue source.
+- Public handoff uses verified Viator affiliate links.
+- RadarScout does not own checkout, payment, inventory, availability, or booking confirmation.
+- Viator API/content usage must stay within the approved access level and licence.
+- Viator unique content must not be made indexable unless written terms explicitly allow the proposed use.
+
+Legacy Bókun direction:
+
+Bókun code and database paths are retained only as dormant legacy surfaces.
 
 Never fabricate:
 
@@ -136,12 +148,14 @@ Bókun sync rules:
 
 Product direction:
 
-- Bókun should remain the underlying transaction and supply-chain system.
-- RadarScout should not rebuild Bókun checkout, payment, availability, inventory sync, channel management, contracts, commission, payment terms, pricing tools, API/webhooks, or OCTO features.
-- RadarScout should focus on AI search, itinerary generation, signed-product matching, RAG, margin guardrails, observed OTA price comparison, SEO entry pages, and AI-generated UI.
+- Viator affiliate handoff is the current public conversion path.
+- Do not reactivate Bókun product publication, sync, or widget handoff without a separate explicit approval.
+- RadarScout should not rebuild provider checkout, payment, availability, inventory sync, channel management, commission, or booking APIs.
+- RadarScout should focus on deterministic trip planning, reviewed-product matching, original editorial guidance, controlled SEO entry pages, and safe affiliate handoff.
 - Public frontend copy should avoid phrases like "Bókun database", "Bókun-powered", "Bókun backend", "Bókun supplier products", and "powered by Bókun".
 - Prefer user-facing phrases like "booking partner", "trusted operators", "real local experiences", "partner-direct value", "secure booking handoff", and "bookable itinerary".
-- Product detail pages should eventually recommend real products and hand off "Book" / "Check availability" to the official booking widget or partner booking flow.
+- Product detail pages may recommend reviewed products and hand off only through
+  `Check availability` to an approved affiliate or partner URL.
 
 ## 6. Local AI / Open WebUI Rules
 
@@ -176,7 +190,7 @@ Local AI candidate flow:
 
 ## 7. Reviewed Enrichment Rules
 
-Reviewed enrichment means human-approved editorial fields for Bókun products.
+Reviewed enrichment means human-approved editorial fields for eligible product records.
 
 Allowed reviewed fields:
 
@@ -332,13 +346,10 @@ RadarScout is a Thailand-only travel product platform. This rule applies to all 
 
 ## 14. Current Recommended Next Step
 
-The current recommended next execution step is:
-
-TD-LOCAL-AI-4D-A: Apply reviewed enrichment migration to local/dev DB only
-
-Do not run that task now.
-
-Only run it later if the user provides a dedicated task brief that explicitly allows local/dev migration execution.
+Use `docs/radarscout-codex-goal-cn.md` and
+`docs/radarscout-codex-task-queue.md` to select the next task. Do not revive the
+historical local-AI migration task unless the user supplies a new, explicit
+database task brief.
 
 ---
 
@@ -352,10 +363,5 @@ After this guardrails PR is created:
 4. Use `/compact` after the final report if the conversation is long.
 5. Use `/clear` only after the task is fully complete and the final report has already been delivered.
 
-The next separate task should be:
-
-```
-TD-LOCAL-AI-4D-A: Apply reviewed enrichment migration to local/dev DB only
-```
-
-That next task must be separately approved and must explicitly say local/dev only.
+Do not infer a database task from this guide. Database work remains separately
+approved and environment-specific.

@@ -12,7 +12,7 @@ any third-party site's images, CSS, or layout.
 ## 0. Hard guardrails (do not break while restyling)
 
 - **No cart / checkout / Buy-now / price / live availability / rating claims.**
-  Product detail CTA is **"Check availability" → the partner Bókun widget URL**
+  Product detail CTA is **"Check availability" → the reviewed Viator affiliate URL**
   (external handoff), never an add-to-cart. `bookingEnabled` / `availabilityEnabled`
   stay false.
 - `copySafety` and `publicCopySafety` tests must stay green — restyle changes
@@ -20,7 +20,7 @@ any third-party site's images, CSS, or layout.
 - **SEO index policy unchanged**: finder `index:true`; `/ai-trip-planner` noindex;
   `/tours/[id]` gated. Restyle must not touch `robots`/`sitemap` values
   (`seoIndexGuard.test.ts` must stay green).
-- No ThaiEleHub / Shopify. No DB / schema / env / Bókun API.
+- No ThaiEleHub / Shopify. No DB / schema / env / provider API changes.
 - **Images**: use only owned or properly-licensed imagery (operator's own Thailand
   photos, or licensed stock). Until real assets are provided, use tasteful solid/
   gradient placeholders via `next/image` — never hotlink or copy third-party photos.
@@ -130,7 +130,7 @@ Type scale (fluid, `clamp`):
 - Optional gallery strip (owned/licensed images only).
 - Description + "why this fits" chips (reuse existing fit signals).
 - **Sticky action** (desktop side rail / mobile bottom bar): **"Check availability"
-  → partner Bókun widget URL** (external, `rel="nofollow sponsored noopener"`).
+  → reviewed Viator affiliate URL** (external, `rel="nofollow sponsored noopener noreferrer"`).
   NO price, NO availability text, NO add-to-cart.
 - Safe partner/handoff note (reuse existing tour-detail return + handoff copy).
 - Related experiences (same city) as cards.
