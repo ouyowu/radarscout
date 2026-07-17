@@ -64,4 +64,22 @@ describe('listMatchingReviewedViatorProductCandidates', () => {
       'supplier',
     ]))
   })
+
+  it('matches a newly reviewed Ko Lanta cooking experience without a live Viator request', () => {
+    const candidates = listMatchingReviewedViatorProductCandidates({
+      city: 'Ko Lanta',
+      search: 'Thai cooking class',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'viator_110534p380',
+      city: 'Ko Lanta',
+      retailPrice: null,
+      currency: null,
+      ctaLabel: 'Check availability',
+      externalHandoff: true,
+    })
+    expect(candidates[0]?.ctaHref).toContain('pid=')
+  })
 })
