@@ -22,6 +22,7 @@ test('keeps only non-commercial product detail fields in the private detail revi
     apiKey: 'production-test-key',
     fetchFn: async () => new Response(JSON.stringify({
       productCode: '5553790P1',
+      destinations: [{ ref: '343', primary: true }, { ref: '764', primary: false }],
       description: 'A market and canal day trip from Bangkok.',
       inclusions: [{ otherDescription: 'Lunch' }],
       exclusions: [{ description: 'Personal expenses' }],
@@ -42,6 +43,7 @@ test('keeps only non-commercial product detail fields in the private detail revi
       title: 'Floating market day trip',
       productUrl: 'https://www.viator.com/tours/Bangkok/floating-market/d343-5553790P1?pid=P00309837',
       imageUrl: 'https://images.example.test/floating-market.jpg',
+      primaryDestinationId: '343',
       description: 'A market and canal day trip from Bangkok.',
       inclusionHighlights: ['Lunch'],
       exclusionHighlights: ['Personal expenses'],

@@ -37,6 +37,15 @@ function readDurationMinutes(value) {
   return Number.isInteger(minutes) && minutes > 0 && minutes <= 1_440 ? minutes : null
 }
 
+function readPrimaryDestinationId(value) {
+  if (!Array.isArray(value)) return null
+
+  const primaryDestination = value
+    .map(asRecord)
+    .find((destination) => destination?.primary === true)
+  return readString(primaryDestination?.ref, 12)
+}
+
 function isReviewCandidate(value) {
   const candidate = asRecord(value)
   return candidate
@@ -71,6 +80,7 @@ function safeDetailFromBody(candidate, body) {
       title: candidate.title,
       productUrl: candidate.productUrl,
       imageUrl: candidate.imageUrl,
+      primaryDestinationId: readPrimaryDestinationId(product.destinations),
       description: readString(product.description, 12_000),
       inclusionHighlights: readHighlights(product.inclusions),
       exclusionHighlights: readHighlights(product.exclusions),
