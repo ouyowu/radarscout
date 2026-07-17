@@ -6,15 +6,28 @@ import {
 } from '../reviewedViatorProducts'
 
 describe('reviewedViatorProducts', () => {
-  it('loads the 71 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
+  it('loads the 105 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
     const products = loadReviewedViatorProducts()
 
-    expect(products).toHaveLength(71)
+    expect(products).toHaveLength(105)
     expect(new Set(products.map((product) => product.city))).toEqual(new Set([
       'Bangkok',
+      'Bophut',
       'Chiang Mai',
+      'Chiang Rai',
+      'Hua Hin',
+      'Kanchanaburi',
+      'Khao Lak',
+      'Ko Chang',
+      'Ko Lanta',
+      'Ko Lipe',
+      'Ko Pha Ngan',
+      'Ko Phi Phi Don',
+      'Ko Yao Yai',
+      'Koh Tao',
       'Phuket',
       'Krabi',
+      'Mae Hong Son',
       'Pattaya',
       'Koh Samui',
     ]))
@@ -38,6 +51,7 @@ describe('reviewedViatorProducts', () => {
     }
 
     expect(products.some((product) => product.productCode === '5553790P1')).toBe(true)
+    expect(products.some((product) => product.productCode === '5601517P6')).toBe(true)
     expect(products.some((product) => product.productCode === '157340P38')).toBe(false)
     expect(products.some((product) => product.productCode === '90546P33')).toBe(false)
   })

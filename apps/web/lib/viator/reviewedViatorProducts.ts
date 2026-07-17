@@ -1,12 +1,26 @@
 import { reviewedViatorBatch2ProductSeedRecords } from './reviewedViatorBatch2Products'
+import { reviewedViatorBatch3ProductSeedRecords } from './reviewedViatorBatch3Products'
 
 const REVIEWED_AT = '2026-07-16T00:00:00.000Z'
 
 const cityDestinationIds = {
   Bangkok: '343',
+  Bophut: '51001',
   'Chiang Mai': '5267',
+  'Chiang Rai': '5268',
+  'Hua Hin': '22968',
+  Kanchanaburi: '22285',
+  'Khao Lak': '23786',
+  'Ko Chang': '24532',
+  'Ko Lanta': '24522',
+  'Ko Lipe': '37757',
+  'Ko Pha Ngan': '34192',
+  'Ko Phi Phi Don': '40944',
+  'Ko Yao Yai': '50552',
+  'Koh Tao': '34193',
   Phuket: '349',
   Krabi: '348',
+  'Mae Hong Son': '51553',
   Pattaya: '344',
   'Koh Samui': '347',
 } as const
@@ -351,6 +365,7 @@ const reviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
 const allReviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
   ...reviewedViatorProductSeedRecords,
   ...reviewedViatorBatch2ProductSeedRecords,
+  ...reviewedViatorBatch3ProductSeedRecords,
 ]
 
 export function loadReviewedViatorProducts(
