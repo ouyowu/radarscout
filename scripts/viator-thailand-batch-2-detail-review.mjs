@@ -49,6 +49,13 @@ function isReviewCandidate(value) {
     && typeof candidate.destinationId === 'string'
 }
 
+function readRetryAfterMs(response) {
+  const retryAfter = Number(response.headers.get('retry-after'))
+  return Number.isFinite(retryAfter) && retryAfter >= 0
+    ? Math.max(250, retryAfter * 1_000)
+    : 1_000
+}
+
 function safeDetailFromBody(candidate, body) {
   const product = asRecord(body)
   if (!product || readString(product.productCode, 48) !== candidate.productCode) {
@@ -75,21 +82,27 @@ function safeDetailFromBody(candidate, body) {
 export async function fetchViatorProductDetailForReview(candidate, {
   apiKey,
   fetchFn = fetch,
+  sleepFn = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
 } = {}) {
   if (!isReviewCandidate(candidate)) return { ok: false, reason: 'invalid_candidate' }
   if (!apiKey?.trim()) return { ok: false, reason: 'not_configured' }
 
   let response
-  try {
-    response = await fetchFn(`https://api.viator.com/partner/products/${encodeURIComponent(candidate.productCode)}`, {
-      headers: {
-        Accept: VIATOR_ACCEPT_HEADER,
-        'Accept-Language': 'en-US',
-        'exp-api-key': apiKey,
-      },
-    })
-  } catch {
-    return { ok: false, reason: 'upstream_error' }
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      response = await fetchFn(`https://api.viator.com/partner/products/${encodeURIComponent(candidate.productCode)}`, {
+        headers: {
+          Accept: VIATOR_ACCEPT_HEADER,
+          'Accept-Language': 'en-US',
+          'exp-api-key': apiKey,
+        },
+      })
+    } catch {
+      return { ok: false, reason: 'upstream_error' }
+    }
+
+    if (response.status !== 429 || attempt === 1) break
+    await sleepFn(readRetryAfterMs(response))
   }
 
   if (!response.ok) return { ok: false, reason: 'upstream_error', status: response.status }
@@ -108,7 +121,11 @@ export async function buildViatorThailandBatch2DetailReview(titleReview, {
 } = {}) {
   const review = asRecord(titleReview)
   const candidates = Array.isArray(review?.candidates) ? review.candidates : null
-  if (review?.status !== 'detail_review_required' || !candidates) {
+  const acceptedStatuses = new Set([
+    'detail_review_required',
+    'title_review_complete_detail_review_pending',
+  ])
+  if (!acceptedStatuses.has(review?.status) || !candidates) {
     return { ok: false, reason: 'invalid_title_review' }
   }
   if (!apiKey?.trim()) return { ok: false, reason: 'not_configured' }

@@ -59,6 +59,29 @@ test('fails closed when the Viator product code does not match the reviewed cand
   assert.deepEqual(result, { ok: false, reason: 'mismatched_product' })
 })
 
+test('waits for Retry-After and retries a rate-limited product detail once', async () => {
+  const waits = []
+  let requestCount = 0
+  const result = await fetchViatorProductDetailForReview(candidate, {
+    apiKey: 'production-test-key',
+    sleepFn: async (milliseconds) => waits.push(milliseconds),
+    fetchFn: async () => {
+      requestCount += 1
+      if (requestCount === 1) {
+        return new Response(null, { status: 429, headers: { 'Retry-After': '2' } })
+      }
+      return new Response(JSON.stringify({
+        productCode: '5553790P1',
+        description: 'A market and canal day trip from Bangkok.',
+      }), { status: 200 })
+    },
+  })
+
+  assert.equal(result.ok, true)
+  assert.equal(requestCount, 2)
+  assert.deepEqual(waits, [2_000])
+})
+
 test('builds a private detail-review bundle only for candidates that passed title triage', async () => {
   const result = await buildViatorThailandBatch2DetailReview({
     status: 'detail_review_required',
@@ -79,4 +102,20 @@ test('builds a private detail-review bundle only for candidates that passed titl
   assert.equal(result.review.status, 'pending_human_detail_review')
   assert.equal(result.review.candidateCount, 1)
   assert.equal(result.review.candidates[0].productCode, '5553790P1')
+})
+
+test('accepts the expanded title-review pool status without weakening candidate gating', async () => {
+  const result = await buildViatorThailandBatch2DetailReview({
+    status: 'title_review_complete_detail_review_pending',
+    candidates: [candidate],
+  }, {
+    apiKey: 'production-test-key',
+    fetchProduct: async (value) => ({
+      ok: true,
+      detail: { ...value, description: 'Safe summary source.', inclusionHighlights: [], exclusionHighlights: [], durationMinutes: null },
+    }),
+  })
+
+  assert.equal(result.ok, true)
+  assert.equal(result.review.candidateCount, 1)
 })
