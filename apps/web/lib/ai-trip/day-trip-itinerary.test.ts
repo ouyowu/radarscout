@@ -4,17 +4,17 @@ import { buildDayTripItinerary } from './day-trip-itinerary'
 
 function makeProduct(overrides: Partial<AiProductContextItem> = {}): AiProductContextItem {
   return {
-    id: 'partner_cm_1232729',
-    title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
+    id: 'viator_191442p6',
+    title: 'Doi Inthanon, Waterfall and Royal Project Day Trip',
     city: 'Chiang Mai',
-    summary: 'A reviewed half-day elephant care experience.',
-    imageUrl: 'https://images.example.com/elephant-day.jpg',
-    imageAlt: 'Elephants walking through a Chiang Mai sanctuary',
-    tags: ['Elephants', 'Nature'],
-    detailHref: '/tours/partner_cm_1232729',
+    summary: 'A reviewed Chiang Mai nature day trip.',
+    imageUrl: 'https://images.example.com/doi-inthanon.jpg',
+    imageAlt: 'A Chiang Mai nature day trip',
+    tags: ['Nature', 'Waterfalls'],
+    detailHref: '/tours/viator_191442p6',
     retailPrice: null,
     currency: null,
-    ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+    ctaHref: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-191442P6?pid=P00309837',
     ctaLabel: 'Check availability',
     ctaRel: 'nofollow sponsored noopener noreferrer',
     externalHandoff: true,
@@ -34,10 +34,10 @@ describe('buildDayTripItinerary', () => {
     }, [
       makeProduct(),
       makeProduct({
-        id: 'partner_cm_test_2',
+        id: 'viator_211395p4',
         title: 'Doi Inthanon Nature Day Trip',
-        detailHref: '/tours/partner_cm_test_2',
-        ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1239998',
+        detailHref: '/tours/viator_211395p4',
+        ctaHref: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-211395P4?pid=P00309837',
         tags: ['Nature', 'Hiking'],
       }),
     ])
@@ -59,11 +59,11 @@ describe('buildDayTripItinerary', () => {
     expect(itinerary?.days[0]).toMatchObject({
       dayNumber: 1,
       experience: {
-        productId: 'partner_cm_1232729',
-        title: 'Half-Day Morning Elephant Sanctuary Program in Chiang Mai',
+        productId: 'viator_191442p6',
+        title: 'Doi Inthanon, Waterfall and Royal Project Day Trip',
         handoff: {
           label: 'Check availability',
-          href: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+          href: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-191442P6?pid=P00309837',
           rel: 'nofollow sponsored noopener noreferrer',
         },
       },
@@ -96,7 +96,7 @@ describe('buildDayTripItinerary', () => {
     ])
 
     expect(itinerary?.days).toHaveLength(1)
-    expect(itinerary?.days[0].experience.productId).toBe('partner_cm_1232729')
+    expect(itinerary?.days[0].experience.productId).toBe('viator_191442p6')
     expect(itinerary?.unfilledDayCount).toBe(2)
   })
 
@@ -117,9 +117,9 @@ describe('buildDayTripItinerary', () => {
 
   it('caps the itinerary at seven day tours', () => {
     const products = Array.from({ length: 9 }, (_, index) => makeProduct({
-      id: `partner_cm_test_${index}`,
-      detailHref: `/tours/partner_cm_test_${index}`,
-      ctaHref: `https://widgets.bokun.io/online-sales/public-channel/experience/99900${index}`,
+      id: `viator_cm_test_${index}`,
+      detailHref: `/tours/viator_cm_test_${index}`,
+      ctaHref: `https://www.viator.com/tours/Chiang-Mai/example/d5267-99900${index}?pid=P00309837`,
     }))
 
     const itinerary = buildDayTripItinerary({
@@ -134,5 +134,20 @@ describe('buildDayTripItinerary', () => {
     expect(itinerary?.tripSpec.durationDays).toBe(7)
     expect(itinerary?.days).toHaveLength(7)
     expect(itinerary?.unfilledDayCount).toBe(0)
+  })
+
+  it('rejects legacy Bókun widget handoffs from the public Viator itinerary', () => {
+    const itinerary = buildDayTripItinerary({
+      destination: 'Chiang Mai',
+      durationDays: 1,
+      interests: ['nature'],
+      pace: 'relaxed',
+      travelerType: 'couple',
+      groupSize: 2,
+    }, [makeProduct({
+      ctaHref: 'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
+    })])
+
+    expect(itinerary).toBeNull()
   })
 })
