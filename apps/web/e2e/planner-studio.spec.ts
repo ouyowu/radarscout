@@ -96,21 +96,23 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
 
   await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Your trip brief' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Suggested route' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Reviewed experiences' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Chiang Mai day-tour route' })).toBeVisible()
   await expect(page.getByText('Why recommended')).toBeVisible()
   await expect(page.getByText('Best for')).toBeVisible()
   await expect(page.getByText('Before you choose')).toBeVisible()
-  await expect(page.getByRole('img', { name: /schematic map of thailand/i })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Open Chiang Mai area map' })).toHaveAttribute(
-    'href',
-    'https://www.openstreetmap.org/search?query=Chiang%20Mai%2C%20Thailand',
-  )
+  await expect(page.getByRole('button', { name: 'Day 1' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Day 2' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Day 3' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'No reviewed map coverage for this day yet' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Review product details' })).toHaveAttribute(
     'href',
     '/tours/prod_cm_1?source=ai-trip-planner',
   )
   await expect(page.getByRole('link', { name: 'Check availability' })).toHaveCount(0)
+
+  await page.getByRole('button', { name: 'Day 3' }).click()
+  await expect(page.getByRole('heading', { name: 'Keep this day flexible' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Day 3' })).toHaveAttribute('aria-pressed', 'true')
   expect(searchRequests).toBe(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })

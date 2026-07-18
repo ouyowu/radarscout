@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
-import { DayTripItineraryPanel } from '../ai-trip-planner/DayTripItineraryPanel'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import {
   decideNextGuideStep,
@@ -14,6 +13,7 @@ import {
   summarizeUnderstoodIntent,
 } from './plannerConversation'
 import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
+import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
 
 type StudioMessage = {
   id: number
@@ -79,9 +79,10 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
 
 type PlannerStudioProps = {
   initialIdea?: string
+  publicMapToken?: string | null
 }
 
-export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
+export function PlannerStudio({ initialIdea = '', publicMapToken = null }: PlannerStudioProps) {
   const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
   const [messages, setMessages] = useState<StudioMessage[]>(() => [
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
@@ -380,7 +381,11 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
                   </p>
                 </div>
               </div>
-              <DayTripItineraryPanel itinerary={itinerary} />
+              <PlannerItineraryWorkspace
+                itinerary={itinerary}
+                products={searchState?.status === 'ok' ? searchState.products : []}
+                publicMapToken={publicMapToken}
+              />
               <p className="mt-4 text-sm font-semibold leading-6 text-rs-muted">
                 Want the full comparison grid for this idea?{' '}
                 <Link
