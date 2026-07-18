@@ -36,6 +36,12 @@ const CURRENT_INDEXABLE_SITEMAP_URLS = [
   `${BASE}/contact`,
   `${BASE}/privacy-policy`,
   `${BASE}/terms-of-service`,
+  `${BASE}/tours/viator_6467bkknight`,
+  `${BASE}/tours/viator_163642p1`,
+  `${BASE}/tours/viator_191442p6`,
+  `${BASE}/tours/viator_163642p25`,
+  `${BASE}/tours/viator_160694p9`,
+  `${BASE}/tours/viator_44720p2`,
 ] as const
 
 const REDDIT_TOOL_MARKETING_ROUTES = [
@@ -77,7 +83,6 @@ describe('controlled SEO opening guard', () => {
     expect(urls).not.toContain(`${BASE}/ai-trip-planner`)
     expect(urls).not.toContain(`${BASE}/planner`)
     expect(urls).not.toContain(`${BASE}/tours/prod_cm_1`)
-    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
   })
 
   it('keeps only allowlisted route metadata open to indexing', async () => {
@@ -95,6 +100,17 @@ describe('controlled SEO opening guard', () => {
     expect(plannerStudioMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(demoMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(tourDetailMetadata.robots).toMatchObject({ index: false, follow: false })
+  })
+
+  it('opens tour metadata only for an explicitly approved Viator candidate', async () => {
+    const approvedId = 'viator_6467bkknight'
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(makePublicProduct(approvedId))
+    process.env.NEXT_PUBLIC_BASE_URL = BASE
+
+    const tourDetailMetadata = await generateTourDetailMetadata({ params: { id: approvedId } })
+
+    expect(tourDetailMetadata.robots).toMatchObject({ index: true, follow: true })
+    expect(tourDetailMetadata.alternates?.canonical).toBe(`${BASE}/tours/${approvedId}`)
   })
 
   it('keeps reddit-tool marketing routes disallowed in robots.txt', () => {
