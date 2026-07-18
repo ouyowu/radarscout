@@ -152,4 +152,17 @@ describe('generateMetadata — tours/[id]/page', () => {
     expect(isTourDetailSeoCandidate('prod_abc')).toBe(false)
     expect(meta.robots).toMatchObject({ index: false, follow: false })
   })
+
+  it('operator-approved Viator candidate is indexable and followable', async () => {
+    const approvedId = 'viator_6467bkknight'
+    productLoaderMock.getPublicThailandProduct.mockResolvedValue(
+      makePublicProduct({ id: approvedId, detailHref: `/tours/${approvedId}` }),
+    )
+
+    const meta = await generateMetadata({ params: { id: approvedId } })
+
+    expect(isTourDetailSeoCandidate(approvedId)).toBe(true)
+    expect(meta.robots).toMatchObject({ index: true, follow: true })
+    expect(meta.alternates?.canonical).toContain(`/tours/${approvedId}`)
+  })
 })

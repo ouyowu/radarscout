@@ -12,6 +12,14 @@ import sitemap from '../sitemap'
 import robots from '../robots'
 
 const BASE = 'https://www.radarscout.io'
+const APPROVED_TOUR_URLS = [
+  `${BASE}/tours/viator_6467bkknight`,
+  `${BASE}/tours/viator_163642p1`,
+  `${BASE}/tours/viator_191442p6`,
+  `${BASE}/tours/viator_163642p25`,
+  `${BASE}/tours/viator_160694p9`,
+  `${BASE}/tours/viator_44720p2`,
+] as const
 
 function makeProduct(id: string, overrides: Record<string, unknown> = {}) {
   return {
@@ -41,7 +49,7 @@ describe('sitemap', () => {
     expect(urls).toContain(`${BASE}/terms-of-service`)
   })
 
-  it('excludes eligible product URLs from the sitemap until tour pages are public-safe', async () => {
+  it('excludes unapproved eligible product URLs from the sitemap', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([
       makeProduct('bkk_tour_123'),
     ])
@@ -50,16 +58,16 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).not.toContain(`${BASE}/tours/bkk_tour_123`)
-    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
+    expect(urls.filter(url => url.includes('/tours/')).sort()).toEqual([...APPROVED_TOUR_URLS].sort())
   })
 
-  it('does not include tour detail SEO candidates while the candidate allowlist is empty', async () => {
+  it('includes exactly the six approved tour detail SEO candidates', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([])
 
     const entries = await sitemap()
     const urls = entries.map(e => e.url)
 
-    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
+    expect(urls.filter(url => url.includes('/tours/')).sort()).toEqual([...APPROVED_TOUR_URLS].sort())
   })
 
   it('does not include unsafe tour detail URLs even when product IDs require encoding', async () => {
@@ -71,7 +79,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).not.toContain(`${BASE}/tours/${encodeURIComponent('tour id with spaces')}`)
-    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
+    expect(urls.filter(url => url.includes('/tours/')).sort()).toEqual([...APPROVED_TOUR_URLS].sort())
   })
 
   it('returns no duplicate URLs when multiple products are returned but excluded', async () => {
@@ -93,10 +101,8 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(5)
-    entries.forEach(entry => {
-      expect(entry.url).not.toContain('/tours/')
-    })
+    expect(entries).toHaveLength(11)
+    expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 
   it('excludes product from Chiang Rai even when it would be Thailand-eligible', async () => {
@@ -108,7 +114,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).not.toContain(`${BASE}/tours/cr_tour_456`)
-    expect(urls.some(url => url.includes('/tours/'))).toBe(false)
+    expect(urls.filter(url => url.includes('/tours/')).sort()).toEqual([...APPROVED_TOUR_URLS].sort())
   })
 
   it('includes the Chiang Mai finder as the single controlled-opening SEO candidate', async () => {
