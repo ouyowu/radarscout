@@ -35,6 +35,11 @@ describe('destination scope positioning', () => {
     expect(destinationDetailSource).toContain('planning-only route guide')
     expect(destinationDetailSource).toContain('product recommendations stay off until trusted local supplier coverage is reviewed')
     expect(destinationDetailSource).toContain('Planning only — partner tours are coming soon')
-    expect(destinationDetailSource).toContain('It does not display fake products, affiliate products, or unsupported availability claims')
+    expect(destinationDetailSource).toContain('do not display unsupported products or affiliate links')
+  })
+
+  it('adds the reviewed city activity handoff only to Thailand', () => {
+    expect(destinationDetailSource).toContain("destination.slug === 'thailand' ? <CityActivityPartnerLinks /> : null")
+    expect(destinationDetailSource).toContain('clearly marked affiliate links as optional comparison handoffs')
   })
 })

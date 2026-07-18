@@ -7,6 +7,7 @@ export type FunnelEvent =
   | 'finder_matching_experiences_clicked'
   | 'finder_recommendations_rendered'
   | 'booking_partner_handoff_clicked'
+  | 'affiliate_partner_handoff_clicked'
   | 'finder_planner_viewed'
 
 export type FunnelEventProps = Record<string, string | number | boolean>
