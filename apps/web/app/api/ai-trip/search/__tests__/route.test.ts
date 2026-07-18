@@ -196,6 +196,40 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.meta.availabilityEnabled).toBe(false)
   })
 
+  it('Ko Lanta prompt reaches the newly reviewed Viator catalog', async () => {
+    contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<Record<string, unknown>>) => ({
+      status: 'ok',
+      items: candidates.map(candidate => makeContextItem({
+        id: candidate.id,
+        title: candidate.title,
+        city: candidate.city,
+        summary: candidate.summary,
+        tags: candidate.suggestedTags,
+        detailHref: candidate.detailHref,
+        retailPrice: candidate.retailPrice,
+        currency: candidate.currency,
+        ctaHref: candidate.ctaHref,
+        ctaLabel: candidate.ctaLabel,
+        ctaRel: candidate.ctaRel,
+        externalHandoff: candidate.externalHandoff,
+      })),
+    }))
+
+    const res = await POST(makeRequest({ prompt: '1 day in Ko Lanta with a Thai cooking class' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.intent.destination).toBe('Ko Lanta')
+    expect(body.products).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'viator_110534p380',
+        ctaLabel: 'Check availability',
+        externalHandoff: true,
+      }),
+    ]))
+  })
+
   it('returns only reviewed handoff-ready products in the primary result set', async () => {
     contextMock.buildAiProductContext.mockResolvedValue({
       status: 'ok',
