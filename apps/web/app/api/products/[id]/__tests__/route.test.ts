@@ -184,7 +184,7 @@ describe('GET /api/products/[id]', () => {
     expect(serialized).not.toContain('localAiRawOutput')
   })
 
-  it('does not let reviewedEnrichment override transactional Bókun fields', async () => {
+  it('never publishes transactional Bókun fields, even when present in the database', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(makeProduct({
       retailPrice: { toString: () => '75.00' },
       currency: 'USD',
@@ -194,8 +194,8 @@ describe('GET /api/products/[id]', () => {
     const response = await GET(makeRequest('product_abc'), makeParams('product_abc'))
     const body = await response.json()
 
-    expect(body.product.retailPrice).toBe('75.00')
-    expect(body.product.currency).toBe('USD')
+    expect(body.product.retailPrice).toBeNull()
+    expect(body.product.currency).toBeNull()
     expect(body.product.reviewedEnrichment).not.toHaveProperty('price')
     expect(body.product.reviewedEnrichment).not.toHaveProperty('retailPrice')
   })

@@ -95,12 +95,16 @@ function readTags(value: unknown): string[] | null {
     : null
 }
 
+// The one approved RadarScout Viator affiliate ID. Any other pid means the
+// referral would be credited to someone else, so validation fails closed.
+export const VIATOR_AFFILIATE_PID = 'P00309837'
+
 function isViatorAffiliateUrl(value: string): boolean {
   try {
     const url = new URL(value)
     return url.protocol === 'https:'
       && (url.hostname === 'viator.com' || url.hostname.endsWith('.viator.com'))
-      && url.searchParams.has('pid')
+      && url.searchParams.get('pid') === VIATOR_AFFILIATE_PID
   } catch {
     return false
   }

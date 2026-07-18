@@ -240,8 +240,10 @@ export async function loadPublicThailandProductDetail(id: string): Promise<Publi
         imageGalleryUrls: shaped.imageUrl ? [shaped.imageUrl] : [],
         summary: reviewedEnrichment!.shortSummary!,
         description: reviewedEnrichment!.shortSummary!,
-        retailPrice: shaped.retailPrice,
-        currency: shaped.currency,
+        // Public contract: commercial fields from the provider DB are never
+        // published, even for products that pass the review gate.
+        retailPrice: null,
+        currency: null,
         detailHref: shaped.detailHref,
         facts: productFacts(product.rawJson),
         reviewedEnrichment,

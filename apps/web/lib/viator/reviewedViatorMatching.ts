@@ -2,6 +2,7 @@ import type { AiProductCandidate } from '@/lib/aiProducts/listAiEligibleThailand
 
 import {
   loadReviewedViatorProducts,
+  VIATOR_AFFILIATE_PID,
   type ReviewedViatorProduct,
 } from './reviewedViatorProducts'
 
@@ -94,11 +95,10 @@ function matchesCity(product: ReviewedViatorProduct, city?: string | null): bool
 export function isReviewedViatorAffiliateUrl(value: string): boolean {
   try {
     const url = new URL(value)
-    const affiliateId = url.searchParams.get('pid')
 
     return url.protocol === 'https:' &&
       (url.hostname === 'viator.com' || url.hostname.endsWith('.viator.com')) &&
-      Boolean(affiliateId?.trim())
+      url.searchParams.get('pid') === VIATOR_AFFILIATE_PID
   } catch {
     return false
   }

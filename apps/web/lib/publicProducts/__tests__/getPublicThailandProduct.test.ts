@@ -214,6 +214,20 @@ describe('getPublicThailandProduct', () => {
     expect(JSON.stringify(result)).not.toContain('"secret"')
   })
 
+  it('never exposes provider commercial fields even for publish-ready database products', async () => {
+    dbMock.bokunProduct.findFirst.mockResolvedValue(
+      makeProduct({ retailPrice: { toString: () => '1200.00' }, currency: 'THB' }),
+    )
+
+    const result = await getPublicThailandProduct('prod_abc')
+
+    expect(result).not.toBeNull()
+    expect(result!.retailPrice).toBeNull()
+    expect(result!.currency).toBeNull()
+    expect(JSON.stringify(result)).not.toContain('1200.00')
+    expect(JSON.stringify(result)).not.toContain('"THB"')
+  })
+
   it('does not call getReviewedEnrichmentByProductId when product is ineligible', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ title: 'Japan Cherry Tour', city: 'Bangkok' }),
