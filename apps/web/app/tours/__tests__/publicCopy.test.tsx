@@ -1,19 +1,10 @@
 import React from 'react'
+import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoForbiddenPublicCopy } from '../../__tests__/publicSafetyPatterns'
 
 vi.mock('server-only', () => ({}))
-
-vi.mock('next/headers', () => ({
-  headers: vi.fn(() => ({
-    get: vi.fn((key: string) => {
-      if (key === 'x-forwarded-host' || key === 'host') return 'www.radarscout.io'
-      if (key === 'x-forwarded-proto') return 'https'
-      return null
-    }),
-  })),
-}))
 
 const productLoaderMock = vi.hoisted(() => ({
   getPublicThailandProduct: vi.fn(),
@@ -24,6 +15,8 @@ vi.mock('@/lib/publicProducts/getPublicThailandProduct', () => productLoaderMock
 
 import ToursExperienceDiscoveryPage from '../page'
 import TourDetailPage from '../[id]/page'
+
+const toursSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 
 const FORBIDDEN_TOUR_COPY = [
   /supplier rates/i,
@@ -39,14 +32,6 @@ function expectSafeTourCopy(markup: string) {
   for (const pattern of FORBIDDEN_TOUR_COPY) {
     expect(markup).not.toMatch(pattern)
   }
-}
-
-function mockFetchJson(payload: unknown) {
-  vi.stubGlobal('fetch', vi.fn(async () => ({
-    ok: true,
-    status: 200,
-    json: async () => payload,
-  })))
 }
 
 function makeTourDetailProduct(overrides: Record<string, unknown> = {}) {
@@ -83,41 +68,25 @@ describe('tour public copy safety', () => {
     vi.unstubAllGlobals()
   })
 
-  it('renders /tours without tourist-facing backend, rate, payment, or availability claims', async () => {
-    mockFetchJson({
-      products: [
-        {
-          id: 'tour_without_price',
-          title: 'Chiang Mai Elephant Care',
-          destination: 'Chiang Mai',
-          summary: null,
-          imageUrl: null,
-          retailPrice: null,
-          currency: null,
-          tags: [],
-          detailHref: '/tours/tour_without_price',
-        },
-      ],
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        count: 1,
-      },
-    })
-
+  it('renders the first 12 reviewed Viator products with safe copy and pagination', async () => {
     const element = await ToursExperienceDiscoveryPage({})
     const markup = renderToStaticMarkup(element)
 
+    expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(12)
+    expect(markup).toContain('/tours/viator_')
+    expect(markup).toContain('105 reviewed experiences')
+    expect(markup).toContain('Page 1 of 9')
+    expect(markup).toContain('aria-label="Next catalogue page"')
+    expect(markup).toContain('page=2')
     expect(markup).not.toContain('Price not listed')
     expect(markup).not.toContain('All prices')
     expect(markup).not.toContain('Has price')
-    expect(markup).toContain('trusted partner records')
+    expect(markup).toContain('reviewed Viator experience records')
     expect(markup).toContain('Plan my day')
-    expect(markup).toContain('Review details before partner handoff')
     expect(markup).toContain('Why are some cities not shown yet?')
     expect(markup).toContain('Coverage expands city by city')
+    expect(markup).not.toContain('partner_cm_')
+    expect(markup).not.toContain('Bókun')
     expect(markup).not.toContain('Japan, France, and other selected destinations remain planning-only.')
     expect(markup).not.toContain('More selected high-demand destinations will be added')
     expect(markup).not.toContain('Can I compare tours from every destination on this page?')
@@ -128,40 +97,33 @@ describe('tour public copy safety', () => {
     expectSafeTourCopy(markup)
   })
 
-  it('keeps /tours listing cards safe without exposing price values', async () => {
-    mockFetchJson({
-      products: [
-        {
-          id: 'tour_with_source_image_and_price',
-          title: 'Chiang Mai Food Walk',
-          destination: 'Chiang Mai',
-          summary: 'A reviewed local food experience record.',
-          imageUrl: 'https://cdn.example.com/source-image.jpg',
-          retailPrice: '1200',
-          currency: 'THB',
-          tags: ['Food'],
-          detailHref: '/tours/tour_with_source_image_and_price',
-        },
-      ],
-      meta: {
-        source: 'signed-bokun-supplier-products',
-        inventoryScope: 'thailand-first',
-        bookingEnabled: false,
-        availabilityEnabled: false,
-        count: 1,
-      },
+  it('filters all reviewed cities and keeps later catalogue pages reachable', async () => {
+    const element = await ToursExperienceDiscoveryPage({
+      searchParams: { city: 'phuket', page: '2' },
     })
-
-    const element = await ToursExperienceDiscoveryPage({})
     const markup = renderToStaticMarkup(element)
 
-    expect(markup).toContain('Chiang Mai Food Walk')
-    expect(markup).toContain('Review details before partner handoff')
-    expect(markup).toContain('https://cdn.example.com/source-image.jpg')
-    expect(markup).not.toContain('THB 1200')
+    expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(4)
+    expect(markup).toContain('16 reviewed experiences')
+    expect(markup).toContain('Page 2 of 2')
+    expect(markup).toContain('Ko Pha Ngan')
+    expect(markup).toContain('Chiang Rai')
+    expect(markup).toContain('Hua Hin')
+    expect(markup).toContain('city=phuket')
+    expect(markup).not.toContain('partner_cm_')
     expect(markup).not.toContain('Plan with AI')
     expect(markup.indexOf('City')).toBeLessThan(markup.indexOf('Explore by interest'))
     expectSafeTourCopy(markup)
+  })
+
+  it('uses the shared reviewed Viator catalogue directly instead of a legacy self-fetch', () => {
+    expect(toursSource).toContain('loadReviewedViatorPublicCatalogue')
+    expect(toursSource).toContain('listReviewedViatorPublicCatalogueCities')
+    expect(toursSource).toContain('paginateReviewedViatorPublicCatalogue')
+    expect(toursSource).not.toContain('/api/products')
+    expect(toursSource).not.toContain('signed-bokun-supplier-products')
+    expect(toursSource).not.toContain('pilotPartnerProducts')
+    expect(toursSource).not.toContain('next/headers')
   })
 
   it('renders /tours/{id} without tourist-facing backend, rate, payment, or availability claims', async () => {

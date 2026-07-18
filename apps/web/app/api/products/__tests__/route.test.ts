@@ -1,532 +1,105 @@
+import { readFileSync } from 'node:fs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.mock('server-only', () => ({}))
 
-const dbMock = vi.hoisted(() => ({
-  bokunProduct: {
-    findMany: vi.fn(),
-  },
-}))
-
-vi.mock('@reddit-monitor/db', () => ({
-  db: dbMock,
-}))
-
-const enrichmentMock = vi.hoisted(() => ({
-  getReviewedEnrichmentsByProductIds: vi.fn(),
-}))
-vi.mock('@/lib/reviewedEnrichmentReader', () => enrichmentMock)
-
-const handoffMock = vi.hoisted(() => ({
-  resolveReviewedProductHandoff: vi.fn(),
-}))
-vi.mock('@/lib/publicProducts/ownerManagedProductHandoffMappings', () => handoffMock)
-
-const partnerSeedMock = vi.hoisted(() => ({
-  pilotPartnerProducts: [] as Array<Record<string, unknown>>,
-}))
-vi.mock('@/lib/partnerProducts/seed/pilotPartnerProducts', () => partnerSeedMock)
-
 import { GET } from '../route'
+
+const routeSource = readFileSync(new URL('../route.ts', import.meta.url), 'utf8')
 
 function makeRequest(query: Record<string, string> = {}) {
   const params = new URLSearchParams({ destination: 'thailand', ...query })
   return new NextRequest(`http://localhost/api/products?${params.toString()}`)
 }
 
-function makeProduct(overrides: Record<string, unknown> = {}) {
-  return {
-    id: 'product_abc',
-    bokunActivityId: '1232729',
-    title: 'Chiang Mai Elephant Sanctuary',
-    description: null,
-    excerpt: null,
-    city: 'Chiang Mai',
-    location: 'Mae Rim',
-    retailPrice: null,
-    currency: null,
-    rawJson: {},
-    lastSyncedAt: null,
-    supplier: null,
-    ...overrides,
-  }
-}
-
-function makeProductWithImage(overrides: Record<string, unknown> = {}) {
-  return makeProduct({
-    rawJson: { keyPhoto: { originalUrl: 'https://cdn.example.com/photo.jpg' } },
-    ...overrides,
-  })
-}
-
-describe('GET /api/products', () => {
+describe('GET /api/products — reviewed Viator public catalogue', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    partnerSeedMock.pilotPartnerProducts = []
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => new Map(
-      ids.map(id => [id, {
-        cleanedTitle: `Reviewed ${id}`,
-        shortSummary: 'Human-reviewed summary.',
-        suggestedTags: ['Thailand'],
-        seoTitle: null,
-        seoDescription: null,
-        reviewedBy: 'operator@radarscout.io',
-        reviewedAt: '2026-07-11T00:00:00.000Z',
-      }]),
-    ))
-    handoffMock.resolveReviewedProductHandoff.mockReturnValue({
-      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
-      label: 'Check availability',
-      rel: 'nofollow sponsored noopener noreferrer',
-      source: 'booking_partner_verified_public_widget',
-      verifiedBy: 'operator_manual_review',
-    })
   })
 
-  it('keeps reviewed static partner seed products visible when database rows are not publish-ready', async () => {
-    partnerSeedMock.pilotPartnerProducts = Array.from({ length: 8 }, (_, index) => ({
-      id: `partner_cm_${index}`,
-      destination: 'Chiang Mai',
-      title: `Reviewed Chiang Mai experience ${index}`,
-      shortSummary: 'A reviewed partner experience.',
-      tags: ['Chiang Mai'],
-      partnerName: 'Reviewed partner',
-      bookingWidgetUrl: `https://widgets.bokun.io/online-sales/channel/experience/${index}`,
-      imageUrl: `https://imgcdn.bokun.tools/${index}.jpeg`,
-    }))
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ city: 'chiang-mai', take: '8' }))
-    const body = await response.json()
-
-    expect(response.status).toBe(200)
-    expect(body.products).toHaveLength(8)
-    expect(body.products.every((product: { id: string }) => product.id.startsWith('partner_cm_'))).toBe(true)
-    expect(body.products.every((product: { imageUrl: string | null }) => Boolean(product.imageUrl))).toBe(true)
-    expect(body.products.every((product: { bookingPartnerHandoff?: { label?: string } }) =>
-      product.bookingPartnerHandoff?.label === 'Check availability')).toBe(true)
-  })
-
-  it('returns empty list without DB call when destination is not thailand', async () => {
-    const response = await GET(new NextRequest('http://localhost/api/products?destination=japan'))
-    const body = await response.json()
-
-    expect(response.status).toBe(200)
-    expect(body.products).toEqual([])
-    expect(body.meta.count).toBe(0)
-    expect(dbMock.bokunProduct.findMany).not.toHaveBeenCalled()
-  })
-
-  it('returns empty list without DB call when city filter is unrecognized', async () => {
-    const response = await GET(makeRequest({ city: 'tokyo' }))
-    const body = await response.json()
-
-    expect(response.status).toBe(200)
-    expect(body.products).toEqual([])
-    expect(dbMock.bokunProduct.findMany).not.toHaveBeenCalled()
-  })
-
-  it('returns eligible products with geographic signal (city)', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([makeProduct()])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(response.status).toBe(200)
-    expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('product_abc')
-    expect(body.products[0]).not.toHaveProperty('rawJson')
-  })
-
-  it('continues scanning after an unreviewed page until it finds a publish-ready product', async () => {
-    const unreviewedBatch = Array.from({ length: 50 }, (_, index) => makeProduct({
-      id: `unreviewed_${index}`,
-      title: `Chiang Mai Tour ${index}`,
-    }))
-    const reviewedProduct = makeProduct({ id: 'reviewed_later', title: 'Chiang Mai Reviewed Tour' })
-
-    dbMock.bokunProduct.findMany.mockImplementation(async ({ skip }: { skip: number }) => (
-      skip === 0 ? unreviewedBatch : [reviewedProduct]
-    ))
-    enrichmentMock.getReviewedEnrichmentsByProductIds.mockImplementation(async (ids: string[]) => (
-      ids.includes('reviewed_later')
-        ? new Map([['reviewed_later', {
-            cleanedTitle: 'Reviewed Chiang Mai Tour',
-            shortSummary: 'Human-reviewed summary.',
-            suggestedTags: ['Chiang Mai'],
-            seoTitle: null,
-            seoDescription: null,
-            reviewedBy: 'operator@radarscout.io',
-            reviewedAt: '2026-07-11T00:00:00.000Z',
-          }]])
-        : new Map()
-    ))
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products.map((product: { id: string }) => product.id)).toEqual(['reviewed_later'])
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(2)
-  })
-
-  it('returns eligible products filtered by city', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'bkk_1', city: 'Bangkok', title: 'Bangkok Temple Tour' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ city: 'bangkok', take: '1' }))
-    const body = await response.json()
-
-    expect(response.status).toBe(200)
-    expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('bkk_1')
-    expect(body.meta.filters.city).toBe('Bangkok')
-  })
-
-  it('returns correct count in meta', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'p1' }),
-      makeProduct({ id: 'p2', title: 'Bangkok River Tour' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '5' }))
-    const body = await response.json()
-
-    expect(body.meta.count).toBe(2)
-    expect(body.meta.resultCount).toBe(2)
-  })
-
-  it('defaults to take=12 when not specified', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(new NextRequest('http://localhost/api/products?destination=thailand'))
-    await response.json()
-
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ take: 50 }),
-    )
-  })
-
-  it('clamps take to 50 maximum', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '200' }))
-    await response.json()
-
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ take: 50 }),
-    )
-  })
-
-  it('excludes product with foreign signal in title', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ title: 'Singapore Cooking Class', city: 'Bangkok' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('excludes product with foreign signal in location', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ title: 'City Transfer', city: 'Bangkok', location: 'Kuala Lumpur Airport' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('excludes product with "Thai" only and no geographic signal', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ title: 'Thai Cooking Class', city: null, location: null }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('excludes destination-mismatched product (city=Bangkok, title mentions Singapore)', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ title: 'Singapore Night Tour', city: 'Bangkok' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('hasImage=true returns only products with imageUrl', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'no_image' }),
-      makeProductWithImage({ id: 'has_image', title: 'Phuket Snorkeling' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ hasImage: 'true', take: '5' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('has_image')
-    expect(body.products[0].imageUrl).toBeTruthy()
-  })
-
-  it('hasImage=false returns only products without imageUrl', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'no_image' }),
-      makeProductWithImage({ id: 'has_image', title: 'Phuket Snorkeling' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ hasImage: 'false', take: '5' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('no_image')
-    expect(body.products[0].imageUrl).toBeNull()
-  })
-
-  it('scan loop fetches next batch when first batch yields no eligible products', async () => {
-    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
-      id: `ineligible_${i}`,
-      title: 'Japan Tour',
-      city: 'Bangkok',
-    }))
-    const eligibleProduct = makeProduct({ id: 'eligible_1', title: 'Chiang Mai Day Tour', city: 'Chiang Mai' })
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([eligibleProduct])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(1)
-    expect(body.products[0].id).toBe('eligible_1')
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(2)
-    expect(dbMock.bokunProduct.findMany).toHaveBeenNthCalledWith(1, expect.objectContaining({ skip: 0 }))
-    expect(dbMock.bokunProduct.findMany).toHaveBeenNthCalledWith(2, expect.objectContaining({ skip: 50 }))
-  })
-
-  it('scan loop stops when batch returns fewer rows than batch size (end of table)', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'p1' }),
-      makeProduct({ id: 'p2', title: 'Bangkok Temple Walk' }),
-    ])
-
-    const response = await GET(makeRequest({ take: '12' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(2)
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(1)
-  })
-
-  it('does not expose rawJson in response body', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProductWithImage({ id: 'p1' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '1' }))
-    const serialized = JSON.stringify(await response.json())
-
-    expect(serialized).not.toContain('"rawJson"')
-  })
-
-  it('returns PRODUCTS_UNAVAILABLE on DB error', async () => {
-    dbMock.bokunProduct.findMany.mockRejectedValue(new Error('DB failure'))
-
+  it('returns the first page of reviewed Viator products with safe affiliate handoffs', async () => {
     const response = await GET(makeRequest())
     const body = await response.json()
 
     expect(response.status).toBe(200)
-    expect(body.products).toEqual([])
-    expect(body.error).toBe('PRODUCTS_UNAVAILABLE')
-  })
+    expect(body.products).toHaveLength(12)
+    expect(body.meta).toMatchObject({
+      source: 'reviewed-viator-affiliate-products',
+      catalogueScope: 'thailand-reviewed',
+      bookingEnabled: false,
+      availabilityEnabled: false,
+      count: 12,
+      resultCount: 12,
+      totalCount: 105,
+      page: 1,
+      pageSize: 12,
+      totalPages: 9,
+    })
 
-  it('returns only eligible products from a mix of eligible and ineligible', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'eligible_1', city: 'Bangkok', title: 'Grand Palace Tour' }),
-      makeProduct({ id: 'ineligible_1', city: 'Bangkok', title: 'Tokyo Transfer' }),
-      makeProduct({ id: 'eligible_2', city: 'Phuket', title: 'Phuket Sunset Cruise' }),
-      makeProduct({ id: 'ineligible_2', title: 'Thai Cooking', city: null, location: null }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '5' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(2)
-    expect(body.products.map((p: { id: string }) => p.id)).toEqual(['eligible_1', 'eligible_2'])
-  })
-})
-
-describe('GET /api/products — deterministic ordering and query contract', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  const EXPECTED_ORDER_BY = [{ city: 'asc' }, { title: 'asc' }, { id: 'asc' }]
-
-  it('A: every batch query sends the complete orderBy contract including id tie-breaker', async () => {
-    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
-      id: `ineligible_${i}`,
-      title: 'Japan Tour',
-      city: 'Bangkok',
-    }))
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([makeProduct({ id: 'eligible_1' })])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    await GET(makeRequest({ take: '1' }))
-
-    const callCount = dbMock.bokunProduct.findMany.mock.calls.length
-    expect(callCount).toBeGreaterThanOrEqual(2)
-    for (let i = 1; i <= callCount; i++) {
-      expect(dbMock.bokunProduct.findMany).toHaveBeenNthCalledWith(
-        i,
-        expect.objectContaining({ orderBy: EXPECTED_ORDER_BY }),
-      )
+    for (const product of body.products) {
+      expect(product.id).toMatch(/^viator_/)
+      expect(product.detailHref).toBe(`/tours/${product.id}`)
+      expect(product.retailPrice).toBeNull()
+      expect(product.currency).toBeNull()
+      expect(product.bookingPartnerHandoff).toMatchObject({
+        label: 'Check availability',
+        rel: 'nofollow sponsored noopener noreferrer',
+        source: 'operator_verified_public_link',
+      })
+      expect(product.bookingPartnerHandoff.href).toMatch(/^https:\/\/(?:[^/]+\.)?viator\.com\//)
     }
+
+    const serialized = JSON.stringify(body)
+    expect(serialized).not.toContain('partner_cm_')
+    expect(serialized).not.toContain('widgets.bokun.io')
+    expect(serialized).not.toContain('rawJson')
+    expect(serialized).not.toContain('supplierName')
   })
 
-  it('B: preserves ID-ascending order for rows sharing city and title; no duplicates, no omissions', async () => {
-    // 49 ineligible + island_a in first batch of 50 triggers next batch
-    const shared = { city: 'Phuket', title: 'Island Tour' }
-    const batchOne = [
-      ...Array.from({ length: 49 }, (_, i) => makeProduct({
-        id: `ineligible_${i}`,
-        title: 'Japan Tour',
-        city: 'Bangkok',
-      })),
-      makeProduct({ id: 'island_a', ...shared }),
-    ]
-    const batchTwo = [
-      makeProduct({ id: 'island_b', ...shared }),
-      makeProduct({ id: 'island_c', ...shared }),
-    ]
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(batchOne)
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(batchTwo)
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '5' }))
-    const body = await response.json()
-
-    const ids: string[] = body.products.map((p: { id: string }) => p.id)
-    expect(ids).toContain('island_a')
-    expect(ids).toContain('island_b')
-    expect(ids).toContain('island_c')
-    expect(new Set(ids).size).toBe(ids.length)
-    expect(ids.indexOf('island_a')).toBeLessThan(ids.indexOf('island_b'))
-    expect(ids.indexOf('island_b')).toBeLessThan(ids.indexOf('island_c'))
-  })
-
-  it('C: multi-batch calls use identical orderBy; skip advances by 50; take stays 50', async () => {
-    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
-      id: `ineligible_${i}`,
-      title: 'Japan Tour',
-      city: 'Bangkok',
-    }))
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([makeProduct({ id: 'eligible_1' })])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    await GET(makeRequest({ take: '1' }))
-
-    expect(dbMock.bokunProduct.findMany).toHaveBeenCalledTimes(2)
-
-    const first = dbMock.bokunProduct.findMany.mock.calls[0][0]
-    const second = dbMock.bokunProduct.findMany.mock.calls[1][0]
-
-    expect(first.orderBy).toEqual(EXPECTED_ORDER_BY)
-    expect(second.orderBy).toEqual(EXPECTED_ORDER_BY)
-    expect(first.skip).toBe(0)
-    expect(second.skip).toBe(50)
-    expect(first.take).toBe(50)
-    expect(second.take).toBe(50)
-  })
-
-  it('D: foreign products remain excluded across multiple batches', async () => {
-    const foreignBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
-      id: `foreign_${i}`,
-      title: 'Japan Tour',
-      city: 'Bangkok',
-    }))
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(foreignBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '5' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('D: "Thai" without geographic evidence remains excluded', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProduct({ id: 'cultural_only', title: 'Thai Massage Course', city: null, location: null }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '5' }))
-    const body = await response.json()
-
-    expect(body.products).toHaveLength(0)
-  })
-
-  it('D: eligible rows in a later batch still fill the requested take', async () => {
-    const ineligibleBatch = Array.from({ length: 50 }, (_, i) => makeProduct({
-      id: `ineligible_${i}`,
-      title: 'Vietnam Tour',
-      city: 'Bangkok',
-    }))
-    const eligibleBatch = [
-      makeProduct({ id: 'late_1', city: 'Krabi', title: 'Krabi Rock Climbing' }),
-      makeProduct({ id: 'late_2', city: 'Krabi', title: 'Krabi Kayaking' }),
-    ]
-
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(ineligibleBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce(eligibleBatch)
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
-
-    const response = await GET(makeRequest({ take: '2' }))
+  it('filters all 19 reviewed city slugs without falling back to legacy products', async () => {
+    const response = await GET(makeRequest({ city: 'ko-pha-ngan', take: '50' }))
     const body = await response.json()
 
     expect(body.products).toHaveLength(2)
-    expect(body.products[0].id).toBe('late_1')
-    expect(body.products[1].id).toBe('late_2')
+    expect(body.products.every((product: { destination: string }) => (
+      product.destination === 'Ko Pha Ngan'
+    ))).toBe(true)
+    expect(body.meta.filters.city).toBe('ko-pha-ngan')
+    expect(body.meta.totalCount).toBe(2)
   })
 
-  it('D: response does not expose eligibility internals or rawJson', async () => {
-    dbMock.bokunProduct.findMany.mockResolvedValueOnce([
-      makeProductWithImage({ id: 'p1', title: 'Phuket Diving' }),
-    ])
-    dbMock.bokunProduct.findMany.mockResolvedValue([])
+  it('paginates the complete reviewed catalogue deterministically', async () => {
+    const firstResponse = await GET(makeRequest({ page: '1', take: '12' }))
+    const secondResponse = await GET(makeRequest({ page: '2', take: '12' }))
+    const firstBody = await firstResponse.json()
+    const secondBody = await secondResponse.json()
+    const firstIds = firstBody.products.map((product: { id: string }) => product.id)
+    const secondIds = secondBody.products.map((product: { id: string }) => product.id)
 
-    const response = await GET(makeRequest({ take: '1' }))
-    const serialized = JSON.stringify(await response.json())
+    expect(secondBody.meta.page).toBe(2)
+    expect(secondBody.meta.totalCount).toBe(105)
+    expect(secondBody.products).toHaveLength(12)
+    expect(firstIds.some((id: string) => secondIds.includes(id))).toBe(false)
+  })
 
-    expect(serialized).not.toContain('"rawJson"')
-    expect(serialized).not.toContain('"eligible"')
-    expect(serialized).not.toContain('"foreignSignals"')
-    expect(serialized).not.toContain('"thailandSignals"')
-    expect(serialized).not.toContain('"reasons"')
+  it('returns an empty safe result for unsupported destinations and cities', async () => {
+    const japanResponse = await GET(new NextRequest('http://localhost/api/products?destination=japan'))
+    const tokyoResponse = await GET(makeRequest({ city: 'tokyo' }))
+    const japanBody = await japanResponse.json()
+    const tokyoBody = await tokyoResponse.json()
+
+    expect(japanBody.products).toEqual([])
+    expect(japanBody.meta.totalCount).toBe(0)
+    expect(tokyoBody.products).toEqual([])
+    expect(tokyoBody.meta.totalCount).toBe(0)
+  })
+
+  it('keeps the legacy Bókun and database catalogue paths out of the public route', () => {
+    expect(routeSource).toContain('loadReviewedViatorPublicCatalogue')
+    expect(routeSource).not.toContain('@reddit-monitor/db')
+    expect(routeSource).not.toContain('pilotPartnerProducts')
+    expect(routeSource).not.toContain('bokunProduct')
+    expect(routeSource).not.toContain('signed-bokun-supplier-products')
   })
 })
