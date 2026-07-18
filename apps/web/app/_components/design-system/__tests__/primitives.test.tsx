@@ -98,11 +98,12 @@ describe('RadarScout design system primitives', () => {
     expect(withoutImage).toContain('linear-gradient')
   })
 
-  it('passes existing reviewed seed media into homepage experience cards', () => {
+  it('passes reviewed Viator media into homepage experience cards', () => {
     const homepage = readFileSync('app/page.tsx', 'utf8')
 
+    expect(homepage).toContain('loadReviewedViatorProducts')
     expect(homepage).toContain('imageUrl={product.imageUrl}')
-    expect(homepage).toContain('imageAlt={product.imageAlt ?? product.title}')
+    expect(homepage).toContain('imageAlt={product.title}')
     expect(homepage).not.toContain('imageAlt={`${product.title} visual placeholder`}')
   })
 })

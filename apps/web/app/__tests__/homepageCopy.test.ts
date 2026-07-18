@@ -49,9 +49,13 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
-  it('presents reviewed experiences without internal test language', () => {
+  it('presents reviewed Viator experiences across Thailand cities without internal test language', () => {
     expect(homepageSource).toContain('Reviewed Thailand day trips')
-    expect(homepageSource).toContain('Start with real experiences, not an endless catalogue.')
+    expect(homepageSource).toContain('Start with reviewed Thailand day trips across cities.')
+    expect(homepageSource).toContain('loadReviewedViatorProducts')
+    expect(homepageSource).toContain('featuredViatorExperiences')
+    expect(homepageSource).not.toContain('pilotPartnerProducts')
+    expect(homepageSource).not.toContain('partner_cm_')
     expect(homepageSource).not.toContain('for the first traveler test')
   })
 
@@ -108,24 +112,26 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toContain('onboarding trusted suppliers in selected top travel destinations')
   })
 
-  it('links to the Chiang Mai finder with safe guided-planner copy', () => {
-    expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
-    expect(homepageSource).toContain('href={chiangMaiPlannerHref}')
-    expect(homepageSource).toContain('Plan a Chiang Mai elephant, food, or nature day.')
-    expect(homepageSource).toContain('Plan with RadarScout')
-    expect(homepageSource).toContain('guided finder')
+  it('links to the shared Planner with safe Thailand-wide guided-planner copy', () => {
+    expect(homepageSource).toContain("const thailandPlannerHref = '/planner'")
+    expect(homepageSource).toContain('href={thailandPlannerHref}')
+    expect(homepageSource).toContain('Build a Thailand day plan from your city.')
+    expect(homepageSource).toContain('Plan my Thailand day')
+    expect(homepageSource).toContain('guided planner')
     expect(homepageSource).toContain('compare reviewed matches')
     expect(homepageSource).toContain('booking partner')
+    expect(homepageSource).not.toContain('elephant-camp-finder')
   })
 
-  it('instruments the existing RAD-3 Chiang Mai finder entry without adding a new route or changing the href', () => {
-    expect(homepageSource).toContain("const chiangMaiPlannerHref = '/chiang-mai/elephant-camp-finder#plan-with-radarscout'")
+  it('keeps the shared Planner entry instrumented without restoring the legacy finder path', () => {
+    expect(homepageSource).toContain("const thailandPlannerHref = '/planner'")
     expect(promptHeroSource).toContain("track('homepage_finder_entry_clicked', { source })")
     expect(promptHeroSource).toContain("go(idea, 'hero_prompt')")
     expect(promptHeroSource).toContain("go(chip, 'hero_chip')")
     expect(homepageSource).toContain('event="homepage_finder_entry_clicked"')
-    expect(homepageSource).toContain('eventProps={{ source: \'section\' }}')
+    expect(homepageSource).toContain("eventProps={{ source: 'thailand_planner_section' }}")
     expect(homepageVisibleCopySources).toContain('track(event, eventProps)')
+    expect(homepageSource).not.toContain('elephant-camp-finder')
     expect(homepageVisibleCopySources).not.toMatch(/navigator\.sendBeacon/i)
     expect(homepageVisibleCopySources).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
