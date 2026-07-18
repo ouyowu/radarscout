@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AdventureHero } from '@/app/_components/AdventureHero'
+import { CityActivityPartnerLinks } from '@/app/_components/CityActivityPartnerLinks'
 import { DestinationCapsuleCard } from '@/app/_components/DestinationCapsuleCard'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { ExperienceCategoryGrid } from '@/app/_components/ExperienceCategoryGrid'
@@ -72,8 +73,9 @@ export default function DestinationPage({ params }: DestinationPageProps) {
     },
     {
       question: 'Does RadarScout show third-party marketplace or affiliate products here?',
-      answer:
-        'No. Traveler-facing recommendations must have enough product detail and a safe booking partner handoff path. Destinations without enough supplier coverage are clearly marked as partner tours coming soon.',
+      answer: destination.hasLiveInventory
+        ? 'RadarScout may include clearly marked affiliate links as optional comparison handoffs. The partner website handles final product details, availability, booking, purchase, and confirmation.'
+        : 'No. Destinations without enough reviewed coverage remain planning-only and do not display unsupported products or affiliate links.',
     },
     {
       question: 'How can a local supplier join this destination?',
@@ -139,6 +141,8 @@ export default function DestinationPage({ params }: DestinationPageProps) {
         title="Match the trip style before choosing the tour."
         categories={categoryCards}
       />
+
+      {destination.slug === 'thailand' ? <CityActivityPartnerLinks /> : null}
 
       {destination.hasLiveInventory ? (
         <EditorialBanner
