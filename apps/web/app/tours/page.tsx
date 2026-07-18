@@ -1,11 +1,16 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 import { ExperienceCategoryGrid } from '../_components/ExperienceCategoryGrid'
 import { FAQAccordion } from '../_components/FAQAccordion'
 import { PublicSiteShell } from '../_components/PublicSiteShell'
 import { Card, Section } from '../_components/design-system'
+import {
+  listReviewedViatorPublicCatalogueCities,
+  loadReviewedViatorPublicCatalogue,
+  paginateReviewedViatorPublicCatalogue,
+  type ReviewedViatorPublicProduct,
+} from '@/lib/viator/reviewedViatorPublicCatalogue'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -37,32 +42,11 @@ const categories = [
   },
 ] as const
 
-type ProductDisplay = {
-  id: string | number
-  title: string
-  destination?: string | null
-  summary?: string | null
-  imageUrl?: string | null
-  tags?: string[]
-  detailHref: string
-}
-
-type ProductsResponse = {
-  products: ProductDisplay[]
-  meta?: {
-    source: 'signed-bokun-supplier-products'
-    inventoryScope: 'thailand-first'
-    bookingEnabled: false
-    availabilityEnabled: false
-    count: number
-  }
-  error?: string
-}
-
 type ToursPageProps = {
   searchParams?: {
     city?: string
     hasImage?: string
+    page?: string
   }
 }
 
@@ -89,15 +73,8 @@ const faqItems = [
   },
 ]
 
-function requestOrigin() {
-  const headerStore = headers()
-  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
-  const protocol = headerStore.get('x-forwarded-proto') ?? (host?.includes('localhost') ? 'http' : 'https')
-
-  if (host) return `${protocol}://${host}`
-
-  return process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
-}
+const PAGE_SIZE = 12
+const cityOptions = listReviewedViatorPublicCatalogueCities()
 
 function normalizeFilterValue(value: string | undefined, allowedValues: string[]): string | null {
   if (!value) return null
@@ -106,35 +83,32 @@ function normalizeFilterValue(value: string | undefined, allowedValues: string[]
 
 function readFilters(searchParams?: ToursPageProps['searchParams']): FilterState {
   return {
-    city: normalizeFilterValue(searchParams?.city, ['chiang-mai', 'bangkok', 'phuket']),
+    city: normalizeFilterValue(searchParams?.city, cityOptions.map(option => option.slug)),
     hasImage: normalizeFilterValue(searchParams?.hasImage, ['true', 'false']) as FilterState['hasImage'],
   }
 }
 
-function buildToursHref(nextFilters: Partial<FilterState>) {
+function readPage(value: string | undefined): number {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return 1
+  return Math.max(1, Math.floor(parsed))
+}
+
+function buildToursHref(nextFilters: Partial<FilterState>, page = 1) {
   const params = new URLSearchParams()
   const city = nextFilters.city ?? null
   const hasImage = nextFilters.hasImage ?? null
 
   if (city) params.set('city', city)
   if (hasImage) params.set('hasImage', hasImage)
+  if (page > 1) params.set('page', String(page))
 
   const query = params.toString()
   return query ? `/tours?${query}` : '/tours'
 }
 
-function buildProductsQuery(filters: FilterState) {
-  const params = new URLSearchParams({ destination: 'thailand', take: '12' })
-  if (filters.city) params.set('city', filters.city)
-  if (filters.hasImage) params.set('hasImage', filters.hasImage)
-  return params.toString()
-}
-
 function cityLabel(city: string | null) {
-  if (city === 'chiang-mai') return 'Chiang Mai'
-  if (city === 'bangkok') return 'Bangkok'
-  if (city === 'phuket') return 'Phuket'
-  return null
+  return cityOptions.find(option => option.slug === city)?.label ?? null
 }
 
 function imageLabel(hasImage: FilterState['hasImage']) {
@@ -144,22 +118,9 @@ function imageLabel(hasImage: FilterState['hasImage']) {
 }
 
 function resultCountLabel(count: number) {
-  if (count === 0) return 'No experiences shown'
-  if (count === 1) return '1 experience shown'
-  return `${count} experiences shown`
-}
-
-async function fetchThailandProducts(filters: FilterState): Promise<ProductsResponse> {
-  try {
-    const response = await fetch(`${requestOrigin()}/api/products?${buildProductsQuery(filters)}`, {
-      cache: 'no-store',
-    })
-
-    if (!response.ok) return { products: [], error: 'PRODUCTS_UNAVAILABLE' }
-    return await response.json() as ProductsResponse
-  } catch {
-    return { products: [], error: 'PRODUCTS_UNAVAILABLE' }
-  }
+  if (count === 0) return 'No reviewed experiences'
+  if (count === 1) return '1 reviewed experience'
+  return `${count} reviewed experiences`
 }
 
 function FilterChip({ href, label, active }: { href: string; label: string; active: boolean }) {
@@ -188,7 +149,7 @@ function FilterGroup({ title, children }: { title: string; children: ReactNode }
   )
 }
 
-function ProductCard({ product }: { product: ProductDisplay }) {
+function ProductCard({ product }: { product: ReviewedViatorPublicProduct }) {
   return (
     <Card href={product.detailHref} ariaLabel={`View ${product.title}`} className="group h-full transition duration-200 hover:-translate-y-1">
       <article className="flex h-full flex-col">
@@ -199,16 +160,16 @@ function ProductCard({ product }: { product: ProductDisplay }) {
           ) : null}
           <div className="absolute inset-0 bg-gradient-to-t from-rs-forest-900/70 via-transparent to-transparent" />
           <p className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-            {product.destination ?? 'Thailand'}
+            {product.destination}
           </p>
         </div>
         <div className="flex flex-1 flex-col p-6">
           <h2 className="font-rs-display text-2xl font-semibold leading-tight text-rs-ink">{product.title}</h2>
           <p className="mt-3 line-clamp-3 text-sm leading-7 text-rs-muted">
-            {product.summary ?? 'Product details are being prepared from trusted partner records.'}
+            {product.summary}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            {(product.tags ?? []).slice(0, 3).map(tag => (
+            {product.tags.slice(0, 3).map(tag => (
               <span key={tag} className="rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold text-rs-forest-700">{tag}</span>
             ))}
           </div>
@@ -224,8 +185,25 @@ function ProductCard({ product }: { product: ProductDisplay }) {
 
 export default async function ToursExperienceDiscoveryPage({ searchParams }: ToursPageProps) {
   const filters = readFilters(searchParams)
-  const productResponse = await fetchThailandProducts(filters)
-  const products = productResponse.products
+  const requestedPage = readPage(searchParams?.page)
+  let catalogueError = false
+  let catalogueProducts: ReviewedViatorPublicProduct[] = []
+
+  try {
+    catalogueProducts = loadReviewedViatorPublicCatalogue({
+      city: filters.city,
+      hasImage: filters.hasImage === null ? null : filters.hasImage === 'true',
+    })
+  } catch {
+    catalogueError = true
+  }
+
+  const cataloguePage = paginateReviewedViatorPublicCatalogue(
+    catalogueProducts,
+    requestedPage,
+    PAGE_SIZE,
+  )
+  const products = cataloguePage.items
   const hasActiveFilters = Boolean(filters.city || filters.hasImage)
   const labels = [cityLabel(filters.city), imageLabel(filters.hasImage)].filter(Boolean)
   const filterSummary = labels.length > 0
@@ -243,10 +221,10 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
                 Find a reviewed experience for your Thailand day.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-8 text-rs-muted">
-                Browse real experience records, narrow the city or photo coverage, and inspect one detail page before continuing with a booking partner.
+                Browse reviewed Viator experience records, narrow the city or photo coverage, and inspect one detail page before continuing with a booking partner.
               </p>
             </div>
-            <Link href="/ai-trip-planner" className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white">
+            <Link href="/planner" className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white">
               Plan my day
             </Link>
           </div>
@@ -257,9 +235,14 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
             <div className="grid gap-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
               <FilterGroup title="City">
                 <FilterChip href={buildToursHref({ ...filters, city: null })} label="All" active={!filters.city} />
-                <FilterChip href={buildToursHref({ ...filters, city: 'chiang-mai' })} label="Chiang Mai" active={filters.city === 'chiang-mai'} />
-                <FilterChip href={buildToursHref({ ...filters, city: 'bangkok' })} label="Bangkok" active={filters.city === 'bangkok'} />
-                <FilterChip href={buildToursHref({ ...filters, city: 'phuket' })} label="Phuket" active={filters.city === 'phuket'} />
+                {cityOptions.map(option => (
+                  <FilterChip
+                    key={option.slug}
+                    href={buildToursHref({ ...filters, city: option.slug })}
+                    label={option.label}
+                    active={filters.city === option.slug}
+                  />
+                ))}
               </FilterGroup>
               <FilterGroup title="Photo">
                 <FilterChip href={buildToursHref({ ...filters, hasImage: null })} label="All" active={!filters.hasImage} />
@@ -272,7 +255,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
             </div>
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-rs-sage-200/60 pt-4">
               <p className="text-sm font-semibold text-rs-forest-700">{filterSummary}</p>
-              <p className="text-sm text-rs-muted">{resultCountLabel(products.length)}</p>
+              <p className="text-sm text-rs-muted">{resultCountLabel(cataloguePage.totalItems)}</p>
             </div>
           </div>
 
@@ -280,12 +263,38 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
             {products.map(product => <ProductCard key={product.id} product={product} />)}
           </div>
 
+          {cataloguePage.totalPages > 1 ? (
+            <nav aria-label="Catalogue pagination" className="mt-10 flex items-center justify-center gap-4">
+              {cataloguePage.page > 1 ? (
+                <Link
+                  href={buildToursHref(filters, cataloguePage.page - 1)}
+                  aria-label="Previous catalogue page"
+                  className="inline-flex min-h-[44px] items-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-semibold text-rs-forest-700"
+                >
+                  Previous
+                </Link>
+              ) : null}
+              <p className="text-sm font-semibold text-rs-muted">
+                Page {cataloguePage.page} of {cataloguePage.totalPages}
+              </p>
+              {cataloguePage.page < cataloguePage.totalPages ? (
+                <Link
+                  href={buildToursHref(filters, cataloguePage.page + 1)}
+                  aria-label="Next catalogue page"
+                  className="inline-flex min-h-[44px] items-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-semibold text-rs-forest-700"
+                >
+                  Next
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
+
           {products.length === 0 ? (
             <Card className="mt-8 p-8 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-terracotta">No reviewed matches</p>
               <h2 className="mt-3 font-rs-display text-3xl font-semibold">Try a broader city or photo filter.</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-rs-muted">
-                {productResponse.error
+                {catalogueError
                   ? 'The reviewed product feed could not be loaded. Your filters are preserved; retry or use the planner.'
                   : 'No display-ready experience matches these filters. RadarScout does not create placeholder products.'}
               </p>

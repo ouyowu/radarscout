@@ -102,7 +102,7 @@ describe('RadarScout design system primitives', () => {
     const homepage = readFileSync('app/page.tsx', 'utf8')
 
     expect(homepage).toContain('imageUrl={product.imageUrl}')
-    expect(homepage).toContain('imageAlt={product.imageAlt ?? product.title}')
+    expect(homepage).toContain('imageAlt={product.title}')
     expect(homepage).not.toContain('imageAlt={`${product.title} visual placeholder`}')
   })
 })

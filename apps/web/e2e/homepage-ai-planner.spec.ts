@@ -78,9 +78,9 @@ test.describe('Homepage Trip Planner entry', () => {
     for (let index = 0; index < await planDayLinks.count(); index += 1) {
       await expect(planDayLinks.nth(index)).toHaveAttribute('href', '/planner')
     }
-    await expect(page.getByRole('link', { name: 'Plan with RadarScout' }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Plan my Thailand day' })).toHaveAttribute(
       'href',
-      '/chiang-mai/elephant-camp-finder#plan-with-radarscout',
+      '/planner',
     )
 
     const promptChips = [
@@ -218,7 +218,7 @@ test.describe('Homepage Trip Planner entry', () => {
     expect(searchRequestCount).toBe(0)
   })
 
-  test('Chiang Mai planner CTA opens the deterministic planner section without Bókun API calls', async ({
+  test('Thailand planner CTA opens Planner Studio without Bókun API calls', async ({
     page,
   }) => {
     let bokunRequestCount = 0
@@ -233,17 +233,18 @@ test.describe('Homepage Trip Planner entry', () => {
     })
 
     await page.goto('/')
-    await page.getByRole('link', { name: 'Plan with RadarScout' }).first().click()
+    await page.getByRole('link', { name: 'Plan my Thailand day' }).click()
 
-    await expect(page).toHaveURL('/chiang-mai/elephant-camp-finder#plan-with-radarscout')
-    await expect(page.locator('#plan-with-radarscout')).toBeVisible()
-    await expect(page.getByText('Plan with RadarScout')).toBeVisible()
-    await expect(page.getByText('Your planner picks')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'See matching experiences' }).first()).toBeVisible()
+    await expect(page).toHaveURL('/planner')
+    await expect(page).toHaveTitle('Thailand Planner Studio | RadarScout')
+    await expect(page.getByRole('heading', {
+      name: 'Talk through a Thailand trip, get a reviewed route.',
+    })).toBeVisible()
+    await expect(page.locator('#planner-studio-input')).toBeVisible()
 
     const pageText = await page.locator('body').innerText()
     for (const term of forbiddenVisibleCopy) {
-      expect(pageText.toLowerCase(), `Found forbidden Chiang Mai CTA term: "${term}"`).not.toContain(term.toLowerCase())
+      expect(pageText.toLowerCase(), `Found forbidden Thailand planner CTA term: "${term}"`).not.toContain(term.toLowerCase())
     }
 
     expect(bokunRequestCount).toBe(0)
