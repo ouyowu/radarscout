@@ -54,6 +54,7 @@ describe('parseTripIntent', () => {
     const chiangMai = parseTripIntent('Chiang Mai elephants')
     const bangkok = parseTripIntent('Bangkok food')
     const phuket = parseTripIntent('Phuket beaches')
+    const khaoLak = parseTripIntent('Khao Lak beaches')
 
     expect(chiangMai.intent.destination).toBe('Chiang Mai')
     expect(chiangMai.intent.interests).toContain('elephants')
@@ -61,6 +62,8 @@ describe('parseTripIntent', () => {
     expect(bangkok.intent.interests).toContain('food')
     expect(phuket.intent.destination).toBe('Phuket')
     expect(phuket.intent.interests).toContain('beaches')
+    expect(khaoLak.intent.destination).toBe('Khao Lak')
+    expect(khaoLak.intent.interests).toContain('beaches')
   })
 
   it('extracts Chiang Mai from the homepage gentle elephant example', () => {
@@ -68,6 +71,11 @@ describe('parseTripIntent', () => {
 
     expect(result.intent.destination).toBe('Chiang Mai')
     expect(result.intent.interests).toContain('elephants')
+  })
+
+  it('normalizes common compact and transposed-letter Chiang Mai spellings', () => {
+    expect(parseTripIntent('chiangmai 3 days').intent.destination).toBe('Chiang Mai')
+    expect(parseTripIntent('chaingmai 3 days').intent.destination).toBe('Chiang Mai')
   })
 
   it('does not normalize mixed Thailand and foreign destinations as a Thailand prefix', () => {

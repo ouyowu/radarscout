@@ -174,6 +174,25 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(JSON.stringify(body.products)).not.toMatch(/hotel|flight/i)
   })
 
+  it('normalizes a common Chiang Mai spelling error before selecting products', async () => {
+    contextMock.buildAiProductContext.mockImplementation(async candidates => ({
+      status: 'ok',
+      items: candidates.map(() => makeContextItem()),
+    }))
+
+    const res = await POST(makeRequest({ prompt: 'chaingmai 3 days elephants' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.intent.destination).toBe('Chiang Mai')
+    expect(body.itinerary.tripSpec).toMatchObject({
+      destination: 'Chiang Mai',
+      durationDays: 3,
+    })
+    expect(body.products.every((product: { city: string }) => product.city === 'Chiang Mai')).toBe(true)
+  })
+
   it('Chiang Mai prompt exposes only reviewed Viator handoffs', async () => {
     contextMock.buildAiProductContext.mockImplementation(async (candidates: Array<Record<string, unknown>>) => ({
       status: 'ok',

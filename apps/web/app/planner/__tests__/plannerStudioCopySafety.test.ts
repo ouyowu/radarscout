@@ -49,9 +49,9 @@ describe('planner studio public copy safety', () => {
     expect(publicCopy).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 
-  it('does not claim append-only local parsing can replace earlier choices', () => {
-    expect(publicCopy).not.toMatch(/tell me what to change/i)
-    expect(publicCopy).toMatch(/use Start over to change the destination or duration/i)
+  it('explains that a new Thailand destination replaces the current route', () => {
+    expect(publicCopy).toMatch(/send a new Thailand destination to replace this route/i)
+    expect(publicCopy).not.toMatch(/use Start over to change the destination or duration/i)
   })
 
   it('keeps the studio out of search indexes while it is a guarded surface', () => {

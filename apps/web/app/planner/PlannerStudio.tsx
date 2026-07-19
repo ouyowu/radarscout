@@ -8,6 +8,7 @@ import {
   decideNextGuideStep,
   mergeTripIdea,
   parseMergedTripIdea,
+  reconcileTripIdeaParts,
   REVIEWED_RETRY_CHIPS,
   SKIP_INTERESTS_CHIP,
   summarizeUnderstoodIntent,
@@ -48,7 +49,7 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
 
     return createMessage({
       role: 'guide',
-      content: `Found ${response.products.length} reviewed Thailand experience${response.products.length === 1 ? '' : 's'} for this idea.${itineraryNote} Add another interest, or use Start over to change the destination or duration.`,
+      content: `Found ${response.products.length} reviewed Thailand experience${response.products.length === 1 ? '' : 's'} for this idea.${itineraryNote} Add another interest, or send a new Thailand destination to replace this route.`,
     })
   }
 
@@ -160,7 +161,11 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
     // matcher can't map to a known interest doesn't loop the same question.
     const answersInterestPrompt = awaitingInterests && content.length > 0
     const skipped = interestsSkipped || Boolean(options?.skipInterests) || answersInterestPrompt
-    const parts = content ? [...ideaParts, content] : ideaParts
+    const parts = content ? reconcileTripIdeaParts(ideaParts, content) : ideaParts
+
+    if (content && searchState) {
+      setSearchState(null)
+    }
 
     setMessages(current => [
       ...current,
