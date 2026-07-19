@@ -31,6 +31,7 @@ describe('Thailand itinerary workspace', () => {
     expect(source).toMatch(/stop\.lng/)
     expect(source).toMatch(/stop\.lat/)
     expect(source).not.toMatch(/if \(!publicToken\) return/)
+    expect(source).not.toMatch(/setMapFailed/)
     expect(source).not.toMatch(/geocod/i)
     expect(source).not.toMatch(/google/i)
   })
