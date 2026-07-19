@@ -8,7 +8,6 @@ import { track } from '@/lib/analytics/track'
 import { getStopsForPace } from '@/lib/itineraries/itineraryFilters'
 import type { ThailandItineraryPace } from '@/lib/itineraries/thailandTemplates'
 import { isReviewedViatorAffiliateUrl } from '@/lib/viator/reviewedViatorMatching'
-import { DecisionGuide } from '../_components/design-system'
 import { buildAiTripPlannerDetailHref } from '../ai-trip-planner/AiSearchProductCard'
 import { MapLibreDayMap } from '../itineraries/thailand/[city]/[duration]/MapLibreDayMap'
 import { getReviewedPlannerMapDay } from './plannerMapCoverage'
@@ -23,6 +22,38 @@ const paces: readonly { value: ThailandItineraryPace; label: string }[] = [
   { value: 'balanced', label: 'Balanced' },
   { value: 'packed', label: 'Packed' },
 ]
+
+type PlannerDecisionGuideProps = {
+  whyRecommended: string
+  bestFor: readonly string[]
+}
+
+function PlannerDecisionGuide({ whyRecommended, bestFor }: PlannerDecisionGuideProps) {
+  return (
+    <div aria-label="Traveler decision guide" className="mt-4 divide-y divide-rs-sage-200/70 border-y border-rs-sage-200/70">
+      <div className="py-3">
+        <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-forest-500">Why recommended</p>
+        <p className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-rs-muted">{whyRecommended}</p>
+      </div>
+      <div className="py-3">
+        <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-trust">Best for</p>
+        <div className="mt-1.5 flex flex-wrap gap-1.5">
+          {bestFor.map(item => (
+            <span key={item} className="rounded-rs-pill bg-rs-sage-100 px-2.5 py-1 text-xs font-bold text-rs-forest-700">
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="py-3">
+        <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Before you choose</p>
+        <p className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-rs-muted">
+          Review meeting details, timing, inclusions, and current terms on the product page.
+        </p>
+      </div>
+    </div>
+  )
+}
 
 type PlannerItineraryWorkspaceProps = {
   itinerary: DayTripItinerary
@@ -77,14 +108,14 @@ export function PlannerItineraryWorkspace({
   }, [products])
 
   return (
-    <section aria-label="Interactive day-trip workspace" className="mt-4">
-      <div className="rounded-rs-lg border border-rs-sage-200/80 bg-white p-4 shadow-rs-soft sm:p-5">
+    <section aria-label="Interactive day-trip workspace">
+      <div className="rounded-rs-md border border-rs-sage-200/80 bg-white p-3 shadow-rs-soft sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">
               {itinerary.tripSpec.durationDays} day{itinerary.tripSpec.durationDays === 1 ? '' : 's'} itinerary
             </p>
-            <h3 className="mt-2 font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink sm:text-3xl">
+            <h3 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.025em] text-rs-ink sm:text-2xl">
               {itinerary.tripSpec.destination} day-tour route
             </h3>
           </div>
@@ -93,7 +124,7 @@ export function PlannerItineraryWorkspace({
           </p>
         </div>
 
-        <div className="mt-5 grid gap-5 border-t border-rs-sage-200/80 pt-5 lg:grid-cols-[auto_1fr] lg:items-end">
+        <div className="mt-3 grid gap-3 border-t border-rs-sage-200/80 pt-3 xl:grid-cols-[auto_1fr] xl:items-end">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">Pace</p>
             <div className="mt-2 flex flex-wrap gap-2" aria-label="Choose itinerary pace">
@@ -134,7 +165,7 @@ export function PlannerItineraryWorkspace({
           ) : null}
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap" aria-label="Choose itinerary day">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Choose itinerary day">
           {requestedDays.map(dayNumber => (
             <button
               key={dayNumber}
@@ -151,7 +182,7 @@ export function PlannerItineraryWorkspace({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(360px,1.08fr)] lg:items-start">
+      <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(290px,0.72fr)_minmax(0,1.28fr)] lg:items-start">
         <article aria-live="polite" className="min-w-0 overflow-hidden rounded-rs-lg border border-rs-sage-200/80 bg-white shadow-rs-soft">
           {selectedProduct ? (
             <>
@@ -159,10 +190,10 @@ export function PlannerItineraryWorkspace({
                 <img
                   src={selectedProduct.imageUrl}
                   alt={selectedProduct.imageAlt ?? selectedProduct.title}
-                  className="aspect-[4/3] w-full object-cover"
+                  className="aspect-[16/9] w-full object-cover"
                 />
               ) : null}
-              <div className="p-5 sm:p-6">
+              <div className="p-4 sm:p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">Day {selectedDay}</p>
                 <h4 className="mt-2 font-rs-display text-2xl font-semibold leading-8 text-rs-ink">
                   {selectedProduct.title}
@@ -175,14 +206,11 @@ export function PlannerItineraryWorkspace({
                 {selectedProduct.summary ? (
                   <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">{selectedProduct.summary}</p>
                 ) : null}
-                <DecisionGuide
+                <PlannerDecisionGuide
                   whyRecommended={selectedProduct.summary ?? `A reviewed match selected for Day ${selectedDay} of this route.`}
                   bestFor={selectedProduct.tags.length > 0
                     ? selectedProduct.tags.slice(0, 3)
                     : ['Travelers comparing this route stop']}
-                  watchOut="Review meeting details, timing, inclusions, and current terms on the product page."
-                  compact
-                  className="mt-4"
                 />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <Link
@@ -230,6 +258,7 @@ export function PlannerItineraryWorkspace({
               day={mapDay.dayPlan.day}
               stops={mapStops}
               publicToken={publicMapToken}
+              className="h-[420px] lg:h-[calc(100vh-12rem)] lg:min-h-[560px] lg:max-h-[760px]"
             />
           ) : (
             <div className="min-h-[340px] rounded-rs-lg border border-rs-sage-200/80 bg-rs-sage-100 p-6 shadow-rs-soft">
@@ -243,7 +272,7 @@ export function PlannerItineraryWorkspace({
         </aside>
       </div>
 
-      <section aria-label="Filtered reviewed matches" className="mt-8">
+      <section aria-label="Filtered reviewed matches" className="mt-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">Reviewed matches</p>
@@ -268,7 +297,7 @@ export function PlannerItineraryWorkspace({
                       src={product.imageUrl}
                       alt={product.imageAlt ?? product.title}
                       loading="lazy"
-                      className="aspect-[4/3] w-full object-cover"
+                      className="aspect-[16/9] w-full object-cover"
                     />
                   ) : null}
                   <div className="p-5">
@@ -279,14 +308,11 @@ export function PlannerItineraryWorkspace({
                     {product.summary ? (
                       <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-rs-muted">{product.summary}</p>
                     ) : null}
-                    <DecisionGuide
+                    <PlannerDecisionGuide
                       whyRecommended={product.summary ?? 'A reviewed match for the confirmed destination and themes.'}
                       bestFor={product.tags.length > 0
                         ? product.tags.slice(0, 3)
                         : ['Travelers comparing this Thailand day trip']}
-                      watchOut="Review meeting details, timing, inclusions, and current terms on the product page."
-                      compact
-                      className="mt-4"
                     />
                     <div className="mt-5 grid gap-2">
                       <Link

@@ -87,7 +87,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
 
   await expect(page).toHaveTitle('Thailand Planner Studio | RadarScout')
   await expect(page.getByRole('heading', {
-    name: 'Talk through a Thailand trip, get a reviewed route.',
+    name: 'Build your Thailand day-trip route',
   })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Planner progress' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
@@ -186,4 +186,52 @@ test('guided studio treats free-form interest text as an answer instead of askin
   await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
   await expect(page.getByText(/Anything you want the days to focus on/)).toHaveCount(1)
   expect(searchRequests).toBe(1)
+})
+
+test('guided studio keeps the live map inside a bounded desktop workspace', async ({ page }) => {
+  const bangkokResponse: AiTripSearchResponse = {
+    ...REVIEWED_ROUTE_RESPONSE,
+    intent: {
+      destination: 'Bangkok',
+      days: 2,
+      interests: REVIEWED_ROUTE_RESPONSE.intent?.interests ?? [],
+    },
+    tripSpec: {
+      ...REVIEWED_ROUTE_RESPONSE.tripSpec!,
+      destination: 'Bangkok',
+      durationDays: 2,
+    },
+    itinerary: {
+      ...REVIEWED_ROUTE_RESPONSE.itinerary!,
+      tripSpec: {
+        ...REVIEWED_ROUTE_RESPONSE.itinerary!.tripSpec,
+        destination: 'Bangkok',
+        durationDays: 2,
+      },
+      days: REVIEWED_ROUTE_RESPONSE.itinerary!.days.map(day => ({
+        ...day,
+        experience: { ...day.experience, city: 'Bangkok' },
+      })),
+      unfilledDayCount: 1,
+    },
+  }
+
+  await page.route('/api/ai-trip/search', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(bangkokResponse),
+    })
+  })
+
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/planner')
+  await page.getByRole('button', { name: 'Bangkok 2 days canals and street food' }).click()
+
+  const map = page.getByLabel('Bangkok day 1 street map')
+  await expect(map).toBeVisible()
+  const box = await map.boundingBox()
+  expect(box?.height).toBeGreaterThanOrEqual(500)
+  expect(box?.height).toBeLessThanOrEqual(760)
+  expect(await page.evaluate(() => document.body.scrollHeight)).toBeLessThan(7000)
 })
