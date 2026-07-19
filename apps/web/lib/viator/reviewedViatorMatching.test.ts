@@ -82,4 +82,21 @@ describe('listMatchingReviewedViatorProductCandidates', () => {
     })
     expect(candidates[0]?.ctaHref).toContain('pid=')
   })
+
+  it('makes the new Batch 4 products available to deterministic planner matching', () => {
+    const candidates = listMatchingReviewedViatorProductCandidates({
+      city: 'Krabi',
+      search: 'sunset snorkeling bioluminescent islands',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'viator_44553p1',
+      city: 'Krabi',
+      ctaLabel: 'Check availability',
+      ctaRel: 'nofollow sponsored noopener noreferrer',
+      externalHandoff: true,
+    })
+    expect(candidates[0]?.ctaHref).toContain('pid=P00309837')
+  })
 })

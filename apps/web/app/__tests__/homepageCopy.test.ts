@@ -23,7 +23,7 @@ describe('homepage public copy safety', () => {
   it('uses traveler-facing homepage metadata without Bókun-heavy wording', () => {
     expect(metadata.title).toBe('RadarScout | Personalized Thailand Experience Planner')
     expect(metadata.description).toBe(
-      'Describe your ideal Thailand day and compare hand-picked experiences for elephant care, cooking, nature, and family-friendly days, then continue with a trusted booking partner.',
+      'Describe your ideal Thailand day and choose from a hand-reviewed Viator shortlist, then continue to Viator for current product details.',
     )
 
     const metadataCopy = [
@@ -50,8 +50,8 @@ describe('homepage public copy safety', () => {
   })
 
   it('presents reviewed Viator experiences across Thailand cities without legacy products', () => {
-    expect(homepageSource).toContain('Reviewed Thailand day trips')
-    expect(homepageSource).toContain('Start with reviewed Thailand day trips across cities.')
+    expect(homepageSource).toContain("RadarScout's Viator shortlist")
+    expect(homepageSource).toContain('Skip the endless sorting. Start with day tours we have already narrowed down.')
     expect(homepageSource).toContain('loadReviewedViatorPublicCatalogue')
     expect(homepageSource).toContain('featuredViatorExperiences')
     expect(homepageSource).not.toContain('pilotPartnerProducts')
@@ -73,7 +73,8 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the Trip Planner with safe prompt-first copy', () => {
-    expect(promptHeroSource).toContain('Tell us your ideal Thailand day. We match it to real, reviewed experiences.')
+    expect(promptHeroSource).toContain('Tell us your ideal Thailand day. We narrow it to real, reviewed Viator experiences.')
+    expect(promptHeroSource).toContain('Curated Viator shortlist')
     expect(promptHeroSource).toContain('Plan my trip')
     expect(promptHeroSource).toContain('Thailand-first · Personalized matching · Trusted booking partner handoff')
     expect(promptHeroSource).not.toContain('AI-guided Thailand Experience Planner')
@@ -177,5 +178,13 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toMatch(/partner rate/i)
     expect(homepageVisibleCopySources).not.toMatch(/supplier net rate/i)
     expect(homepageVisibleCopySources).not.toMatch(/\bcommission\b/i)
+    expect(homepageVisibleCopySources).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
+  })
+
+  it('positions RadarScout as a reviewed shortlist instead of an unproven ranking service', () => {
+    expect(homepageSource).toContain('Skip the endless sorting. Start with day tours we have already narrowed down.')
+    expect(homepageSource).toContain('selected for clear destination fit, useful themes, and a verified Viator handoff')
+    expect(homepageSource).toContain('Current price, inclusions, and booking terms are confirmed on Viator.')
+    expect(homepageVisibleCopySources).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 })

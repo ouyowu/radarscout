@@ -33,15 +33,15 @@ export function PromptHero() {
       <div className="relative mx-auto grid max-w-[1240px] gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-24">
         <div>
           <p className="inline-flex rounded-rs-pill border border-rs-sage-200 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-rs-forest-700 shadow-sm">
-            Thailand day trips, thoughtfully planned
+            Curated Viator shortlist · Thailand day trips
           </p>
 
           <h1 className="mt-6 max-w-3xl font-rs-display text-[clamp(2.75rem,6vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-rs-ink">
-            Tell us your ideal Thailand day. We match it to real, reviewed experiences.
+            Tell us your ideal Thailand day. We narrow it to real, reviewed Viator experiences.
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-rs-muted">
-            Describe elephants, food, nature, family time, or city culture. RadarScout turns your idea into a clear day-trip brief and reviewed experience matches.
+            We narrow the options before you compare, then explain why each match fits, who it suits, and what to check before you choose.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
@@ -80,9 +80,9 @@ export function PromptHero() {
           </div>
 
           <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-rs-forest-700">
-            <span>✓ Reviewed products</span>
-            <span>✓ Real operator media</span>
-            <span>✓ Safe partner handoff</span>
+            <span>✓ Hand-reviewed shortlist</span>
+            <span>✓ Clear reasons to choose</span>
+            <span>✓ Verified Viator handoff</span>
           </div>
           <p className="sr-only">Thailand-first · Personalized matching · Trusted booking partner handoff</p>
         </div>

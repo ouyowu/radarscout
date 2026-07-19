@@ -31,10 +31,10 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
       availabilityEnabled: false,
       count: 12,
       resultCount: 12,
-      totalCount: 105,
+      totalCount: 205,
       page: 1,
       pageSize: 12,
-      totalPages: 9,
+      totalPages: 18,
     })
 
     for (const product of body.products) {
@@ -78,7 +78,7 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
     const secondIds = secondBody.products.map((product: { id: string }) => product.id)
 
     expect(secondBody.meta.page).toBe(2)
-    expect(secondBody.meta.totalCount).toBe(105)
+    expect(secondBody.meta.totalCount).toBe(205)
     expect(secondBody.products).toHaveLength(12)
     expect(firstIds.some((id: string) => secondIds.includes(id))).toBe(false)
   })

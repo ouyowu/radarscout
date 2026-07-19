@@ -32,11 +32,14 @@ export default function PlannerStudioPage({ searchParams }: PlannerStudioPagePro
               <h1 className="mt-1 font-rs-display text-3xl font-semibold tracking-[-0.035em] text-rs-ink sm:text-4xl">
                 Build your Thailand day-trip route
               </h1>
+              <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">
+                Curated from reviewed Viator experiences
+              </p>
             </div>
             <div className="max-w-2xl lg:text-right">
               <p className="text-sm font-semibold leading-6 text-rs-muted">
-                Describe the city, days, and interests. RadarScout turns them into a reviewed route with day tabs,
-                experience context, and a map where reviewed coordinates exist.
+                Describe the city, days, and interests. RadarScout narrows the catalogue into a reviewed route,
+                then explains why each match fits, who it suits, and what to check before you choose.
               </p>
               <p className="mt-1 text-xs font-semibold text-rs-forest-700">
                 Compare here · continue with Viator for current product details

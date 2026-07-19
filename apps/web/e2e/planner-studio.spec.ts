@@ -86,6 +86,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await page.goto('/planner')
 
   await expect(page).toHaveTitle('Thailand Planner Studio | RadarScout')
+  await expect(page.getByText('Curated from reviewed Viator experiences')).toBeVisible()
   await expect(page.getByRole('heading', {
     name: 'Build your Thailand day-trip route',
   })).toBeVisible()

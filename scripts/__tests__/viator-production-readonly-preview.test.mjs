@@ -52,7 +52,7 @@ test('requests one bounded city page and retains only review-safe candidate fiel
   }
 
   const result = await fetchViatorProductionPreview(
-    { cityKey: 'phuket', count: 5 },
+    { cityKey: 'phuket', start: 51, count: 50 },
     { apiKey: 'production-test-key', fetchFn },
   )
 
@@ -67,7 +67,7 @@ test('requests one bounded city page and retains only review-safe candidate fiel
     },
     body: JSON.stringify({
       filtering: { destination: '349' },
-      pagination: { start: 1, count: 5 },
+      pagination: { start: 51, count: 50 },
       currency: 'THB',
     }),
   })
@@ -128,11 +128,12 @@ test('returns an opaque upstream error without retaining the response body', asy
 })
 
 test('parses only an approved Thailand city and bounded count', () => {
-  assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--count', '5']), {
+  assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--start', '51', '--count', '50']), {
     ok: true,
-    input: { cityKey: 'phuket', count: 5 },
+    input: { cityKey: 'phuket', start: 51, count: 50 },
   })
   assert.deepEqual(parsePreviewArgs(['--city', 'Singapore']), { ok: false, reason: 'invalid_city' })
-  assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--count', '21']), { ok: false, reason: 'invalid_count' })
+  assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--count', '51']), { ok: false, reason: 'invalid_count' })
+  assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--start', '0']), { ok: false, reason: 'invalid_start' })
   assert.deepEqual(parsePreviewArgs(['--count', '5']), { ok: false, reason: 'invalid_city' })
 })
