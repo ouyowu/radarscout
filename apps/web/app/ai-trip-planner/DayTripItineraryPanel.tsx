@@ -1,4 +1,5 @@
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
+import { DecisionGuide } from '../_components/design-system'
 import { buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import { getItineraryDestinations } from './dayTripMap'
 import { buildTripSpecChips } from './dayTripSpecSummary'
@@ -19,10 +20,10 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
     >
       <div className="border-b border-[#d8eadf] px-4 py-4 sm:px-5 sm:py-5">
         <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
-          Day-tour plan
+          Suggested plan
         </p>
         <h3 className="mt-1.5 text-xl font-black tracking-[-0.025em] text-[#101820] sm:mt-2 sm:text-2xl">
-          Your suggested Thailand day trips
+          A day-by-day route from reviewed matches
         </h3>
         <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#5a6670]">
           Built from reviewed day-tour suggestions that matched your trip idea. This is a planning sequence; current product details stay on product pages.
@@ -45,10 +46,10 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
           className="border-b border-[#d8eadf] bg-[#e7f5f2] px-4 py-4 sm:px-5"
         >
           <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
-            Map overview
+            Route map
           </p>
           <h4 className="mt-1.5 text-lg font-black text-[#101820]">
-            Explore destination areas
+            Suggested route
           </h4>
           <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
             The schematic map shows destination areas only. Exact meeting and pickup details remain on each product page.
@@ -58,6 +59,16 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
           </div>
         </div>
       ) : null}
+
+      <div className="border-b border-[#d8eadf] bg-white px-4 py-4 sm:px-5">
+        <p className="text-xs font-black uppercase tracking-[0.14em] text-[#0f766e]">
+          Match results
+        </p>
+        <h4 className="mt-1.5 text-lg font-black text-[#101820]">Reviewed experiences</h4>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[#5a6670]">
+          Compare why each match fits, who it suits, and what to review before continuing.
+        </p>
+      </div>
 
       <ol className="grid gap-px bg-[#d8eadf] sm:grid-cols-2 xl:grid-cols-3">
         {itinerary.days.map(day => (
@@ -82,23 +93,13 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
                   {day.experience.city}
                 </p>
               ) : null}
-              {day.experience.summary ? (
-                <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-[#5a6670]">
-                  {day.experience.summary}
-                </p>
-              ) : null}
-              {day.experience.tags.length > 0 ? (
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {day.experience.tags.slice(0, 3).map(tag => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-[#f5efe8] px-2.5 py-1 text-[0.68rem] font-black uppercase tracking-[0.08em] text-[#8a4b25]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
+              <DecisionGuide
+                whyRecommended={day.experience.summary ?? `A reviewed match selected for Day ${day.dayNumber} of this route.`}
+                bestFor={day.experience.tags.length > 0 ? day.experience.tags.slice(0, 3) : ['Travelers comparing this route stop']}
+                watchOut="Review meeting details, timing, inclusions, and current terms on the product page."
+                compact
+                className="mt-4"
+              />
               <a
                 href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
                 className="mt-auto pt-4 text-sm font-black text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
