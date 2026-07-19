@@ -18,7 +18,9 @@ type JsonRecord = Record<string, unknown>
 export type AgodaAccommodationConfig = {
   siteId: string
   contentToken: string
-  searchApiKey: string
+  searchAuth:
+    | { type: 'oauth'; clientSecret: string; baseUrl: string }
+    | { type: 'api-key'; apiKey: string }
   affiliateCid: string
   contentBaseUrl: string
   searchApiUrl: string
@@ -47,6 +49,8 @@ type LiveOffer = {
   price: LivePrice
   handoffUrl: string | null
 }
+
+const oauthTokenCache = new Map<string, { token: string; expiresAt: number }>()
 
 function stringValue(record: JsonRecord, ...keys: string[]): string | null {
   for (const key of keys) {
@@ -96,18 +100,23 @@ function parseCityIds(value: string | undefined): Partial<Record<AgodaSupportedC
 function readConfig(): AgodaAccommodationConfig | null {
   const siteId = process.env.AGODA_API_SITE_ID?.trim()
   const contentToken = process.env.AGODA_CONTENT_API_TOKEN?.trim()
+  const oauthClientSecret = process.env.AGODA_OAUTH_CLIENT_SECRET?.trim()
+  const oauthBaseUrl = process.env.AGODA_OAUTH_BASE_URL?.trim()
   const searchApiKey = process.env.AGODA_SEARCH_API_KEY?.trim()
   const affiliateCid = process.env.AGODA_AFFILIATE_CID?.trim()
   const contentBaseUrl = process.env.AGODA_CONTENT_BASE_URL?.trim()
   const searchApiUrl = process.env.AGODA_SEARCH_API_URL?.trim()
   const cityIds = parseCityIds(process.env.AGODA_CONTENT_CITY_IDS)
 
-  if (!siteId || !contentToken || !searchApiKey || !affiliateCid || !contentBaseUrl || !searchApiUrl) return null
+  if (!siteId || !contentToken || !affiliateCid || !contentBaseUrl || !searchApiUrl) return null
+  if (Boolean(oauthClientSecret) !== Boolean(oauthBaseUrl)) return null
+  if (!oauthClientSecret && !searchApiKey) return null
   if (Object.keys(cityIds).length === 0) return null
 
   try {
     if (new URL(contentBaseUrl).protocol !== 'https:') return null
     if (new URL(searchApiUrl).protocol !== 'https:') return null
+    if (oauthBaseUrl && new URL(oauthBaseUrl).protocol !== 'https:') return null
   } catch {
     return null
   }
@@ -115,7 +124,9 @@ function readConfig(): AgodaAccommodationConfig | null {
   return {
     siteId,
     contentToken,
-    searchApiKey,
+    searchAuth: oauthClientSecret && oauthBaseUrl
+      ? { type: 'oauth', clientSecret: oauthClientSecret, baseUrl: oauthBaseUrl }
+      : { type: 'api-key', apiKey: searchApiKey! },
     affiliateCid,
     contentBaseUrl,
     searchApiUrl,
@@ -287,6 +298,41 @@ async function fetchContentFeed(
   return fetchJson(fetchImpl, url, { method: 'GET' })
 }
 
+async function getSearchAuthHeaders(
+  fetchImpl: typeof fetch,
+  config: AgodaAccommodationConfig,
+): Promise<Record<string, string>> {
+  if (config.searchAuth.type === 'api-key') {
+    return { Authorization: `${config.siteId}:${config.searchAuth.apiKey}` }
+  }
+
+  const cacheKey = `${config.siteId}:${config.searchAuth.baseUrl}`
+  const cached = oauthTokenCache.get(cacheKey)
+  if (cached && cached.expiresAt > Date.now()) {
+    return { 'X-Auth-Token': `Bearer ${cached.token}` }
+  }
+
+  const tokenUrl = new URL('/identity/v1/token', config.searchAuth.baseUrl)
+  const payload = await fetchJson(fetchImpl, tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      clientId: config.siteId,
+      clientSecret: config.searchAuth.clientSecret,
+    }),
+  })
+
+  if (!isRecord(payload) || payload.success !== true) throw new Error('agoda_auth_error')
+  const token = stringValue(payload, 'token')
+  if (!token) throw new Error('agoda_auth_error')
+
+  oauthTokenCache.set(cacheKey, {
+    token,
+    expiresAt: Date.now() + 55 * 60 * 1_000,
+  })
+  return { 'X-Auth-Token': `Bearer ${token}` }
+}
+
 export async function searchAgodaHotels(
   input: AgodaHotelSearchInput,
   options: SearchOptions = {},
@@ -317,10 +363,12 @@ export async function searchAgodaHotels(
       .catch(() => null),
   ))
 
+  const searchAuthHeaders = await getSearchAuthHeaders(fetchImpl, config)
+
   const searchPayload = await fetchJson(fetchImpl, config.searchApiUrl, {
     method: 'POST',
     headers: {
-      Authorization: `${config.siteId}:${config.searchApiKey}`,
+      ...searchAuthHeaders,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

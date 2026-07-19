@@ -24,7 +24,7 @@ function jsonResponse(body: unknown) {
 const config = {
   siteId: '1234567',
   contentToken: 'test-content-token',
-  searchApiKey: 'test-search-key',
+  searchAuth: { type: 'api-key' as const, apiKey: 'test-search-key' },
   affiliateCid: 'test-cid',
   contentBaseUrl: 'https://content.example.test',
   searchApiUrl: 'https://search.example.test/availability',
@@ -35,6 +35,8 @@ describe('Agoda accommodation provider', () => {
   it('stays disabled until every server-only setting is present', () => {
     delete process.env.AGODA_API_SITE_ID
     delete process.env.AGODA_CONTENT_API_TOKEN
+    delete process.env.AGODA_OAUTH_CLIENT_SECRET
+    delete process.env.AGODA_OAUTH_BASE_URL
     delete process.env.AGODA_SEARCH_API_KEY
     delete process.env.AGODA_AFFILIATE_CID
     delete process.env.AGODA_CONTENT_BASE_URL
@@ -45,7 +47,7 @@ describe('Agoda accommodation provider', () => {
 
     process.env.AGODA_API_SITE_ID = config.siteId
     process.env.AGODA_CONTENT_API_TOKEN = config.contentToken
-    process.env.AGODA_SEARCH_API_KEY = config.searchApiKey
+    process.env.AGODA_SEARCH_API_KEY = config.searchAuth.apiKey
     process.env.AGODA_AFFILIATE_CID = config.affiliateCid
     process.env.AGODA_CONTENT_BASE_URL = config.contentBaseUrl
     process.env.AGODA_SEARCH_API_URL = config.searchApiUrl
@@ -206,6 +208,71 @@ describe('Agoda accommodation provider', () => {
     expect(result[0]).not.toHaveProperty('price')
     expect(result[0].handoffUrl).toMatch(/^https:\/\/www\.agoda\.com\/partners\/partnersearch\.aspx\?/)
     expect(JSON.stringify(result)).not.toMatch(/"total":0|"perNight":0/)
+  })
+
+  it('prefers OAuth and reuses the issued token for Search API requests', async () => {
+    const oauthConfig = {
+      ...config,
+      siteId: '7654321',
+      searchAuth: {
+        type: 'oauth' as const,
+        clientSecret: 'test-client-secret',
+        baseUrl: 'https://auth.example.test',
+      },
+    }
+    const hotelFeed = {
+      hotelInformationFeed: {
+        hotelInformations: {
+          hotelInformation: [{
+            hotelId: 123456,
+            hotelName: 'OAuth Test Hotel',
+            longitude: 100.5102,
+            latitude: 13.7308,
+          }],
+        },
+      },
+    }
+    const searchResponse = {
+      properties: [{
+        propertyId: 123456,
+        rooms: [{
+          landingUrl: 'https://www.agoda.com/oauth-test-hotel.html?cid=test-cid',
+          totalPayment: { inclusive: 3000 },
+          perRoomPerNightRate: { inclusive: 1500, currency: 'THB' },
+        }],
+      }],
+    }
+    const fetchImpl = vi.fn<typeof fetch>()
+      .mockResolvedValueOnce(jsonResponse(hotelFeed))
+      .mockResolvedValueOnce(jsonResponse({ pictureFeed: { pictures: { picture: [] } } }))
+      .mockResolvedValueOnce(jsonResponse({ success: true, token: 'test-oauth-token' }))
+      .mockResolvedValueOnce(jsonResponse(searchResponse))
+      .mockResolvedValueOnce(jsonResponse(hotelFeed))
+      .mockResolvedValueOnce(jsonResponse({ pictureFeed: { pictures: { picture: [] } } }))
+      .mockResolvedValueOnce(jsonResponse(searchResponse))
+
+    const input = {
+      city: 'Bangkok' as const,
+      checkIn: '2026-08-10',
+      checkOut: '2026-08-12',
+      adults: 2,
+      children: 0,
+    }
+    await searchAgodaHotels(input, { config: oauthConfig, fetchImpl })
+    await searchAgodaHotels(input, { config: oauthConfig, fetchImpl })
+
+    expect(String(fetchImpl.mock.calls[2]?.[0])).toBe('https://auth.example.test/identity/v1/token')
+    expect(JSON.parse(String(fetchImpl.mock.calls[2]?.[1]?.body))).toEqual({
+      clientId: '7654321',
+      clientSecret: 'test-client-secret',
+    })
+    expect(fetchImpl.mock.calls[3]?.[1]?.headers).toMatchObject({
+      'X-Auth-Token': 'Bearer test-oauth-token',
+    })
+    expect(fetchImpl.mock.calls[6]?.[1]?.headers).toMatchObject({
+      'X-Auth-Token': 'Bearer test-oauth-token',
+    })
+    expect(fetchImpl).toHaveBeenCalledTimes(7)
   })
 
   it('rejects unsupported cities before making a request', async () => {
