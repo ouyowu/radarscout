@@ -1,8 +1,8 @@
 import type { AiProductContextItem } from '../aiProducts/buildAiProductContext'
+import { isReviewedViatorAffiliateUrl } from '../viator/reviewedViatorMatching'
 import type { DayTripItinerary, DayTripSpec } from './itinerary-contract'
 
 const MAX_ITINERARY_DAYS = 7
-const SAFE_HANDOFF_PREFIX = 'https://widgets.bokun.io/online-sales/'
 const SAFE_HANDOFF_REL = 'nofollow sponsored noopener noreferrer'
 
 type DayTripIntentInput = Omit<DayTripSpec, 'contentScope'>
@@ -12,7 +12,7 @@ function isSafeDayTripProduct(product: AiProductContextItem) {
     && product.ctaLabel === 'Check availability'
     && product.ctaRel === SAFE_HANDOFF_REL
     && typeof product.ctaHref === 'string'
-    && product.ctaHref.startsWith(SAFE_HANDOFF_PREFIX)
+    && isReviewedViatorAffiliateUrl(product.ctaHref)
 }
 
 export function buildDayTripItinerary(
