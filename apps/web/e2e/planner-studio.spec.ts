@@ -36,6 +36,11 @@ const REVIEWED_ROUTE_RESPONSE: AiTripSearchResponse = {
           imageAlt: null,
           tags: ['Elephants', 'Food'],
           detailHref: '/tours/prod_cm_1',
+          decisionSignals: {
+            whyRecommended: 'This reviewed Chiang Mai experience matches your interest in food.',
+            bestFor: ['Families comparing this route', 'A relaxed itinerary'],
+            watchOut: 'Review duration and meeting details on Viator before choosing.',
+          },
           handoff: {
             label: 'Check availability',
             href: 'https://widgets.bokun.io/online-sales/public-channel/experience/prod_cm_1',
@@ -61,6 +66,11 @@ const REVIEWED_ROUTE_RESPONSE: AiTripSearchResponse = {
       detailHref: '/tours/prod_cm_1',
       retailPrice: null,
       currency: null,
+      decisionSignals: {
+        whyRecommended: 'This reviewed Chiang Mai experience matches your interest in food.',
+        bestFor: ['Families comparing this route', 'A relaxed itinerary'],
+        watchOut: 'Review duration and meeting details on Viator before choosing.',
+      },
     },
   ],
   meta: {
@@ -100,7 +110,10 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await expect(page.getByRole('heading', { name: 'Chiang Mai day-tour route' })).toBeVisible()
   await expect(page.getByText('Why recommended').first()).toBeVisible()
   await expect(page.getByText('Best for').first()).toBeVisible()
-  await expect(page.getByText('Before you choose').first()).toBeVisible()
+  await expect(page.getByText('Watch out').first()).toBeVisible()
+  await expect(page.getByText(/matches your interest in food/i).first()).toBeVisible()
+  await expect(page.getByText('Families comparing this route').first()).toBeVisible()
+  await expect(page.getByText(/review duration and meeting details on Viator/i).first()).toBeVisible()
   await expect(page.getByRole('button', { name: 'Day 1' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Day 2' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Day 3' })).toBeVisible()

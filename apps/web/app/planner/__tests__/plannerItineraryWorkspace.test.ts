@@ -31,6 +31,7 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/Balanced/)
     expect(source).toMatch(/Packed/)
     expect(source).toMatch(/filterPlannerProductsByThemes/)
+    expect(source).toMatch(/adaptPlannerDecisionSignals/)
     expect(source).not.toMatch(/\bfetch\s*\(/)
   })
 
@@ -43,6 +44,9 @@ describe('Planner itinerary workspace', () => {
   })
 
   it('keeps public copy and the external handoff safe', () => {
+    expect(source).toMatch(/decisionSignals\?\.whyRecommended/)
+    expect(source).toMatch(/decisionSignals\?\.bestFor/)
+    expect(source).toMatch(/decisionSignals\?\.watchOut/)
     expect(source).toMatch(/nofollow sponsored noopener noreferrer/)
     expect(source).toMatch(/booking_partner_handoff_clicked/)
     expectNoForbiddenPublicCopy(source)

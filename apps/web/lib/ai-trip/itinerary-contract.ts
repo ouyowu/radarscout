@@ -1,4 +1,5 @@
 import type { TripIntent } from './intent-schema'
+import type { ProductRecommendationSignals } from './recommendation-signals'
 
 export type ItineraryGenerationStatus =
   | 'disabled'
@@ -86,6 +87,7 @@ export type DayTripExperience = {
   imageAlt: string | null
   tags: string[]
   detailHref: string
+  decisionSignals?: ProductRecommendationSignals
   handoff: {
     label: 'Check availability'
     href: string

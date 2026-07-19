@@ -2,6 +2,7 @@ import 'server-only'
 import { assertAllProductsThailandEligible } from './assertAllProductsThailandEligible'
 import { isThailandCompatibleDestination } from './destinationIntent'
 import type { AiProductCandidate } from './listAiEligibleThailandProducts'
+import type { ProductRecommendationSignals } from '../ai-trip/recommendation-signals'
 
 export type AiProductContextItem = {
   id: string
@@ -18,6 +19,7 @@ export type AiProductContextItem = {
   ctaLabel?: 'Check availability' | null
   ctaRel?: 'nofollow sponsored noopener noreferrer' | null
   externalHandoff?: boolean
+  decisionSignals?: ProductRecommendationSignals
 }
 
 export type AiProductContextResult =
