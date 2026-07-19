@@ -1,0 +1,33 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { expectNoForbiddenPublicCopy } from '../../__tests__/publicSafetyPatterns'
+
+const plannerDir = join(process.cwd(), 'app', 'planner')
+
+describe('Planner itinerary workspace', () => {
+  const source = readFileSync(join(plannerDir, 'PlannerItineraryWorkspace.tsx'), 'utf8')
+
+  it('links day tabs, the selected product card, and the reviewed MapLibre route', () => {
+    expect(source).toMatch(/Choose itinerary day/)
+    expect(source).toMatch(/setSelectedDay/)
+    expect(source).toMatch(/MapLibreDayMap/)
+    expect(source).toMatch(/getReviewedPlannerMapDay/)
+    expect(source).toMatch(/Review product details/)
+    expect(source).toMatch(/Check availability/)
+  })
+
+  it('renders one selectable day for every requested day without inventing map coordinates', () => {
+    expect(source).toMatch(/itinerary\.tripSpec\.durationDays/)
+    expect(source).toMatch(/No reviewed map coverage/)
+    expect(source).not.toMatch(/products\.find/)
+    expect(source).not.toMatch(/geocod/i)
+    expect(source).not.toMatch(/Math\.random/)
+  })
+
+  it('keeps public copy and the external handoff safe', () => {
+    expect(source).toMatch(/nofollow sponsored noopener noreferrer/)
+    expect(source).toMatch(/booking_partner_handoff_clicked/)
+    expectNoForbiddenPublicCopy(source)
+  })
+})

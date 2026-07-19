@@ -7,7 +7,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: 'Thailand Planner Studio | RadarScout',
   description:
-    'Describe a Thailand trip in your own words and get a reviewed day-trip route with a schematic map, real experience photos, and safe product-detail paths.',
+    'Describe a Thailand trip in your own words and get a reviewed day-trip route with an interactive map where reviewed coordinates are available.',
   alternates: { canonical: `${base}/planner` },
   robots: { index: false, follow: false },
 }
@@ -36,7 +36,7 @@ export default function PlannerStudioPage({ searchParams }: PlannerStudioPagePro
                 </h1>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-rs-muted sm:text-base">
                   A guided conversation that parses your trip idea locally, matches reviewed Thailand experiences,
-                  and lays them out as a day-by-day route with a schematic map. Comparison only — the reviewed handoff
+                  and lays them out as a day-by-day route with an interactive map where reviewed coordinates are available. Comparison only — the reviewed handoff
                   opens the external booking partner.
                 </p>
               </div>
@@ -64,7 +64,10 @@ export default function PlannerStudioPage({ searchParams }: PlannerStudioPagePro
 
         <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <PlannerStudio initialIdea={initialIdea} />
+            <PlannerStudio
+              initialIdea={initialIdea}
+              publicMapToken={process.env.NEXT_PUBLIC_MAPTILER_TOKEN ?? null}
+            />
           </div>
         </section>
       </main>
