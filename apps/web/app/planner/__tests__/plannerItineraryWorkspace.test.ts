@@ -17,6 +17,16 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/Check availability/)
   })
 
+  it('provides local pace and theme controls without another product request', () => {
+    expect(source).toMatch(/Choose itinerary pace/)
+    expect(source).toMatch(/Filter reviewed experiences by theme/)
+    expect(source).toMatch(/Chill/)
+    expect(source).toMatch(/Balanced/)
+    expect(source).toMatch(/Packed/)
+    expect(source).toMatch(/filterPlannerProductsByThemes/)
+    expect(source).not.toMatch(/\bfetch\s*\(/)
+  })
+
   it('renders one selectable day for every requested day without inventing map coordinates', () => {
     expect(source).toMatch(/itinerary\.tripSpec\.durationDays/)
     expect(source).toMatch(/No reviewed map coverage/)
