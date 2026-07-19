@@ -6,6 +6,7 @@ import {
   DURATION_CHIPS,
   mergeTripIdea,
   parseMergedTripIdea,
+  reconcileTripIdeaParts,
   SKIP_INTERESTS_CHIP,
   summarizeUnderstoodIntent,
 } from '../plannerConversation'
@@ -78,6 +79,32 @@ describe('planner studio guided conversation', () => {
 
     const step = decideNextGuideStep(merged, { interestsSkipped: false })
     expect(step.kind).not.toBe('ask_destination')
+  })
+
+  it('starts a fresh plan when a later message changes the destination', () => {
+    const parts = reconcileTripIdeaParts(
+      ['Bangkok 2 days canals and street food'],
+      'chaingmai 3 days',
+    )
+    const merged = parseMergedTripIdea(parts)
+
+    expect(parts).toEqual(['chaingmai 3 days'])
+    expect(merged.intent.destination).toBe('Chiang Mai')
+    expect(merged.intent.durationDays).toBe(3)
+    expect(merged.intent.interests).not.toContain('food')
+  })
+
+  it('keeps follow-up interests in the replacement destination plan', () => {
+    const replacement = reconcileTripIdeaParts(
+      ['Bangkok 2 days canals and street food'],
+      'Chiang Mai 3 days',
+    )
+    const parts = reconcileTripIdeaParts(replacement, 'elephants and temples')
+    const merged = parseMergedTripIdea(parts)
+
+    expect(merged.intent.destination).toBe('Chiang Mai')
+    expect(merged.intent.durationDays).toBe(3)
+    expect(merged.intent.interests).toEqual(expect.arrayContaining(['elephants', 'temples']))
   })
 
   it('summarizes understood intent as readable chips', () => {

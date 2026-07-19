@@ -1,5 +1,6 @@
 import { PARSER_PROMPT_LIMIT, parseTripIntent } from '@/lib/ai-trip/parse-intent'
 import type { ParseTripIntentResult } from '@/lib/ai-trip/intent-schema'
+import { isThailandCompatibleDestination } from '@/lib/aiProducts/destinationIntent'
 
 // Deterministic guided-conversation steps for the planner studio. This is a
 // local rule-based flow (no generative model): each traveler message is merged
@@ -37,14 +38,28 @@ export const REVIEWED_RETRY_CHIPS = [
 // same merged string is parsed correctly here and by the search API.
 function orderPartsDestinationFirst(parts: string[]): string[] {
   const cleaned = parts.map(part => part.trim()).filter(Boolean)
-  const firstDestinationIndex = cleaned.findIndex(
-    part => parseTripIntent(part).intent.destination != null,
+  const firstDestinationIndex = cleaned.findIndex(part =>
+    isThailandCompatibleDestination(parseTripIntent(part).intent.destination),
   )
 
   if (firstDestinationIndex <= 0) return cleaned
 
   const [destinationPart] = cleaned.splice(firstDestinationIndex, 1)
   return [destinationPart, ...cleaned]
+}
+
+export function reconcileTripIdeaParts(parts: string[], nextPart: string): string[] {
+  const cleaned = parts.map(part => part.trim()).filter(Boolean)
+  const content = nextPart.trim()
+  if (!content) return cleaned
+
+  const currentDestination = parseMergedTripIdea(cleaned).intent.destination
+  const nextDestination = parseTripIntent(content).intent.destination
+  const replacesCurrentDestination =
+    isThailandCompatibleDestination(currentDestination) &&
+    isThailandCompatibleDestination(nextDestination)
+
+  return replacesCurrentDestination ? [content] : [...cleaned, content]
 }
 
 export function mergeTripIdea(parts: string[]): string {

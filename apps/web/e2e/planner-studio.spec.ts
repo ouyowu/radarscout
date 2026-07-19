@@ -202,6 +202,71 @@ test('guided studio treats free-form interest text as an answer instead of askin
   expect(searchRequests).toBe(1)
 })
 
+test('guided studio replaces a completed Bangkok plan with a corrected Chiang Mai plan', async ({ page }) => {
+  const searchPrompts: string[] = []
+  const bangkokResponse: AiTripSearchResponse = {
+    ...REVIEWED_ROUTE_RESPONSE,
+    intent: { destination: 'Bangkok', days: 2, interests: ['food'] },
+    tripSpec: {
+      ...REVIEWED_ROUTE_RESPONSE.tripSpec!,
+      destination: 'Bangkok',
+      durationDays: 2,
+      interests: ['food'],
+    },
+    itinerary: {
+      ...REVIEWED_ROUTE_RESPONSE.itinerary!,
+      tripSpec: {
+        ...REVIEWED_ROUTE_RESPONSE.itinerary!.tripSpec,
+        destination: 'Bangkok',
+        durationDays: 2,
+        interests: ['food'],
+      },
+      days: REVIEWED_ROUTE_RESPONSE.itinerary!.days.map(day => ({
+        ...day,
+        experience: { ...day.experience, city: 'Bangkok', title: 'Reviewed Bangkok Day' },
+      })),
+      unfilledDayCount: 1,
+    },
+    products: REVIEWED_ROUTE_RESPONSE.products.map(product => ({
+      ...product,
+      city: 'Bangkok',
+      title: 'Reviewed Bangkok Day',
+    })),
+  }
+
+  await page.route('/api/ai-trip/search', async route => {
+    const request = route.request().postDataJSON() as { prompt: string }
+    searchPrompts.push(request.prompt)
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(request.prompt.includes('Bangkok') ? bangkokResponse : REVIEWED_ROUTE_RESPONSE),
+    })
+  })
+
+  await page.goto('/planner')
+  await page.getByRole('button', { name: 'Bangkok 2 days canals and street food' }).click()
+  await expect(page.getByRole('heading', { name: 'Bangkok · 2 days' })).toBeVisible()
+
+  const input = page.getByRole('textbox', { name: 'Trip idea message' })
+  await input.fill('chaingmai 3 days')
+  await page.getByRole('button', { name: 'Send' }).click()
+
+  await expect(page.getByRole('heading', { name: 'Bangkok · 2 days' })).toHaveCount(0)
+  await expect(page.getByText(/Anything you want the days to focus on/)).toBeVisible()
+
+  await page.getByRole('button', { name: 'Nature', exact: true }).click()
+
+  await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Chiang Mai day-tour route' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Reviewed Chiang Mai Day' }).first()).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Reviewed Bangkok Day' })).toHaveCount(0)
+  expect(searchPrompts).toEqual([
+    'Bangkok 2 days canals and street food',
+    'chaingmai 3 days, Nature',
+  ])
+})
+
 test('guided studio keeps the live map inside a bounded desktop workspace', async ({ page }) => {
   const bangkokResponse: AiTripSearchResponse = {
     ...REVIEWED_ROUTE_RESPONSE,

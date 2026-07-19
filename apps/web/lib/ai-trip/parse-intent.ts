@@ -1,3 +1,4 @@
+import { THAILAND_GEOGRAPHIC_TERMS } from '@/lib/productEligibility/thailandEligibility'
 import {
   createEmptyTripIntent,
   ParseTripIntentResult,
@@ -72,16 +73,15 @@ const accessibilityMatchers: Array<[RegExp, string]> = [
   [/老人|长辈/, 'elderly friendly'],
 ]
 
-const thailandDestinationPrefixes = [
-  'Chiang Mai',
-  'Chiang Rai',
-  'Koh Samui',
-  'Hua Hin',
-  'Bangkok',
-  'Phuket',
-  'Pattaya',
-  'Krabi',
-  'Thailand',
+const thailandDestinationPrefixes = [...THAILAND_GEOGRAPHIC_TERMS]
+  .sort((left, right) => right.length - left.length)
+
+const thailandDestinationAliases: ReadonlyArray<readonly [string, string]> = [
+  ['chiangmai', 'Chiang Mai'],
+  ['chiang-mai', 'Chiang Mai'],
+  ['chaingmai', 'Chiang Mai'],
+  ['chaing mai', 'Chiang Mai'],
+  ['chaing-mai', 'Chiang Mai'],
 ]
 
 function detectLanguage(prompt: string): string {
@@ -109,13 +109,25 @@ function normalizeThailandDestinationPrefix(value: string): string | null {
 
   const lowercaseValue = normalizedValue.toLowerCase()
 
+  for (const [alias, destination] of thailandDestinationAliases) {
+    if (lowercaseValue === alias) return destination
+    if (!lowercaseValue.startsWith(`${alias} `)) continue
+
+    const remainder = normalizedValue.slice(alias.length).trim()
+    if (hasTrailingIntentSignal(remainder) || /^\d+\s*(?:days?|nights?)/i.test(remainder)) {
+      return destination
+    }
+  }
+
   for (const destination of thailandDestinationPrefixes) {
     const lowercaseDestination = destination.toLowerCase()
     if (lowercaseValue === lowercaseDestination) return destination
     if (!lowercaseValue.startsWith(`${lowercaseDestination} `)) continue
 
     const remainder = normalizedValue.slice(destination.length).trim()
-    if (hasTrailingIntentSignal(remainder)) return destination
+    if (hasTrailingIntentSignal(remainder) || /^\d+\s*(?:days?|nights?)/i.test(remainder)) {
+      return destination
+    }
   }
 
   return null
