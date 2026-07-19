@@ -3,9 +3,22 @@ export const VIATOR_PRODUCTION_PRODUCT_SEARCH_URL = 'https://api.viator.com/part
 
 const cities = Object.freeze({
   bangkok: { city: 'Bangkok', destinationId: '343' },
+  bophut: { city: 'Bophut', destinationId: '51001' },
   'chiang-mai': { city: 'Chiang Mai', destinationId: '5267' },
+  'chiang-rai': { city: 'Chiang Rai', destinationId: '5268' },
+  'hua-hin': { city: 'Hua Hin', destinationId: '22968' },
+  kanchanaburi: { city: 'Kanchanaburi', destinationId: '22285' },
+  'khao-lak': { city: 'Khao Lak', destinationId: '23786' },
+  'ko-chang': { city: 'Ko Chang', destinationId: '24532' },
+  'ko-lanta': { city: 'Ko Lanta', destinationId: '24522' },
+  'ko-lipe': { city: 'Ko Lipe', destinationId: '37757' },
+  'ko-pha-ngan': { city: 'Ko Pha Ngan', destinationId: '34192' },
+  'ko-phi-phi-don': { city: 'Ko Phi Phi Don', destinationId: '40944' },
+  'ko-yao-yai': { city: 'Ko Yao Yai', destinationId: '50552' },
+  'koh-tao': { city: 'Koh Tao', destinationId: '34193' },
   phuket: { city: 'Phuket', destinationId: '349' },
   krabi: { city: 'Krabi', destinationId: '348' },
+  'mae-hong-son': { city: 'Mae Hong Son', destinationId: '51553' },
   pattaya: { city: 'Pattaya', destinationId: '344' },
   'koh-samui': { city: 'Koh Samui', destinationId: '347' },
 })
