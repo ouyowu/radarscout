@@ -64,10 +64,13 @@ describe('PromptHero component source', () => {
   })
 
   it('keeps honest, safe hero copy — no AI/price/availability/cart claims', () => {
+    expect(source).toContain('Curated Viator shortlist')
+    expect(source).toContain('We narrow the options before you compare')
     expect(source).not.toMatch(/\bAI\b/)
     expect(source).not.toMatch(/\bprice\b/i)
     expect(source).not.toMatch(/\bavailability\b/i)
     expect(source).not.toMatch(/add to cart/i)
     expect(source).not.toMatch(/book now/i)
+    expect(source).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 })

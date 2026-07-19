@@ -43,6 +43,12 @@ describe('planner studio public copy safety', () => {
     expect(publicCopy).not.toMatch(/hotel|flight|airport/i)
   })
 
+  it('presents reviewed Viator curation without unsupported ranking claims', () => {
+    expect(publicCopy).toContain('Curated from reviewed Viator experiences')
+    expect(publicCopy).toMatch(/why each match fits, who it suits, and what to check before you choose/i)
+    expect(publicCopy).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
+  })
+
   it('does not claim append-only local parsing can replace earlier choices', () => {
     expect(publicCopy).not.toMatch(/tell me what to change/i)
     expect(publicCopy).toMatch(/use Start over to change the destination or duration/i)

@@ -202,10 +202,10 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-forest-500">Thailand day trips</p>
               <h1 className="mt-3 font-rs-display text-[clamp(2.75rem,7vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
-                Find a reviewed experience for your Thailand day.
+                We narrow the list before you browse.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-8 text-rs-muted">
-                Browse reviewed Viator experience records, narrow the city or photo coverage, and inspect one detail page before continuing with a booking partner.
+                Browse reviewed Viator experience records chosen for useful destination and day-trip fit. Filter by city, inspect why each option made the shortlist, then continue to Viator for current details.
               </p>
             </div>
             <Link href="/planner" className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white">
@@ -215,6 +215,27 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
         </section>
 
         <Section variant="sand" className="py-10 sm:py-14" contentClassName="max-w-[1240px]">
+          <div className="mb-8 grid gap-4 md:grid-cols-3">
+            <article className="rounded-rs-md border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-500">Why it made the shortlist</p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">
+                Clear city and activity fit, useful day-trip shape, reviewed public content, and a verified affiliate handoff.
+              </p>
+            </article>
+            <article className="rounded-rs-md border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-trust">What value means here</p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">
+                RadarScout helps compare the experience and inclusions we can verify, instead of making unsupported popularity or price rankings.
+              </p>
+            </article>
+            <article className="rounded-rs-md border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Check the current details</p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">
+                Current price, inclusions, and booking terms stay on Viator so you can review them before continuing.
+              </p>
+            </article>
+          </div>
+
           <div className="rounded-rs-lg border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft">
             <div className="grid gap-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
               <FilterGroup title="City">

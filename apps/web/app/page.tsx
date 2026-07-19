@@ -16,7 +16,7 @@ const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 export const metadata: Metadata = {
   title: 'RadarScout | Personalized Thailand Experience Planner',
   description:
-    'Describe your ideal Thailand day and compare hand-picked experiences for elephant care, cooking, nature, and family-friendly days, then continue with a trusted booking partner.',
+    'Describe your ideal Thailand day and choose from a hand-reviewed Viator shortlist, then continue to Viator for current product details.',
   alternates: { canonical: base },
   openGraph: {
     title: 'RadarScout | Personalized Thailand Experience Planner',
@@ -60,9 +60,9 @@ export default function LandingPage() {
 
         <Section
           variant="cloud"
-          eyebrow="Reviewed Thailand day trips"
-          title="Start with reviewed Thailand day trips across cities."
-          lead="Each card links to a RadarScout detail page for a reviewed Viator experience. Current operating details stay with the booking partner."
+          eyebrow="RadarScout's Viator shortlist"
+          title="Skip the endless sorting. Start with day tours we have already narrowed down."
+          lead="Each experience is selected for clear destination fit, useful themes, and a verified Viator handoff. Current price, inclusions, and booking terms are confirmed on Viator."
         >
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {featuredViatorExperiences.map(product => (
