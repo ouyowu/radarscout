@@ -12,6 +12,7 @@ import { buildAiTripPlannerDetailHref } from '../ai-trip-planner/AiSearchProduct
 import { MapLibreDayMap } from '../itineraries/thailand/[city]/[duration]/MapLibreDayMap'
 import { getReviewedPlannerMapDay } from './plannerMapCoverage'
 import {
+  adaptPlannerDecisionSignals,
   collectPlannerThemes,
   filterPlannerProductsByThemes,
   toPlannerPace,
@@ -87,6 +88,9 @@ export function PlannerItineraryWorkspace({
     () => filterPlannerProductsByThemes(products, selectedThemes),
     [products, selectedThemes],
   )
+  const selectedDecisionSignals = selectedProduct
+    ? adaptPlannerDecisionSignals(selectedProduct, selectedProduct.decisionSignals, pace, selectedThemes)
+    : null
 
   function toggleTheme(theme: string) {
     setSelectedThemes(current => current.includes(theme)
@@ -206,14 +210,14 @@ export function PlannerItineraryWorkspace({
                   <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">{selectedProduct.summary}</p>
                 ) : null}
                 <PlannerDecisionGuide
-                  whyRecommended={selectedProduct.decisionSignals?.whyRecommended
+                  whyRecommended={selectedDecisionSignals?.whyRecommended
                     ?? selectedProduct.summary
                     ?? `A reviewed match selected for Day ${selectedDay} of this route.`}
-                  bestFor={selectedProduct.decisionSignals?.bestFor
+                  bestFor={selectedDecisionSignals?.bestFor
                     ?? (selectedProduct.tags.length > 0
                     ? selectedProduct.tags.slice(0, 3)
                     : ['Travelers comparing this route stop'])}
-                  watchOut={selectedProduct.decisionSignals?.watchOut
+                  watchOut={selectedDecisionSignals?.watchOut
                     ?? 'Review duration, meeting details, inclusions, and current terms on the Viator product page before choosing.'}
                 />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -293,6 +297,12 @@ export function PlannerItineraryWorkspace({
               const handoffHref = product.ctaHref && isReviewedViatorAffiliateUrl(product.ctaHref)
                 ? product.ctaHref
                 : null
+              const decisionSignals = adaptPlannerDecisionSignals(
+                product,
+                product.decisionSignals,
+                pace,
+                selectedThemes,
+              )
 
               return (
                 <article key={product.id} className="min-w-0 overflow-hidden rounded-rs-lg border border-rs-sage-200/80 bg-white shadow-rs-soft">
@@ -313,14 +323,14 @@ export function PlannerItineraryWorkspace({
                       <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-rs-muted">{product.summary}</p>
                     ) : null}
                     <PlannerDecisionGuide
-                      whyRecommended={product.decisionSignals?.whyRecommended
+                      whyRecommended={decisionSignals?.whyRecommended
                         ?? product.summary
                         ?? 'A reviewed match for the confirmed destination and themes.'}
-                      bestFor={product.decisionSignals?.bestFor
+                      bestFor={decisionSignals?.bestFor
                         ?? (product.tags.length > 0
                         ? product.tags.slice(0, 3)
                         : ['Travelers comparing this Thailand day trip'])}
-                      watchOut={product.decisionSignals?.watchOut
+                      watchOut={decisionSignals?.watchOut
                         ?? 'Review duration, meeting details, inclusions, and current terms on the Viator product page before choosing.'}
                     />
                     <div className="mt-5 grid gap-2">

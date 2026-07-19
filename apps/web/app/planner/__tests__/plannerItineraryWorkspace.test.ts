@@ -31,6 +31,7 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/Balanced/)
     expect(source).toMatch(/Packed/)
     expect(source).toMatch(/filterPlannerProductsByThemes/)
+    expect(source).toMatch(/adaptPlannerDecisionSignals/)
     expect(source).not.toMatch(/\bfetch\s*\(/)
   })
 
