@@ -89,11 +89,18 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await expect(page.getByRole('heading', {
     name: 'Talk through a Thailand trip, get a reviewed route.',
   })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Planner progress' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
   await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Your trip brief' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Suggested route' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Reviewed experiences' })).toBeVisible()
+  await expect(page.getByText('Why recommended')).toBeVisible()
+  await expect(page.getByText('Best for')).toBeVisible()
+  await expect(page.getByText('Before you choose')).toBeVisible()
   await expect(page.getByRole('img', { name: /schematic map of thailand/i })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Open Chiang Mai area map' })).toHaveAttribute(
     'href',

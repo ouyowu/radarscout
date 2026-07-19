@@ -8,7 +8,10 @@ describe('DayTripItineraryPanel', () => {
   it('renders an honest day-tour sequence without commerce or transport claims', () => {
     const source = readFileSync(componentPath, 'utf8')
 
-    expect(source).toContain('Your suggested Thailand day trips')
+    expect(source).toContain('A day-by-day route from reviewed matches')
+    expect(source).toContain('Suggested route')
+    expect(source).toContain('Reviewed experiences')
+    expect(source).toContain('<DecisionGuide')
     expect(source).toContain('Day {day.dayNumber}')
     expect(source).toContain('itinerary.unfilledDayCount')
     expect(source).toContain('day-tour suggestions')
