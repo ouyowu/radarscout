@@ -99,4 +99,21 @@ describe('listMatchingReviewedViatorProductCandidates', () => {
     })
     expect(candidates[0]?.ctaHref).toContain('pid=P00309837')
   })
+
+  it('makes the reviewed Batch 5 destination coverage available to deterministic planner matching', () => {
+    const candidates = listMatchingReviewedViatorProductCandidates({
+      city: 'Ko Chang',
+      search: 'highest peak jungle trek waterfall',
+      take: 3,
+    })
+
+    expect(candidates[0]).toMatchObject({
+      id: 'viator_110534p1161',
+      city: 'Ko Chang',
+      ctaLabel: 'Check availability',
+      ctaRel: 'nofollow sponsored noopener noreferrer',
+      externalHandoff: true,
+    })
+    expect(candidates[0]?.ctaHref).toContain('pid=P00309837')
+  })
 })

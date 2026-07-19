@@ -1,6 +1,7 @@
 import { reviewedViatorBatch2ProductSeedRecords } from './reviewedViatorBatch2Products'
 import { reviewedViatorBatch3ProductSeedRecords } from './reviewedViatorBatch3Products'
 import { reviewedViatorBatch4ProductSeedRecords } from './reviewedViatorBatch4Products'
+import { reviewedViatorBatch5ProductSeedRecords } from './reviewedViatorBatch5Products'
 
 const REVIEWED_AT = '2026-07-16T00:00:00.000Z'
 
@@ -368,6 +369,7 @@ const allReviewedViatorProductSeedRecords: readonly ReviewedViatorProduct[] = [
   ...reviewedViatorBatch2ProductSeedRecords,
   ...reviewedViatorBatch3ProductSeedRecords,
   ...reviewedViatorBatch4ProductSeedRecords,
+  ...reviewedViatorBatch5ProductSeedRecords,
 ]
 
 export function loadReviewedViatorProducts(
