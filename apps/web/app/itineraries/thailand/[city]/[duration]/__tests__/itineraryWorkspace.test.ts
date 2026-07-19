@@ -26,7 +26,8 @@ describe('Thailand itinerary workspace', () => {
     const source = readRouteSource('MapLibreDayMap.tsx')
 
     expect(source).toMatch(/maplibre-gl/)
-    expect(source).toMatch(/https:\/\/tiles\.openfreemap\.org\/styles\/liberty/)
+    expect(source).toMatch(/https:\/\/tile\.openstreetmap\.org\/\{z\}\/\{x\}\/\{y\}\.png/)
+    expect(source).not.toMatch(/https:\/\/tiles\.openfreemap\.org\/styles/)
     expect(source).toMatch(/fitBounds/)
     expect(source).toMatch(/stop\.lng/)
     expect(source).toMatch(/stop\.lat/)
