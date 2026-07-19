@@ -770,7 +770,7 @@ test.describe('Valid Chiang Mai flow', () => {
 
     const itinerary = page.getByRole('region', { name: /suggested thailand day trips/i })
     await expect(itinerary).toBeVisible()
-    await expect(itinerary.getByRole('heading', { name: 'Your suggested Thailand day trips' })).toBeVisible()
+    await expect(itinerary.getByRole('heading', { name: 'A day-by-day route from reviewed matches' })).toBeVisible()
     await expect(itinerary.getByText('Day 1', { exact: true })).toBeVisible()
     await expect(itinerary.getByText('Day 2', { exact: true })).toBeVisible()
     await expect(itinerary.getByText('Chiang Mai Elephant Sanctuary')).toBeVisible()

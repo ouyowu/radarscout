@@ -18,6 +18,11 @@ const publicCopy = [
   readPlannerSource('plannerConversation.ts'),
 ].join('\n')
 
+const itineraryPanelSource = readFileSync(
+  join(process.cwd(), 'app', 'ai-trip-planner', 'DayTripItineraryPanel.tsx'),
+  'utf8',
+)
+
 describe('planner studio public copy safety', () => {
   it('keeps forbidden partner and commerce wording out of the studio', () => {
     expectNoForbiddenPublicCopy(publicCopy)
@@ -63,5 +68,20 @@ describe('planner studio public copy safety', () => {
     expect(studioSource).toMatch(/Route overview · built locally/)
     expect(studioSource).toMatch(/buildDeterministicRouteOverview/)
     expect(studioSource).not.toMatch(/AI-generated text/)
+  })
+
+  it('uses the approved planner information hierarchy without changing the search contract', () => {
+    const pageSource = readPlannerSource('page.tsx')
+    const studioSource = readPlannerSource('PlannerStudio.tsx')
+
+    expect(pageSource).toMatch(/Planner flow/)
+    expect(studioSource).toContain('aria-label="Planner progress"')
+    expect(studioSource).toContain("['Describe', 'Confirm', 'Compare']")
+    expect(studioSource).toMatch(/Your trip brief/)
+    expect(itineraryPanelSource).toMatch(/Suggested route/)
+    expect(itineraryPanelSource).toMatch(/Reviewed experiences/)
+    expect(itineraryPanelSource).toMatch(/<DecisionGuide/)
+    expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/search'/)
+    expect(studioSource).not.toMatch(/\/api\/bokun|\/api\/viator/i)
   })
 })

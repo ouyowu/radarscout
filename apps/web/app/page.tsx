@@ -75,6 +75,9 @@ export default function LandingPage() {
                 tags={product.tags.slice(0, 3)}
                 imageUrl={product.imageUrl}
                 imageAlt={product.title}
+                whyRecommended={product.summary}
+                bestFor={product.tags.slice(0, 3)}
+                watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
               />
             ))}
           </div>

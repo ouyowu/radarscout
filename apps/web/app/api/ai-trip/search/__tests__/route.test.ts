@@ -162,6 +162,15 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products[0].ctaHref).toMatch(/^https:\/\/www\.viator\.com\//)
     expect(body.products[0].retailPrice).toBeNull()
     expect(body.products[0].currency).toBeNull()
+    expect(body.itinerary).toMatchObject({
+      tripSpec: {
+        destination: 'Chiang Mai',
+        durationDays: 3,
+      },
+      unfilledDayCount: 2,
+    })
+    expect(body.itinerary.days).toHaveLength(1)
+    expect(body.itinerary.days[0].experience.productId).toBe('viator_191442p6')
     expect(JSON.stringify(body.products)).not.toMatch(/hotel|flight/i)
   })
 

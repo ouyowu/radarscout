@@ -5,7 +5,7 @@ import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
-import { Button, Card, Section } from '@/app/_components/design-system'
+import { Button, Card, DecisionGuide, Section } from '@/app/_components/design-system'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 import {
   getPublicThailandProduct,
@@ -146,6 +146,13 @@ function displaySummary(product: ProductDetail): string {
     product.summary ??
     'A RadarScout product detail page for Thailand experiences from trusted local partners.'
   )
+}
+
+function displayBestFor(product: ProductDetail, location: string): string[] {
+  const tags = product.reviewedEnrichment?.suggestedTags ?? []
+  return tags.length > 0
+    ? tags
+    : [`Travelers comparing a reviewed experience in ${location}`]
 }
 
 const trustItems = [
@@ -300,6 +307,22 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
       />
 
       <DmcTrustBar items={trustItems} />
+
+      <Section variant="cloud" className="py-8 sm:py-10" contentClassName="max-w-[1240px]">
+        <div className="mb-6 max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-terracotta-600">
+            Decision guide
+          </p>
+          <h2 className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">
+            Decide whether this experience fits your day.
+          </h2>
+        </div>
+        <DecisionGuide
+          whyRecommended={displaySummary(product)}
+          bestFor={displayBestFor(product, location)}
+          watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
+        />
+      </Section>
 
       <Section variant="sand" className="pt-8" contentClassName="max-w-[1240px]">
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-start">

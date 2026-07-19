@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ExperienceCategoryGrid } from '../_components/ExperienceCategoryGrid'
 import { FAQAccordion } from '../_components/FAQAccordion'
 import { PublicSiteShell } from '../_components/PublicSiteShell'
-import { Card, Section } from '../_components/design-system'
+import { Card, ExperienceCard, Section } from '../_components/design-system'
 import {
   listReviewedViatorPublicCatalogueCities,
   loadReviewedViatorPublicCatalogue,
@@ -151,35 +151,19 @@ function FilterGroup({ title, children }: { title: string; children: ReactNode }
 
 function ProductCard({ product }: { product: ReviewedViatorPublicProduct }) {
   return (
-    <Card href={product.detailHref} ariaLabel={`View ${product.title}`} className="group h-full transition duration-200 hover:-translate-y-1">
-      <article className="flex h-full flex-col">
-        <div className="relative aspect-[2/1] overflow-hidden bg-[linear-gradient(135deg,#feeabf,var(--rs-sand-100)_55%,var(--rs-trust))]">
-          {product.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.imageUrl} alt={product.title} loading="lazy" className="h-full w-full object-cover" />
-          ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-rs-forest-900/70 via-transparent to-transparent" />
-          <p className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-            {product.destination}
-          </p>
-        </div>
-        <div className="flex flex-1 flex-col p-6">
-          <h2 className="font-rs-display text-2xl font-semibold leading-tight text-rs-ink">{product.title}</h2>
-          <p className="mt-3 line-clamp-3 text-sm leading-7 text-rs-muted">
-            {product.summary}
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {product.tags.slice(0, 3).map(tag => (
-              <span key={tag} className="rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold text-rs-forest-700">{tag}</span>
-            ))}
-          </div>
-          <p className="mt-auto pt-6 text-xs font-semibold uppercase tracking-[0.12em] text-rs-terracotta">
-            View experience
-          </p>
-          <span className="sr-only">Review details before partner handoff</span>
-        </div>
-      </article>
-    </Card>
+    <ExperienceCard
+      href={product.detailHref}
+      eyebrow={product.destination}
+      title={product.title}
+      summary={product.summary}
+      tags={product.tags.slice(0, 3)}
+      imageUrl={product.imageUrl}
+      imageAlt={product.title}
+      whyRecommended={product.summary}
+      bestFor={product.tags.slice(0, 3)}
+      watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
+      className="group h-full transition duration-200 hover:-translate-y-1"
+    />
   )
 }
 
@@ -259,7 +243,20 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
             </div>
           </div>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rs-terracotta-600">
+                Reviewed catalogue
+              </p>
+              <h2 className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">
+                Reviewed experiences
+              </h2>
+            </div>
+            <p className="max-w-md text-sm leading-6 text-rs-muted">
+              Choose a card to inspect the decision guide and product detail.
+            </p>
+          </div>
+          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {products.map(product => <ProductCard key={product.id} product={product} />)}
           </div>
 

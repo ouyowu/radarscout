@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
-import { DayTripItineraryPanel } from '../ai-trip-planner/DayTripItineraryPanel'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import {
   decideNextGuideStep,
@@ -14,6 +13,7 @@ import {
   summarizeUnderstoodIntent,
 } from './plannerConversation'
 import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
+import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
 
 type StudioMessage = {
   id: number
@@ -31,6 +31,7 @@ const STARTER_CHIPS = [
   'Phuket 4 days islands and beaches',
   'Thailand 7 days Bangkok Chiang Mai Phuket',
 ]
+const PLANNER_STEPS = ['Describe', 'Confirm', 'Compare'] as const
 
 let nextMessageId = 1
 
@@ -78,9 +79,10 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
 
 type PlannerStudioProps = {
   initialIdea?: string
+  publicMapToken?: string | null
 }
 
-export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
+export function PlannerStudio({ initialIdea = '', publicMapToken = null }: PlannerStudioProps) {
   const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
   const [messages, setMessages] = useState<StudioMessage[]>(() => [
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
@@ -197,13 +199,42 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
   const currentIdea = mergeTripIdea(ideaParts)
   const routeOverview = itinerary ? buildDeterministicRouteOverview(itinerary) : null
+  const currentStep = itinerary ? 3 : ideaParts.length > 0 || isSearching ? 2 : 1
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
-      <section
-        aria-label="Guided planning conversation"
-        className="flex flex-col overflow-hidden rounded-rs-lg border border-rs-sage-200/70 bg-white shadow-rs-soft"
-      >
+    <div className="space-y-5">
+      <nav aria-label="Planner progress" className="rounded-rs-lg border border-rs-sage-200/70 bg-white p-3 shadow-rs-soft sm:p-4">
+        <ol className="grid grid-cols-3 gap-2">
+          {PLANNER_STEPS.map((step, index) => {
+            const number = index + 1
+            const isCurrent = number === currentStep
+            const isComplete = number < currentStep
+
+            return (
+              <li
+                key={step}
+                aria-current={isCurrent ? 'step' : undefined}
+                className={
+                  isCurrent
+                    ? 'rounded-rs-md bg-rs-forest-900 px-3 py-3 text-white'
+                    : isComplete
+                      ? 'rounded-rs-md bg-rs-sage-100 px-3 py-3 text-rs-forest-700'
+                      : 'rounded-rs-md bg-rs-sand-50 px-3 py-3 text-rs-muted'
+                }
+              >
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em]">Step {number}</p>
+                <p className="mt-1 text-sm font-bold">{step}</p>
+              </li>
+            )
+          })}
+        </ol>
+      </nav>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-start">
+        <section
+          aria-label="Guided planning conversation"
+          className="flex flex-col overflow-hidden rounded-rs-lg border border-rs-sage-200/70 bg-white shadow-rs-soft lg:sticky lg:top-6"
+        >
         <div className="flex items-center justify-between border-b border-rs-sage-200/70 px-5 py-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-500">Planning guide</p>
@@ -325,62 +356,75 @@ export function PlannerStudio({ initialIdea = '' }: PlannerStudioProps) {
             Local parsing first; product matching stays Thailand-only and comparison-only. The reviewed handoff opens an external booking partner.
           </p>
         </form>
-      </section>
+        </section>
 
-      <section aria-label="Trip workspace" className="min-w-0">
-        {itinerary ? (
-          <div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Your route workspace</p>
-                <h2 className="mt-1 font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink">
-                  {itinerary.tripSpec.destination} · {itinerary.tripSpec.durationDays} day
-                  {itinerary.tripSpec.durationDays === 1 ? '' : 's'}
+        <section aria-label="Trip workspace" className="min-w-0">
+          {itinerary ? (
+            <div className="space-y-4">
+              <div className="rounded-rs-lg border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft sm:p-6">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Confirmed intent</p>
+                <h2 className="mt-2 font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink">
+                  Your trip brief
                 </h2>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold text-rs-forest-700">
+                      {itinerary.tripSpec.destination} · {itinerary.tripSpec.durationDays} day
+                      {itinerary.tripSpec.durationDays === 1 ? '' : 's'}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-rs-muted">
+                      Built from your confirmed destination, duration, and interests.
+                    </p>
+                  </div>
+                  <p className="text-xs font-semibold text-rs-muted">
+                    {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
+                  </p>
+                </div>
               </div>
-              <p className="text-xs font-semibold text-rs-muted">
-                {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
+              <PlannerItineraryWorkspace
+                itinerary={itinerary}
+                products={searchState?.status === 'ok' ? searchState.products : []}
+                publicMapToken={publicMapToken}
+              />
+              <p className="mt-4 text-sm font-semibold leading-6 text-rs-muted">
+                Want the full comparison grid for this idea?{' '}
+                <Link
+                  href={`/ai-trip-planner?idea=${encodeURIComponent(currentIdea)}#intent-demo`}
+                  className="font-bold text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
+                >
+                  Open it in the full Thailand trip planner
+                </Link>
               </p>
             </div>
-            <DayTripItineraryPanel itinerary={itinerary} />
-            <p className="mt-4 text-sm font-semibold leading-6 text-rs-muted">
-              Want the full comparison grid for this idea?{' '}
-              <Link
-                href={`/ai-trip-planner?idea=${encodeURIComponent(currentIdea)}#intent-demo`}
-                className="font-bold text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
-              >
-                Open it in the full Thailand trip planner
-              </Link>
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-hidden rounded-rs-lg border border-rs-forest-500/20 bg-rs-forest-900 text-white shadow-rs-soft">
-            <div className="px-6 py-8 sm:px-8 sm:py-10">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ffd67a]">Route preview</p>
-              <h2 className="mt-3 font-rs-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
-                Your day-by-day Thailand route appears here
-              </h2>
-              <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-white/80">
-                Once the guide has a destination and trip length, it builds a reviewed day-trip sequence with a schematic route map,
-                real experience photos, and a reviewed product-detail path on every stop.
-              </p>
-              <ol className="mt-6 grid gap-3 sm:grid-cols-3">
-                {['Describe the trip', 'Confirm what was understood', 'Compare the reviewed route'].map((step, index) => (
-                  <li key={step} className="rounded-2xl border border-white/12 bg-white/8 px-4 py-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ffd67a]">Step {index + 1}</p>
-                    <p className="mt-2 text-sm font-semibold leading-6 text-white/90">{step}</p>
-                  </li>
-                ))}
-              </ol>
+          ) : (
+            <div className="overflow-hidden rounded-rs-lg border border-rs-forest-500/20 bg-rs-forest-900 text-white shadow-rs-soft">
+              <div className="px-6 py-8 sm:px-8 sm:py-10">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ffd67a]">Route preview</p>
+                <h2 className="mt-3 font-rs-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
+                  Your day-by-day Thailand route appears here
+                </h2>
+                <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-white/80">
+                  Once the guide has a destination and trip length, it builds a reviewed day-trip sequence with a schematic route map,
+                  real experience photos, and a reviewed product-detail path on every stop.
+                </p>
+                <ol className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {['Describe the trip', 'Confirm what was understood', 'Compare the reviewed route'].map((step, index) => (
+                    <li key={step} className="rounded-2xl border border-white/12 bg-white/8 px-4 py-4">
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ffd67a]">Step {index + 1}</p>
+                      <p className="mt-2 text-sm font-semibold leading-6 text-white/90">{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="border-t border-white/10 bg-white/5 px-6 py-4 sm:px-8">
+                <p className="text-xs font-semibold leading-5 text-white/70">
+                  Planning stays read-only on RadarScout: no availability claims, and every continue step happens with the external booking partner.
+                </p>
+              </div>
             </div>
-            <div className="border-t border-white/10 bg-white/5 px-6 py-4 sm:px-8">
-              <p className="text-xs font-semibold leading-5 text-white/70">
-                Planning stays read-only on RadarScout: no availability claims, and every continue step happens with the external booking partner.
-              </p>
-            </div>
-          </div>
-        )}
-      </section>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

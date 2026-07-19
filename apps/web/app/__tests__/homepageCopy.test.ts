@@ -57,6 +57,9 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('pilotPartnerProducts')
     expect(homepageSource).not.toContain('partner_cm_')
     expect(homepageSource).not.toContain('for the first traveler test')
+    expect(homepageSource).toContain('whyRecommended={product.summary}')
+    expect(homepageSource).toContain('bestFor={product.tags.slice(0, 3)}')
+    expect(homepageSource).toContain('watchOut=')
   })
 
   it('uses the shared public site shell and keeps the homepage Thailand day-trip focused', () => {

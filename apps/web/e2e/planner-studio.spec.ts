@@ -89,21 +89,36 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await expect(page.getByRole('heading', {
     name: 'Talk through a Thailand trip, get a reviewed route.',
   })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Planner progress' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
   await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
-  await expect(page.getByRole('img', { name: /schematic map of thailand/i })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Open Chiang Mai area map' })).toHaveAttribute(
-    'href',
-    'https://www.openstreetmap.org/search?query=Chiang%20Mai%2C%20Thailand',
-  )
-  await expect(page.getByRole('link', { name: 'Review product details' })).toHaveAttribute(
+  await expect(page.getByRole('heading', { name: 'Your trip brief' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Chiang Mai day-tour route' })).toBeVisible()
+  await expect(page.getByText('Why recommended').first()).toBeVisible()
+  await expect(page.getByText('Best for').first()).toBeVisible()
+  await expect(page.getByText('Before you choose').first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Day 1' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Day 2' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Day 3' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'No reviewed map coverage for this day yet' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Balanced' })).toHaveAttribute('aria-pressed', 'true')
+  await page.getByRole('button', { name: 'Chill' }).click()
+  await expect(page.getByRole('button', { name: 'Chill' })).toHaveAttribute('aria-pressed', 'true')
+  await page.getByRole('button', { name: 'Food', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Food', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByText('1 shown · filters stay on this page')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Review product details' }).first()).toHaveAttribute(
     'href',
     '/tours/prod_cm_1?source=ai-trip-planner',
   )
   await expect(page.getByRole('link', { name: 'Check availability' })).toHaveCount(0)
+
+  await page.getByRole('button', { name: 'Day 3' }).click()
+  await expect(page.getByRole('heading', { name: 'Keep this day flexible' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Day 3' })).toHaveAttribute('aria-pressed', 'true')
   expect(searchRequests).toBe(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
