@@ -90,12 +90,14 @@ function toSafeCandidate(value, city) {
 
 function normalizeInput(input) {
   const city = cities[input?.cityKey]
+  const start = input?.start ?? 1
   const count = input?.count ?? 5
 
   if (!city) return { ok: false, reason: 'invalid_city' }
-  if (!Number.isInteger(count) || count < 1 || count > 20) return { ok: false, reason: 'invalid_count' }
+  if (!Number.isInteger(start) || start < 1) return { ok: false, reason: 'invalid_start' }
+  if (!Number.isInteger(count) || count < 1 || count > 50) return { ok: false, reason: 'invalid_count' }
 
-  return { ok: true, city, count }
+  return { ok: true, city, start, count }
 }
 
 export function parsePreviewArgs(args) {
@@ -104,19 +106,21 @@ export function parsePreviewArgs(args) {
   for (let index = 0; index < args.length; index += 2) {
     const flag = args[index]
     const value = args[index + 1]
-    if ((flag !== '--city' && flag !== '--count') || !value || values.has(flag)) {
+    if ((flag !== '--city' && flag !== '--start' && flag !== '--count') || !value || values.has(flag)) {
       return { ok: false, reason: 'invalid_arguments' }
     }
     values.set(flag, value)
   }
 
   const cityKey = values.get('--city')?.trim().toLowerCase().replaceAll(' ', '-')
+  const startValue = values.get('--start')
   const countValue = values.get('--count')
+  const start = startValue === undefined ? 1 : Number(startValue)
   const count = countValue === undefined ? 5 : Number(countValue)
-  const normalized = normalizeInput({ cityKey, count })
+  const normalized = normalizeInput({ cityKey, start, count })
 
   if (!normalized.ok) return normalized
-  return { ok: true, input: { cityKey, count } }
+  return { ok: true, input: { cityKey, start, count } }
 }
 
 export async function fetchViatorProductionPreview(input, { apiKey, fetchFn = fetch } = {}) {
@@ -136,7 +140,7 @@ export async function fetchViatorProductionPreview(input, { apiKey, fetchFn = fe
       },
       body: JSON.stringify({
         filtering: { destination: normalized.city.destinationId },
-        pagination: { start: 1, count: normalized.count },
+        pagination: { start: normalized.start, count: normalized.count },
         currency: 'THB',
       }),
     })

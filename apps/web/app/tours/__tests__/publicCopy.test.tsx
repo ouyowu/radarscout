@@ -74,8 +74,8 @@ describe('tour public copy safety', () => {
 
     expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(12)
     expect(markup).toContain('/tours/viator_')
-    expect(markup).toContain('105 reviewed experiences')
-    expect(markup).toContain('Page 1 of 9')
+    expect(markup).toContain('205 reviewed experiences')
+    expect(markup).toContain('Page 1 of 18')
     expect(markup).toContain('aria-label="Next catalogue page"')
     expect(markup).toContain('page=2')
     expect(markup).not.toContain('Price not listed')
@@ -106,9 +106,9 @@ describe('tour public copy safety', () => {
     })
     const markup = renderToStaticMarkup(element)
 
-    expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(4)
-    expect(markup).toContain('16 reviewed experiences')
-    expect(markup).toContain('Page 2 of 2')
+    expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(12)
+    expect(markup).toContain('36 reviewed experiences')
+    expect(markup).toContain('Page 2 of 3')
     expect(markup).toContain('Ko Pha Ngan')
     expect(markup).toContain('Chiang Rai')
     expect(markup).toContain('Hua Hin')

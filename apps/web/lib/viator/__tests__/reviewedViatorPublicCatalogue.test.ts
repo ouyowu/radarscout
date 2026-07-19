@@ -10,7 +10,7 @@ describe('reviewedViatorPublicCatalogue', () => {
   it('exposes all reviewed Viator products through one display-safe public shape', () => {
     const products = loadReviewedViatorPublicCatalogue()
 
-    expect(products).toHaveLength(105)
+    expect(products).toHaveLength(205)
 
     for (const product of products) {
       expect(product.id).toMatch(/^viator_/)
@@ -43,22 +43,22 @@ describe('reviewedViatorPublicCatalogue', () => {
     expect(cities).toContainEqual({ slug: 'chiang-mai', label: 'Chiang Mai' })
     expect(cities).toContainEqual({ slug: 'ko-pha-ngan', label: 'Ko Pha Ngan' })
 
-    expect(loadReviewedViatorPublicCatalogue({ city: 'chiang-mai' })).toHaveLength(6)
-    expect(loadReviewedViatorPublicCatalogue({ city: 'phuket' })).toHaveLength(16)
+    expect(loadReviewedViatorPublicCatalogue({ city: 'chiang-mai' })).toHaveLength(20)
+    expect(loadReviewedViatorPublicCatalogue({ city: 'phuket' })).toHaveLength(36)
     expect(loadReviewedViatorPublicCatalogue({ city: 'tokyo' })).toEqual([])
   })
 
   it('paginates the complete reviewed catalogue without duplicates or omissions', () => {
     const products = loadReviewedViatorPublicCatalogue()
-    const pages = Array.from({ length: 9 }, (_, index) => (
+    const pages = Array.from({ length: 18 }, (_, index) => (
       paginateReviewedViatorPublicCatalogue(products, index + 1, 12)
     ))
     const productIds = pages.flatMap((page) => page.items.map((product) => product.id))
 
-    expect(pages[0]).toMatchObject({ page: 1, pageSize: 12, totalItems: 105, totalPages: 9 })
-    expect(pages[8].items).toHaveLength(9)
-    expect(productIds).toHaveLength(105)
-    expect(new Set(productIds).size).toBe(105)
-    expect(paginateReviewedViatorPublicCatalogue(products, 99, 12).page).toBe(9)
+    expect(pages[0]).toMatchObject({ page: 1, pageSize: 12, totalItems: 205, totalPages: 18 })
+    expect(pages[17].items).toHaveLength(1)
+    expect(productIds).toHaveLength(205)
+    expect(new Set(productIds).size).toBe(205)
+    expect(paginateReviewedViatorPublicCatalogue(products, 99, 12).page).toBe(18)
   })
 })

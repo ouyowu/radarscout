@@ -7,10 +7,10 @@ import {
 } from '../reviewedViatorProducts'
 
 describe('reviewedViatorProducts', () => {
-  it('loads the 105 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
+  it('loads the 205 manually reviewed Thailand day-trip products with safe handoff and image URLs', () => {
     const products = loadReviewedViatorProducts()
 
-    expect(products).toHaveLength(105)
+    expect(products).toHaveLength(205)
     expect(new Set(products.map((product) => product.city))).toEqual(new Set([
       'Bangkok',
       'Bophut',
