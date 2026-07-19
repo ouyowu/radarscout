@@ -137,3 +137,44 @@ test('parses only an approved Thailand city and bounded count', () => {
   assert.deepEqual(parsePreviewArgs(['--city', 'Phuket', '--start', '0']), { ok: false, reason: 'invalid_start' })
   assert.deepEqual(parsePreviewArgs(['--count', '5']), { ok: false, reason: 'invalid_city' })
 })
+
+test('accepts the reviewed low-coverage Thailand destinations selected for Batch 5', async () => {
+  const destinations = [
+    ['bophut', 'Bophut', '51001'],
+    ['chiang-rai', 'Chiang Rai', '5268'],
+    ['hua-hin', 'Hua Hin', '22968'],
+    ['kanchanaburi', 'Kanchanaburi', '22285'],
+    ['khao-lak', 'Khao Lak', '23786'],
+    ['ko-chang', 'Ko Chang', '24532'],
+    ['ko-lanta', 'Ko Lanta', '24522'],
+    ['ko-lipe', 'Ko Lipe', '37757'],
+    ['ko-pha-ngan', 'Ko Pha Ngan', '34192'],
+    ['ko-phi-phi-don', 'Ko Phi Phi Don', '40944'],
+    ['ko-yao-yai', 'Ko Yao Yai', '50552'],
+    ['koh-tao', 'Koh Tao', '34193'],
+    ['mae-hong-son', 'Mae Hong Son', '51553'],
+  ]
+
+  for (const [cityKey, city, destinationId] of destinations) {
+    assert.deepEqual(parsePreviewArgs(['--city', cityKey, '--count', '50']), {
+      ok: true,
+      input: { cityKey, start: 1, count: 50 },
+    })
+
+    let requestedOptions
+    const result = await fetchViatorProductionPreview(
+      { cityKey, count: 1 },
+      {
+        apiKey: 'production-test-key',
+        fetchFn: async (_url, options) => {
+          requestedOptions = options
+          return new Response(JSON.stringify({ products: [upstreamProduct] }), { status: 200 })
+        },
+      },
+    )
+
+    assert.equal(JSON.parse(requestedOptions.body).filtering.destination, destinationId)
+    assert.equal(result.city, city)
+    assert.equal(result.destinationId, destinationId)
+  }
+})
