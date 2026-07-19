@@ -12,6 +12,10 @@ import {
   isReviewedViatorAffiliateUrl,
   listMatchingReviewedViatorProductCandidates,
 } from '@/lib/viator/reviewedViatorMatching'
+import {
+  buildProductRecommendationSignals,
+  extractTravelMonth,
+} from './recommendation-signals'
 
 // Shared guarded retrieval pipeline for AI-trip surfaces. Every consumer gets
 // the same review gate: only reviewed products with a verified public booking
@@ -221,8 +225,20 @@ export async function runGatedItineraryPipeline(prompt: string): Promise<GatedIt
 
   const context = await buildAiProductContext(candidates)
 
+  const recommendationContext = {
+    destination: parsed.intent.destination,
+    interests: parsed.intent.interests,
+    travelerType: parsed.intent.travelerType,
+    pace: parsed.intent.pace,
+    month: extractTravelMonth(prompt),
+  }
   const handoffReadyProducts = context.status === 'ok'
-    ? context.items.filter(isReviewedHandoffReadyProduct)
+    ? context.items
+        .filter(isReviewedHandoffReadyProduct)
+        .map(product => ({
+          ...product,
+          decisionSignals: buildProductRecommendationSignals(product, recommendationContext),
+        }))
     : []
 
   if (context.status === 'no_match' || handoffReadyProducts.length === 0) {

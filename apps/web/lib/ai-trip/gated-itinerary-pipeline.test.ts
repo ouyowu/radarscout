@@ -71,6 +71,14 @@ describe('isReviewedHandoffReadyProduct', () => {
       product.retailPrice === null && product.currency === null,
     )).toBe(true)
     expect(result.handoffReadyProducts.every(product =>
+      Boolean(
+        product.decisionSignals?.whyRecommended
+        && product.decisionSignals.bestFor.length > 0
+        && product.decisionSignals.watchOut,
+      ),
+    )).toBe(true)
+    expect(result.itinerary?.days.every(day => Boolean(day.experience.decisionSignals))).toBe(true)
+    expect(result.handoffReadyProducts.every(product =>
       !Object.keys(product).some(key =>
         ['availability', 'inventory', 'reviews', 'rating', 'raw', 'supplier'].includes(key),
       ),

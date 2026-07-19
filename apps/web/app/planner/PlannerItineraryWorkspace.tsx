@@ -26,9 +26,10 @@ const paces: readonly { value: ThailandItineraryPace; label: string }[] = [
 type PlannerDecisionGuideProps = {
   whyRecommended: string
   bestFor: readonly string[]
+  watchOut: string
 }
 
-function PlannerDecisionGuide({ whyRecommended, bestFor }: PlannerDecisionGuideProps) {
+function PlannerDecisionGuide({ whyRecommended, bestFor, watchOut }: PlannerDecisionGuideProps) {
   return (
     <div aria-label="Traveler decision guide" className="mt-4 divide-y divide-rs-sage-200/70 border-y border-rs-sage-200/70">
       <div className="py-3">
@@ -46,10 +47,8 @@ function PlannerDecisionGuide({ whyRecommended, bestFor }: PlannerDecisionGuideP
         </div>
       </div>
       <div className="py-3">
-        <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Before you choose</p>
-        <p className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-rs-muted">
-          Review meeting details, timing, inclusions, and current terms on the product page.
-        </p>
+        <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Watch out</p>
+        <p className="mt-1 text-sm font-semibold leading-5 text-rs-muted">{watchOut}</p>
       </div>
     </div>
   )
@@ -207,10 +206,15 @@ export function PlannerItineraryWorkspace({
                   <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">{selectedProduct.summary}</p>
                 ) : null}
                 <PlannerDecisionGuide
-                  whyRecommended={selectedProduct.summary ?? `A reviewed match selected for Day ${selectedDay} of this route.`}
-                  bestFor={selectedProduct.tags.length > 0
+                  whyRecommended={selectedProduct.decisionSignals?.whyRecommended
+                    ?? selectedProduct.summary
+                    ?? `A reviewed match selected for Day ${selectedDay} of this route.`}
+                  bestFor={selectedProduct.decisionSignals?.bestFor
+                    ?? (selectedProduct.tags.length > 0
                     ? selectedProduct.tags.slice(0, 3)
-                    : ['Travelers comparing this route stop']}
+                    : ['Travelers comparing this route stop'])}
+                  watchOut={selectedProduct.decisionSignals?.watchOut
+                    ?? 'Review duration, meeting details, inclusions, and current terms on the Viator product page before choosing.'}
                 />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <Link
@@ -309,10 +313,15 @@ export function PlannerItineraryWorkspace({
                       <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-rs-muted">{product.summary}</p>
                     ) : null}
                     <PlannerDecisionGuide
-                      whyRecommended={product.summary ?? 'A reviewed match for the confirmed destination and themes.'}
-                      bestFor={product.tags.length > 0
+                      whyRecommended={product.decisionSignals?.whyRecommended
+                        ?? product.summary
+                        ?? 'A reviewed match for the confirmed destination and themes.'}
+                      bestFor={product.decisionSignals?.bestFor
+                        ?? (product.tags.length > 0
                         ? product.tags.slice(0, 3)
-                        : ['Travelers comparing this Thailand day trip']}
+                        : ['Travelers comparing this Thailand day trip'])}
+                      watchOut={product.decisionSignals?.watchOut
+                        ?? 'Review duration, meeting details, inclusions, and current terms on the Viator product page before choosing.'}
                     />
                     <div className="mt-5 grid gap-2">
                       <Link

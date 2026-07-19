@@ -47,6 +47,7 @@ export function buildDayTripItinerary(
         imageAlt: product.imageAlt ?? null,
         tags: [...product.tags],
         detailHref: product.detailHref,
+        ...(product.decisionSignals ? { decisionSignals: product.decisionSignals } : {}),
         handoff: {
           label: 'Check availability',
           href: product.ctaHref as string,
