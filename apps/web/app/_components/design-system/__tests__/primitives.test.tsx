@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { Button, ExperienceCard, Nav, Section } from '../index'
+import { Button, DecisionGuide, ExperienceCard, Nav, Section } from '../index'
 
 const unsafeCopyPattern =
   /live availability|available now|instant confirmation|checkout|payment|booking complete|Bókun backend|Bókun database|Bókun-powered|partner rate|supplier net rate|commission/i
@@ -69,7 +69,24 @@ describe('RadarScout design system primitives', () => {
     ].join('\n')
 
     expect(source).not.toMatch(unsafeCopyPattern)
-    expect(source).toContain('aspect-[2/1]')
+    expect(source).toContain('aspect-[4/3]')
+  })
+
+  it('renders the shared traveler decision guide with the three approved questions', () => {
+    const markup = renderToStaticMarkup(
+      DecisionGuide({
+        whyRecommended: 'A reviewed day trip that combines temples and local food.',
+        bestFor: ['Culture', 'Food'],
+        watchOut: 'Review current meeting details on the booking partner page.',
+      }),
+    )
+
+    expect(markup).toContain('Why recommended')
+    expect(markup).toContain('Best for')
+    expect(markup).toContain('Before you choose')
+    expect(markup).toContain('Culture')
+    expect(markup).toContain('Food')
+    expect(markup).not.toMatch(unsafeCopyPattern)
   })
 
   it('renders reviewed partner media with an honest fallback for cards without images', () => {

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React, { type ReactNode } from 'react'
+import { DecisionGuide } from './DecisionGuide'
 import { cn } from './utils'
 
 type CardProps = {
@@ -13,10 +14,13 @@ type ExperienceCardProps = {
   title: string
   summary: string
   eyebrow?: string
-  tags?: string[]
+  tags?: readonly string[]
   href?: string
   imageUrl?: string
   imageAlt?: string
+  whyRecommended?: string
+  bestFor?: readonly string[]
+  watchOut?: string
   className?: string
 }
 
@@ -45,13 +49,18 @@ export function ExperienceCard({
   href,
   imageUrl,
   imageAlt = '',
+  whyRecommended,
+  bestFor = [],
+  watchOut,
   className,
 }: ExperienceCardProps) {
+  const hasDecisionGuide = Boolean(whyRecommended && watchOut)
+
   return (
     <Card href={href} className={className} ariaLabel={href ? title : undefined}>
       <div
         aria-label={!imageUrl ? imageAlt || undefined : undefined}
-        className="relative flex aspect-[2/1] items-end bg-[linear-gradient(135deg,var(--rs-sand-100),#feeabf_55%,var(--rs-terracotta))] p-5"
+        className="relative flex aspect-[4/3] items-end bg-[linear-gradient(135deg,var(--rs-sand-100),#feeabf_55%,var(--rs-terracotta))] p-5"
       >
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -70,8 +79,17 @@ export function ExperienceCard({
       </div>
       <div className="space-y-4 p-5 sm:p-6">
         <h3 className="font-rs-display text-[clamp(1.25rem,2vw,1.375rem)] font-medium leading-tight text-rs-ink">{title}</h3>
-        <p className="line-clamp-3 text-sm leading-6 text-rs-muted">{summary}</p>
-        {tags.length > 0 ? (
+        {hasDecisionGuide ? (
+          <DecisionGuide
+            whyRecommended={whyRecommended!}
+            bestFor={bestFor}
+            watchOut={watchOut!}
+            compact
+          />
+        ) : (
+          <p className="line-clamp-3 text-sm leading-6 text-rs-muted">{summary}</p>
+        )}
+        {!hasDecisionGuide && tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map(tag => (
               <span key={tag} className="rounded-rs-pill bg-rs-sand-100 px-3 py-1 text-xs font-semibold text-rs-forest-700">
@@ -79,6 +97,14 @@ export function ExperienceCard({
               </span>
             ))}
           </div>
+        ) : null}
+        {href ? (
+          <>
+            <p className="pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-terracotta-600">
+              View experience
+            </p>
+            <span className="sr-only">Review details before partner handoff</span>
+          </>
         ) : null}
       </div>
     </Card>
