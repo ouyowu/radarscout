@@ -75,7 +75,7 @@ export function PlannerItineraryWorkspace({
   )
   const selectedItineraryDay = itinerary.days.find(day => day.dayNumber === selectedDay)
   const selectedProduct = selectedItineraryDay?.experience ?? null
-  const mapDay = getReviewedPlannerMapDay(itinerary.tripSpec.destination, selectedDay)
+  const mapDay = getReviewedPlannerMapDay(itinerary.tripSpec.destination, selectedDay, selectedProduct)
   const selectedProductId = selectedProduct?.productId ?? null
   const rawHandoffHref = selectedProduct?.handoff.href ?? null
   const selectedHandoffHref = rawHandoffHref
@@ -266,6 +266,8 @@ export function PlannerItineraryWorkspace({
               day={mapDay.dayPlan.day}
               stops={mapStops}
               publicToken={publicMapToken}
+              precision={mapDay.precision}
+              reviewedAt={mapDay.lastReviewedAt}
               className="h-[420px] lg:h-[calc(100vh-12rem)] lg:min-h-[560px] lg:max-h-[760px]"
             />
           ) : (
