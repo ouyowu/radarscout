@@ -13,6 +13,7 @@ import {
   summarizeUnderstoodIntent,
 } from './plannerConversation'
 import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
+import { AgodaStaySearch } from './AgodaStaySearch'
 import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
 
 type StudioMessage = {
@@ -80,9 +81,14 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
 type PlannerStudioProps = {
   initialIdea?: string
   publicMapToken?: string | null
+  agodaCities?: string[]
 }
 
-export function PlannerStudio({ initialIdea = '', publicMapToken = null }: PlannerStudioProps) {
+export function PlannerStudio({
+  initialIdea = '',
+  publicMapToken = null,
+  agodaCities = [],
+}: PlannerStudioProps) {
   const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
   const [messages, setMessages] = useState<StudioMessage[]>(() => [
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
@@ -380,6 +386,12 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
               />
+              {agodaCities.includes(itinerary.tripSpec.destination) ? (
+                <AgodaStaySearch
+                  city={itinerary.tripSpec.destination}
+                  durationDays={itinerary.tripSpec.durationDays}
+                />
+              ) : null}
               <p className="text-sm font-semibold leading-6 text-rs-muted">
                 Want the full comparison grid for this idea?{' '}
                 <Link
