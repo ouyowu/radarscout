@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Map as MapLibreMap } from 'maplibre-gl'
 import type { ThailandItineraryStop } from '@/lib/itineraries/thailandTemplates'
 
@@ -71,23 +71,29 @@ function CoordinateFallback({ stops }: { stops: readonly ThailandItineraryStop[]
 
 export function MapLibreDayMap({ cityName, day, stops, publicToken }: MapLibreDayMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const [mapFailed, setMapFailed] = useState(false)
+  const styleUrl = publicToken
+    ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${encodeURIComponent(publicToken)}`
+    : 'https://tiles.openfreemap.org/styles/liberty'
 
   useEffect(() => {
-    if (!publicToken || !containerRef.current || stops.length === 0) return
+    if (!containerRef.current || stops.length === 0) return
 
     let cancelled = false
     let map: MapLibreMap | null = null
+    setMapFailed(false)
 
     void import('maplibre-gl').then(({ default: maplibre }) => {
       if (cancelled || !containerRef.current) return
 
       map = new maplibre.Map({
         container: containerRef.current,
-        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${encodeURIComponent(publicToken)}`,
+        style: styleUrl,
         center: [stops[0].lng, stops[0].lat],
         zoom: 12,
         attributionControl: { compact: true },
       })
+      map.once('error', () => setMapFailed(true))
 
       const bounds = new maplibre.LngLatBounds()
       stops.forEach((stop, index) => {
@@ -110,9 +116,9 @@ export function MapLibreDayMap({ cityName, day, stops, publicToken }: MapLibreDa
       cancelled = true
       map?.remove()
     }
-  }, [publicToken, stops])
+  }, [stops, styleUrl])
 
-  if (!publicToken) return <CoordinateFallback stops={stops} />
+  if (mapFailed) return <CoordinateFallback stops={stops} />
 
   return (
     <figure className="m-0">
@@ -122,7 +128,7 @@ export function MapLibreDayMap({ cityName, day, stops, publicToken }: MapLibreDa
         className="min-h-[340px] overflow-hidden rounded-rs-lg bg-rs-sage-200"
       />
       <figcaption className="mt-2 text-xs font-semibold leading-5 text-rs-muted">
-        Map data © OpenStreetMap contributors · map tiles © MapTiler. Pins use reviewed template coordinates; this is not live navigation.
+        Map data © OpenStreetMap contributors · map tiles © {publicToken ? 'MapTiler' : 'OpenFreeMap'}. Pins use reviewed template coordinates; this is not live navigation.
       </figcaption>
     </figure>
   )
