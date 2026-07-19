@@ -35,7 +35,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https:",
-              "connect-src 'self' https://api.stripe.com https://api.resend.com",
+              "connect-src 'self' https://api.stripe.com https://api.resend.com https://tile.openstreetmap.org https://api.maptiler.com",
               "frame-src https://js.stripe.com",
             ].join('; '),
           },
