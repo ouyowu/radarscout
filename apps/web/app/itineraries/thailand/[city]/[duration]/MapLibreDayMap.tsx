@@ -9,6 +9,7 @@ type MapLibreDayMapProps = {
   day: number
   stops: readonly ThailandItineraryStop[]
   publicToken: string | null
+  className?: string
 }
 
 const OPENSTREETMAP_RASTER_STYLE: StyleSpecification = {
@@ -30,7 +31,7 @@ const OPENSTREETMAP_RASTER_STYLE: StyleSpecification = {
   ],
 }
 
-export function MapLibreDayMap({ cityName, day, stops, publicToken }: MapLibreDayMapProps) {
+export function MapLibreDayMap({ cityName, day, stops, publicToken, className }: MapLibreDayMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapStyle = publicToken
     ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${encodeURIComponent(publicToken)}`
@@ -81,7 +82,7 @@ export function MapLibreDayMap({ cityName, day, stops, publicToken }: MapLibreDa
       <div
         ref={containerRef}
         aria-label={`${cityName} day ${day} street map`}
-        className="min-h-[340px] overflow-hidden rounded-rs-lg bg-rs-sage-200"
+        className={`h-[420px] overflow-hidden rounded-rs-lg bg-rs-sage-200 ${className ?? ''}`}
       />
       <figcaption className="mt-2 text-xs font-semibold leading-5 text-rs-muted">
         Map data © OpenStreetMap contributors · map tiles © {publicToken ? 'MapTiler' : 'OpenStreetMap'}. Pins use reviewed template coordinates; this is not live navigation.

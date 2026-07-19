@@ -202,9 +202,9 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
   const currentStep = itinerary ? 3 : ideaParts.length > 0 || isSearching ? 2 : 1
 
   return (
-    <div className="space-y-5">
-      <nav aria-label="Planner progress" className="rounded-rs-lg border border-rs-sage-200/70 bg-white p-3 shadow-rs-soft sm:p-4">
-        <ol className="grid grid-cols-3 gap-2">
+    <div className="space-y-3">
+      <nav aria-label="Planner progress" className="rounded-rs-md border border-rs-sage-200/70 bg-white px-3 py-2 shadow-rs-soft">
+        <ol className="grid grid-cols-3 gap-1.5">
           {PLANNER_STEPS.map((step, index) => {
             const number = index + 1
             const isCurrent = number === currentStep
@@ -216,29 +216,29 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 aria-current={isCurrent ? 'step' : undefined}
                 className={
                   isCurrent
-                    ? 'rounded-rs-md bg-rs-forest-900 px-3 py-3 text-white'
+                    ? 'rounded-rs-sm bg-rs-forest-900 px-3 py-2 text-white'
                     : isComplete
-                      ? 'rounded-rs-md bg-rs-sage-100 px-3 py-3 text-rs-forest-700'
-                      : 'rounded-rs-md bg-rs-sand-50 px-3 py-3 text-rs-muted'
+                      ? 'rounded-rs-sm bg-rs-sage-100 px-3 py-2 text-rs-forest-700'
+                      : 'rounded-rs-sm bg-rs-sand-50 px-3 py-2 text-rs-muted'
                 }
               >
                 <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em]">Step {number}</p>
-                <p className="mt-1 text-sm font-bold">{step}</p>
+                <p className="mt-0.5 text-xs font-bold sm:text-sm">{step}</p>
               </li>
             )
           })}
         </ol>
       </nav>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-start">
+      <div className="grid gap-4 lg:grid-cols-[minmax(340px,0.68fr)_minmax(0,1.32fr)] lg:items-start">
         <section
           aria-label="Guided planning conversation"
-          className="flex flex-col overflow-hidden rounded-rs-lg border border-rs-sage-200/70 bg-white shadow-rs-soft lg:sticky lg:top-6"
+          className="flex flex-col overflow-hidden rounded-rs-lg border border-rs-sage-200/70 bg-white shadow-rs-soft lg:sticky lg:top-4 lg:h-[calc(100vh-8.5rem)] lg:min-h-[620px] lg:max-h-[760px]"
         >
-        <div className="flex items-center justify-between border-b border-rs-sage-200/70 px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-rs-sage-200/70 px-4 py-3 sm:px-5">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-500">Planning guide</p>
-            <h2 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.02em] text-rs-ink">Describe the trip in your own words</h2>
+            <h2 className="mt-1 font-rs-display text-lg font-semibold tracking-[-0.02em] text-rs-ink">Describe your Thailand days</h2>
           </div>
           <button
             type="button"
@@ -251,7 +251,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
 
         <div
           aria-label="Conversation messages"
-          className="flex max-h-[560px] min-h-[320px] flex-col gap-4 overflow-y-auto px-5 py-5"
+          className="flex min-h-[320px] flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 sm:px-5"
         >
           {messages.map(message => (
             <div
@@ -330,7 +330,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
           <div ref={conversationEndRef} />
         </div>
 
-        <form onSubmit={handleSubmit} className="border-t border-rs-sage-200/70 px-5 py-4">
+        <form onSubmit={handleSubmit} className="border-t border-rs-sage-200/70 px-4 py-3 sm:px-5">
           <label htmlFor="planner-studio-input" className="sr-only">
             Trip idea message
           </label>
@@ -352,29 +352,23 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
               Send
             </button>
           </div>
-          <p className="mt-3 text-xs font-semibold leading-5 text-rs-muted">
-            Local parsing first; product matching stays Thailand-only and comparison-only. The reviewed handoff opens an external booking partner.
+          <p className="mt-2 text-xs font-semibold leading-5 text-rs-muted">
+            Local parsing · reviewed Thailand matches · external booking partner handoff
           </p>
         </form>
         </section>
 
         <section aria-label="Trip workspace" className="min-w-0">
           {itinerary ? (
-            <div className="space-y-4">
-              <div className="rounded-rs-lg border border-rs-sage-200/70 bg-white p-5 shadow-rs-soft sm:p-6">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Confirmed intent</p>
-                <h2 className="mt-2 font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink">
-                  Your trip brief
-                </h2>
-                <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-3">
+              <div className="rounded-rs-md border border-rs-sage-200/70 bg-white px-4 py-3 shadow-rs-soft sm:px-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-rs-forest-700">
+                    <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Your trip brief</h2>
+                    <h3 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.02em] text-rs-ink">
                       {itinerary.tripSpec.destination} · {itinerary.tripSpec.durationDays} day
                       {itinerary.tripSpec.durationDays === 1 ? '' : 's'}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-rs-muted">
-                      Built from your confirmed destination, duration, and interests.
-                    </p>
                   </div>
                   <p className="text-xs font-semibold text-rs-muted">
                     {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
@@ -386,7 +380,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
               />
-              <p className="mt-4 text-sm font-semibold leading-6 text-rs-muted">
+              <p className="text-sm font-semibold leading-6 text-rs-muted">
                 Want the full comparison grid for this idea?{' '}
                 <Link
                   href={`/ai-trip-planner?idea=${encodeURIComponent(currentIdea)}#intent-demo`}

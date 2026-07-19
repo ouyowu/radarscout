@@ -137,7 +137,7 @@ test.describe('Homepage Trip Planner entry', () => {
     await expect(page).toHaveURL(`/planner?idea=${encodeURIComponent(prompt)}`)
     await expect(page.locator('#planner-studio-input')).toHaveValue(prompt)
     await expect(page.getByRole('heading', {
-      name: 'Talk through a Thailand trip, get a reviewed route.',
+      name: 'Build your Thailand day-trip route',
     })).toBeVisible()
     expect(searchRequestCount).toBe(0)
   })
@@ -238,7 +238,7 @@ test.describe('Homepage Trip Planner entry', () => {
     await expect(page).toHaveURL('/planner')
     await expect(page).toHaveTitle('Thailand Planner Studio | RadarScout')
     await expect(page.getByRole('heading', {
-      name: 'Talk through a Thailand trip, get a reviewed route.',
+      name: 'Build your Thailand day-trip route',
     })).toBeVisible()
     await expect(page.locator('#planner-studio-input')).toBeVisible()
 

@@ -11,4 +11,9 @@ describe('Planner map security headers', () => {
       '"connect-src \'self\' https://api.stripe.com https://api.resend.com https://tile.openstreetmap.org https://api.maptiler.com"',
     )
   })
+
+  it('allows MapLibre to create its local rendering worker without widening script sources', () => {
+    expect(nextConfigSource).toContain('"worker-src \'self\' blob:"')
+    expect(nextConfigSource).not.toContain('worker-src *')
+  })
 })

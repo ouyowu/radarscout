@@ -7,6 +7,7 @@ const plannerDir = join(process.cwd(), 'app', 'planner')
 
 describe('Planner itinerary workspace', () => {
   const source = readFileSync(join(plannerDir, 'PlannerItineraryWorkspace.tsx'), 'utf8')
+  const pageSource = readFileSync(join(plannerDir, 'page.tsx'), 'utf8')
 
   it('links day tabs, the selected product card, and the reviewed MapLibre route', () => {
     expect(source).toMatch(/Choose itinerary day/)
@@ -15,6 +16,12 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/getReviewedPlannerMapDay/)
     expect(source).toMatch(/Review product details/)
     expect(source).toMatch(/Check availability/)
+  })
+
+  it('loads MapLibre styles and constrains the planner map to a viewport-height workspace', () => {
+    expect(pageSource).toMatch(/maplibre-gl\/dist\/maplibre-gl\.css/)
+    expect(source).toMatch(/lg:h-\[calc\(100vh-12rem\)\]/)
+    expect(source).toMatch(/lg:max-h-\[760px\]/)
   })
 
   it('provides local pace and theme controls without another product request', () => {

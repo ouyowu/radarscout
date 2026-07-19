@@ -74,10 +74,12 @@ describe('planner studio public copy safety', () => {
     const pageSource = readPlannerSource('page.tsx')
     const studioSource = readPlannerSource('PlannerStudio.tsx')
 
-    expect(pageSource).toMatch(/Planner flow/)
+    expect(pageSource).toMatch(/Build your Thailand day-trip route/)
+    expect(pageSource).not.toMatch(/Planner flow/)
     expect(studioSource).toContain('aria-label="Planner progress"')
     expect(studioSource).toContain("['Describe', 'Confirm', 'Compare']")
     expect(studioSource).toMatch(/Your trip brief/)
+    expect(studioSource).toMatch(/lg:grid-cols-\[minmax\(340px,0\.68fr\)_minmax\(0,1\.32fr\)\]/)
     expect(itineraryPanelSource).toMatch(/Suggested route/)
     expect(itineraryPanelSource).toMatch(/Reviewed experiences/)
     expect(itineraryPanelSource).toMatch(/<DecisionGuide/)
