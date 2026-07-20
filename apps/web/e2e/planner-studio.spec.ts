@@ -106,14 +106,21 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
   await expect(page.getByRole('heading', { name: 'Chiang Mai · 3 days' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Your trip brief' })).toBeVisible()
+  await expect(page.getByLabel('Trip reality')).toBeVisible()
+  await expect(page.getByText('Decision brief')).toBeVisible()
+  await expect(page.getByText('Reviewed days')).toBeVisible()
+  await expect(page.getByText('Map orientation', { exact: true })).toBeVisible()
+  await expect(page.getByText('Matches in view')).toBeVisible()
+  await expect(page.getByText('1/3').first()).toBeVisible()
+  await expect(page.getByText('Why this route')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Chiang Mai day-tour route' })).toBeVisible()
   await expect(page.getByText('Why recommended').first()).toBeVisible()
   await expect(page.getByText('Best for').first()).toBeVisible()
   await expect(page.getByText('Watch out').first()).toBeVisible()
-  await expect(page.getByText(/matches your interest in food/i).first()).toBeVisible()
-  await expect(page.getByText('Families comparing this route').first()).toBeVisible()
-  await expect(page.getByText(/review duration and meeting details on Viator/i).first()).toBeVisible()
+  const selectedDecisionGuide = page.locator('[aria-label="Traveler decision guide"]').first()
+  await expect(selectedDecisionGuide.getByText(/matches your interest in food/i)).toBeVisible()
+  await expect(selectedDecisionGuide.getByText('Families comparing this route')).toBeVisible()
+  await expect(selectedDecisionGuide.getByText(/review duration and meeting details on Viator/i)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Day 1' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Day 2' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Day 3' })).toBeVisible()
@@ -126,6 +133,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await page.getByRole('button', { name: 'Food', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Food', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByText('1 shown · filters stay on this page')).toBeVisible()
+  await expect(page.getByText('1/1').last()).toBeVisible()
   await expect(page.getByRole('link', { name: 'Review product details' }).first()).toHaveAttribute(
     'href',
     '/tours/prod_cm_1?source=ai-trip-planner',

@@ -1,0 +1,12 @@
+[
+  {
+    "date": "2026-07-20",
+    "verb": "redesign",
+    "scope": "page",
+    "target": "/planner",
+    "genre": "editorial utility",
+    "macrostructure": "guided workbench with decision report",
+    "theme": "existing RadarScout design tokens",
+    "reference": "EasyTripAI public reference studied for information hierarchy only"
+  }
+]

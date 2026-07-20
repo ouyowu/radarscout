@@ -1,6 +1,6 @@
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
-html, body { background: #fffaf5; }
+html, body { background: var(--rs-sand-50); overflow-x: clip; }
 
 @tailwind base;
 @tailwind components;

@@ -15,6 +15,8 @@ function readPlannerSource(fileName: string) {
 const publicCopy = [
   readPlannerSource('page.tsx'),
   readPlannerSource('PlannerStudio.tsx'),
+  readPlannerSource('PlannerItineraryWorkspace.tsx'),
+  readPlannerSource('PlannerRealityPanel.tsx'),
   readPlannerSource('plannerConversation.ts'),
 ].join('\n')
 
@@ -79,12 +81,14 @@ describe('planner studio public copy safety', () => {
   it('uses the approved planner information hierarchy without changing the search contract', () => {
     const pageSource = readPlannerSource('page.tsx')
     const studioSource = readPlannerSource('PlannerStudio.tsx')
+    const realityPanelSource = readPlannerSource('PlannerRealityPanel.tsx')
 
     expect(pageSource).toMatch(/Build your Thailand day-trip route/)
     expect(pageSource).not.toMatch(/Planner flow/)
     expect(studioSource).toContain('aria-label="Planner progress"')
     expect(studioSource).toContain("['Describe', 'Confirm', 'Compare']")
-    expect(studioSource).toMatch(/Your trip brief/)
+    expect(realityPanelSource).toMatch(/Trip reality/)
+    expect(realityPanelSource).toMatch(/Decision brief/)
     expect(studioSource).toMatch(/lg:grid-cols-\[minmax\(340px,0\.68fr\)_minmax\(0,1\.32fr\)\]/)
     expect(itineraryPanelSource).toMatch(/Suggested route/)
     expect(itineraryPanelSource).toMatch(/Reviewed experiences/)

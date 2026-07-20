@@ -1,0 +1,26 @@
+{
+  "scannedAt": "2026-07-20",
+  "scope": "/planner",
+  "framework": "Next.js 14 App Router",
+  "styling": "Tailwind CSS 3 with RadarScout CSS variables",
+  "fontStack": {
+    "display": "Fraunces via next/font",
+    "body": "Source Sans 3 via next/font"
+  },
+  "palette": "Existing RadarScout forest, sage, sand, ink, and terracotta tokens",
+  "spacing": "Existing 4-point RadarScout CSS variable scale",
+  "motion": "No animation library; preserve restrained CSS-only motion",
+  "preserve": [
+    "Viator review and handoff gates",
+    "existing route ownership",
+    "existing fonts and color tokens",
+    "deterministic itinerary and map behavior"
+  ],
+  "sources": [
+    "apps/web/app/layout.tsx",
+    "apps/web/app/globals.css",
+    "apps/web/tailwind.config.ts",
+    "apps/web/app/planner/PlannerStudio.tsx",
+    "apps/web/app/planner/PlannerItineraryWorkspace.tsx"
+  ]
+}
