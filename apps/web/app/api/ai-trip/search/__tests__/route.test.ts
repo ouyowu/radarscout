@@ -196,6 +196,65 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.products[0].id).toBe('viator_191442p6')
   })
 
+  it('exposes only the approved trip context fields in the public intent response', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({
+      prompt: 'Chiang Mai 3 days family elephants',
+      tripContext: {
+        startDate: '2026-12-10',
+        groupSize: 4,
+      },
+    }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.intent).toEqual({
+      destination: 'Chiang Mai',
+      days: 3,
+      startDate: '2026-12-10',
+      endDate: '2026-12-13',
+      groupSize: 4,
+      travelerType: 'family',
+      interests: ['elephants'],
+    })
+    expect(Object.keys(body.intent).sort()).toEqual([
+      'days',
+      'destination',
+      'endDate',
+      'groupSize',
+      'interests',
+      'startDate',
+      'travelerType',
+    ])
+    expect(body.intent).not.toHaveProperty('confidence')
+    expect(body.intent).not.toHaveProperty('missingFields')
+    expect(body.intent).not.toHaveProperty('warnings')
+    expect(body.intent).not.toHaveProperty('pace')
+    expect(body.intent).not.toHaveProperty('budget')
+  })
+
+  it('keeps optional public trip context fields null when the traveler did not confirm them', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.intent).toMatchObject({
+      startDate: null,
+      endDate: null,
+      groupSize: null,
+      travelerType: 'unspecified',
+    })
+  })
+
   it.each([
     { startDate: 'December 10', groupSize: 2 },
     { startDate: '2026-12-10', groupSize: 0 },

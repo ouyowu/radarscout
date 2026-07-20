@@ -25,8 +25,22 @@ import { parseTripIntent } from '../../../lib/ai-trip/parse-intent'
 import { buildProductFitReason, buildResultFitSummary } from '../resultFitSummary'
 
 const intentParserDemoSource = readFileSync(new URL('../IntentParserDemo.tsx', import.meta.url), 'utf8')
+type PublicSearchIntent = NonNullable<AiTripSearchResponse['intent']>
 
 // ---- helpers ----------------------------------------------------------------
+
+function makeSearchIntent(overrides: Partial<PublicSearchIntent> = {}): PublicSearchIntent {
+  return {
+    destination: 'Chiang Mai',
+    days: 3,
+    startDate: null,
+    endDate: null,
+    groupSize: null,
+    travelerType: 'unspecified',
+    interests: ['elephants'],
+    ...overrides,
+  }
+}
 
 function makeConfirmed() {
   return {
@@ -42,7 +56,7 @@ function makeConfirmed() {
 function makeOkResponse(overrides: Partial<AiTripSearchResponse> = {}): AiTripSearchResponse {
   return {
     status: 'ok',
-    intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants'] },
+    intent: makeSearchIntent(),
     products: [
       {
         id: 'prod_1',
@@ -111,7 +125,7 @@ describe('unsupported_destination response shape (test 23)', () => {
   it('unsupported_destination response has a human-readable message', () => {
     const res: AiTripSearchResponse = {
       status: 'unsupported_destination',
-      intent: { destination: 'Singapore', days: null, interests: [] },
+      intent: makeSearchIntent({ destination: 'Singapore', days: null, interests: [] }),
       products: [],
       message: 'RadarScout currently searches Thailand experiences only.',
       meta: {
@@ -278,7 +292,7 @@ describe('no_match response (test 29)', () => {
   it('no_match response has empty products and correct status', () => {
     const res: AiTripSearchResponse = {
       status: 'no_match',
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['surfing'] },
+      intent: makeSearchIntent({ interests: ['surfing'] }),
       products: [],
       meta: {
         productRetrievalEnabled: true,
@@ -499,7 +513,7 @@ describe('result fit summary (tests 38–41)', () => {
 
   it('summarizes only interests that are actually represented in product results', () => {
     const summary = buildResultFitSummary(makeOkResponse({
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants', 'food', 'canals'] },
+      intent: makeSearchIntent({ interests: ['elephants', 'food', 'canals'] }),
       products: [
         {
           ...makeOkResponse().products[0],
@@ -525,7 +539,7 @@ describe('result fit summary (tests 38–41)', () => {
 
   it('recognizes meal, lunch, and dining terms as food matches in result summaries', () => {
     const summary = buildResultFitSummary(makeOkResponse({
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['food'] },
+      intent: makeSearchIntent({ interests: ['food'] }),
       products: [
         {
           ...makeOkResponse().products[0],
@@ -549,7 +563,7 @@ describe('result fit summary (tests 38–41)', () => {
 
   it('uses route comparison wording for Thailand-wide multi-city results', () => {
     const summary = buildResultFitSummary(makeOkResponse({
-      intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+      intent: makeSearchIntent({ destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] }),
       products: [
         {
           ...makeOkResponse().products[0],
@@ -577,7 +591,7 @@ describe('result fit summary (tests 38–41)', () => {
 
   it('orders Thailand route result cities by the traveler prompt when available', () => {
     const summary = buildResultFitSummary(makeOkResponse({
-      intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+      intent: makeSearchIntent({ destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] }),
       products: [
         {
           ...makeOkResponse().products[0],
@@ -611,14 +625,14 @@ describe('result fit summary (tests 38–41)', () => {
   it('does not render a result fit summary for empty or unsupported responses', () => {
     expect(buildResultFitSummary({
       status: 'no_match',
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['surfing'] },
+      intent: makeSearchIntent({ interests: ['surfing'] }),
       products: [],
       meta: makeOkResponse().meta,
     })).toBeNull()
 
     expect(buildResultFitSummary({
       status: 'unsupported_destination',
-      intent: { destination: 'Singapore', days: 3, interests: ['food'] },
+      intent: makeSearchIntent({ destination: 'Singapore', interests: ['food'] }),
       products: [],
       message: 'RadarScout currently searches Thailand experiences only.',
       meta: makeOkResponse().meta,
@@ -653,7 +667,7 @@ describe('product-level fit reason (tests 42–46)', () => {
 
   it('falls back to read-only comparison wording when there are no strong matches', () => {
     const response = makeOkResponse({
-      intent: { destination: 'Bangkok', days: 3, interests: ['canals'] },
+      intent: makeSearchIntent({ destination: 'Bangkok', interests: ['canals'] }),
       products: [{
         ...makeOkResponse().products[0],
         city: null,
@@ -686,7 +700,7 @@ describe('product-level fit reason (tests 42–46)', () => {
 
   it('matches plural traveler interests to singular product wording', () => {
     const response = makeOkResponse({
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants'] },
+      intent: makeSearchIntent(),
       products: [{
         ...makeOkResponse().products[0],
         title: 'Gentle Elephant Care Morning',
@@ -701,7 +715,7 @@ describe('product-level fit reason (tests 42–46)', () => {
 
   it('explains safe food interest matches when product wording uses cooking or local food', () => {
     const response = makeOkResponse({
-      intent: { destination: 'Chiang Mai', days: 3, interests: ['food'] },
+      intent: makeSearchIntent({ interests: ['food'] }),
       products: [{
         ...makeOkResponse().products[0],
         title: 'Chiang Mai Cooking and Market Experience',

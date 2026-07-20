@@ -1,9 +1,24 @@
 import { expect, test } from '@playwright/test'
 import type { AiTripSearchResponse } from '../app/api/ai-trip/search/route'
 
+type PublicSearchIntent = NonNullable<AiTripSearchResponse['intent']>
+
+function makeSearchIntent(overrides: Partial<PublicSearchIntent> = {}): PublicSearchIntent {
+  return {
+    destination: 'Chiang Mai',
+    days: 3,
+    startDate: null,
+    endDate: null,
+    groupSize: null,
+    travelerType: 'unspecified',
+    interests: ['elephants', 'food', 'temples'],
+    ...overrides,
+  }
+}
+
 const REVIEWED_ROUTE_RESPONSE: AiTripSearchResponse = {
   status: 'ok',
-  intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants', 'food', 'temples'] },
+  intent: makeSearchIntent(),
   tripSpec: {
     destination: 'Chiang Mai',
     durationDays: 3,
@@ -234,7 +249,7 @@ test('guided studio replaces a completed Bangkok plan with a corrected Chiang Ma
   const searchPrompts: string[] = []
   const bangkokResponse: AiTripSearchResponse = {
     ...REVIEWED_ROUTE_RESPONSE,
-    intent: { destination: 'Bangkok', days: 2, interests: ['food'] },
+    intent: makeSearchIntent({ destination: 'Bangkok', days: 2, interests: ['food'] }),
     tripSpec: {
       ...REVIEWED_ROUTE_RESPONSE.tripSpec!,
       destination: 'Bangkok',
@@ -298,11 +313,11 @@ test('guided studio replaces a completed Bangkok plan with a corrected Chiang Ma
 test('guided studio keeps the live map inside a bounded desktop workspace', async ({ page }) => {
   const bangkokResponse: AiTripSearchResponse = {
     ...REVIEWED_ROUTE_RESPONSE,
-    intent: {
+    intent: makeSearchIntent({
       destination: 'Bangkok',
       days: 2,
       interests: REVIEWED_ROUTE_RESPONSE.intent?.interests ?? [],
-    },
+    }),
     tripSpec: {
       ...REVIEWED_ROUTE_RESPONSE.tripSpec!,
       destination: 'Bangkok',

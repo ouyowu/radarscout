@@ -3,9 +3,24 @@ import type { AiTripSearchResponse } from '../app/api/ai-trip/search/route'
 
 // ── Shared mock responses ─────────────────────────────────────────────────────
 
+type PublicSearchIntent = NonNullable<AiTripSearchResponse['intent']>
+
+function makeSearchIntent(overrides: Partial<PublicSearchIntent> = {}): PublicSearchIntent {
+  return {
+    destination: 'Chiang Mai',
+    days: 3,
+    startDate: null,
+    endDate: null,
+    groupSize: null,
+    travelerType: 'unspecified',
+    interests: ['elephants', 'temples', 'food'],
+    ...overrides,
+  }
+}
+
 const OK_RESPONSE: AiTripSearchResponse = {
   status: 'ok',
-  intent: { destination: 'Chiang Mai', days: 3, interests: ['elephants', 'temples', 'food'] },
+  intent: makeSearchIntent(),
   tripSpec: {
     destination: 'Chiang Mai',
     durationDays: 3,
@@ -113,13 +128,13 @@ const OK_RESPONSE: AiTripSearchResponse = {
 
 const COMPACT_CHIANG_MAI_RESPONSE: AiTripSearchResponse = {
   ...OK_RESPONSE,
-  intent: { destination: 'Chiang Mai', days: null, interests: ['elephants'] },
+  intent: makeSearchIntent({ days: null, interests: ['elephants'] }),
   products: OK_RESPONSE.products.slice(0, 1),
 }
 
 const THAILAND_ROUTE_RESPONSE: AiTripSearchResponse = {
   ...OK_RESPONSE,
-  intent: { destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] },
+  intent: makeSearchIntent({ destination: 'Thailand', days: 7, interests: ['food', 'temples', 'beaches'] }),
   products: [
     {
       ...OK_RESPONSE.products[0],
@@ -153,7 +168,7 @@ const THAILAND_ROUTE_RESPONSE: AiTripSearchResponse = {
 
 const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   status: 'unsupported_destination',
-  intent: { destination: 'Singapore', days: 3, interests: ['food'] },
+  intent: makeSearchIntent({ destination: 'Singapore', interests: ['food'] }),
   products: [],
   message: 'RadarScout currently searches Thailand experiences only.',
   meta: {
@@ -166,7 +181,7 @@ const UNSUPPORTED_DESTINATION_RESPONSE: AiTripSearchResponse = {
 
 const NO_MATCH_RESPONSE: AiTripSearchResponse = {
   status: 'no_match',
-  intent: { destination: 'Pattaya', days: 2, interests: ['beach', 'food', 'elephants'] },
+  intent: makeSearchIntent({ destination: 'Pattaya', days: 2, interests: ['beach', 'food', 'elephants'] }),
   products: [],
   meta: {
     productRetrievalEnabled: true,
@@ -178,7 +193,7 @@ const NO_MATCH_RESPONSE: AiTripSearchResponse = {
 
 const MIXED_DESTINATION_RESPONSE: AiTripSearchResponse = {
   status: 'unsupported_destination',
-  intent: { destination: 'Thailand and Singapore', days: 7, interests: [] },
+  intent: makeSearchIntent({ destination: 'Thailand and Singapore', days: 7, interests: [] }),
   products: [],
   message: 'RadarScout currently searches Thailand experiences only.',
   meta: {
