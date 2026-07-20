@@ -37,6 +37,7 @@ export function generateMetadata({ params }: DestinationPageProps): Metadata {
   return {
     title,
     description,
+    robots: destination.hasLiveInventory ? undefined : { index: false, follow: false },
     alternates: { canonical: `${base}/destinations/${destination.slug}` },
     openGraph: {
       title,
