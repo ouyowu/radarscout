@@ -4,6 +4,7 @@ import type { DayTripItinerary, DayTripSpec } from '@/lib/ai-trip/itinerary-cont
 import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContext'
 import { IneligibleProductInContextError } from '@/lib/aiProducts/assertAllProductsThailandEligible'
 import { runGatedItineraryPipeline } from '@/lib/ai-trip/gated-itinerary-pipeline'
+import { InvalidTripContextError } from '@/lib/ai-trip/trip-context'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await runGatedItineraryPipeline(prompt)
+    const result = await runGatedItineraryPipeline(prompt, payload.tripContext)
     const intent = {
       destination: result.parsed.intent.destination,
       days: result.parsed.intent.durationDays,
@@ -127,6 +128,13 @@ export async function POST(request: NextRequest) {
       meta: META,
     } satisfies AiTripSearchResponse)
   } catch (err) {
+    if (err instanceof InvalidTripContextError) {
+      return NextResponse.json(
+        { status: 'invalid_request', products: [], meta: META } satisfies AiTripSearchResponse,
+        { status: 400 },
+      )
+    }
+
     if (err instanceof IneligibleProductInContextError) {
       return NextResponse.json(
         { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,

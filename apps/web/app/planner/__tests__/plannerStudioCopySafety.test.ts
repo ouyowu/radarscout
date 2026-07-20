@@ -92,4 +92,14 @@ describe('planner studio public copy safety', () => {
     expect(studioSource).toMatch(/fetch\('\/api\/ai-trip\/search'/)
     expect(studioSource).not.toMatch(/\/api\/bokun|\/api\/viator/i)
   })
+
+  it('captures optional confirmed dates and group size without natural-language date guessing', () => {
+    const studioSource = readPlannerSource('PlannerStudio.tsx')
+
+    expect(studioSource).toContain('id="planner-start-date"')
+    expect(studioSource).toContain('id="planner-group-size"')
+    expect(studioSource).toMatch(/tripContext:/)
+    expect(studioSource).toMatch(/deriveTripEndDate/)
+    expect(studioSource).not.toMatch(/parseNaturalLanguageDate|guessTravelDate|inferTravelDate/)
+  })
 })

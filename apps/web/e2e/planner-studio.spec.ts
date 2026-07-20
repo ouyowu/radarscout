@@ -139,6 +139,32 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
 
+test('guided studio sends only user-confirmed optional dates and group size', async ({ page }) => {
+  let requestBody: Record<string, unknown> | null = null
+  await page.route('/api/ai-trip/search', async route => {
+    requestBody = route.request().postDataJSON() as Record<string, unknown>
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(REVIEWED_ROUTE_RESPONSE),
+    })
+  })
+
+  await page.goto('/planner')
+  await page.locator('#planner-start-date').fill('2026-12-10')
+  await page.locator('#planner-group-size').selectOption('4')
+  await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
+
+  await expect(page.getByText('Ends Dec 13, 2026')).toBeVisible()
+  expect(requestBody).toMatchObject({
+    prompt: 'Chiang Mai 3 days elephants food temples',
+    tripContext: {
+      startDate: '2026-12-10',
+      groupSize: 4,
+    },
+  })
+})
+
 test('guided studio shows a local route overview without calling paid narration', async ({ page }) => {
   let narrationRequests = 0
   await page.route('/api/ai-trip/search', async route => {

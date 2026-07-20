@@ -1,4 +1,5 @@
 import { parseTripIntent } from './parse-intent'
+import { applyConfirmedTripContext } from './trip-context'
 import { buildDayTripItinerary } from './day-trip-itinerary'
 import type { DayTripItinerary } from './itinerary-contract'
 import type { ParseTripIntentResult } from './intent-schema'
@@ -209,8 +210,12 @@ export async function queryEligibleCandidates(
   }
 }
 
-export async function runGatedItineraryPipeline(prompt: string): Promise<GatedItineraryPipelineResult> {
+export async function runGatedItineraryPipeline(
+  prompt: string,
+  confirmedTripContext?: unknown,
+): Promise<GatedItineraryPipelineResult> {
   const parsed = parseTripIntent(prompt)
+  applyConfirmedTripContext(parsed.intent, confirmedTripContext)
 
   if (!isThailandCompatibleDestination(parsed.intent.destination)) {
     return { status: 'unsupported_destination', parsed }
