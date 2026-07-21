@@ -416,6 +416,19 @@ describe('AI planner source context for tour detail links', () => {
   it('falls back to a safe tour detail URL for non-tour paths', () => {
     expect(buildAiTripPlannerDetailHref('/checkout/prod_1', 'prod_1')).toBe('/tours/prod_1?source=ai-trip-planner')
   })
+
+  it('carries only date presence into the internal detail route', () => {
+    const href = buildAiTripPlannerDetailHref('/tours/prod_1?ref=card', 'prod_1', { hasDates: true })
+
+    expect(href).toBe('/tours/prod_1?ref=card&source=ai-trip-planner&hasDates=1')
+    expect(href).not.toMatch(/\d{4}-\d{2}-\d{2}/)
+  })
+
+  it('removes unconfirmed date context from an existing detail URL', () => {
+    expect(buildAiTripPlannerDetailHref('/tours/prod_1?hasDates=1', 'prod_1')).toBe(
+      '/tours/prod_1?source=ai-trip-planner',
+    )
+  })
 })
 
 

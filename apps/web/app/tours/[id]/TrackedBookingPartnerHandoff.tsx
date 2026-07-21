@@ -9,6 +9,9 @@ type TrackedBookingPartnerHandoffProps = {
   rel: 'nofollow sponsored noopener noreferrer'
   productId: string
   source: 'ai-trip-planner' | 'tour-detail'
+  placement: 'tour_detail_primary' | 'tour_detail_sticky'
+  city: string
+  hasDates: boolean
   className?: string
   children: ReactNode
 }
@@ -18,11 +21,22 @@ export function TrackedBookingPartnerHandoff({
   rel,
   productId,
   source,
+  placement,
+  city,
+  hasDates,
   className,
   children,
 }: TrackedBookingPartnerHandoffProps) {
   const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
-    track('booking_partner_handoff_clicked', { productId, source })
+    track('booking_partner_handoff_clicked', {
+      provider: 'viator',
+      placement,
+      city,
+      destination: city,
+      hasDates,
+      productId,
+      source,
+    })
   }
 
   return (

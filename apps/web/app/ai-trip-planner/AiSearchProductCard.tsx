@@ -23,24 +23,30 @@ function buildSafeTourFallback(productId?: string): string {
   return productId ? `/tours/${encodeURIComponent(productId)}` : '/tours'
 }
 
-export function buildAiTripPlannerDetailHref(detailHref: string, productId?: string): string {
+type AiTripPlannerDetailContext = {
+  hasDates?: boolean
+}
+
+export function buildAiTripPlannerDetailHref(
+  detailHref: string,
+  productId?: string,
+  context: AiTripPlannerDetailContext = {},
+): string {
   const trimmedHref = detailHref.trim()
   const [hrefWithoutHash, hash] = trimmedHref.split('#', 2)
-
-  if (!hrefWithoutHash.startsWith('/tours/')) {
-    return `${buildSafeTourFallback(productId)}?source=ai-trip-planner`
-  }
-
-  const [path, query = ''] = hrefWithoutHash.split('?', 2)
+  const isSafeTourHref = hrefWithoutHash.startsWith('/tours/')
+  const safeHref = isSafeTourHref ? hrefWithoutHash : buildSafeTourFallback(productId)
+  const [path, query = ''] = safeHref.split('?', 2)
   const params = new URLSearchParams(query)
 
-  if (params.get('source') === 'ai-trip-planner') {
-    return trimmedHref
-  }
-
   params.set('source', 'ai-trip-planner')
+  if (context.hasDates === true) {
+    params.set('hasDates', '1')
+  } else {
+    params.delete('hasDates')
+  }
   const nextQuery = params.toString()
-  const hashSuffix = hash ? `#${hash}` : ''
+  const hashSuffix = isSafeTourHref && hash ? `#${hash}` : ''
 
   return `${path}${nextQuery ? `?${nextQuery}` : ''}${hashSuffix}`
 }

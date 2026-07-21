@@ -14,11 +14,15 @@ vi.mock('@/lib/analytics/track', async () => {
 
 describe('TrackedBookingPartnerHandoff', () => {
   it('tracks bounded metadata while preserving the public booking partner handoff', () => {
+    const href = 'https://www.viator.com/tours/Chiang-Mai/Reviewed-Day-Trip/d5267-12345P1?pid=P00309837&mcid=42383&medium=link'
     const element = TrackedBookingPartnerHandoff({
-      href: 'https://widgets.bokun.io/online-sales/public-channel/experience/1236811',
+      href,
       rel: 'nofollow sponsored noopener noreferrer',
-      productId: 'partner_cm_1236811',
+      productId: 'viator_12345p1',
       source: 'ai-trip-planner',
+      placement: 'tour_detail_primary',
+      city: 'Chiang Mai',
+      hasDates: true,
       children: 'Check availability',
     }) as ReactElement<{
       href: string
@@ -29,11 +33,16 @@ describe('TrackedBookingPartnerHandoff', () => {
 
     element.props.onClick()
 
-    expect(element.props.href).toBe('https://widgets.bokun.io/online-sales/public-channel/experience/1236811')
+    expect(element.props.href).toBe(href)
     expect(element.props.target).toBe('_blank')
     expect(element.props.rel).toBe('nofollow sponsored noopener noreferrer')
     expect(track).toHaveBeenCalledWith('booking_partner_handoff_clicked', {
-      productId: 'partner_cm_1236811',
+      provider: 'viator',
+      placement: 'tour_detail_primary',
+      city: 'Chiang Mai',
+      destination: 'Chiang Mai',
+      hasDates: true,
+      productId: 'viator_12345p1',
       source: 'ai-trip-planner',
     })
     expect(track).not.toHaveBeenCalledWith(

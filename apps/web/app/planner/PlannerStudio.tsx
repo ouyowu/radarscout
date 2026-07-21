@@ -224,6 +224,8 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
+  const hasDates = searchState?.status === 'ok'
+    && Boolean(searchState.intent?.startDate && searchState.intent?.endDate)
   const currentIdea = mergeTripIdea(ideaParts)
   const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
   const minimumStartDate = new Date().toISOString().slice(0, 10)
@@ -447,6 +449,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 itinerary={itinerary}
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
+                hasDates={hasDates}
               />
               <YesimEsimCard />
               <p className="text-sm font-semibold leading-6 text-rs-muted">

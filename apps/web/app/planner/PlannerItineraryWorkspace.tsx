@@ -59,12 +59,14 @@ type PlannerItineraryWorkspaceProps = {
   itinerary: DayTripItinerary
   products: AiProductContextItem[]
   publicMapToken: string | null
+  hasDates: boolean
 }
 
 export function PlannerItineraryWorkspace({
   itinerary,
   products,
   publicMapToken,
+  hasDates,
 }: PlannerItineraryWorkspaceProps) {
   const [selectedDay, setSelectedDay] = useState(1)
   const [pace, setPace] = useState<ThailandItineraryPace>(() => toPlannerPace(itinerary.tripSpec.pace))
@@ -222,7 +224,11 @@ export function PlannerItineraryWorkspace({
                 />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <Link
-                    href={buildAiTripPlannerDetailHref(selectedProduct.detailHref, selectedProductId ?? undefined)}
+                    href={buildAiTripPlannerDetailHref(
+                      selectedProduct.detailHref,
+                      selectedProductId ?? undefined,
+                      { hasDates },
+                    )}
                     className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                   >
                     Review product details
@@ -233,8 +239,11 @@ export function PlannerItineraryWorkspace({
                       target="_blank"
                       rel="nofollow sponsored noopener noreferrer"
                       onClick={() => track('booking_partner_handoff_clicked', {
+                        provider: 'viator',
                         placement: 'planner_day_workspace',
+                        city: selectedProduct.city ?? itinerary.tripSpec.destination,
                         destination: itinerary.tripSpec.destination,
+                        hasDates,
                         productId: selectedProductId ?? '',
                       })}
                       className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
@@ -337,7 +346,7 @@ export function PlannerItineraryWorkspace({
                     />
                     <div className="mt-5 grid gap-2">
                       <Link
-                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id)}
+                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id, { hasDates })}
                         className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                       >
                         Review product details
@@ -348,8 +357,11 @@ export function PlannerItineraryWorkspace({
                           target="_blank"
                           rel="nofollow sponsored noopener noreferrer"
                           onClick={() => track('booking_partner_handoff_clicked', {
+                            provider: 'viator',
                             placement: 'planner_filtered_matches',
+                            city: product.city ?? itinerary.tripSpec.destination,
                             destination: itinerary.tripSpec.destination,
+                            hasDates,
                             productId: product.id,
                           })}
                           className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"

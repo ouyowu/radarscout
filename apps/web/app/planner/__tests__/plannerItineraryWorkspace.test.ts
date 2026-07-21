@@ -7,6 +7,7 @@ const plannerDir = join(process.cwd(), 'app', 'planner')
 
 describe('Planner itinerary workspace', () => {
   const source = readFileSync(join(plannerDir, 'PlannerItineraryWorkspace.tsx'), 'utf8')
+  const studioSource = readFileSync(join(plannerDir, 'PlannerStudio.tsx'), 'utf8')
   const pageSource = readFileSync(join(plannerDir, 'page.tsx'), 'utf8')
   const mapSource = readFileSync(
     join(process.cwd(), 'app', 'itineraries', 'thailand', '[city]', '[duration]', 'MapLibreDayMap.tsx'),
@@ -60,5 +61,16 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/nofollow sponsored noopener noreferrer/)
     expect(source).toMatch(/booking_partner_handoff_clicked/)
     expectNoForbiddenPublicCopy(source)
+  })
+
+  it('tracks bounded trip context without adding dates to provider URLs', () => {
+    expect(studioSource).toMatch(/Boolean\(searchState\.intent\?\.startDate && searchState\.intent\?\.endDate\)/)
+    expect(studioSource).toMatch(/hasDates=\{hasDates\}/)
+    expect(source).toMatch(/hasDates: boolean/)
+    expect(source).toMatch(/provider: 'viator'/)
+    expect(source).toMatch(/city:/)
+    expect(source).toMatch(/hasDates/)
+    expect(source).toMatch(/buildAiTripPlannerDetailHref\([\s\S]*\{ hasDates \}\)/)
+    expect(source).not.toMatch(/searchParams\.set\(['\"](?:startDate|endDate)/)
   })
 })
