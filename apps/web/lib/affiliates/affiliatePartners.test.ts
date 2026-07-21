@@ -18,7 +18,7 @@ describe('affiliate partner policy', () => {
 
   it('exposes only providers with a reviewed public tracking configuration', () => {
     expect(getActiveAffiliateProviders('city_guide')).toEqual(['getyourguide'])
-    expect(getActiveAffiliateProviders('hotel_results')).toEqual([])
+    expect(getActiveAffiliateProviders('hotel_results')).toEqual(['agoda'])
     expect(getActiveAffiliateProviders('multi_city_transport')).toEqual([])
     expect(getActiveAffiliateProviders('pre_departure')).toEqual(['yesim'])
   })
@@ -84,5 +84,23 @@ describe('affiliate partner policy', () => {
     expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=5044&sid=597')).toBe(false)
     expect(validateAffiliateHref('yesim', 'https://yesim.app/country/thailand/?partner_id=wrong&sid=597')).toBe(false)
     expect(validateAffiliateHref('yesim', 'https://yesim.app/country/thailand/?partner_id=5044&sid=wrong')).toBe(false)
+  })
+
+  it('validates Agoda links only against a server-supplied CID', () => {
+    const tracked = 'https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1234567&tag=radarscout_stay_bangkok_riverside'
+
+    expect(validateAffiliateHref('agoda', tracked)).toBe(false)
+    expect(validateAffiliateHref('agoda', tracked, { expectedAgodaCid: '7654321' })).toBe(false)
+    expect(validateAffiliateHref('agoda', tracked, { expectedAgodaCid: '1234567' })).toBe(true)
+    expect(validateAffiliateHref(
+      'agoda',
+      'https://www.agoda.com.example.com/partners/partnersearch.aspx?cid=1234567',
+      { expectedAgodaCid: '1234567' },
+    )).toBe(false)
+    expect(validateAffiliateHref(
+      'agoda',
+      'http://www.agoda.com/partners/partnersearch.aspx?cid=1234567',
+      { expectedAgodaCid: '1234567' },
+    )).toBe(false)
   })
 })
