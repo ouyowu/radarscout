@@ -17,6 +17,10 @@ export type AiSearchProductCardProps = {
   ctaLabel?: 'Check availability' | null
   ctaRel?: 'nofollow sponsored noopener noreferrer' | null
   externalHandoff?: boolean
+  handoffContext: {
+    destination: string
+    hasDates: boolean
+  }
 }
 
 function buildSafeTourFallback(productId?: string): string {
@@ -65,6 +69,7 @@ export function AiSearchProductCard({
   ctaLabel,
   ctaRel,
   externalHandoff,
+  handoffContext,
 }: AiSearchProductCardProps) {
   const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
 
@@ -140,14 +145,22 @@ export function AiSearchProductCard({
             target="_blank"
             rel={ctaRel ?? 'nofollow sponsored noopener noreferrer'}
             aria-label={`Check availability for ${title} with the booking partner`}
-            onClick={() => track('booking_partner_handoff_clicked', { productId: id, source: 'ai_trip_planner' })}
+            onClick={() => track('booking_partner_handoff_clicked', {
+              provider: 'viator',
+              placement: 'ai_trip_planner_card',
+              city: city ?? handoffContext.destination,
+              destination: handoffContext.destination,
+              hasDates: handoffContext.hasDates,
+              productId: id,
+              source: 'ai_trip_planner',
+            })}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {ctaLabel ?? 'Check availability'}
           </a>
         ) : (
           <Link
-            href={buildAiTripPlannerDetailHref(detailHref, id)}
+            href={buildAiTripPlannerDetailHref(detailHref, id, { hasDates: handoffContext.hasDates })}
             aria-label={`View details for ${title}; no reviewed booking partner handoff is available`}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >

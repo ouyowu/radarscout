@@ -171,6 +171,8 @@ export function IntentParserDemo() {
   }, [routeStopOverview, searchState])
   const topProduct = searchState?.status === 'ok' ? searchState.products[0] : null
   const topProductHasExternalHandoff = Boolean(topProduct?.externalHandoff && topProduct.ctaHref)
+  const searchDestination = searchState?.intent?.destination ?? topProduct?.city ?? 'Thailand'
+  const searchHasDates = Boolean(searchState?.intent?.startDate && searchState?.intent?.endDate)
   const starterSearchFeedback = searchState
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
@@ -578,14 +580,22 @@ export function IntentParserDemo() {
                         <a
                           href={topProductHasExternalHandoff && topProduct.ctaHref
                             ? topProduct.ctaHref
-                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id)}
+                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id, { hasDates: searchHasDates })}
                           target={topProductHasExternalHandoff ? '_blank' : undefined}
                           rel={topProductHasExternalHandoff ? topProduct.ctaRel ?? 'nofollow sponsored noopener noreferrer' : undefined}
                           aria-label={topProductHasExternalHandoff
                             ? `Check availability for top match ${topProduct.title} with the booking partner`
                             : buildAiTripTopMatchDetailAriaLabel(topProduct.title)}
                           onClick={topProductHasExternalHandoff
-                            ? () => track('booking_partner_handoff_clicked', { productId: topProduct.id, source: 'ai_trip_planner_top_match' })
+                            ? () => track('booking_partner_handoff_clicked', {
+                              provider: 'viator',
+                              placement: 'ai_trip_planner_top_match',
+                              city: topProduct.city ?? searchDestination,
+                              destination: searchDestination,
+                              hasDates: searchHasDates,
+                              productId: topProduct.id,
+                              source: 'ai_trip_planner_top_match',
+                            })
                             : undefined}
                           className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
                         >
@@ -714,6 +724,10 @@ export function IntentParserDemo() {
                                   ctaRel={product.ctaRel}
                                   externalHandoff={product.externalHandoff}
                                   fitReason={buildProductFitReason(product, searchState.intent)}
+                                  handoffContext={{
+                                    destination: searchDestination,
+                                    hasDates: searchHasDates,
+                                  }}
                                 />
                               ))}
                             </div>
@@ -740,6 +754,10 @@ export function IntentParserDemo() {
                             ctaRel={product.ctaRel}
                             externalHandoff={product.externalHandoff}
                             fitReason={buildProductFitReason(product, searchState.intent)}
+                            handoffContext={{
+                              destination: searchDestination,
+                              hasDates: searchHasDates,
+                            }}
                           />
                         ))}
                       </div>
