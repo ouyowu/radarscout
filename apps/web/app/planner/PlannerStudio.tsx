@@ -225,6 +225,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
   const currentIdea = mergeTripIdea(ideaParts)
   const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
+  const minimumStartDate = new Date().toISOString().slice(0, 10)
   const derivedEndDate = startDate ? deriveTripEndDate(startDate, currentDurationDays) : null
   const routeOverview = itinerary ? buildDeterministicRouteOverview(itinerary) : null
   const currentStep = itinerary ? 3 : ideaParts.length > 0 || isSearching ? 2 : 1
@@ -285,6 +286,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
               <input
                 id="planner-start-date"
                 type="date"
+                min={minimumStartDate}
                 value={startDate}
                 disabled={isSearching}
                 onChange={event => setStartDate(event.target.value)}

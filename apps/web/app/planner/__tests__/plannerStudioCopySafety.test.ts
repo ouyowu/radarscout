@@ -97,6 +97,7 @@ describe('planner studio public copy safety', () => {
     const studioSource = readPlannerSource('PlannerStudio.tsx')
 
     expect(studioSource).toContain('id="planner-start-date"')
+    expect(studioSource).toMatch(/min=\{minimumStartDate\}/)
     expect(studioSource).toContain('id="planner-group-size"')
     expect(studioSource).toMatch(/tripContext:/)
     expect(studioSource).toMatch(/deriveTripEndDate/)

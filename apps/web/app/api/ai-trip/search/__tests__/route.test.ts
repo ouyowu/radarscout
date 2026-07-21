@@ -183,7 +183,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const res = await POST(makeRequest({
       prompt: 'Chiang Mai 3 days elephants',
       tripContext: {
-        startDate: '2026-12-10',
+        startDate: '2099-12-10',
         groupSize: 4,
       },
     }))
@@ -205,7 +205,7 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     const res = await POST(makeRequest({
       prompt: 'Chiang Mai 3 days family elephants',
       tripContext: {
-        startDate: '2026-12-10',
+        startDate: '2099-12-10',
         groupSize: 4,
       },
     }))
@@ -215,8 +215,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(body.intent).toEqual({
       destination: 'Chiang Mai',
       days: 3,
-      startDate: '2026-12-10',
-      endDate: '2026-12-13',
+      startDate: '2099-12-10',
+      endDate: '2099-12-13',
       groupSize: 4,
       travelerType: 'family',
       interests: ['elephants'],
@@ -257,9 +257,10 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
 
   it.each([
     { startDate: 'December 10', groupSize: 2 },
-    { startDate: '2026-12-10', groupSize: 0 },
-    { startDate: '2026-12-10', groupSize: 11 },
-    { startDate: '2026-12-10', groupSize: 2, endDate: '2026-12-13' },
+    { startDate: '2000-01-01', groupSize: 2 },
+    { startDate: '2099-12-10', groupSize: 0 },
+    { startDate: '2099-12-10', groupSize: 11 },
+    { startDate: '2099-12-10', groupSize: 2, endDate: '2099-12-13' },
   ])('rejects invalid trip context before product selection: %j', async tripContext => {
     const res = await POST(makeRequest({
       prompt: 'Chiang Mai 3 days elephants',

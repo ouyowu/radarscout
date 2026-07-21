@@ -21,21 +21,22 @@ describe('confirmed trip context', () => {
     intent.durationDays = 3
 
     const result = applyConfirmedTripContext(intent, {
-      startDate: '2026-12-10',
+      startDate: '2099-12-10',
       groupSize: 4,
     })
 
     expect(result).toMatchObject({
-      startDate: '2026-12-10',
-      endDate: '2026-12-13',
+      startDate: '2099-12-10',
+      endDate: '2099-12-13',
       groupSize: 4,
     })
-    expect(deriveTripEndDate('2026-12-10', 3)).toBe('2026-12-13')
+    expect(deriveTripEndDate('2099-12-10', 3)).toBe('2099-12-13')
   })
 
   it.each([
     [{ startDate: 'December 10', groupSize: 2 }],
     [{ startDate: '2026-02-30', groupSize: 2 }],
+    [{ startDate: '2000-01-01', groupSize: 2 }],
     [{ startDate: '2026-12-10', groupSize: 0 }],
     [{ startDate: '2026-12-10', groupSize: 11 }],
     [{ startDate: '2026-12-10', groupSize: 2, endDate: '2026-12-13' }],

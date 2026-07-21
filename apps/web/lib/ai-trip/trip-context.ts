@@ -23,6 +23,10 @@ function isValidIsoDate(value: string): boolean {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
 }
 
+function isCurrentOrFutureDate(value: string): boolean {
+  return value >= new Date().toISOString().slice(0, 10)
+}
+
 export function deriveTripEndDate(startDate: string, durationDays: number | null): string | null {
   if (!isValidIsoDate(startDate)) return null
   if (!Number.isInteger(durationDays) || !durationDays || durationDays < 1 || durationDays > 30) return null
@@ -48,7 +52,9 @@ export function applyConfirmedTripContext(
 
   const { startDate, groupSize } = record
   if (startDate !== undefined && startDate !== null && (
-    typeof startDate !== 'string' || !isValidIsoDate(startDate)
+    typeof startDate !== 'string'
+    || !isValidIsoDate(startDate)
+    || !isCurrentOrFutureDate(startDate)
   )) {
     throw new InvalidTripContextError()
   }
