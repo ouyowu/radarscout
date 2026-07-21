@@ -9,6 +9,7 @@ export type PlannerRealityModel = {
   statusLabel: string
   verdict: string
   assignedDayCount: number
+  reviewedCoveragePercent: number
   mapCoverageDayCount: number
   reviewedMatchCount: number
   visibleMatchCount: number
@@ -83,6 +84,7 @@ export function buildPlannerRealityModel({
     statusLabel,
     verdict: `${assignedCopy}${flexibleCopy}`,
     assignedDayCount: safeAssignedDayCount,
+    reviewedCoveragePercent: Math.round((safeAssignedDayCount / safeDurationDays) * 100),
     mapCoverageDayCount: safeMapCoverageDayCount,
     reviewedMatchCount: Math.max(0, reviewedMatchCount),
     visibleMatchCount: Math.max(0, visibleMatchCount),

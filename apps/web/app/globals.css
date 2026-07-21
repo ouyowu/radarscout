@@ -83,6 +83,15 @@ html, body { background: var(--rs-sand-50); overflow-x: clip; }
 /* Prevent layout shift on font load */
 body { font-family: var(--rs-font-body); }
 
+/* Planner review coverage is a factual ratio, not a generated score. */
+.planner-coverage-ring {
+  --planner-coverage: 0%;
+  background: conic-gradient(
+    var(--rs-terracotta) 0 var(--planner-coverage),
+    var(--rs-sage-200) var(--planner-coverage) 100%
+  );
+}
+
 /* ── Ambient blob drift ───────────────────────────────────────────── */
 @keyframes blob-drift {
   0%, 100% { transform: translate(0, 0) scale(1); }

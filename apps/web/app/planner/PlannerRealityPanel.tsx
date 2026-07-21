@@ -1,7 +1,8 @@
-/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4
- * Hallmark · genre: editorial utility · macrostructure: decision report · designed-as-app
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5
+ * Hallmark · genre: editorial utility · macrostructure: asymmetric decision report · designed-as-app
  */
 
+import type { CSSProperties } from 'react'
 import type { PlannerRealityModel } from './plannerReality'
 
 type PlannerRealityPanelProps = {
@@ -44,6 +45,9 @@ function RealityDisclosure({ label, count, items, open = false }: RealityDisclos
 
 export function PlannerRealityPanel({ model }: PlannerRealityPanelProps) {
   const matchValue = `${model.visibleMatchCount}/${model.reviewedMatchCount}`
+  const coverageStyle = {
+    '--planner-coverage': `${model.reviewedCoveragePercent}%`,
+  } as CSSProperties
 
   return (
     <section aria-label="Trip reality" className="overflow-hidden rounded-rs-lg border border-rs-forest-900/15 bg-white shadow-rs-soft">
@@ -73,39 +77,57 @@ export function PlannerRealityPanel({ model }: PlannerRealityPanelProps) {
       </header>
 
       <div className="p-5 sm:p-7">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] xl:items-stretch">
-          <div className="min-w-0 border-b border-rs-sage-200/80 pb-5 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-6">
+        <div className="grid gap-7 xl:grid-cols-[minmax(230px,0.62fr)_minmax(0,1.38fr)] xl:items-center">
+          <div className="grid min-w-0 gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center xl:grid-cols-1 xl:justify-items-center xl:border-r xl:border-rs-sage-200/80 xl:pr-7 xl:text-center">
+            <div
+              aria-label="Reviewed route coverage"
+              className="planner-coverage-ring grid h-40 w-40 shrink-0 place-items-center rounded-full p-3 sm:h-44 sm:w-44"
+              style={coverageStyle}
+            >
+              <div className="grid h-full w-full place-content-center rounded-full bg-white text-center shadow-[inset_0_0_0_1px_var(--rs-sage-200)]">
+                <strong className="font-rs-display text-4xl font-semibold leading-none text-rs-ink">
+                  {model.assignedDayCount}
+                  <span className="text-xl text-rs-muted">/{model.durationDays}</span>
+                </strong>
+                <span className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-forest-700">reviewed days</span>
+              </div>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-rs-terracotta-600">Reviewed route coverage</p>
+              <p className="mt-2 text-sm font-bold leading-6 text-rs-ink">
+                {model.assignedDayCount} of {model.durationDays} reviewed days
+              </p>
+              <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">
+                Missing days stay flexible instead of being filled with invented products.
+              </p>
+            </div>
+          </div>
+
+          <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-rs-terracotta-600">Decision brief</p>
             <h3 className="mt-2 min-w-0 font-rs-display text-2xl font-semibold leading-tight text-rs-ink [overflow-wrap:anywhere] sm:text-3xl">
               {model.statusLabel}
             </h3>
-            <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">{model.verdict}</p>
-          </div>
+            <p className="mt-3 max-w-3xl text-sm font-semibold leading-6 text-rs-muted">{model.verdict}</p>
 
-          <dl className="grid min-w-0 gap-3 sm:grid-cols-3">
-            <div className="min-w-0 rounded-rs-sm bg-rs-sand-100 p-4">
-              <dt className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Reviewed days</dt>
-              <dd className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">
-                {model.assignedDayCount}/{model.durationDays}
-              </dd>
-              <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">Assigned without filling gaps</p>
-            </div>
-            <div className="min-w-0 rounded-rs-sm bg-rs-sage-100 p-4">
-              <dt className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-forest-700">Map orientation</dt>
-              <dd className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">
-                {model.mapCoverageDayCount}/{model.durationDays}
-              </dd>
-              <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">Reviewed regional coverage</p>
-            </div>
-            <div className="min-w-0 rounded-rs-sm bg-rs-sand-50 p-4 ring-1 ring-inset ring-rs-sage-200/80">
-              <dt className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-forest-700">Matches in view</dt>
-              <dd className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">{matchValue}</dd>
-              <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">After your theme filters</p>
-            </div>
-          </dl>
+            <dl className="mt-5 grid min-w-0 gap-3 sm:grid-cols-2">
+              <div className="min-w-0 rounded-rs-sm bg-rs-sage-100 p-4 sm:p-5">
+                <dt className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-forest-700">Map orientation</dt>
+                <dd className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">
+                  {model.mapCoverageDayCount}/{model.durationDays}
+                </dd>
+                <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">Days with reviewed regional coverage</p>
+              </div>
+              <div className="min-w-0 rounded-rs-sm bg-rs-sand-100 p-4 sm:p-5">
+                <dt className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Matches in view</dt>
+                <dd className="mt-2 font-rs-display text-3xl font-semibold text-rs-ink">{matchValue}</dd>
+                <p className="mt-1 text-xs font-semibold leading-5 text-rs-muted">Reviewed choices after your theme filters</p>
+              </div>
+            </dl>
+          </div>
         </div>
 
-        <div className="mt-6 grid gap-x-7 border-t border-rs-sage-200/80 lg:grid-cols-2">
+        <div className="mt-7 grid gap-x-7 border-t border-rs-sage-200/80 lg:grid-cols-2">
           <div>
             <RealityDisclosure label="Why this route" count={model.whyThisRoute.length} items={model.whyThisRoute} open />
             <RealityDisclosure label="Best for" count={model.bestFor.length} items={model.bestFor} />
