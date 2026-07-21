@@ -146,6 +146,15 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
     'href',
     '/tours/prod_cm_1?source=ai-trip-planner',
   )
+  await expect(page.getByRole('heading', {
+    name: 'Compare more Chiang Mai activities on GetYourGuide',
+  })).toBeVisible()
+  const cityActivityLink = page.getByRole('link', { name: 'Compare city activities' })
+  await expect(cityActivityLink).toHaveAttribute(
+    'href',
+    'https://www.getyourguide.com/chiang-mai-l271/?partner_id=IMR8EUB&cmp=radarscout_city_guide_chiang_mai',
+  )
+  await expect(cityActivityLink).toHaveAttribute('rel', 'nofollow sponsored noopener noreferrer')
   await expect(page.getByRole('link', { name: 'Check availability' })).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Stay connected in Thailand' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(

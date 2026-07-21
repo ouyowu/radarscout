@@ -73,4 +73,12 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/buildAiTripPlannerDetailHref\([\s\S]*\{ hasDates \}\)/)
     expect(source).not.toMatch(/searchParams\.set\(['\"](?:startDate|endDate)/)
   })
+
+  it('offers the reviewed GetYourGuide city handoff for the confirmed Planner destination', () => {
+    expect(source).toMatch(/buildGetYourGuideCityGuideOffer\(itinerary\.tripSpec\.destination\)/)
+    expect(source).toMatch(/provider=\{cityGuideOffer\.provider\}/)
+    expect(source).toMatch(/placement=\{cityGuideOffer\.placement\}/)
+    expect(source).toMatch(/hasDates=\{hasDates\}/)
+    expect(source).toMatch(/Compare more .* activities on GetYourGuide/)
+  })
 })

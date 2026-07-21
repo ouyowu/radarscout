@@ -59,6 +59,17 @@ describe('affiliate partner policy', () => {
     expect(url.searchParams.get('cmp')).toBe('radarscout_city_guide_chiang_mai')
   })
 
+  it('accepts a confirmed Planner destination label without inventing another city', () => {
+    const offer = buildGetYourGuideCityGuideOffer('Chiang Mai')
+
+    expect(offer).toMatchObject({
+      provider: 'getyourguide',
+      destination: 'Chiang Mai',
+      campaign: 'radarscout_city_guide_chiang_mai',
+    })
+    expect(buildGetYourGuideCityGuideOffer('Krabi')).toBeNull()
+  })
+
   it('does not invent links for unsupported destinations', () => {
     expect(buildGetYourGuideCityGuideOffer('tokyo')).toBeNull()
   })

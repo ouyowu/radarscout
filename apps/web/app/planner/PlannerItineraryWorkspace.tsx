@@ -5,10 +5,12 @@ import Link from 'next/link'
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContext'
 import { track } from '@/lib/analytics/track'
+import { buildGetYourGuideCityGuideOffer } from '@/lib/affiliates/affiliatePartners'
 import { getStopsForPace } from '@/lib/itineraries/itineraryFilters'
 import type { ThailandItineraryPace } from '@/lib/itineraries/thailandTemplates'
 import { isReviewedViatorAffiliateUrl } from '@/lib/viator/reviewedViatorMatching'
 import { buildAiTripPlannerDetailHref } from '../ai-trip-planner/AiSearchProductCard'
+import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
 import { MapLibreDayMap } from '../itineraries/thailand/[city]/[duration]/MapLibreDayMap'
 import { getReviewedPlannerMapDay } from './plannerMapCoverage'
 import {
@@ -93,6 +95,7 @@ export function PlannerItineraryWorkspace({
   const selectedDecisionSignals = selectedProduct
     ? adaptPlannerDecisionSignals(selectedProduct, selectedProduct.decisionSignals, pace, selectedThemes)
     : null
+  const cityGuideOffer = buildGetYourGuideCityGuideOffer(itinerary.tripSpec.destination)
 
   function toggleTheme(theme: string) {
     setSelectedThemes(current => current.includes(theme)
@@ -381,6 +384,38 @@ export function PlannerItineraryWorkspace({
           </div>
         )}
       </section>
+
+      {cityGuideOffer ? (
+        <aside
+          aria-label="Additional city activity partner"
+          className="mt-6 rounded-rs-lg border border-rs-sage-200/80 bg-rs-sand-50 p-5 shadow-rs-soft sm:p-6"
+        >
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">
+            More city activity choices
+          </p>
+          <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <h3 className="font-rs-display text-2xl font-semibold tracking-[-0.025em] text-rs-ink">
+                Compare more {cityGuideOffer.destination} activities on GetYourGuide
+              </h3>
+              <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">
+                Use this optional city-level affiliate handoff when the reviewed Viator matches above do not cover the activity you want. Final product details and the continue step stay on GetYourGuide.
+              </p>
+            </div>
+            <TrackedAffiliateLink
+              href={cityGuideOffer.href}
+              provider={cityGuideOffer.provider}
+              placement={cityGuideOffer.placement}
+              destination={cityGuideOffer.destination}
+              campaign={cityGuideOffer.campaign}
+              hasDates={hasDates}
+              className="inline-flex min-h-[48px] shrink-0 items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+            >
+              Compare city activities
+            </TrackedAffiliateLink>
+          </div>
+        </aside>
+      ) : null}
     </section>
   )
 }
