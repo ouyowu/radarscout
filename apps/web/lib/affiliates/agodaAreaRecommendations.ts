@@ -9,7 +9,7 @@ export const AGODA_AREA_CITY_SLUGS = [
 
 export type AgodaAreaCitySlug = typeof AGODA_AREA_CITY_SLUGS[number]
 
-const AGODA_AREA_CITY_NAMES: Record<AgodaAreaCitySlug, string> = {
+export const AGODA_AREA_CITY_NAMES: Record<AgodaAreaCitySlug, string> = {
   bangkok: 'Bangkok',
   'chiang-mai': 'Chiang Mai',
   phuket: 'Phuket',
