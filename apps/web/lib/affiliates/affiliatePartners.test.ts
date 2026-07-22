@@ -88,19 +88,32 @@ describe('affiliate partner policy', () => {
 
   it('validates Agoda links only against a server-supplied CID', () => {
     const tracked = 'https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1234567&tag=radarscout_stay_bangkok_riverside'
+    const expectedAgodaPath = '/partners/partnersearch.aspx'
 
     expect(validateAffiliateHref('agoda', tracked)).toBe(false)
-    expect(validateAffiliateHref('agoda', tracked, { expectedAgodaCid: '7654321' })).toBe(false)
-    expect(validateAffiliateHref('agoda', tracked, { expectedAgodaCid: '1234567' })).toBe(true)
+    expect(validateAffiliateHref('agoda', tracked, {
+      expectedAgodaCid: '7654321',
+      expectedAgodaPath,
+    })).toBe(false)
+    expect(validateAffiliateHref('agoda', tracked, { expectedAgodaCid: '1234567' })).toBe(false)
+    expect(validateAffiliateHref('agoda', tracked, {
+      expectedAgodaCid: '1234567',
+      expectedAgodaPath,
+    })).toBe(true)
+    expect(validateAffiliateHref(
+      'agoda',
+      'https://www.agoda.com/account?cid=1234567',
+      { expectedAgodaCid: '1234567', expectedAgodaPath },
+    )).toBe(false)
     expect(validateAffiliateHref(
       'agoda',
       'https://www.agoda.com.example.com/partners/partnersearch.aspx?cid=1234567',
-      { expectedAgodaCid: '1234567' },
+      { expectedAgodaCid: '1234567', expectedAgodaPath },
     )).toBe(false)
     expect(validateAffiliateHref(
       'agoda',
       'http://www.agoda.com/partners/partnersearch.aspx?cid=1234567',
-      { expectedAgodaCid: '1234567' },
+      { expectedAgodaCid: '1234567', expectedAgodaPath },
     )).toBe(false)
   })
 })

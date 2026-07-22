@@ -81,6 +81,7 @@ export function getActiveAffiliateProviders(placement: AffiliatePlacement): Affi
 
 type AffiliateHrefValidationContext = {
   expectedAgodaCid?: string
+  expectedAgodaPath?: string
 }
 
 export function validateAffiliateHref(
@@ -108,8 +109,11 @@ export function validateAffiliateHref(
 
     if (provider === 'agoda') {
       const expectedCid = context.expectedAgodaCid?.trim()
+      const expectedPath = context.expectedAgodaPath?.trim()
       return url.hostname === 'www.agoda.com'
         && Boolean(expectedCid)
+        && Boolean(expectedPath)
+        && url.pathname === expectedPath
         && url.searchParams.get('cid') === expectedCid
     }
 
