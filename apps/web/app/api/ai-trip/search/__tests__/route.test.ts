@@ -174,6 +174,105 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(JSON.stringify(body.products)).not.toMatch(/hotel|flight/i)
   })
 
+  it('applies user-confirmed trip context without changing product selection', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({
+      prompt: 'Chiang Mai 3 days elephants',
+      tripContext: {
+        startDate: '2099-12-10',
+        groupSize: 4,
+      },
+    }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.status).toBe('ok')
+    expect(body.itinerary.tripSpec.groupSize).toBe(4)
+    expect(body.products).toHaveLength(1)
+    expect(body.products[0].id).toBe('viator_191442p6')
+  })
+
+  it('exposes only the approved trip context fields in the public intent response', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({
+      prompt: 'Chiang Mai 3 days family elephants',
+      tripContext: {
+        startDate: '2099-12-10',
+        groupSize: 4,
+      },
+    }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.intent).toEqual({
+      destination: 'Chiang Mai',
+      days: 3,
+      startDate: '2099-12-10',
+      endDate: '2099-12-13',
+      groupSize: 4,
+      travelerType: 'family',
+      interests: ['elephants'],
+    })
+    expect(Object.keys(body.intent).sort()).toEqual([
+      'days',
+      'destination',
+      'endDate',
+      'groupSize',
+      'interests',
+      'startDate',
+      'travelerType',
+    ])
+    expect(body.intent).not.toHaveProperty('confidence')
+    expect(body.intent).not.toHaveProperty('missingFields')
+    expect(body.intent).not.toHaveProperty('warnings')
+    expect(body.intent).not.toHaveProperty('pace')
+    expect(body.intent).not.toHaveProperty('budget')
+  })
+
+  it('keeps optional public trip context fields null when the traveler did not confirm them', async () => {
+    contextMock.buildAiProductContext.mockResolvedValue({
+      status: 'ok',
+      items: [makeContextItem()],
+    })
+
+    const res = await POST(makeRequest({ prompt: 'Chiang Mai 3 days elephants' }))
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.intent).toMatchObject({
+      startDate: null,
+      endDate: null,
+      groupSize: null,
+      travelerType: 'unspecified',
+    })
+  })
+
+  it.each([
+    { startDate: 'December 10', groupSize: 2 },
+    { startDate: '2000-01-01', groupSize: 2 },
+    { startDate: '2099-12-10', groupSize: 0 },
+    { startDate: '2099-12-10', groupSize: 11 },
+    { startDate: '2099-12-10', groupSize: 2, endDate: '2099-12-13' },
+  ])('rejects invalid trip context before product selection: %j', async tripContext => {
+    const res = await POST(makeRequest({
+      prompt: 'Chiang Mai 3 days elephants',
+      tripContext,
+    }))
+    const body = await res.json()
+
+    expect(res.status).toBe(400)
+    expect(body.status).toBe('invalid_request')
+    expect(contextMock.buildAiProductContext).not.toHaveBeenCalled()
+  })
+
   it('normalizes a common Chiang Mai spelling error before selecting products', async () => {
     contextMock.buildAiProductContext.mockImplementation(async candidates => ({
       status: 'ok',

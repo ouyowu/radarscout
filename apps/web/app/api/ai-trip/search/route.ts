@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import type { DayTripItinerary, DayTripSpec } from '@/lib/ai-trip/itinerary-contract'
+import type { TravelerType } from '@/lib/ai-trip/intent-schema'
 import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContext'
 import { IneligibleProductInContextError } from '@/lib/aiProducts/assertAllProductsThailandEligible'
 import { runGatedItineraryPipeline } from '@/lib/ai-trip/gated-itinerary-pipeline'
+import { InvalidTripContextError } from '@/lib/ai-trip/trip-context'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,6 +25,10 @@ export type AiTripSearchResponse = {
   intent?: {
     destination: string | null
     days: number | null
+    startDate: string | null
+    endDate: string | null
+    groupSize: number | null
+    travelerType: TravelerType
     interests: string[]
   }
   products: AiProductContextItem[]
@@ -76,10 +82,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await runGatedItineraryPipeline(prompt)
+    const result = await runGatedItineraryPipeline(prompt, payload.tripContext)
     const intent = {
       destination: result.parsed.intent.destination,
       days: result.parsed.intent.durationDays,
+      startDate: result.parsed.intent.startDate,
+      endDate: result.parsed.intent.endDate,
+      groupSize: result.parsed.intent.groupSize,
+      travelerType: result.parsed.intent.travelerType,
       interests: result.parsed.intent.interests,
     }
 
@@ -127,6 +137,13 @@ export async function POST(request: NextRequest) {
       meta: META,
     } satisfies AiTripSearchResponse)
   } catch (err) {
+    if (err instanceof InvalidTripContextError) {
+      return NextResponse.json(
+        { status: 'invalid_request', products: [], meta: META } satisfies AiTripSearchResponse,
+        { status: 400 },
+      )
+    }
+
     if (err instanceof IneligibleProductInContextError) {
       return NextResponse.json(
         { status: 'error', products: [], meta: META } satisfies AiTripSearchResponse,

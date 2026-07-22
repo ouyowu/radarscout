@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
+import { deriveTripEndDate } from '@/lib/ai-trip/trip-context'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import {
   decideNextGuideStep,
@@ -33,6 +34,7 @@ const STARTER_CHIPS = [
   'Thailand 7 days Bangkok Chiang Mai Phuket',
 ]
 const PLANNER_STEPS = ['Describe', 'Confirm', 'Compare'] as const
+const GROUP_SIZE_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
 
 let nextMessageId = 1
 
@@ -78,6 +80,15 @@ function buildResultGuideMessage(response: AiTripSearchResponse): StudioMessage 
   })
 }
 
+function formatConfirmedDate(value: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${value}T00:00:00.000Z`))
+}
+
 type PlannerStudioProps = {
   initialIdea?: string
   publicMapToken?: string | null
@@ -97,6 +108,8 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
   const [awaitingInterests, setAwaitingInterests] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
+  const [startDate, setStartDate] = useState('')
+  const [groupSize, setGroupSize] = useState('')
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -111,7 +124,13 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
       const res = await fetch('/api/ai-trip/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: mergeTripIdea(parts) }),
+        body: JSON.stringify({
+          prompt: mergeTripIdea(parts),
+          tripContext: {
+            startDate: startDate || null,
+            groupSize: groupSize ? Number(groupSize) : null,
+          },
+        }),
       })
       const data = await res.json() as AiTripSearchResponse
       setSearchState(data)
@@ -198,11 +217,16 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
     setAwaitingInterests(false)
     setSearchState(null)
     setDraft('')
+    setStartDate('')
+    setGroupSize('')
   }
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
   const currentIdea = mergeTripIdea(ideaParts)
+  const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
+  const minimumStartDate = new Date().toISOString().slice(0, 10)
+  const derivedEndDate = startDate ? deriveTripEndDate(startDate, currentDurationDays) : null
   const routeOverview = itinerary ? buildDeterministicRouteOverview(itinerary) : null
   const currentStep = itinerary ? 3 : ideaParts.length > 0 || isSearching ? 2 : 1
 
@@ -253,6 +277,44 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
             Start over
           </button>
         </div>
+
+        <fieldset className="border-b border-rs-sage-200/70 bg-rs-sand-50 px-4 py-3 sm:px-5">
+          <legend className="sr-only">Optional trip details</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <label htmlFor="planner-start-date" className="text-xs font-bold text-rs-forest-700">
+              Start date <span className="font-semibold text-rs-muted">(optional)</span>
+              <input
+                id="planner-start-date"
+                type="date"
+                min={minimumStartDate}
+                value={startDate}
+                disabled={isSearching}
+                onChange={event => setStartDate(event.target.value)}
+                className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
+              />
+            </label>
+            <label htmlFor="planner-group-size" className="text-xs font-bold text-rs-forest-700">
+              Travelers <span className="font-semibold text-rs-muted">(optional)</span>
+              <select
+                id="planner-group-size"
+                value={groupSize}
+                disabled={isSearching}
+                onChange={event => setGroupSize(event.target.value)}
+                className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
+              >
+                <option value="">Not set</option>
+                {GROUP_SIZE_OPTIONS.map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <p className="mt-2 text-xs font-semibold leading-5 text-rs-muted" aria-live="polite">
+            {derivedEndDate
+              ? `Ends ${formatConfirmedDate(derivedEndDate)}. Dates and travelers are used on the next search.`
+              : 'Add a start date after choosing the trip length; RadarScout will derive the end date without guessing.'}
+          </p>
+        </fieldset>
 
         <div
           aria-label="Conversation messages"
