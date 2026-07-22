@@ -173,28 +173,54 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
 
-test('guided studio sends only user-confirmed optional dates and group size', async ({ page }) => {
+test('guided studio remembers confirmed dates, group size, and traveler type', async ({ page }) => {
   let requestBody: Record<string, unknown> | null = null
   await page.route('/api/ai-trip/search', async route => {
     requestBody = route.request().postDataJSON() as Record<string, unknown>
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(REVIEWED_ROUTE_RESPONSE),
+      body: JSON.stringify({
+        ...REVIEWED_ROUTE_RESPONSE,
+        intent: makeSearchIntent({
+          startDate: '2026-12-10',
+          endDate: '2026-12-13',
+          groupSize: 4,
+          travelerType: 'family',
+        }),
+        tripSpec: {
+          ...REVIEWED_ROUTE_RESPONSE.tripSpec!,
+          groupSize: 4,
+          travelerType: 'family',
+        },
+        itinerary: {
+          ...REVIEWED_ROUTE_RESPONSE.itinerary!,
+          tripSpec: {
+            ...REVIEWED_ROUTE_RESPONSE.itinerary!.tripSpec,
+            groupSize: 4,
+            travelerType: 'family',
+          },
+        },
+      }),
     })
   })
 
   await page.goto('/planner')
   await page.locator('#planner-start-date').fill('2026-12-10')
   await page.locator('#planner-group-size').selectOption('4')
+  await page.locator('#planner-traveler-type').selectOption('family')
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
   await expect(page.getByText('Ends Dec 13, 2026')).toBeVisible()
+  await expect(page.getByLabel('Remembered trip details')).toContainText('Dec 10, 2026–Dec 13, 2026')
+  await expect(page.getByLabel('Remembered trip details')).toContainText('4 travelers')
+  await expect(page.getByLabel('Remembered trip details')).toContainText('Family')
   expect(requestBody).toMatchObject({
     prompt: 'Chiang Mai 3 days elephants food temples',
     tripContext: {
       startDate: '2026-12-10',
       groupSize: 4,
+      travelerType: 'family',
     },
   })
 })

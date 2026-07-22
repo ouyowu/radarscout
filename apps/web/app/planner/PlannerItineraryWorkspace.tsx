@@ -6,6 +6,10 @@ import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContext'
 import { track } from '@/lib/analytics/track'
 import { buildGetYourGuideCityGuideOffer } from '@/lib/affiliates/affiliatePartners'
+import {
+  buildSafeAffiliateAnalyticsContext,
+  type AffiliateTripContext,
+} from '@/lib/affiliates/affiliateTripContext'
 import { getStopsForPace } from '@/lib/itineraries/itineraryFilters'
 import type { ThailandItineraryPace } from '@/lib/itineraries/thailandTemplates'
 import { isReviewedViatorAffiliateUrl } from '@/lib/viator/reviewedViatorMatching'
@@ -61,14 +65,14 @@ type PlannerItineraryWorkspaceProps = {
   itinerary: DayTripItinerary
   products: AiProductContextItem[]
   publicMapToken: string | null
-  hasDates: boolean
+  tripContext: AffiliateTripContext
 }
 
 export function PlannerItineraryWorkspace({
   itinerary,
   products,
   publicMapToken,
-  hasDates,
+  tripContext,
 }: PlannerItineraryWorkspaceProps) {
   const [selectedDay, setSelectedDay] = useState(1)
   const [pace, setPace] = useState<ThailandItineraryPace>(() => toPlannerPace(itinerary.tripSpec.pace))
@@ -96,6 +100,7 @@ export function PlannerItineraryWorkspace({
     ? adaptPlannerDecisionSignals(selectedProduct, selectedProduct.decisionSignals, pace, selectedThemes)
     : null
   const cityGuideOffer = buildGetYourGuideCityGuideOffer(itinerary.tripSpec.destination)
+  const safeTripContext = buildSafeAffiliateAnalyticsContext(tripContext)
 
   function toggleTheme(theme: string) {
     setSelectedThemes(current => current.includes(theme)
@@ -230,7 +235,7 @@ export function PlannerItineraryWorkspace({
                     href={buildAiTripPlannerDetailHref(
                       selectedProduct.detailHref,
                       selectedProductId ?? undefined,
-                      { hasDates },
+                      { hasDates: safeTripContext.hasDates },
                     )}
                     className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                   >
@@ -246,7 +251,7 @@ export function PlannerItineraryWorkspace({
                         placement: 'planner_day_workspace',
                         city: selectedProduct.city ?? itinerary.tripSpec.destination,
                         destination: itinerary.tripSpec.destination,
-                        hasDates,
+                        ...safeTripContext,
                         productId: selectedProductId ?? '',
                       })}
                       className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
@@ -349,7 +354,7 @@ export function PlannerItineraryWorkspace({
                     />
                     <div className="mt-5 grid gap-2">
                       <Link
-                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id, { hasDates })}
+                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id, { hasDates: safeTripContext.hasDates })}
                         className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                       >
                         Review product details
@@ -364,7 +369,7 @@ export function PlannerItineraryWorkspace({
                             placement: 'planner_filtered_matches',
                             city: product.city ?? itinerary.tripSpec.destination,
                             destination: itinerary.tripSpec.destination,
-                            hasDates,
+                            ...safeTripContext,
                             productId: product.id,
                           })}
                           className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
@@ -408,7 +413,7 @@ export function PlannerItineraryWorkspace({
               placement={cityGuideOffer.placement}
               destination={cityGuideOffer.destination}
               campaign={cityGuideOffer.campaign}
-              hasDates={hasDates}
+              tripContext={tripContext}
               className="inline-flex min-h-[48px] shrink-0 items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Compare city activities

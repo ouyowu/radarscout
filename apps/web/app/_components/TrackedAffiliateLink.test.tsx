@@ -40,6 +40,8 @@ describe('TrackedAffiliateLink', () => {
       city: 'Bangkok',
       destination: 'Bangkok',
       hasDates: false,
+      hasGroupSize: false,
+      travelerType: 'unspecified',
       campaign: 'radarscout_city_guide_bangkok',
     })
   })
@@ -52,7 +54,12 @@ describe('TrackedAffiliateLink', () => {
       placement: 'city_guide',
       destination: 'Chiang Mai',
       campaign: 'radarscout_city_guide_chiang_mai',
-      hasDates: true,
+      tripContext: {
+        startDate: '2099-12-10',
+        endDate: '2099-12-13',
+        groupSize: 4,
+        travelerType: 'family',
+      },
       children: 'Compare Chiang Mai activities',
     }) as ReactElement<{ href: string; onClick: () => void }>
 
@@ -62,10 +69,16 @@ describe('TrackedAffiliateLink', () => {
     expect(track).toHaveBeenCalledWith('affiliate_partner_handoff_clicked', expect.objectContaining({
       city: 'Chiang Mai',
       hasDates: true,
+      hasGroupSize: true,
+      travelerType: 'family',
     }))
     expect(track).not.toHaveBeenCalledWith(
       'affiliate_partner_handoff_clicked',
       expect.objectContaining({ startDate: expect.any(String) }),
+    )
+    expect(track).not.toHaveBeenCalledWith(
+      'affiliate_partner_handoff_clicked',
+      expect.objectContaining({ groupSize: expect.any(Number) }),
     )
   })
 })

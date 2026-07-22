@@ -52,7 +52,7 @@ describe('Planner Agoda stay-area guidance', () => {
     expect(panelSource).toMatch(/getReviewedAgodaStayAreasForDestination/)
 
     const markup = renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Chiang Mai" offers={[reviewedOffer]} hasDates={false} />,
+      <AgodaStayAreaPanel destination="Chiang Mai" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, travelerType: 'unspecified' }} />,
     )
     expect(markup).toContain('Nimman')
     expect(markup).toContain('Cafe stays and remote work')
@@ -63,7 +63,7 @@ describe('Planner Agoda stay-area guidance', () => {
 
   it('renders nothing for unsupported destinations', () => {
     expect(renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} hasDates={false} />,
+      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, travelerType: 'unspecified' }} />,
     )).toBe('')
   })
 

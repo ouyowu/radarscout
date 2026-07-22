@@ -4,14 +4,15 @@ import React from 'react'
 import type { ReviewedAgodaStayAreaOffer } from '@/lib/affiliates/agodaStayAreaOffers'
 import { getReviewedAgodaStayAreasForDestination } from '@/lib/affiliates/agodaStayAreaOffers'
 import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
+import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
 
 type AgodaStayAreaPanelProps = {
   destination: string
   offers: readonly ReviewedAgodaStayAreaOffer[]
-  hasDates: boolean
+  tripContext: AffiliateTripContext
 }
 
-export function AgodaStayAreaPanel({ destination, offers, hasDates }: AgodaStayAreaPanelProps) {
+export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaStayAreaPanelProps) {
   const destinationOffers = getReviewedAgodaStayAreasForDestination(offers, destination)
   if (destinationOffers.length === 0) return null
 
@@ -56,7 +57,7 @@ export function AgodaStayAreaPanel({ destination, offers, hasDates }: AgodaStayA
               placement={offer.placement}
               destination={offer.destination}
               campaign={offer.campaign}
-              hasDates={hasDates}
+              tripContext={tripContext}
               className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Search Agoda stays

@@ -1,12 +1,21 @@
-import type { TripIntent } from './intent-schema'
+import type { TravelerType, TripIntent } from './intent-schema'
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const MAX_GROUP_SIZE = 10
-const ALLOWED_INPUT_KEYS = new Set(['startDate', 'groupSize'])
+const ALLOWED_INPUT_KEYS = new Set(['startDate', 'groupSize', 'travelerType'])
+const ALLOWED_TRAVELER_TYPES = new Set<TravelerType>([
+  'solo',
+  'couple',
+  'family',
+  'friends',
+  'business',
+  'unspecified',
+])
 
 export type ConfirmedTripContextInput = {
   startDate?: string | null
   groupSize?: number | null
+  travelerType?: TravelerType | null
 }
 
 export class InvalidTripContextError extends Error {
@@ -50,7 +59,7 @@ export function applyConfirmedTripContext(
     throw new InvalidTripContextError()
   }
 
-  const { startDate, groupSize } = record
+  const { startDate, groupSize, travelerType } = record
   if (startDate !== undefined && startDate !== null && (
     typeof startDate !== 'string'
     || !isValidIsoDate(startDate)
@@ -66,6 +75,12 @@ export function applyConfirmedTripContext(
   )) {
     throw new InvalidTripContextError()
   }
+  if (travelerType !== undefined && travelerType !== null && (
+    typeof travelerType !== 'string'
+    || !ALLOWED_TRAVELER_TYPES.has(travelerType as TravelerType)
+  )) {
+    throw new InvalidTripContextError()
+  }
 
   if (typeof startDate === 'string') {
     intent.startDate = startDate
@@ -73,6 +88,9 @@ export function applyConfirmedTripContext(
   }
   if (typeof groupSize === 'number') {
     intent.groupSize = groupSize
+  }
+  if (typeof travelerType === 'string') {
+    intent.travelerType = travelerType as TravelerType
   }
 
   return intent
