@@ -55,7 +55,8 @@ const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
 
 const GETYOURGUIDE_PARTNER_ID = 'IMR8EUB'
 const YESIM_PARTNER_ID = '5044'
-const YESIM_RADARSCOUT_SUB_ID = '596'
+const YESIM_RADARSCOUT_SUB_ID = '597'
+const YESIM_THAILAND_PATH = '/country/thailand/'
 
 const getYourGuideCities = {
   bangkok: { name: 'Bangkok', path: '/bangkok-l169/' },
@@ -88,6 +89,7 @@ export function validateAffiliateHref(provider: AffiliateProvider, href: string)
 
     if (provider === 'yesim') {
       return url.hostname === 'yesim.app'
+        && url.pathname === YESIM_THAILAND_PATH
         && url.searchParams.get('partner_id') === YESIM_PARTNER_ID
         && url.searchParams.get('sid') === YESIM_RADARSCOUT_SUB_ID
     }
@@ -101,7 +103,7 @@ export function validateAffiliateHref(provider: AffiliateProvider, href: string)
 export function buildYesimPreDepartureOffer(): AffiliateOffer | null {
   if (!getActiveAffiliateProviders('pre_departure').includes('yesim')) return null
 
-  const url = new URL('/', 'https://yesim.app')
+  const url = new URL(YESIM_THAILAND_PATH, 'https://yesim.app')
   url.searchParams.set('partner_id', YESIM_PARTNER_ID)
   url.searchParams.set('sid', YESIM_RADARSCOUT_SUB_ID)
 

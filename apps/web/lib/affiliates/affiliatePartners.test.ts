@@ -37,7 +37,7 @@ describe('affiliate partner policy', () => {
       placement: 'pre_departure',
       destination: 'Thailand',
       campaign: 'radarscout_thailand_esim',
-      href: 'https://yesim.app/?partner_id=5044&sid=596',
+      href: 'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
     })
     expect(validateAffiliateHref('yesim', offer!.href)).toBe(true)
   })
@@ -68,9 +68,10 @@ describe('affiliate partner policy', () => {
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com.example.com/bangkok-l169/?partner_id=IMR8EUB')).toBe(false)
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com/bangkok-l169/')).toBe(false)
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com/bangkok-l169/?partner_id=IMR8EUB')).toBe(true)
-    expect(validateAffiliateHref('yesim', 'http://yesim.app/?partner_id=5044&sid=596')).toBe(false)
-    expect(validateAffiliateHref('yesim', 'https://yesim.app.example.com/?partner_id=5044&sid=596')).toBe(false)
-    expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=wrong&sid=596')).toBe(false)
-    expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=5044&sid=wrong')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'http://yesim.app/country/thailand/?partner_id=5044&sid=597')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app.example.com/country/thailand/?partner_id=5044&sid=597')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=5044&sid=597')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app/country/thailand/?partner_id=wrong&sid=597')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app/country/thailand/?partner_id=5044&sid=wrong')).toBe(false)
   })
 })

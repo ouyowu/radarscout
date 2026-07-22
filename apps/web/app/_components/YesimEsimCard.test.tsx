@@ -13,7 +13,7 @@ describe('YesimEsimCard', () => {
 
     expect(link).toBeDefined()
     expect(link!.props).toMatchObject({
-      href: 'https://yesim.app/?partner_id=5044&sid=596',
+      href: 'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
       provider: 'yesim',
       placement: 'pre_departure',
       destination: 'Thailand',
