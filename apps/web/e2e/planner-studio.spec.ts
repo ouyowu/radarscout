@@ -116,6 +116,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
     name: 'Build your Thailand day-trip route',
   })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Planner progress' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveCount(0)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
@@ -146,6 +147,15 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
     '/tours/prod_cm_1?source=ai-trip-planner',
   )
   await expect(page.getByRole('link', { name: 'Check availability' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Stay connected in Thailand' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
+    'href',
+    'https://yesim.app/?partner_id=5044&sid=596',
+  )
+  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
+    'rel',
+    'nofollow sponsored noopener noreferrer',
+  )
 
   await page.getByRole('button', { name: 'Day 3' }).click()
   await expect(page.getByRole('heading', { name: 'Keep this day flexible' })).toBeVisible()

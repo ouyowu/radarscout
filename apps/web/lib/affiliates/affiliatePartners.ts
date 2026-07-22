@@ -40,7 +40,7 @@ export const affiliatePlacementPolicy: Record<AffiliatePlacement, AffiliateProvi
   pre_departure: ['airalo', 'yesim'],
 }
 
-export const primaryPreDepartureProvider: 'airalo' | 'yesim' | null = null
+export const primaryPreDepartureProvider: 'airalo' | 'yesim' | null = 'yesim'
 
 const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
   agoda: { status: 'awaiting_domain_approval', placements: ['hotel_results'] },
@@ -50,10 +50,12 @@ const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
   klook: { status: 'awaiting_tracking_link', placements: ['city_guide'] },
   '12go': { status: 'awaiting_tracking_link', placements: ['multi_city_transport'] },
   airalo: { status: 'awaiting_provider_decision', placements: ['pre_departure'] },
-  yesim: { status: 'awaiting_provider_decision', placements: ['pre_departure'] },
+  yesim: { status: 'active', placements: ['pre_departure'] },
 }
 
 const GETYOURGUIDE_PARTNER_ID = 'IMR8EUB'
+const YESIM_PARTNER_ID = '5044'
+const YESIM_RADARSCOUT_SUB_ID = '596'
 
 const getYourGuideCities = {
   bangkok: { name: 'Bangkok', path: '/bangkok-l169/' },
@@ -84,9 +86,33 @@ export function validateAffiliateHref(provider: AffiliateProvider, href: string)
         && url.searchParams.get('partner_id') === GETYOURGUIDE_PARTNER_ID
     }
 
+    if (provider === 'yesim') {
+      return url.hostname === 'yesim.app'
+        && url.searchParams.get('partner_id') === YESIM_PARTNER_ID
+        && url.searchParams.get('sid') === YESIM_RADARSCOUT_SUB_ID
+    }
+
     return false
   } catch {
     return false
+  }
+}
+
+export function buildYesimPreDepartureOffer(): AffiliateOffer | null {
+  if (!getActiveAffiliateProviders('pre_departure').includes('yesim')) return null
+
+  const url = new URL('/', 'https://yesim.app')
+  url.searchParams.set('partner_id', YESIM_PARTNER_ID)
+  url.searchParams.set('sid', YESIM_RADARSCOUT_SUB_ID)
+
+  if (!validateAffiliateHref('yesim', url.toString())) return null
+
+  return {
+    provider: 'yesim',
+    placement: 'pre_departure',
+    destination: 'Thailand',
+    campaign: 'radarscout_thailand_esim',
+    href: url.toString(),
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { YesimEsimCard } from '@/app/_components/YesimEsimCard'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import { deriveTripEndDate } from '@/lib/ai-trip/trip-context'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
@@ -447,6 +448,7 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
               />
+              <YesimEsimCard />
               <p className="text-sm font-semibold leading-6 text-rs-muted">
                 Want the full comparison grid for this idea?{' '}
                 <Link
