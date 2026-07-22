@@ -43,7 +43,7 @@ export const affiliatePlacementPolicy: Record<AffiliatePlacement, AffiliateProvi
 export const primaryPreDepartureProvider: 'airalo' | 'yesim' | null = 'yesim'
 
 const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
-  agoda: { status: 'awaiting_domain_approval', placements: ['hotel_results'] },
+  agoda: { status: 'active', placements: ['hotel_results'] },
   trip_com: { status: 'awaiting_tracking_link', placements: ['hotel_results'] },
   expedia: { status: 'awaiting_tracking_link', placements: ['hotel_results'] },
   getyourguide: { status: 'active', placements: ['city_guide'] },
@@ -79,7 +79,16 @@ export function getActiveAffiliateProviders(placement: AffiliatePlacement): Affi
   })
 }
 
-export function validateAffiliateHref(provider: AffiliateProvider, href: string): boolean {
+type AffiliateHrefValidationContext = {
+  expectedAgodaCid?: string
+  expectedAgodaPath?: string
+}
+
+export function validateAffiliateHref(
+  provider: AffiliateProvider,
+  href: string,
+  context: AffiliateHrefValidationContext = {},
+): boolean {
   if (providerConfig[provider].status !== 'active') return false
 
   try {
@@ -96,6 +105,16 @@ export function validateAffiliateHref(provider: AffiliateProvider, href: string)
         && url.pathname === YESIM_THAILAND_PATH
         && url.searchParams.get('partner_id') === YESIM_PARTNER_ID
         && url.searchParams.get('sid') === YESIM_RADARSCOUT_SUB_ID
+    }
+
+    if (provider === 'agoda') {
+      const expectedCid = context.expectedAgodaCid?.trim()
+      const expectedPath = context.expectedAgodaPath?.trim()
+      return url.hostname === 'www.agoda.com'
+        && Boolean(expectedCid)
+        && Boolean(expectedPath)
+        && url.pathname === expectedPath
+        && url.searchParams.get('cid') === expectedCid
     }
 
     return false
