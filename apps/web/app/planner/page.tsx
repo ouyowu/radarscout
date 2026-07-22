@@ -1,5 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Metadata } from 'next'
+import { getConfiguredAgodaCities } from '@/lib/accommodation/agoda'
 import { PublicSiteShell } from '../_components/PublicSiteShell'
 import { PlannerStudio } from './PlannerStudio'
 
@@ -53,6 +54,7 @@ export default function PlannerStudioPage({ searchParams }: PlannerStudioPagePro
             <PlannerStudio
               initialIdea={initialIdea}
               publicMapToken={process.env.NEXT_PUBLIC_MAPTILER_TOKEN ?? null}
+              agodaCities={getConfiguredAgodaCities()}
             />
           </div>
         </section>
