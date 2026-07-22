@@ -23,11 +23,13 @@ import { metadata as aiTripPlannerMetadata } from '../ai-trip-planner/page'
 import { metadata as chiangMaiFinderMetadata } from '../chiang-mai/elephant-camp-finder/page'
 import { metadata as contactMetadata } from '../contact/page'
 import { metadata as demoMetadata } from '../demo/page'
+import { generateMetadata as generateDestinationMetadata } from '../destinations/[slug]/page'
 import { metadata as homeMetadata } from '../page'
 import { metadata as plannerStudioMetadata } from '../planner/page'
 import { metadata as privacyMetadata } from '../privacy-policy/page'
 import { metadata as termsMetadata } from '../terms-of-service/page'
 import { generateMetadata as generateTourDetailMetadata } from '../tours/[id]/page'
+import { globalDestinations } from '@/lib/global-destinations'
 
 const BASE = 'https://www.radarscout.io'
 const CURRENT_INDEXABLE_SITEMAP_URLS = [
@@ -111,6 +113,24 @@ describe('controlled SEO opening guard', () => {
 
     expect(tourDetailMetadata.robots).toMatchObject({ index: true, follow: true })
     expect(tourDetailMetadata.alternates?.canonical).toBe(`${BASE}/tours/${approvedId}`)
+  })
+
+  it('keeps every planning-only destination noindex and only Thailand index-eligible', () => {
+    const liveInventorySlugs = globalDestinations
+      .filter(destination => destination.hasLiveInventory)
+      .map(destination => destination.slug)
+
+    expect(liveInventorySlugs).toEqual(['thailand'])
+
+    for (const destination of globalDestinations) {
+      const metadata = generateDestinationMetadata({ params: { slug: destination.slug } })
+
+      if (destination.hasLiveInventory) {
+        expect(metadata.robots, destination.slug).toBeUndefined()
+      } else {
+        expect(metadata.robots, destination.slug).toMatchObject({ index: false, follow: false })
+      }
+    }
   })
 
   it('keeps reddit-tool marketing routes disallowed in robots.txt', () => {
