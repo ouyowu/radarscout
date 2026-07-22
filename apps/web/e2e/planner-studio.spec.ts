@@ -150,7 +150,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   await expect(page.getByRole('heading', { name: 'Stay connected in Thailand' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
     'href',
-    'https://yesim.app/?partner_id=5044&sid=596',
+    'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
   )
   await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
     'rel',
