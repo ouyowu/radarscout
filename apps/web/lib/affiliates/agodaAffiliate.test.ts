@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
 
-import { buildAgodaHotelResultsOffer } from './agodaAffiliate'
+import { buildAgodaHotelResultsOffer, buildReviewedAgodaStayAreaOffers } from './agodaAffiliate'
+import { reviewedAgodaAreaRecommendations } from './seed/reviewedAgodaAreas'
 
 const originalCid = process.env.AGODA_AFFILIATE_CID
 
@@ -74,5 +75,14 @@ describe('Agoda server-side affiliate handoff', () => {
     )
 
     expect(new URL(offer!.href).searchParams.get('cid')).toBe('7654321')
+  })
+
+  it('builds one safe offer per reviewed area and fails closed as a group', () => {
+    const offers = buildReviewedAgodaStayAreaOffers(reviewedAgodaAreaRecommendations, { cid: '1234567' })
+
+    expect(offers).toHaveLength(18)
+    expect(offers.every(item => item.offer.provider === 'agoda')).toBe(true)
+    expect(offers.every(item => item.offer.destination === item.area.city)).toBe(true)
+    expect(buildReviewedAgodaStayAreaOffers(reviewedAgodaAreaRecommendations, { cid: 'invalid' })).toEqual([])
   })
 })

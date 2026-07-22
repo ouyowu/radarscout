@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { YesimEsimCard } from '@/app/_components/YesimEsimCard'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import { deriveTripEndDate } from '@/lib/ai-trip/trip-context'
+import type { ReviewedAgodaStayAreaOffer } from '@/lib/affiliates/agodaStayAreaOffers'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import {
   decideNextGuideStep,
@@ -16,6 +17,7 @@ import {
   summarizeUnderstoodIntent,
 } from './plannerConversation'
 import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
+import { AgodaStayAreaPanel } from './AgodaStayAreaPanel'
 import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
 
 type StudioMessage = {
@@ -93,9 +95,14 @@ function formatConfirmedDate(value: string): string {
 type PlannerStudioProps = {
   initialIdea?: string
   publicMapToken?: string | null
+  agodaStayAreaOffers?: readonly ReviewedAgodaStayAreaOffer[]
 }
 
-export function PlannerStudio({ initialIdea = '', publicMapToken = null }: PlannerStudioProps) {
+export function PlannerStudio({
+  initialIdea = '',
+  publicMapToken = null,
+  agodaStayAreaOffers = [],
+}: PlannerStudioProps) {
   const safeInitialIdea = initialIdea.trim().slice(0, PARSER_PROMPT_LIMIT)
   const [messages, setMessages] = useState<StudioMessage[]>(() => [
     createMessage({ role: 'guide', content: WELCOME_MESSAGE, chips: STARTER_CHIPS }),
@@ -449,6 +456,11 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
                 itinerary={itinerary}
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
+                hasDates={hasDates}
+              />
+              <AgodaStayAreaPanel
+                destination={itinerary.tripSpec.destination}
+                offers={agodaStayAreaOffers}
                 hasDates={hasDates}
               />
               <YesimEsimCard />

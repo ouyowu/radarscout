@@ -9,7 +9,9 @@ import {
   AGODA_AREA_CITY_NAMES,
   AGODA_AREA_CITY_SLUGS,
   type AgodaAreaCitySlug,
+  type AgodaAreaRecommendation,
 } from './agodaAreaRecommendations'
+import type { ReviewedAgodaStayAreaOffer } from './agodaStayAreaOffers'
 
 const AGODA_AFFILIATE_PATH = '/partners/partnersearch.aspx'
 const AGODA_PARTNER_SEARCH_CODE = '8'
@@ -67,4 +69,18 @@ export function buildAgodaHotelResultsOffer(
     campaign,
     href: url.toString(),
   }
+}
+
+export function buildReviewedAgodaStayAreaOffers(
+  areas: readonly AgodaAreaRecommendation[],
+  dependencies: AgodaAffiliateDependencies = {},
+): ReviewedAgodaStayAreaOffer[] {
+  return areas.flatMap(area => {
+    const offer = buildAgodaHotelResultsOffer({
+      citySlug: area.citySlug,
+      areaSlug: area.areaSlug,
+    }, dependencies)
+
+    return offer ? [{ area, offer }] : []
+  })
 }

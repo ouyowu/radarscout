@@ -1,5 +1,7 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Metadata } from 'next'
+import { buildReviewedAgodaStayAreaOffers } from '@/lib/affiliates/agodaAffiliate'
+import { reviewedAgodaAreaRecommendations } from '@/lib/affiliates/seed/reviewedAgodaAreas'
 import { PublicSiteShell } from '../_components/PublicSiteShell'
 import { PlannerStudio } from './PlannerStudio'
 
@@ -21,6 +23,7 @@ type PlannerStudioPageProps = {
 
 export default function PlannerStudioPage({ searchParams }: PlannerStudioPageProps) {
   const initialIdea = typeof searchParams?.idea === 'string' ? searchParams.idea : ''
+  const agodaStayAreaOffers = buildReviewedAgodaStayAreaOffers(reviewedAgodaAreaRecommendations)
 
   return (
     <PublicSiteShell>
@@ -53,6 +56,7 @@ export default function PlannerStudioPage({ searchParams }: PlannerStudioPagePro
             <PlannerStudio
               initialIdea={initialIdea}
               publicMapToken={process.env.NEXT_PUBLIC_MAPTILER_TOKEN ?? null}
+              agodaStayAreaOffers={agodaStayAreaOffers}
             />
           </div>
         </section>
