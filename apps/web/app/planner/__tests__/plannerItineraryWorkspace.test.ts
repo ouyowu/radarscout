@@ -61,4 +61,21 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/booking_partner_handoff_clicked/)
     expectNoForbiddenPublicCopy(source)
   })
+
+  it('adds a truthful trip-reality report without unsupported reference-site metrics', () => {
+    const realitySource = readFileSync(join(plannerDir, 'PlannerRealityPanel.tsx'), 'utf8')
+
+    expect(source).toMatch(/PlannerRealityPanel/)
+    expect(realitySource).toMatch(/Trip reality/)
+    expect(realitySource).toMatch(/Decision brief/)
+    expect(realitySource).toMatch(/Reviewed route coverage/)
+    expect(realitySource).toMatch(/planner-coverage-ring/)
+    expect(realitySource).toMatch(/--planner-coverage/)
+    expect(realitySource).toMatch(/Why this route/)
+    expect(realitySource).toMatch(/Best for/)
+    expect(realitySource).toMatch(/Before choosing/)
+    expect(realitySource).toMatch(/Map and handoff/)
+    expect(realitySource).not.toMatch(/Weather Reality|Money Truths|Safety rating|Avg daily cost|Crowd Forecast|Reality score|\/100/i)
+    expectNoForbiddenPublicCopy(realitySource)
+  })
 })

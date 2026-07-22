@@ -222,7 +222,6 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
   }
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
-  const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
   const currentIdea = mergeTripIdea(ideaParts)
   const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
   const minimumStartDate = new Date().toISOString().slice(0, 10)
@@ -428,20 +427,6 @@ export function PlannerStudio({ initialIdea = '', publicMapToken = null }: Plann
         <section aria-label="Trip workspace" className="min-w-0">
           {itinerary ? (
             <div className="space-y-3">
-              <div className="rounded-rs-md border border-rs-sage-200/70 bg-white px-4 py-3 shadow-rs-soft sm:px-5">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Your trip brief</h2>
-                    <h3 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.02em] text-rs-ink">
-                      {itinerary.tripSpec.destination} · {itinerary.tripSpec.durationDays} day
-                      {itinerary.tripSpec.durationDays === 1 ? '' : 's'}
-                    </h3>
-                  </div>
-                  <p className="text-xs font-semibold text-rs-muted">
-                    {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
-                  </p>
-                </div>
-              </div>
               <PlannerItineraryWorkspace
                 itinerary={itinerary}
                 products={searchState?.status === 'ok' ? searchState.products : []}

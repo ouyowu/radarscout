@@ -1,6 +1,6 @@
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
-html, body { background: #fffaf5; }
+html, body { background: var(--rs-sand-50); overflow-x: clip; }
 
 @tailwind base;
 @tailwind components;
@@ -82,6 +82,15 @@ html, body { background: #fffaf5; }
 
 /* Prevent layout shift on font load */
 body { font-family: var(--rs-font-body); }
+
+/* Planner review coverage is a factual ratio, not a generated score. */
+.planner-coverage-ring {
+  --planner-coverage: 0%;
+  background: conic-gradient(
+    var(--rs-terracotta) 0 var(--planner-coverage),
+    var(--rs-sage-200) var(--planner-coverage) 100%
+  );
+}
 
 /* ── Ambient blob drift ───────────────────────────────────────────── */
 @keyframes blob-drift {

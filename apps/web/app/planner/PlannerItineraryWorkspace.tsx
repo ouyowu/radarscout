@@ -11,12 +11,14 @@ import { isReviewedViatorAffiliateUrl } from '@/lib/viator/reviewedViatorMatchin
 import { buildAiTripPlannerDetailHref } from '../ai-trip-planner/AiSearchProductCard'
 import { MapLibreDayMap } from '../itineraries/thailand/[city]/[duration]/MapLibreDayMap'
 import { getReviewedPlannerMapDay } from './plannerMapCoverage'
+import { PlannerRealityPanel } from './PlannerRealityPanel'
 import {
   adaptPlannerDecisionSignals,
   collectPlannerThemes,
   filterPlannerProductsByThemes,
   toPlannerPace,
 } from './plannerFilters'
+import { buildPlannerRealityModel } from './plannerReality'
 
 const paces: readonly { value: ThailandItineraryPace; label: string }[] = [
   { value: 'chill', label: 'Chill' },
@@ -91,6 +93,24 @@ export function PlannerItineraryWorkspace({
   const selectedDecisionSignals = selectedProduct
     ? adaptPlannerDecisionSignals(selectedProduct, selectedProduct.decisionSignals, pace, selectedThemes)
     : null
+  const realitySignals = filteredProducts
+    .map(product => adaptPlannerDecisionSignals(product, product.decisionSignals, pace, selectedThemes))
+    .filter((signal): signal is NonNullable<typeof signal> => signal !== null)
+  const mapCoverageDayCount = requestedDays.filter(dayNumber => {
+    const dayProduct = itinerary.days.find(day => day.dayNumber === dayNumber)?.experience ?? null
+    return getReviewedPlannerMapDay(itinerary.tripSpec.destination, dayNumber, dayProduct) !== null
+  }).length
+  const realityModel = buildPlannerRealityModel({
+    destination: itinerary.tripSpec.destination,
+    durationDays: itinerary.tripSpec.durationDays,
+    assignedDayCount: itinerary.days.length,
+    mapCoverageDayCount,
+    reviewedMatchCount: products.length,
+    visibleMatchCount: filteredProducts.length,
+    pace,
+    selectedThemes,
+    signals: realitySignals,
+  })
 
   function toggleTheme(theme: string) {
     setSelectedThemes(current => current.includes(theme)
@@ -112,12 +132,12 @@ export function PlannerItineraryWorkspace({
 
   return (
     <section aria-label="Interactive day-trip workspace">
-      <div className="rounded-rs-md border border-rs-sage-200/80 bg-white p-3 shadow-rs-soft sm:p-4">
+      <PlannerRealityPanel model={realityModel} />
+
+      <div className="mt-4 rounded-rs-md border border-rs-sage-200/80 bg-white p-3 shadow-rs-soft sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">
-              {itinerary.tripSpec.durationDays} day{itinerary.tripSpec.durationDays === 1 ? '' : 's'} itinerary
-            </p>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-rs-forest-700">Realistic itinerary</p>
             <h3 className="mt-1 font-rs-display text-xl font-semibold tracking-[-0.025em] text-rs-ink sm:text-2xl">
               {itinerary.tripSpec.destination} day-tour route
             </h3>
