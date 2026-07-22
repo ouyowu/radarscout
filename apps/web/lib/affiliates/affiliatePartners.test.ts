@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   affiliatePlacementPolicy,
   buildGetYourGuideCityGuideOffer,
+  buildYesimPreDepartureOffer,
   getActiveAffiliateProviders,
   primaryPreDepartureProvider,
   validateAffiliateHref,
@@ -19,13 +20,26 @@ describe('affiliate partner policy', () => {
     expect(getActiveAffiliateProviders('city_guide')).toEqual(['getyourguide'])
     expect(getActiveAffiliateProviders('hotel_results')).toEqual([])
     expect(getActiveAffiliateProviders('multi_city_transport')).toEqual([])
-    expect(getActiveAffiliateProviders('pre_departure')).toEqual([])
+    expect(getActiveAffiliateProviders('pre_departure')).toEqual(['yesim'])
   })
 
-  it('keeps pre-departure recommendations off until exactly one primary provider is chosen', () => {
-    expect(primaryPreDepartureProvider).toBeNull()
+  it('exposes Yesim as the single reviewed pre-departure provider', () => {
+    expect(primaryPreDepartureProvider).toBe('yesim')
     expect(affiliatePlacementPolicy.pre_departure).toEqual(['airalo', 'yesim'])
-    expect(getActiveAffiliateProviders('pre_departure')).toHaveLength(0)
+    expect(getActiveAffiliateProviders('pre_departure')).toEqual(['yesim'])
+  })
+
+  it('builds the reviewed Yesim Thailand eSIM handoff', () => {
+    const offer = buildYesimPreDepartureOffer()
+
+    expect(offer).toEqual({
+      provider: 'yesim',
+      placement: 'pre_departure',
+      destination: 'Thailand',
+      campaign: 'radarscout_thailand_esim',
+      href: 'https://yesim.app/?partner_id=5044&sid=596',
+    })
+    expect(validateAffiliateHref('yesim', offer!.href)).toBe(true)
   })
 
   it('builds a tracked GetYourGuide city link for reviewed Thailand cities', () => {
@@ -54,5 +68,9 @@ describe('affiliate partner policy', () => {
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com.example.com/bangkok-l169/?partner_id=IMR8EUB')).toBe(false)
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com/bangkok-l169/')).toBe(false)
     expect(validateAffiliateHref('getyourguide', 'https://www.getyourguide.com/bangkok-l169/?partner_id=IMR8EUB')).toBe(true)
+    expect(validateAffiliateHref('yesim', 'http://yesim.app/?partner_id=5044&sid=596')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app.example.com/?partner_id=5044&sid=596')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=wrong&sid=596')).toBe(false)
+    expect(validateAffiliateHref('yesim', 'https://yesim.app/?partner_id=5044&sid=wrong')).toBe(false)
   })
 })

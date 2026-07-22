@@ -103,4 +103,11 @@ describe('planner studio public copy safety', () => {
     expect(studioSource).toMatch(/deriveTripEndDate/)
     expect(studioSource).not.toMatch(/parseNaturalLanguageDate|guessTravelDate|inferTravelDate/)
   })
+
+  it('adds the reviewed Yesim pre-departure handoff only after a route is built', () => {
+    const studioSource = readPlannerSource('PlannerStudio.tsx')
+
+    expect(studioSource).toMatch(/<YesimEsimCard\s*\/>/)
+    expect(studioSource.indexOf('<YesimEsimCard')).toBeGreaterThan(studioSource.indexOf('<PlannerItineraryWorkspace'))
+  })
 })
