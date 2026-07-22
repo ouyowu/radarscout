@@ -37,8 +37,35 @@ describe('TrackedAffiliateLink', () => {
     expect(track).toHaveBeenCalledWith('affiliate_partner_handoff_clicked', {
       provider: 'getyourguide',
       placement: 'city_guide',
+      city: 'Bangkok',
       destination: 'Bangkok',
+      hasDates: false,
       campaign: 'radarscout_city_guide_bangkok',
     })
+  })
+
+  it('records only date presence without changing the provider URL', () => {
+    const href = 'https://www.getyourguide.com/chiang-mai-l271/?partner_id=IMR8EUB&cmp=radarscout_city_guide_chiang_mai'
+    const element = TrackedAffiliateLink({
+      href,
+      provider: 'getyourguide',
+      placement: 'city_guide',
+      destination: 'Chiang Mai',
+      campaign: 'radarscout_city_guide_chiang_mai',
+      hasDates: true,
+      children: 'Compare Chiang Mai activities',
+    }) as ReactElement<{ href: string; onClick: () => void }>
+
+    element.props.onClick()
+
+    expect(element.props.href).toBe(href)
+    expect(track).toHaveBeenCalledWith('affiliate_partner_handoff_clicked', expect.objectContaining({
+      city: 'Chiang Mai',
+      hasDates: true,
+    }))
+    expect(track).not.toHaveBeenCalledWith(
+      'affiliate_partner_handoff_clicked',
+      expect.objectContaining({ startDate: expect.any(String) }),
+    )
   })
 })

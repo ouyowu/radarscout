@@ -17,30 +17,40 @@ export type AiSearchProductCardProps = {
   ctaLabel?: 'Check availability' | null
   ctaRel?: 'nofollow sponsored noopener noreferrer' | null
   externalHandoff?: boolean
+  handoffContext: {
+    destination: string
+    hasDates: boolean
+  }
 }
 
 function buildSafeTourFallback(productId?: string): string {
   return productId ? `/tours/${encodeURIComponent(productId)}` : '/tours'
 }
 
-export function buildAiTripPlannerDetailHref(detailHref: string, productId?: string): string {
+type AiTripPlannerDetailContext = {
+  hasDates?: boolean
+}
+
+export function buildAiTripPlannerDetailHref(
+  detailHref: string,
+  productId?: string,
+  context: AiTripPlannerDetailContext = {},
+): string {
   const trimmedHref = detailHref.trim()
   const [hrefWithoutHash, hash] = trimmedHref.split('#', 2)
-
-  if (!hrefWithoutHash.startsWith('/tours/')) {
-    return `${buildSafeTourFallback(productId)}?source=ai-trip-planner`
-  }
-
-  const [path, query = ''] = hrefWithoutHash.split('?', 2)
+  const isSafeTourHref = hrefWithoutHash.startsWith('/tours/')
+  const safeHref = isSafeTourHref ? hrefWithoutHash : buildSafeTourFallback(productId)
+  const [path, query = ''] = safeHref.split('?', 2)
   const params = new URLSearchParams(query)
 
-  if (params.get('source') === 'ai-trip-planner') {
-    return trimmedHref
-  }
-
   params.set('source', 'ai-trip-planner')
+  if (context.hasDates === true) {
+    params.set('hasDates', '1')
+  } else {
+    params.delete('hasDates')
+  }
   const nextQuery = params.toString()
-  const hashSuffix = hash ? `#${hash}` : ''
+  const hashSuffix = isSafeTourHref && hash ? `#${hash}` : ''
 
   return `${path}${nextQuery ? `?${nextQuery}` : ''}${hashSuffix}`
 }
@@ -59,6 +69,7 @@ export function AiSearchProductCard({
   ctaLabel,
   ctaRel,
   externalHandoff,
+  handoffContext,
 }: AiSearchProductCardProps) {
   const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
 
@@ -134,14 +145,22 @@ export function AiSearchProductCard({
             target="_blank"
             rel={ctaRel ?? 'nofollow sponsored noopener noreferrer'}
             aria-label={`Check availability for ${title} with the booking partner`}
-            onClick={() => track('booking_partner_handoff_clicked', { productId: id, source: 'ai_trip_planner' })}
+            onClick={() => track('booking_partner_handoff_clicked', {
+              provider: 'viator',
+              placement: 'ai_trip_planner_card',
+              city: city ?? handoffContext.destination,
+              destination: handoffContext.destination,
+              hasDates: handoffContext.hasDates,
+              productId: id,
+              source: 'ai_trip_planner',
+            })}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {ctaLabel ?? 'Check availability'}
           </a>
         ) : (
           <Link
-            href={buildAiTripPlannerDetailHref(detailHref, id)}
+            href={buildAiTripPlannerDetailHref(detailHref, id, { hasDates: handoffContext.hasDates })}
             aria-label={`View details for ${title}; no reviewed booking partner handoff is available`}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >

@@ -23,6 +23,7 @@ type TourDetailPageProps = {
   }
   searchParams?: {
     source?: string
+    hasDates?: string
   }
 }
 
@@ -249,6 +250,7 @@ function UnavailableState({
 export default async function TourDetailPage({ params, searchParams }: TourDetailPageProps) {
   const result = await fetchProductDetail(params.id)
   const isFromAiTripPlanner = searchParams?.source === 'ai-trip-planner'
+  const hasDates = isFromAiTripPlanner && searchParams?.hasDates === '1'
 
   if (result.status !== 'found') {
     return <UnavailableState status={result.status} isFromAiTripPlanner={isFromAiTripPlanner} />
@@ -384,6 +386,9 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   rel={product.bookingPartnerHandoff.rel}
                   productId={product.id}
                   source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
+                  placement="tour_detail_primary"
+                  city={location}
+                  hasDates={hasDates}
                   className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
                 >
                   {product.bookingPartnerHandoff.label}
@@ -474,6 +479,9 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             rel={product.bookingPartnerHandoff.rel}
             productId={product.id}
             source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
+            placement="tour_detail_sticky"
+            city={location}
+            hasDates={hasDates}
             className="inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink"
           >
             {product.bookingPartnerHandoff.label}

@@ -19,6 +19,10 @@ describe('Thailand itinerary workspace', () => {
     expect(source).toMatch(/Packed/)
     expect(source).toMatch(/Check availability/)
     expect(source).toMatch(/nofollow sponsored noopener noreferrer/)
+    expect(source).toMatch(/provider: 'viator'/)
+    expect(source).toMatch(/placement: 'itinerary_template'/)
+    expect(source).toMatch(/city: product\.city/)
+    expect(source).toMatch(/hasDates: false/)
     expectNoForbiddenPublicCopy(source)
   })
 

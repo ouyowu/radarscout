@@ -66,6 +66,10 @@ const getYourGuideCities = {
 
 export type GetYourGuideCitySlug = keyof typeof getYourGuideCities
 
+function normalizeGetYourGuideCitySlug(destination: string): string {
+  return destination.trim().toLowerCase().replaceAll(/\s+/g, '-')
+}
+
 export function getActiveAffiliateProviders(placement: AffiliatePlacement): AffiliateProvider[] {
   return affiliatePlacementPolicy[placement].filter(provider => {
     if (placement === 'pre_departure' && provider !== primaryPreDepartureProvider) return false
@@ -118,8 +122,9 @@ export function buildYesimPreDepartureOffer(): AffiliateOffer | null {
   }
 }
 
-export function buildGetYourGuideCityGuideOffer(citySlug: string): AffiliateOffer | null {
+export function buildGetYourGuideCityGuideOffer(destination: string): AffiliateOffer | null {
   if (!getActiveAffiliateProviders('city_guide').includes('getyourguide')) return null
+  const citySlug = normalizeGetYourGuideCitySlug(destination)
   if (!(citySlug in getYourGuideCities)) return null
 
   const city = getYourGuideCities[citySlug as GetYourGuideCitySlug]

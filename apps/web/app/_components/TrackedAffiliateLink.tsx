@@ -11,6 +11,7 @@ type TrackedAffiliateLinkProps = {
   placement: AffiliatePlacement
   destination: string
   campaign: string
+  hasDates?: boolean
   children: ReactNode
   className?: string
 }
@@ -21,6 +22,7 @@ export function TrackedAffiliateLink({
   placement,
   destination,
   campaign,
+  hasDates = false,
   children,
   className,
 }: TrackedAffiliateLinkProps) {
@@ -28,7 +30,9 @@ export function TrackedAffiliateLink({
     track('affiliate_partner_handoff_clicked', {
       provider,
       placement,
+      city: destination,
       destination,
+      hasDates,
       campaign,
     })
   }
