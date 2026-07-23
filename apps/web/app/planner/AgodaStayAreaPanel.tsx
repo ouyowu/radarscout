@@ -3,6 +3,7 @@
 import React from 'react'
 import type { ReviewedAgodaStayAreaOffer } from '@/lib/affiliates/agodaStayAreaOffers'
 import { getReviewedAgodaStayAreasForDestination } from '@/lib/affiliates/agodaStayAreaOffers'
+import { addAgodaTripContextToHref } from '@/lib/affiliates/agodaTripContext'
 import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
 import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
 
@@ -52,7 +53,7 @@ export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaSt
             </div>
 
             <TrackedAffiliateLink
-              href={offer.href}
+              href={addAgodaTripContextToHref(offer.href, tripContext)}
               provider={offer.provider}
               placement={offer.placement}
               destination={offer.destination}
@@ -69,6 +70,11 @@ export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaSt
       <p className="mt-4 text-xs font-semibold leading-5 text-rs-muted">
         RadarScout provides area guidance only. Current hotel details and the final continue step stay on Agoda.
       </p>
+      {tripContext.startDate && tripContext.endDate ? (
+        <p className="mt-2 text-xs font-semibold leading-5 text-rs-forest-700">
+          Your confirmed stay dates are included in the Agoda search. Occupancy stays unset because RadarScout does not guess the adult and child mix.
+        </p>
+      ) : null}
     </section>
   )
 }
