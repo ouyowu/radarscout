@@ -63,14 +63,15 @@ describe('Planner itinerary workspace', () => {
     expectNoForbiddenPublicCopy(source)
   })
 
-  it('tracks bounded trip context without adding dates to provider URLs', () => {
-    expect(studioSource).toMatch(/Boolean\(searchState\.intent\?\.startDate && searchState\.intent\?\.endDate\)/)
-    expect(studioSource).toMatch(/hasDates=\{hasDates\}/)
-    expect(source).toMatch(/hasDates: boolean/)
+  it('shares bounded trip context across handoffs without adding dates to provider URLs', () => {
+    expect(studioSource).toMatch(/startDate: searchState\?\.intent\?\.startDate \?\? null/)
+    expect(studioSource).toMatch(/tripContext=\{handoffTripContext\}/)
+    expect(studioSource).toMatch(/Remembered for this plan/)
+    expect(source).toMatch(/tripContext: AffiliateTripContext/)
     expect(source).toMatch(/provider: 'viator'/)
     expect(source).toMatch(/city:/)
-    expect(source).toMatch(/hasDates/)
-    expect(source).toMatch(/buildAiTripPlannerDetailHref\([\s\S]*\{ hasDates \}\)/)
+    expect(source).toMatch(/buildSafeAffiliateAnalyticsContext\(tripContext\)/)
+    expect(source).toMatch(/buildAiTripPlannerDetailHref\([\s\S]*\{ hasDates: safeTripContext\.hasDates \}\)/)
     expect(source).not.toMatch(/searchParams\.set\(['\"](?:startDate|endDate)/)
   })
 
@@ -78,7 +79,7 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/buildGetYourGuideCityGuideOffer\(itinerary\.tripSpec\.destination\)/)
     expect(source).toMatch(/provider=\{cityGuideOffer\.provider\}/)
     expect(source).toMatch(/placement=\{cityGuideOffer\.placement\}/)
-    expect(source).toMatch(/hasDates=\{hasDates\}/)
+    expect(source).toMatch(/tripContext=\{tripContext\}/)
     expect(source).toMatch(/Compare more .* activities on GetYourGuide/)
   })
 })

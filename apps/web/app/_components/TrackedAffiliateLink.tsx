@@ -3,6 +3,10 @@
 import React from 'react'
 import type { MouseEventHandler, ReactNode } from 'react'
 import type { AffiliatePlacement, AffiliateProvider } from '@/lib/affiliates/affiliatePartners'
+import {
+  buildSafeAffiliateAnalyticsContext,
+  type AffiliateTripContext,
+} from '@/lib/affiliates/affiliateTripContext'
 import { track } from '@/lib/analytics/track'
 
 type TrackedAffiliateLinkProps = {
@@ -11,7 +15,7 @@ type TrackedAffiliateLinkProps = {
   placement: AffiliatePlacement
   destination: string
   campaign: string
-  hasDates?: boolean
+  tripContext?: AffiliateTripContext
   children: ReactNode
   className?: string
 }
@@ -22,17 +26,19 @@ export function TrackedAffiliateLink({
   placement,
   destination,
   campaign,
-  hasDates = false,
+  tripContext,
   children,
   className,
 }: TrackedAffiliateLinkProps) {
   const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
+    const safeTripContext = buildSafeAffiliateAnalyticsContext(tripContext)
+
     track('affiliate_partner_handoff_clicked', {
       provider,
       placement,
       city: destination,
       destination,
-      hasDates,
+      ...safeTripContext,
       campaign,
     })
   }

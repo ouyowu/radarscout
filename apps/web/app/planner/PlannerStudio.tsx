@@ -6,6 +6,8 @@ import { YesimEsimCard } from '@/app/_components/YesimEsimCard'
 import { PARSER_PROMPT_LIMIT } from '@/lib/ai-trip/parse-intent'
 import { deriveTripEndDate } from '@/lib/ai-trip/trip-context'
 import type { ReviewedAgodaStayAreaOffer } from '@/lib/affiliates/agodaStayAreaOffers'
+import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
+import type { TravelerType } from '@/lib/ai-trip/intent-schema'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import {
   decideNextGuideStep,
@@ -38,6 +40,13 @@ const STARTER_CHIPS = [
 ]
 const PLANNER_STEPS = ['Describe', 'Confirm', 'Compare'] as const
 const GROUP_SIZE_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
+const TRAVELER_TYPE_OPTIONS: readonly { value: Exclude<TravelerType, 'unspecified'>; label: string }[] = [
+  { value: 'solo', label: 'Solo' },
+  { value: 'couple', label: 'Couple' },
+  { value: 'family', label: 'Family' },
+  { value: 'friends', label: 'Friends' },
+  { value: 'business', label: 'Business' },
+]
 
 let nextMessageId = 1
 
@@ -118,6 +127,7 @@ export function PlannerStudio({
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [startDate, setStartDate] = useState('')
   const [groupSize, setGroupSize] = useState('')
+  const [travelerType, setTravelerType] = useState<TravelerType>('unspecified')
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -137,6 +147,7 @@ export function PlannerStudio({
           tripContext: {
             startDate: startDate || null,
             groupSize: groupSize ? Number(groupSize) : null,
+            travelerType: travelerType === 'unspecified' ? null : travelerType,
           },
         }),
       })
@@ -227,12 +238,26 @@ export function PlannerStudio({
     setDraft('')
     setStartDate('')
     setGroupSize('')
+    setTravelerType('unspecified')
   }
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
-  const hasDates = searchState?.status === 'ok'
-    && Boolean(searchState.intent?.startDate && searchState.intent?.endDate)
+  const handoffTripContext: AffiliateTripContext = {
+    startDate: searchState?.intent?.startDate ?? null,
+    endDate: searchState?.intent?.endDate ?? null,
+    groupSize: searchState?.intent?.groupSize ?? null,
+    travelerType: searchState?.intent?.travelerType ?? 'unspecified',
+  }
+  const confirmedContextLabels = [
+    handoffTripContext.startDate && handoffTripContext.endDate
+      ? `${formatConfirmedDate(handoffTripContext.startDate)}–${formatConfirmedDate(handoffTripContext.endDate)}`
+      : null,
+    handoffTripContext.groupSize ? `${handoffTripContext.groupSize} travelers` : null,
+    handoffTripContext.travelerType !== 'unspecified'
+      ? TRAVELER_TYPE_OPTIONS.find(option => option.value === handoffTripContext.travelerType)?.label ?? null
+      : null,
+  ].filter((label): label is string => Boolean(label))
   const currentIdea = mergeTripIdea(ideaParts)
   const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
   const minimumStartDate = new Date().toISOString().slice(0, 10)
@@ -290,7 +315,7 @@ export function PlannerStudio({
 
         <fieldset className="border-b border-rs-sage-200/70 bg-rs-sand-50 px-4 py-3 sm:px-5">
           <legend className="sr-only">Optional trip details</legend>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             <label htmlFor="planner-start-date" className="text-xs font-bold text-rs-forest-700">
               Start date <span className="font-semibold text-rs-muted">(optional)</span>
               <input
@@ -302,6 +327,21 @@ export function PlannerStudio({
                 onChange={event => setStartDate(event.target.value)}
                 className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
               />
+            </label>
+            <label htmlFor="planner-traveler-type" className="text-xs font-bold text-rs-forest-700">
+              Trip style <span className="font-semibold text-rs-muted">(optional)</span>
+              <select
+                id="planner-traveler-type"
+                value={travelerType}
+                disabled={isSearching}
+                onChange={event => setTravelerType(event.target.value as TravelerType)}
+                className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
+              >
+                <option value="unspecified">Not set</option>
+                {TRAVELER_TYPE_OPTIONS.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
             </label>
             <label htmlFor="planner-group-size" className="text-xs font-bold text-rs-forest-700">
               Travelers <span className="font-semibold text-rs-muted">(optional)</span>
@@ -451,17 +491,29 @@ export function PlannerStudio({
                     {okProductCount} reviewed match{okProductCount === 1 ? '' : 'es'} · comparison only
                   </p>
                 </div>
+                {confirmedContextLabels.length > 0 ? (
+                  <div aria-label="Remembered trip details" className="mt-3 flex flex-wrap items-center gap-2">
+                    <p className="text-xs font-bold uppercase tracking-[0.12em] text-rs-forest-500">
+                      Remembered for this plan
+                    </p>
+                    {confirmedContextLabels.map(label => (
+                      <span key={label} className="rounded-rs-pill bg-rs-sage-100 px-3 py-1 text-xs font-bold text-rs-forest-700">
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <PlannerItineraryWorkspace
                 itinerary={itinerary}
                 products={searchState?.status === 'ok' ? searchState.products : []}
                 publicMapToken={publicMapToken}
-                hasDates={hasDates}
+                tripContext={handoffTripContext}
               />
               <AgodaStayAreaPanel
                 destination={itinerary.tripSpec.destination}
                 offers={agodaStayAreaOffers}
-                hasDates={hasDates}
+                tripContext={handoffTripContext}
               />
               <YesimEsimCard />
               <p className="text-sm font-semibold leading-6 text-rs-muted">

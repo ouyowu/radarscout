@@ -52,18 +52,33 @@ describe('Planner Agoda stay-area guidance', () => {
     expect(panelSource).toMatch(/getReviewedAgodaStayAreasForDestination/)
 
     const markup = renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Chiang Mai" offers={[reviewedOffer]} hasDates={false} />,
+      <AgodaStayAreaPanel
+        destination="Chiang Mai"
+        offers={[reviewedOffer]}
+        tripContext={{
+          startDate: '2026-12-10',
+          endDate: '2026-12-13',
+          groupSize: 4,
+          travelerType: 'family',
+        }}
+      />,
     )
     expect(markup).toContain('Nimman')
     expect(markup).toContain('Cafe stays and remote work')
     expect(markup).toContain('Search Agoda stays')
     expect(markup).toContain('nofollow sponsored noopener noreferrer')
     expect(markup).toContain('https://www.agoda.com/partners/partnersearch.aspx?cid=1234567')
+    expect(markup).toContain('checkin=2026-12-10')
+    expect(markup).toContain('checkout=2026-12-13')
+    expect(markup).toContain('confirmed stay dates are included')
+    expect(markup).toContain('does not guess the adult and child mix')
+    expect(markup).not.toContain('NumberofAdults')
+    expect(markup).not.toContain('NumberofChildren')
   })
 
   it('renders nothing for unsupported destinations', () => {
     expect(renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} hasDates={false} />,
+      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, travelerType: 'unspecified' }} />,
     )).toBe('')
   })
 

@@ -3,15 +3,17 @@
 import React from 'react'
 import type { ReviewedAgodaStayAreaOffer } from '@/lib/affiliates/agodaStayAreaOffers'
 import { getReviewedAgodaStayAreasForDestination } from '@/lib/affiliates/agodaStayAreaOffers'
+import { addAgodaTripContextToHref } from '@/lib/affiliates/agodaTripContext'
 import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
+import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
 
 type AgodaStayAreaPanelProps = {
   destination: string
   offers: readonly ReviewedAgodaStayAreaOffer[]
-  hasDates: boolean
+  tripContext: AffiliateTripContext
 }
 
-export function AgodaStayAreaPanel({ destination, offers, hasDates }: AgodaStayAreaPanelProps) {
+export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaStayAreaPanelProps) {
   const destinationOffers = getReviewedAgodaStayAreasForDestination(offers, destination)
   if (destinationOffers.length === 0) return null
 
@@ -51,12 +53,12 @@ export function AgodaStayAreaPanel({ destination, offers, hasDates }: AgodaStayA
             </div>
 
             <TrackedAffiliateLink
-              href={offer.href}
+              href={addAgodaTripContextToHref(offer.href, tripContext)}
               provider={offer.provider}
               placement={offer.placement}
               destination={offer.destination}
               campaign={offer.campaign}
-              hasDates={hasDates}
+              tripContext={tripContext}
               className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
             >
               Search Agoda stays
@@ -68,6 +70,11 @@ export function AgodaStayAreaPanel({ destination, offers, hasDates }: AgodaStayA
       <p className="mt-4 text-xs font-semibold leading-5 text-rs-muted">
         RadarScout provides area guidance only. Current hotel details and the final continue step stay on Agoda.
       </p>
+      {tripContext.startDate && tripContext.endDate ? (
+        <p className="mt-2 text-xs font-semibold leading-5 text-rs-forest-700">
+          Your confirmed stay dates are included in the Agoda search. Occupancy stays unset because RadarScout does not guess the adult and child mix.
+        </p>
+      ) : null}
     </section>
   )
 }
