@@ -21,6 +21,7 @@ type ExperienceCardProps = {
   whyRecommended?: string
   bestFor?: readonly string[]
   watchOut?: string
+  footer?: ReactNode
   className?: string
 }
 
@@ -52,6 +53,7 @@ export function ExperienceCard({
   whyRecommended,
   bestFor = [],
   watchOut,
+  footer,
   className,
 }: ExperienceCardProps) {
   const hasDecisionGuide = Boolean(whyRecommended && watchOut)
@@ -98,6 +100,7 @@ export function ExperienceCard({
             ))}
           </div>
         ) : null}
+        {footer}
         {href ? (
           <>
             <p className="pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-rs-terracotta-600">

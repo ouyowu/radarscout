@@ -4,6 +4,7 @@ import {
   loadReviewedViatorProducts,
   type ReviewedViatorProduct,
 } from './reviewedViatorProducts'
+import { getFreshViatorReferencePrice } from './reviewedViatorReferencePrices'
 
 const PUBLIC_HANDOFF_REL = 'nofollow sponsored noopener noreferrer' as const
 
@@ -108,6 +109,7 @@ function toCandidate(product: ReviewedViatorProduct): AiProductCandidate {
   if (!isReviewedViatorAffiliateUrl(product.productUrl)) {
     throw new Error(`Reviewed Viator handoff is invalid for ${product.id}`)
   }
+  const referencePrice = getFreshViatorReferencePrice(product.productCode)
 
   return {
     id: product.id,
@@ -120,8 +122,9 @@ function toCandidate(product: ReviewedViatorProduct): AiProductCandidate {
     imageAlt: product.title,
     suggestedTags: [...product.tags],
     detailHref: `/tours/${encodeURIComponent(product.id)}`,
-    retailPrice: null,
-    currency: null,
+    retailPrice: referencePrice?.retailPrice ?? null,
+    currency: referencePrice?.currency ?? null,
+    priceFetchedAt: referencePrice?.priceFetchedAt ?? null,
     ctaHref: product.productUrl,
     ctaLabel: 'Check availability',
     ctaRel: PUBLIC_HANDOFF_REL,

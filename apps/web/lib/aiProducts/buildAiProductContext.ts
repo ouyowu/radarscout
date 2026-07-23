@@ -15,6 +15,7 @@ export type AiProductContextItem = {
   detailHref: string
   retailPrice: string | null
   currency: string | null
+  priceFetchedAt?: string | null
   ctaHref?: string | null
   ctaLabel?: 'Check availability' | null
   ctaRel?: 'nofollow sponsored noopener noreferrer' | null
@@ -45,6 +46,7 @@ function serializeCandidate(candidate: AiProductCandidate): AiProductContextItem
     detailHref: candidate.detailHref,
     retailPrice: candidate.retailPrice,
     currency: candidate.currency,
+    ...(candidate.priceFetchedAt ? { priceFetchedAt: candidate.priceFetchedAt } : {}),
   }
 
   if (candidate.ctaHref) item.ctaHref = candidate.ctaHref

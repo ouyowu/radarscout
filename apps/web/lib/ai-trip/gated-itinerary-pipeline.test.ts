@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
 
@@ -26,6 +26,15 @@ function handoffProduct(ctaHref: string) {
 }
 
 describe('isReviewedHandoffReadyProduct', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-23T12:00:00.000Z'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('keeps reviewed Bókun widget handoffs eligible', () => {
     expect(isReviewedHandoffReadyProduct(handoffProduct(
       'https://widgets.bokun.io/online-sales/public-channel/experience/1232729',
@@ -67,9 +76,19 @@ describe('isReviewedHandoffReadyProduct', () => {
     expect(result.handoffReadyProducts.every(product =>
       product.ctaHref?.startsWith('https://www.viator.com/'),
     )).toBe(true)
-    expect(result.handoffReadyProducts.every(product =>
-      product.retailPrice === null && product.currency === null,
-    )).toBe(true)
+    expect(result.handoffReadyProducts.every(product => {
+      const hasNoReferencePrice = (
+        product.retailPrice === null
+        && product.currency === null
+        && product.priceFetchedAt === undefined
+      )
+      const hasCompleteReferencePrice = (
+        Number(product.retailPrice) > 0
+        && /^(THB|USD)$/.test(product.currency ?? '')
+        && product.priceFetchedAt === '2026-07-23T08:52:26.057Z'
+      )
+      return hasNoReferencePrice || hasCompleteReferencePrice
+    })).toBe(true)
     expect(result.handoffReadyProducts.every(product =>
       Boolean(
         product.decisionSignals?.whyRecommended

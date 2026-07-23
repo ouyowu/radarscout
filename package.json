@@ -20,6 +20,7 @@
     "smoke:ai-trip-local": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-local-smoke.js",
     "smoke:ai-trip-local:production": "node scripts/radarscout-ai-trip-local-production-smoke.js",
     "smoke:ai-trip-preview": "pnpm --filter @reddit-monitor/web exec node ../../scripts/radarscout-ai-trip-preview-smoke.js",
+    "refresh:viator-reference-prices": "node scripts/viator-reference-price-refresh.mjs",
     "fix:vercel-preview-link": "node scripts/radarscout-vercel-preview-link-cleanup.js"
   },
   "engines": {

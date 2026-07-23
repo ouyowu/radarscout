@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { track } from '@/lib/analytics/track'
+import { ViatorReferencePrice } from '../_components/ViatorReferencePrice'
 
 export type AiSearchProductCardProps = {
   id: string
@@ -12,6 +13,7 @@ export type AiSearchProductCardProps = {
   detailHref: string
   retailPrice: string | null
   currency: string | null
+  priceFetchedAt?: string | null
   fitReason?: string | null
   ctaHref?: string | null
   ctaLabel?: 'Check availability' | null
@@ -64,6 +66,9 @@ export function AiSearchProductCard({
   imageAlt,
   tags,
   detailHref,
+  retailPrice,
+  currency,
+  priceFetchedAt,
   fitReason,
   ctaHref,
   ctaLabel,
@@ -111,6 +116,12 @@ export function AiSearchProductCard({
           {fitReason}
         </p>
       ) : null}
+      <ViatorReferencePrice
+        retailPrice={retailPrice}
+        currency={currency}
+        priceFetchedAt={priceFetchedAt}
+        className="mt-3"
+      />
       <div className="mt-2 rounded-[1rem] border border-[#e8dfd2] bg-[#fffdf7] px-3 py-2 sm:mt-3 sm:py-3">
         <p className="text-[0.68rem] font-black uppercase tracking-[0.12em] text-[#5a5147]">
           Fit checklist

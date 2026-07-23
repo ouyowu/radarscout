@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { listMatchingReviewedViatorProductCandidates } from './reviewedViatorMatching'
 
@@ -35,6 +35,29 @@ describe('listMatchingReviewedViatorProductCandidates', () => {
 
     expect(candidates[0]?.title).toMatch(/Phi Phi/i)
     expect(candidates.every(candidate => candidate.city === 'Phuket')).toBe(true)
+  })
+
+  it('adds only a fresh reviewed consumer reference price to a matching product', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-24T00:00:00.000Z'))
+    try {
+      const [candidate] = listMatchingReviewedViatorProductCandidates({
+        city: 'Chiang Mai',
+        search: 'Doi Inthanon waterfall royal project',
+        take: 1,
+      })
+
+      expect(candidate).toMatchObject({
+        id: 'viator_191442p6',
+        retailPrice: '1536.37',
+        currency: 'THB',
+        priceFetchedAt: '2026-07-23T08:52:26.057Z',
+      })
+      expect(candidate).not.toHaveProperty('partnerNetFromPrice')
+      expect(candidate).not.toHaveProperty('commission')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('falls back to reviewed products in the requested city when a city-only plan has no specific product terms', () => {

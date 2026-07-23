@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
 
@@ -59,6 +59,8 @@ function makeEnrichment() {
 
 describe('getPublicThailandProduct', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-23T12:00:00.000Z'))
     vi.clearAllMocks()
     enrichmentMock.getReviewedEnrichmentByProductId.mockResolvedValue(makeEnrichment())
     handoffMock.resolveReviewedProductHandoff.mockReturnValue({
@@ -68,6 +70,10 @@ describe('getPublicThailandProduct', () => {
       source: 'booking_partner_verified_public_widget',
       verifiedBy: 'operator_manual_review',
     })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('returns null for empty id', async () => {
@@ -118,8 +124,9 @@ describe('getPublicThailandProduct', () => {
         city: 'Bangkok',
         title: 'Bangkok by Night: Temples, Markets and Food Tuk-Tuk Tour',
         detailHref: '/tours/viator_6467bkknight',
-        retailPrice: null,
-        currency: null,
+        retailPrice: '2425',
+        currency: 'THB',
+        priceFetchedAt: '2026-07-23T08:52:26.057Z',
         bookingPartnerHandoff: {
           label: 'Check availability',
           rel: 'nofollow sponsored noopener noreferrer',
