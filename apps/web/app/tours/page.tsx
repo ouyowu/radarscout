@@ -5,6 +5,7 @@ import { ExperienceCategoryGrid } from '../_components/ExperienceCategoryGrid'
 import { FAQAccordion } from '../_components/FAQAccordion'
 import { PublicSiteShell } from '../_components/PublicSiteShell'
 import { Card, ExperienceCard, Section } from '../_components/design-system'
+import { ViatorReferencePrice } from '../_components/ViatorReferencePrice'
 import {
   listReviewedViatorPublicCatalogueCities,
   loadReviewedViatorPublicCatalogue,
@@ -162,6 +163,13 @@ function ProductCard({ product }: { product: ReviewedViatorPublicProduct }) {
       whyRecommended={product.summary}
       bestFor={product.tags.slice(0, 3)}
       watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
+      footer={(
+        <ViatorReferencePrice
+          retailPrice={product.retailPrice}
+          currency={product.currency}
+          priceFetchedAt={product.priceFetchedAt}
+        />
+      )}
       className="group h-full transition duration-200 hover:-translate-y-1"
     />
   )

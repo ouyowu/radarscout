@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.mock('server-only', () => ({}))
@@ -15,7 +15,13 @@ function makeRequest(query: Record<string, string> = {}) {
 
 describe('GET /api/products — reviewed Viator public catalogue', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-23T12:00:00.000Z'))
     vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('returns the first page of reviewed Viator products with safe affiliate handoffs', async () => {
@@ -40,8 +46,14 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
     for (const product of body.products) {
       expect(product.id).toMatch(/^viator_/)
       expect(product.detailHref).toBe(`/tours/${product.id}`)
-      expect(product.retailPrice).toBeNull()
-      expect(product.currency).toBeNull()
+      if (product.retailPrice !== null) {
+        expect(Number(product.retailPrice)).toBeGreaterThan(0)
+        expect(product.currency).toMatch(/^(THB|USD)$/)
+        expect(product.priceFetchedAt).toBe('2026-07-23T08:52:26.057Z')
+      } else {
+        expect(product.currency).toBeNull()
+        expect(product.priceFetchedAt).toBeNull()
+      }
       expect(product.bookingPartnerHandoff).toMatchObject({
         label: 'Check availability',
         rel: 'nofollow sponsored noopener noreferrer',
@@ -55,6 +67,7 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
     expect(serialized).not.toContain('widgets.bokun.io')
     expect(serialized).not.toContain('rawJson')
     expect(serialized).not.toContain('supplierName')
+    expect(serialized).not.toMatch(/partnerNet|commission|markup|rawResponse/)
   })
 
   it('filters all 19 reviewed city slugs without falling back to legacy products', async () => {

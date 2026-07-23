@@ -7,6 +7,7 @@ import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
 import { Button, Card, DecisionGuide, Section } from '@/app/_components/design-system'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
+import { ViatorReferencePrice } from '@/app/_components/ViatorReferencePrice'
 import {
   getPublicThailandProduct,
   loadPublicThailandProductDetail,
@@ -63,6 +64,7 @@ type ProductDetail = {
   imageGalleryUrls?: string[]
   retailPrice?: string | null
   currency?: string | null
+  priceFetchedAt?: string | null
   detailHref: string
   facts?: ProductFacts | null
   reviewedEnrichment?: ReviewedEnrichment | null
@@ -365,6 +367,12 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
               <p className="mt-5 text-base leading-8 text-rs-muted">
                 {product.description ?? product.summary ?? 'Product description is not available yet. RadarScout does not create placeholder descriptions for real partner records.'}
               </p>
+              <ViatorReferencePrice
+                retailPrice={product.retailPrice}
+                currency={product.currency}
+                priceFetchedAt={product.priceFetchedAt}
+                className="mt-5"
+              />
             </div>
             </article>
           </Card>

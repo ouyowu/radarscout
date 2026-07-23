@@ -11,6 +11,7 @@ import {
 import { resolveReviewedProductHandoff } from './ownerManagedProductHandoffMappings'
 import { isDatabaseProductPublishReady } from './publicProductReviewGate'
 import { loadReviewedViatorProducts } from '@/lib/viator/reviewedViatorProducts'
+import { getFreshViatorReferencePrice } from '@/lib/viator/reviewedViatorReferencePrices'
 
 export type PublicThailandProduct = {
   id: string
@@ -24,6 +25,7 @@ export type PublicThailandProduct = {
   description: string | null
   retailPrice: string | null
   currency: string | null
+  priceFetchedAt?: string | null
   detailHref: string
   facts: {
     duration: string | null
@@ -135,6 +137,7 @@ function reviewedViatorProductDetail(id: string): PublicThailandProductDetailRes
   })
 
   if (!bookingPartnerHandoff) return { status: 'not-found' }
+  const referencePrice = getFreshViatorReferencePrice(product.productCode)
 
   return {
     status: 'found',
@@ -148,8 +151,9 @@ function reviewedViatorProductDetail(id: string): PublicThailandProductDetailRes
       imageGalleryUrls: [product.imageUrl],
       summary: product.shortSummary,
       description: product.shortSummary,
-      retailPrice: null,
-      currency: null,
+      retailPrice: referencePrice?.retailPrice ?? null,
+      currency: referencePrice?.currency ?? null,
+      priceFetchedAt: referencePrice?.priceFetchedAt ?? null,
       detailHref: `/tours/${encodeURIComponent(product.id)}`,
       facts: {
         duration: null,

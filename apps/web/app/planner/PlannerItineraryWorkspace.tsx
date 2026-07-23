@@ -15,6 +15,7 @@ import type { ThailandItineraryPace } from '@/lib/itineraries/thailandTemplates'
 import { isReviewedViatorAffiliateUrl } from '@/lib/viator/reviewedViatorMatching'
 import { buildAiTripPlannerDetailHref } from '../ai-trip-planner/AiSearchProductCard'
 import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
+import { ViatorReferencePrice } from '../_components/ViatorReferencePrice'
 import { MapLibreDayMap } from '../itineraries/thailand/[city]/[duration]/MapLibreDayMap'
 import { getReviewedPlannerMapDay } from './plannerMapCoverage'
 import {
@@ -83,6 +84,13 @@ export function PlannerItineraryWorkspace({
   )
   const selectedItineraryDay = itinerary.days.find(day => day.dayNumber === selectedDay)
   const selectedProduct = selectedItineraryDay?.experience ?? null
+  const productsById = useMemo(
+    () => new Map(products.map(product => [product.id, product])),
+    [products],
+  )
+  const selectedMatchedProduct = selectedProduct
+    ? productsById.get(selectedProduct.productId) ?? null
+    : null
   const mapDay = getReviewedPlannerMapDay(itinerary.tripSpec.destination, selectedDay, selectedProduct)
   const selectedProductId = selectedProduct?.productId ?? null
   const rawHandoffHref = selectedProduct?.handoff.href ?? null
@@ -219,6 +227,12 @@ export function PlannerItineraryWorkspace({
                 {selectedProduct.summary ? (
                   <p className="mt-3 text-sm font-semibold leading-6 text-rs-muted">{selectedProduct.summary}</p>
                 ) : null}
+                <ViatorReferencePrice
+                  retailPrice={selectedMatchedProduct?.retailPrice}
+                  currency={selectedMatchedProduct?.currency}
+                  priceFetchedAt={selectedMatchedProduct?.priceFetchedAt}
+                  className="mt-4"
+                />
                 <PlannerDecisionGuide
                   whyRecommended={selectedDecisionSignals?.whyRecommended
                     ?? selectedProduct.summary
@@ -341,6 +355,12 @@ export function PlannerItineraryWorkspace({
                     {product.summary ? (
                       <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-rs-muted">{product.summary}</p>
                     ) : null}
+                    <ViatorReferencePrice
+                      retailPrice={product.retailPrice}
+                      currency={product.currency}
+                      priceFetchedAt={product.priceFetchedAt}
+                      className="mt-4"
+                    />
                     <PlannerDecisionGuide
                       whyRecommended={decisionSignals?.whyRecommended
                         ?? product.summary

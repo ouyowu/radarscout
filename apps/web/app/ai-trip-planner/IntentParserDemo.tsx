@@ -719,6 +719,7 @@ export function IntentParserDemo() {
                                   detailHref={product.detailHref}
                                   retailPrice={product.retailPrice}
                                   currency={product.currency}
+                                  priceFetchedAt={product.priceFetchedAt}
                                   ctaHref={product.ctaHref}
                                   ctaLabel={product.ctaLabel}
                                   ctaRel={product.ctaRel}
@@ -749,6 +750,7 @@ export function IntentParserDemo() {
                             detailHref={product.detailHref}
                             retailPrice={product.retailPrice}
                             currency={product.currency}
+                            priceFetchedAt={product.priceFetchedAt}
                             ctaHref={product.ctaHref}
                             ctaLabel={product.ctaLabel}
                             ctaRel={product.ctaRel}

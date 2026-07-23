@@ -8,6 +8,7 @@ import {
   loadReviewedViatorProducts,
   type ReviewedViatorProduct,
 } from './reviewedViatorProducts'
+import { getFreshViatorReferencePrice } from './reviewedViatorReferencePrices'
 
 export type ReviewedViatorPublicProduct = {
   id: string
@@ -16,8 +17,9 @@ export type ReviewedViatorPublicProduct = {
   summary: string
   imageUrl: string
   tags: string[]
-  retailPrice: null
-  currency: null
+  retailPrice: string | null
+  currency: string | null
+  priceFetchedAt: string | null
   detailHref: `/tours/${string}`
   bookingPartnerHandoff: PublicBookingPartnerHandoff
 }
@@ -44,6 +46,7 @@ function toPublicProduct(
   product: ReviewedViatorProduct,
 ): ReviewedViatorPublicProduct | null {
   if (!isReviewedViatorAffiliateUrl(product.productUrl)) return null
+  const referencePrice = getFreshViatorReferencePrice(product.productCode)
 
   const bookingPartnerHandoff: PublicBookingPartnerHandoff = {
     href: product.productUrl,
@@ -60,8 +63,9 @@ function toPublicProduct(
     summary: product.shortSummary,
     imageUrl: product.imageUrl,
     tags: [...product.tags],
-    retailPrice: null,
-    currency: null,
+    retailPrice: referencePrice?.retailPrice ?? null,
+    currency: referencePrice?.currency ?? null,
+    priceFetchedAt: referencePrice?.priceFetchedAt ?? null,
     detailHref: `/tours/${encodeURIComponent(product.id)}`,
     bookingPartnerHandoff,
   }

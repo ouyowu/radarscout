@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
   listReviewedViatorPublicCatalogueCities,
@@ -8,30 +8,46 @@ import {
 
 describe('reviewedViatorPublicCatalogue', () => {
   it('exposes all reviewed Viator products through one display-safe public shape', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-24T00:00:00.000Z'))
     const products = loadReviewedViatorPublicCatalogue()
 
-    expect(products).toHaveLength(205)
+    try {
+      expect(products).toHaveLength(205)
 
-    for (const product of products) {
-      expect(product.id).toMatch(/^viator_/)
-      expect(product.detailHref).toBe(`/tours/${product.id}`)
-      expect(product.retailPrice).toBeNull()
-      expect(product.currency).toBeNull()
-      expect(product.bookingPartnerHandoff).toMatchObject({
-        label: 'Check availability',
-        rel: 'nofollow sponsored noopener noreferrer',
-        source: 'operator_verified_public_link',
-        verifiedBy: 'operator_manual_review',
-      })
-      expect(product.bookingPartnerHandoff.href).toMatch(
-        /^https:\/\/(?:[^/]+\.)?viator\.com\/.+[?&]pid=P00309837(?:&|$)/,
-      )
+      for (const product of products) {
+        expect(product.id).toMatch(/^viator_/)
+        expect(product.detailHref).toBe(`/tours/${product.id}`)
+        if (product.retailPrice !== null) {
+          expect(Number(product.retailPrice)).toBeGreaterThan(0)
+          expect(product.currency).toMatch(/^(THB|USD)$/)
+          expect(product.priceFetchedAt).toBe('2026-07-23T08:52:26.057Z')
+        } else {
+          expect(product.currency).toBeNull()
+          expect(product.priceFetchedAt).toBeNull()
+        }
+        expect(product.bookingPartnerHandoff).toMatchObject({
+          label: 'Check availability',
+          rel: 'nofollow sponsored noopener noreferrer',
+          source: 'operator_verified_public_link',
+          verifiedBy: 'operator_manual_review',
+        })
+        expect(product.bookingPartnerHandoff.href).toMatch(
+          /^https:\/\/(?:[^/]+\.)?viator\.com\/.+[?&]pid=P00309837(?:&|$)/,
+        )
 
-      expect(product).not.toHaveProperty('raw')
-      expect(product).not.toHaveProperty('supplier')
-      expect(product).not.toHaveProperty('availability')
-      expect(product).not.toHaveProperty('rating')
-      expect(product).not.toHaveProperty('reviews')
+        expect(product).not.toHaveProperty('raw')
+        expect(product).not.toHaveProperty('supplier')
+        expect(product).not.toHaveProperty('availability')
+        expect(product).not.toHaveProperty('rating')
+        expect(product).not.toHaveProperty('reviews')
+        expect(product).not.toHaveProperty('partnerNetFromPrice')
+        expect(product).not.toHaveProperty('commission')
+      }
+
+      expect(products.filter(product => product.retailPrice !== null)).toHaveLength(6)
+    } finally {
+      vi.useRealTimers()
     }
   })
 
