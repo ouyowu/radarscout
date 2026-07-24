@@ -18,6 +18,7 @@ import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchPro
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary, orderCityEntriesBySourceText } from './resultFitSummary'
 import { track } from '@/lib/analytics/track'
+import { buildSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
 const promptMaxLength = 600
@@ -172,7 +173,14 @@ export function IntentParserDemo() {
   const topProduct = searchState?.status === 'ok' ? searchState.products[0] : null
   const topProductHasExternalHandoff = Boolean(topProduct?.externalHandoff && topProduct.ctaHref)
   const searchDestination = searchState?.intent?.destination ?? topProduct?.city ?? 'Thailand'
-  const searchHasDates = Boolean(searchState?.intent?.startDate && searchState?.intent?.endDate)
+  const searchSafeTripContext = buildSafeAffiliateAnalyticsContext({
+    startDate: searchState?.intent?.startDate ?? null,
+    endDate: searchState?.intent?.endDate ?? null,
+    groupSize: searchState?.intent?.groupSize ?? null,
+    adultCount: searchState?.intent?.adultCount ?? null,
+    childCount: searchState?.intent?.childCount ?? null,
+    travelerType: searchState?.intent?.travelerType ?? 'unspecified',
+  })
   const starterSearchFeedback = searchState
     ? searchState.status === 'ok'
       ? `${searchState.products.length} matching Thailand experience${searchState.products.length === 1 ? '' : 's'} found below.`
@@ -580,7 +588,7 @@ export function IntentParserDemo() {
                         <a
                           href={topProductHasExternalHandoff && topProduct.ctaHref
                             ? topProduct.ctaHref
-                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id, { hasDates: searchHasDates })}
+                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id, searchSafeTripContext)}
                           target={topProductHasExternalHandoff ? '_blank' : undefined}
                           rel={topProductHasExternalHandoff ? topProduct.ctaRel ?? 'nofollow sponsored noopener noreferrer' : undefined}
                           aria-label={topProductHasExternalHandoff
@@ -592,7 +600,7 @@ export function IntentParserDemo() {
                               placement: 'ai_trip_planner_top_match',
                               city: topProduct.city ?? searchDestination,
                               destination: searchDestination,
-                              hasDates: searchHasDates,
+                              ...searchSafeTripContext,
                               productId: topProduct.id,
                               source: 'ai_trip_planner_top_match',
                             })
@@ -726,7 +734,7 @@ export function IntentParserDemo() {
                                   fitReason={buildProductFitReason(product, searchState.intent)}
                                   handoffContext={{
                                     destination: searchDestination,
-                                    hasDates: searchHasDates,
+                                    ...searchSafeTripContext,
                                   }}
                                 />
                               ))}
@@ -756,7 +764,7 @@ export function IntentParserDemo() {
                             fitReason={buildProductFitReason(product, searchState.intent)}
                             handoffContext={{
                               destination: searchDestination,
-                              hasDates: searchHasDates,
+                              ...searchSafeTripContext,
                             }}
                           />
                         ))}

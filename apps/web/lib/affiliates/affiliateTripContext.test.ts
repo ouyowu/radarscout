@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { buildSafeAffiliateAnalyticsContext } from './affiliateTripContext'
+import {
+  buildSafeAffiliateAnalyticsContext,
+  parseSafeAffiliateAnalyticsContext,
+} from './affiliateTripContext'
 
 describe('affiliate trip context', () => {
   it('reduces confirmed context to bounded analytics fields', () => {
@@ -25,5 +28,37 @@ describe('affiliate trip context', () => {
       hasOccupancy: false,
       travelerType: 'unspecified',
     })
+  })
+
+  it('restores only bounded context indicators from an internal detail link', () => {
+    expect(parseSafeAffiliateAnalyticsContext({
+      hasDates: '1',
+      hasGroupSize: '1',
+      hasOccupancy: '1',
+      travelerType: 'family',
+    }, true)).toEqual({
+      hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: true,
+      travelerType: 'family',
+    })
+  })
+
+  it('fails closed for untrusted sources and unsupported traveler values', () => {
+    expect(parseSafeAffiliateAnalyticsContext({
+      hasDates: '1',
+      hasGroupSize: '1',
+      hasOccupancy: '1',
+      travelerType: 'not-a-real-type',
+    }, false)).toEqual({
+      hasDates: false,
+      hasGroupSize: false,
+      hasOccupancy: false,
+      travelerType: 'unspecified',
+    })
+
+    expect(parseSafeAffiliateAnalyticsContext({
+      travelerType: 'not-a-real-type',
+    }, true).travelerType).toBe('unspecified')
   })
 })

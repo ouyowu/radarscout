@@ -206,7 +206,13 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       ctaLabel: 'Check availability',
       ctaRel: 'nofollow sponsored noopener noreferrer',
       externalHandoff: true,
-      handoffContext: { destination: 'Chiang Mai', hasDates: true },
+      handoffContext: {
+        destination: 'Chiang Mai',
+        hasDates: true,
+        hasGroupSize: false,
+        hasOccupancy: false,
+        travelerType: 'unspecified',
+      },
     }
 
     const keys = Object.keys(validProps)
@@ -243,7 +249,13 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
       retailPrice: '49.00',
       currency: 'USD',
       fitReason: 'Why this fits: matches Chiang Mai and your interest in elephants.',
-      handoffContext: { destination: 'Chiang Mai', hasDates: false },
+      handoffContext: {
+        destination: 'Chiang Mai',
+        hasDates: false,
+        hasGroupSize: false,
+        hasOccupancy: false,
+        travelerType: 'unspecified',
+      },
     }
 
     const keys = Object.keys(validProps)
@@ -272,7 +284,13 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
         ctaLabel: 'Check availability',
         ctaRel: 'nofollow sponsored noopener noreferrer',
         externalHandoff: true,
-        handoffContext: { destination: 'Chiang Mai', hasDates: true },
+        handoffContext: {
+          destination: 'Chiang Mai',
+          hasDates: true,
+          hasGroupSize: false,
+          hasOccupancy: false,
+          travelerType: 'unspecified',
+        },
       }),
     )
 
@@ -294,12 +312,13 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
   it('tracks bounded provider and trip context for every AI Trip Planner partner handoff', () => {
     expect(intentParserDemoSource).toMatch(/provider: 'viator'/)
     expect(intentParserDemoSource).toMatch(/placement: 'ai_trip_planner_top_match'/)
-    expect(intentParserDemoSource).toMatch(/hasDates: searchHasDates/)
-    expect(intentParserDemoSource).toMatch(/handoffContext=\{\{[\s\S]*destination: searchDestination,[\s\S]*hasDates: searchHasDates/)
+    expect(intentParserDemoSource).toMatch(/buildSafeAffiliateAnalyticsContext/)
+    expect(intentParserDemoSource).toMatch(/\.\.\.searchSafeTripContext/)
+    expect(intentParserDemoSource).toMatch(/handoffContext=\{\{[\s\S]*destination: searchDestination,[\s\S]*\.\.\.searchSafeTripContext/)
     expect(aiSearchProductCardSource).toMatch(/provider: 'viator'/)
     expect(aiSearchProductCardSource).toMatch(/placement: 'ai_trip_planner_card'/)
-    expect(aiSearchProductCardSource).toMatch(/city: city \?\? handoffContext\.destination/)
-    expect(aiSearchProductCardSource).toMatch(/hasDates: handoffContext\.hasDates/)
+    expect(aiSearchProductCardSource).toMatch(/city: city \?\? handoffDestination/)
+    expect(aiSearchProductCardSource).toMatch(/\.\.\.safeHandoffContext/)
   })
 })
 
@@ -441,6 +460,21 @@ describe('AI planner source context for tour detail links', () => {
     expect(href).not.toMatch(/\d{4}-\d{2}-\d{2}/)
   })
 
+  it('carries only bounded confirmed context indicators into safe internal detail links', () => {
+    const href = buildAiTripPlannerDetailHref('/tours/prod_1', 'prod_1', {
+      hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: true,
+      travelerType: 'family',
+    })
+
+    expect(href).toBe(
+      '/tours/prod_1?source=ai-trip-planner&hasDates=1&hasGroupSize=1&hasOccupancy=1&travelerType=family',
+    )
+    expect(href).not.toContain('2099-')
+    expect(href).not.toMatch(/[?&](groupSize|adultCount|childCount)=/)
+  })
+
   it('removes unconfirmed date context from an existing detail URL', () => {
     expect(buildAiTripPlannerDetailHref('/tours/prod_1?hasDates=1', 'prod_1')).toBe(
       '/tours/prod_1?source=ai-trip-planner',
@@ -463,7 +497,13 @@ describe('AI search product card detail CTA accessibility', () => {
         detailHref: '/tours/prod_1',
         retailPrice: '49.00',
         currency: 'USD',
-        handoffContext: { destination: 'Chiang Mai', hasDates: false },
+        handoffContext: {
+          destination: 'Chiang Mai',
+          hasDates: false,
+          hasGroupSize: false,
+          hasOccupancy: false,
+          travelerType: 'unspecified',
+        },
       }),
     )
 
@@ -488,7 +528,13 @@ describe('AI search product card detail CTA accessibility', () => {
         detailHref: 'https://example.com/checkout/prod_1',
         retailPrice: '49.00',
         currency: 'USD',
-        handoffContext: { destination: 'Chiang Mai', hasDates: false },
+        handoffContext: {
+          destination: 'Chiang Mai',
+          hasDates: false,
+          hasGroupSize: false,
+          hasOccupancy: false,
+          travelerType: 'unspecified',
+        },
       }),
     )
 

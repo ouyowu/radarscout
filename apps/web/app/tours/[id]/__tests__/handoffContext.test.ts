@@ -5,11 +5,15 @@ import { describe, expect, it } from 'vitest'
 const source = readFileSync(join(process.cwd(), 'app', 'tours', '[id]', 'page.tsx'), 'utf8')
 
 describe('tour detail handoff context', () => {
-  it('accepts only a boolean date-presence marker from the internal planner link', () => {
+  it('accepts only bounded context indicators from the trusted internal planner link', () => {
     expect(source).toMatch(/hasDates\?: string/)
-    expect(source).toMatch(/const hasDates = isFromAiTripPlanner && searchParams\?\.hasDates === '1'/)
+    expect(source).toMatch(/hasGroupSize\?: string/)
+    expect(source).toMatch(/hasOccupancy\?: string/)
+    expect(source).toMatch(/travelerType\?: string/)
+    expect(source).toMatch(/parseSafeAffiliateAnalyticsContext\(searchParams, isFromAiTripPlanner\)/)
     expect(source).toMatch(/city=\{location\}/)
-    expect(source).toMatch(/hasDates=\{hasDates\}/)
-    expect(source).not.toMatch(/searchParams\?\.(?:startDate|endDate)/)
+    expect(source).toMatch(/\{\.\.\.safeTripContext\}/)
+    expect(source).toMatch(/Confirmed in RadarScout/)
+    expect(source).not.toMatch(/searchParams\?\.(?:startDate|endDate|groupSize|adultCount|childCount)/)
   })
 })

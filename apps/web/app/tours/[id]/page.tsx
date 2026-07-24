@@ -12,6 +12,7 @@ import {
   loadPublicThailandProductDetail,
 } from '@/lib/publicProducts/getPublicThailandProduct'
 import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
+import { parseSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +25,9 @@ type TourDetailPageProps = {
   searchParams?: {
     source?: string
     hasDates?: string
+    hasGroupSize?: string
+    hasOccupancy?: string
+    travelerType?: string
   }
 }
 
@@ -250,7 +254,15 @@ function UnavailableState({
 export default async function TourDetailPage({ params, searchParams }: TourDetailPageProps) {
   const result = await fetchProductDetail(params.id)
   const isFromAiTripPlanner = searchParams?.source === 'ai-trip-planner'
-  const hasDates = isFromAiTripPlanner && searchParams?.hasDates === '1'
+  const safeTripContext = parseSafeAffiliateAnalyticsContext(searchParams, isFromAiTripPlanner)
+  const confirmedContextLabels = [
+    safeTripContext.hasDates ? 'dates' : null,
+    safeTripContext.hasGroupSize ? 'party size' : null,
+    safeTripContext.hasOccupancy ? 'adult and child mix' : null,
+    safeTripContext.travelerType !== 'unspecified'
+      ? `${safeTripContext.travelerType} trip`
+      : null,
+  ].filter((label): label is string => label !== null)
 
   if (result.status !== 'found') {
     return <UnavailableState status={result.status} isFromAiTripPlanner={isFromAiTripPlanner} />
@@ -291,6 +303,11 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             <p className="mt-2 text-sm leading-6 text-rs-muted">
               The return link takes you back to the same Trip Planner results section. No partner action or current status is recorded on this page.
             </p>
+            {confirmedContextLabels.length > 0 ? (
+              <p className="mt-2 text-sm font-semibold leading-6 text-rs-forest-700">
+                Confirmed in RadarScout: {confirmedContextLabels.join(' · ')}.
+              </p>
+            ) : null}
           </div>
         ) : null}
       </section>
@@ -388,7 +405,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
                   placement="tour_detail_primary"
                   city={location}
-                  hasDates={hasDates}
+                  {...safeTripContext}
                   className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
                 >
                   {product.bookingPartnerHandoff.label}
@@ -396,7 +413,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
               ) : null}
               {product.bookingPartnerHandoff ? (
                 <p className="mt-3 text-xs font-semibold leading-6 text-white/65">
-                  Continue with a booking partner to review current details.
+                  Continue with a booking partner to review current details. The partner may ask you to confirm dates and traveler details because this affiliate link does not prefill its booking form.
                 </p>
               ) : (
                 <div className="mt-6 rounded-rs-md border border-white/15 bg-white/10 p-4">
@@ -481,7 +498,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
             placement="tour_detail_sticky"
             city={location}
-            hasDates={hasDates}
+            {...safeTripContext}
             className="inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink"
           >
             {product.bookingPartnerHandoff.label}

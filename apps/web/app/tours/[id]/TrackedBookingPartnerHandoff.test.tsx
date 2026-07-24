@@ -23,6 +23,9 @@ describe('TrackedBookingPartnerHandoff', () => {
       placement: 'tour_detail_primary',
       city: 'Chiang Mai',
       hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: true,
+      travelerType: 'family',
       children: 'Check availability',
     }) as ReactElement<{
       href: string
@@ -42,6 +45,9 @@ describe('TrackedBookingPartnerHandoff', () => {
       city: 'Chiang Mai',
       destination: 'Chiang Mai',
       hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: true,
+      travelerType: 'family',
       productId: 'viator_12345p1',
       source: 'ai-trip-planner',
     })
