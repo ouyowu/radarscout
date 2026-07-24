@@ -40,7 +40,7 @@ export const affiliatePlacementPolicy: Record<AffiliatePlacement, AffiliateProvi
   pre_departure: ['airalo', 'yesim'],
 }
 
-export const primaryPreDepartureProvider: 'airalo' | 'yesim' | null = 'yesim'
+export const primaryPreDepartureProvider: 'airalo' | 'yesim' | null = null
 
 const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
   agoda: { status: 'active', placements: ['hotel_results'] },
@@ -50,7 +50,7 @@ const providerConfig: Record<AffiliateProvider, AffiliateProviderConfig> = {
   klook: { status: 'awaiting_tracking_link', placements: ['city_guide'] },
   '12go': { status: 'awaiting_tracking_link', placements: ['multi_city_transport'] },
   airalo: { status: 'awaiting_provider_decision', placements: ['pre_departure'] },
-  yesim: { status: 'active', placements: ['pre_departure'] },
+  yesim: { status: 'awaiting_provider_decision', placements: ['pre_departure'] },
 }
 
 const GETYOURGUIDE_PARTNER_ID = 'IMR8EUB'
