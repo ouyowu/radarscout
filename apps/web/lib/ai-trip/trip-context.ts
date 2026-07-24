@@ -2,7 +2,14 @@ import type { TravelerType, TripIntent } from './intent-schema'
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const MAX_GROUP_SIZE = 10
-const ALLOWED_INPUT_KEYS = new Set(['startDate', 'groupSize', 'travelerType'])
+const MAX_CHILD_COUNT = 9
+const ALLOWED_INPUT_KEYS = new Set([
+  'startDate',
+  'groupSize',
+  'adultCount',
+  'childCount',
+  'travelerType',
+])
 const ALLOWED_TRAVELER_TYPES = new Set<TravelerType>([
   'solo',
   'couple',
@@ -15,6 +22,8 @@ const ALLOWED_TRAVELER_TYPES = new Set<TravelerType>([
 export type ConfirmedTripContextInput = {
   startDate?: string | null
   groupSize?: number | null
+  adultCount?: number | null
+  childCount?: number | null
   travelerType?: TravelerType | null
 }
 
@@ -59,7 +68,7 @@ export function applyConfirmedTripContext(
     throw new InvalidTripContextError()
   }
 
-  const { startDate, groupSize, travelerType } = record
+  const { startDate, groupSize, adultCount, childCount, travelerType } = record
   if (startDate !== undefined && startDate !== null && (
     typeof startDate !== 'string'
     || !isValidIsoDate(startDate)
@@ -75,6 +84,25 @@ export function applyConfirmedTripContext(
   )) {
     throw new InvalidTripContextError()
   }
+  const hasAdultCount = adultCount !== undefined && adultCount !== null
+  const hasChildCount = childCount !== undefined && childCount !== null
+  if (hasAdultCount !== hasChildCount) {
+    throw new InvalidTripContextError()
+  }
+  if (hasAdultCount && hasChildCount && (
+    typeof adultCount !== 'number'
+    || !Number.isInteger(adultCount)
+    || adultCount < 1
+    || adultCount > MAX_GROUP_SIZE
+    || typeof childCount !== 'number'
+    || !Number.isInteger(childCount)
+    || childCount < 0
+    || childCount > MAX_CHILD_COUNT
+    || adultCount + childCount > MAX_GROUP_SIZE
+    || (typeof groupSize === 'number' && groupSize !== adultCount + childCount)
+  )) {
+    throw new InvalidTripContextError()
+  }
   if (travelerType !== undefined && travelerType !== null && (
     typeof travelerType !== 'string'
     || !ALLOWED_TRAVELER_TYPES.has(travelerType as TravelerType)
@@ -86,7 +114,11 @@ export function applyConfirmedTripContext(
     intent.startDate = startDate
     intent.endDate = deriveTripEndDate(startDate, intent.durationDays)
   }
-  if (typeof groupSize === 'number') {
+  if (typeof adultCount === 'number' && typeof childCount === 'number') {
+    intent.adultCount = adultCount
+    intent.childCount = childCount
+    intent.groupSize = adultCount + childCount
+  } else if (typeof groupSize === 'number') {
     intent.groupSize = groupSize
   }
   if (typeof travelerType === 'string') {

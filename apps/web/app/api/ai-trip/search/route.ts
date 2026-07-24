@@ -28,6 +28,8 @@ export type AiTripSearchResponse = {
     startDate: string | null
     endDate: string | null
     groupSize: number | null
+    adultCount: number | null
+    childCount: number | null
     travelerType: TravelerType
     interests: string[]
   }
@@ -89,6 +91,8 @@ export async function POST(request: NextRequest) {
       startDate: result.parsed.intent.startDate,
       endDate: result.parsed.intent.endDate,
       groupSize: result.parsed.intent.groupSize,
+      adultCount: result.parsed.intent.adultCount,
+      childCount: result.parsed.intent.childCount,
       travelerType: result.parsed.intent.travelerType,
       interests: result.parsed.intent.interests,
     }

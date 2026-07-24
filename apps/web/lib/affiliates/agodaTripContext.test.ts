@@ -10,6 +10,8 @@ describe('Agoda trip-context deep link', () => {
       startDate: '2026-12-10',
       endDate: '2026-12-13',
       groupSize: 4,
+      adultCount: null,
+      childCount: null,
       travelerType: 'family',
     })
     const url = new URL(href)
@@ -26,6 +28,8 @@ describe('Agoda trip-context deep link', () => {
       startDate: '2026-12-10',
       endDate: '2026-12-13',
       groupSize: 4,
+      adultCount: null,
+      childCount: null,
       travelerType: 'family',
     })
     const url = new URL(href)
@@ -35,11 +39,49 @@ describe('Agoda trip-context deep link', () => {
     expect(url.searchParams.has('Rooms')).toBe(false)
   })
 
+  it('adds confirmed adult and child occupancy without changing affiliate attribution', () => {
+    const href = addAgodaTripContextToHref(agodaHref, {
+      startDate: '2026-12-10',
+      endDate: '2026-12-13',
+      groupSize: 4,
+      adultCount: 2,
+      childCount: 2,
+      travelerType: 'family',
+    })
+    const url = new URL(href)
+
+    expect(url.searchParams.get('cid')).toBe('1234567')
+    expect(url.searchParams.get('NumberofAdults')).toBe('2')
+    expect(url.searchParams.get('NumberofChildren')).toBe('2')
+    expect(url.searchParams.get('Rooms')).toBe('1')
+  })
+
+  it('adds confirmed occupancy when stay dates are not set', () => {
+    const href = addAgodaTripContextToHref(agodaHref, {
+      startDate: null,
+      endDate: null,
+      groupSize: 3,
+      adultCount: 2,
+      childCount: 1,
+      travelerType: 'family',
+    })
+    const url = new URL(href)
+
+    expect(url.searchParams.get('cid')).toBe('1234567')
+    expect(url.searchParams.has('checkin')).toBe(false)
+    expect(url.searchParams.has('checkout')).toBe(false)
+    expect(url.searchParams.get('NumberofAdults')).toBe('2')
+    expect(url.searchParams.get('NumberofChildren')).toBe('1')
+    expect(url.searchParams.get('Rooms')).toBe('1')
+  })
+
   it('fails closed to the original href for non-Agoda or invalid date input', () => {
     expect(addAgodaTripContextToHref('https://example.com/hotel', {
       startDate: '2026-12-10',
       endDate: '2026-12-13',
       groupSize: 2,
+      adultCount: null,
+      childCount: null,
       travelerType: 'couple',
     })).toBe('https://example.com/hotel')
 
@@ -47,6 +89,8 @@ describe('Agoda trip-context deep link', () => {
       startDate: 'not-a-date',
       endDate: '2026-12-13',
       groupSize: 2,
+      adultCount: null,
+      childCount: null,
       travelerType: 'couple',
     })).toBe(agodaHref)
 
@@ -54,6 +98,8 @@ describe('Agoda trip-context deep link', () => {
       startDate: '2026-02-31',
       endDate: '2026-03-03',
       groupSize: 2,
+      adultCount: null,
+      childCount: null,
       travelerType: 'couple',
     })).toBe(agodaHref)
   })

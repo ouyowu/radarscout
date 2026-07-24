@@ -16,6 +16,7 @@ type AgodaStayAreaPanelProps = {
 export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaStayAreaPanelProps) {
   const destinationOffers = getReviewedAgodaStayAreasForDestination(offers, destination)
   if (destinationOffers.length === 0) return null
+  const hasConfirmedOccupancy = tripContext.adultCount !== null && tripContext.childCount !== null
 
   return (
     <section
@@ -72,7 +73,9 @@ export function AgodaStayAreaPanel({ destination, offers, tripContext }: AgodaSt
       </p>
       {tripContext.startDate && tripContext.endDate ? (
         <p className="mt-2 text-xs font-semibold leading-5 text-rs-forest-700">
-          Your confirmed stay dates are included in the Agoda search. Occupancy stays unset because RadarScout does not guess the adult and child mix.
+          {hasConfirmedOccupancy
+            ? 'Your confirmed stay dates and occupancy are included in the Agoda search.'
+            : 'Your confirmed stay dates are included in the Agoda search. Occupancy stays unset because RadarScout does not guess the adult and child mix.'}
         </p>
       ) : null}
     </section>
