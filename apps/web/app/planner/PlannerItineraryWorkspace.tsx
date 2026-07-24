@@ -235,7 +235,7 @@ export function PlannerItineraryWorkspace({
                     href={buildAiTripPlannerDetailHref(
                       selectedProduct.detailHref,
                       selectedProductId ?? undefined,
-                      { hasDates: safeTripContext.hasDates },
+                      safeTripContext,
                     )}
                     className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                   >

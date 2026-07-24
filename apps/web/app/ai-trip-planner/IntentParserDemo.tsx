@@ -629,7 +629,7 @@ export function IntentParserDemo() {
                     </p>
                   </section>
                   {searchState.itinerary ? (
-                    <DayTripItineraryPanel itinerary={searchState.itinerary} />
+                    <DayTripItineraryPanel itinerary={searchState.itinerary} handoffContext={searchSafeTripContext} />
                   ) : null}
                   {resultFitSummary ? (
                     <section

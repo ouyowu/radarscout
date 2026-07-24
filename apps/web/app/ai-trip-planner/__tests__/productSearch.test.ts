@@ -315,6 +315,7 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
     expect(intentParserDemoSource).toMatch(/buildSafeAffiliateAnalyticsContext/)
     expect(intentParserDemoSource).toMatch(/\.\.\.searchSafeTripContext/)
     expect(intentParserDemoSource).toMatch(/handoffContext=\{\{[\s\S]*destination: searchDestination,[\s\S]*\.\.\.searchSafeTripContext/)
+    expect(intentParserDemoSource).toMatch(/<DayTripItineraryPanel itinerary=\{searchState\.itinerary\} handoffContext=\{searchSafeTripContext\} \/>/)
     expect(aiSearchProductCardSource).toMatch(/provider: 'viator'/)
     expect(aiSearchProductCardSource).toMatch(/placement: 'ai_trip_planner_card'/)
     expect(aiSearchProductCardSource).toMatch(/city: city \?\? handoffDestination/)
