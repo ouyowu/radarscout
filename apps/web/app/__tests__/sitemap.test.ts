@@ -159,7 +159,7 @@ describe('sitemap', () => {
     expect(urls).not.toContain(`${BASE}/destinations/japan`)
   })
 
-  it('keeps robots.txt behavior unchanged while sitemap is narrowed', () => {
+  it('keeps intended robots.txt disallow rules while sitemap is narrowed', () => {
     process.env.NEXT_PUBLIC_BASE_URL = BASE
 
     expect(robots()).toEqual({
@@ -171,6 +171,7 @@ describe('sitemap', () => {
             '/api/',
             '/dashboard',
             '/auth/',
+            '/comparisons/',
             '/demo',
             '/use-cases',
             '/pricing',

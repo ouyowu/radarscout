@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 const PROTECTED = ['/monitors', '/billing', '/dashboard']
 const INTERNAL_PREFIX = '/internal/'
+const LEGACY_COMPARISONS_PREFIX = '/comparisons'
 
 function checkInternalBasicAuth(
   req: { headers: { get: (name: string) => string | null } },
@@ -62,6 +63,13 @@ export default function middleware(req: Request & { nextUrl: URL; cookies: { get
 
   if (STALE_MARKETING_PATHS.has(pathname)) {
     return NextResponse.redirect(new URL('/', req.url), 308)
+  }
+
+  if (
+    pathname === LEGACY_COMPARISONS_PREFIX
+    || pathname.startsWith(`${LEGACY_COMPARISONS_PREFIX}/`)
+  ) {
+    return new NextResponse('Gone', { status: 410 })
   }
 
   const isAuthPage = pathname === '/auth/login' || pathname === '/auth/register'

@@ -25,6 +25,7 @@ import { metadata as contactMetadata } from '../contact/page'
 import { metadata as demoMetadata } from '../demo/page'
 import { generateMetadata as generateDestinationMetadata } from '../destinations/[slug]/page'
 import { metadata as homeMetadata } from '../page'
+import { metadata as notFoundMetadata } from '../not-found'
 import { metadata as plannerStudioMetadata } from '../planner/page'
 import { metadata as privacyMetadata } from '../privacy-policy/page'
 import { metadata as termsMetadata } from '../terms-of-service/page'
@@ -101,6 +102,7 @@ describe('controlled SEO opening guard', () => {
     expect(aiTripPlannerMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(plannerStudioMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(demoMetadata.robots).toMatchObject({ index: false, follow: false })
+    expect(notFoundMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(tourDetailMetadata.robots).toMatchObject({ index: false, follow: false })
   })
 
@@ -141,5 +143,14 @@ describe('controlled SEO opening guard', () => {
     const disallow = firstRule?.disallow
 
     expect(disallow).toEqual(expect.arrayContaining([...REDDIT_TOOL_MARKETING_ROUTES]))
+  })
+
+  it('keeps legacy comparison routes disallowed in robots.txt', () => {
+    process.env.NEXT_PUBLIC_BASE_URL = BASE
+
+    const rules = robots().rules
+    const firstRule = Array.isArray(rules) ? rules[0] : rules
+
+    expect(firstRule?.disallow).toEqual(expect.arrayContaining(['/comparisons/']))
   })
 })
