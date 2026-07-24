@@ -82,6 +82,21 @@ describe('public routes — no auth required', () => {
   }
 })
 
+describe('legacy comparison routes — permanently gone', () => {
+  for (const path of [
+    '/comparisons',
+    '/comparisons/apple-watch-vs-garmin-sleep',
+    '/comparisons/legacy/nested-page',
+  ]) {
+    it(`returns 410 without redirecting ${path}`, () => {
+      const res = middleware(makeReq(path, null))
+
+      expect(res?.status).toBe(410)
+      expect(res?.headers.get('location')).toBeNull()
+    })
+  }
+})
+
 describe('/internal/ routes — Basic Auth required', () => {
   const INTERNAL_SECRET = 'test-internal-secret'
 
