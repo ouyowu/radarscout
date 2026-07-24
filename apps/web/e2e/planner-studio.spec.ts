@@ -158,15 +158,8 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   )
   await expect(cityActivityLink).toHaveAttribute('rel', 'nofollow sponsored noopener noreferrer')
   await expect(page.getByRole('link', { name: 'Check availability' })).toHaveCount(0)
-  await expect(page.getByRole('heading', { name: 'Stay connected in Thailand' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
-    'href',
-    'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
-  )
-  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveAttribute(
-    'rel',
-    'nofollow sponsored noopener noreferrer',
-  )
+  await expect(page.getByRole('heading', { name: 'Stay connected in Thailand' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'View Thailand eSIM plans' })).toHaveCount(0)
 
   await page.getByRole('button', { name: 'Day 3' }).click()
   await expect(page.getByRole('heading', { name: 'Keep this day flexible' })).toBeVisible()
