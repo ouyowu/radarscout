@@ -1,16 +1,11 @@
 import { track as trackVercelEvent } from '@vercel/analytics'
+import {
+  buildSafeFunnelEventPayload,
+  type FunnelEvent,
+  type FunnelEventProps,
+} from './funnelEventPayload'
 
-export type FunnelEvent =
-  | 'homepage_finder_entry_clicked'
-  | 'finder_planner_choice_selected'
-  | 'finder_planner_reset_clicked'
-  | 'finder_matching_experiences_clicked'
-  | 'finder_recommendations_rendered'
-  | 'booking_partner_handoff_clicked'
-  | 'affiliate_partner_handoff_clicked'
-  | 'finder_planner_viewed'
-
-export type FunnelEventProps = Record<string, string | number | boolean>
+export type { FunnelEvent, FunnelEventProps } from './funnelEventPayload'
 
 type AnalyticsPayload = FunnelEventProps & {
   event: FunnelEvent
@@ -24,6 +19,18 @@ declare global {
 }
 
 const QUEUE_LIMIT = 50
+
+function sendServerEventBeacon(event: FunnelEvent, props: FunnelEventProps): void {
+  try {
+    if (typeof navigator === 'undefined' || typeof navigator.sendBeacon !== 'function') return
+
+    const payload = buildSafeFunnelEventPayload(event, props)
+    const body = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    navigator.sendBeacon('/api/events', body)
+  } catch {
+    // Server event visibility must never block planning or handoff interactions.
+  }
+}
 
 export function track(event: FunnelEvent, props: FunnelEventProps = {}): void {
   if (typeof window === 'undefined') return
@@ -46,4 +53,6 @@ export function track(event: FunnelEvent, props: FunnelEventProps = {}): void {
   } catch {
     // Analytics must never break planning or handoff interactions.
   }
+
+  sendServerEventBeacon(event, props)
 }
