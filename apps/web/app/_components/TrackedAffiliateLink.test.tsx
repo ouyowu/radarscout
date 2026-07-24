@@ -41,6 +41,7 @@ describe('TrackedAffiliateLink', () => {
       destination: 'Bangkok',
       hasDates: false,
       hasGroupSize: false,
+      hasOccupancy: false,
       travelerType: 'unspecified',
       campaign: 'radarscout_city_guide_bangkok',
     })
@@ -58,6 +59,8 @@ describe('TrackedAffiliateLink', () => {
         startDate: '2099-12-10',
         endDate: '2099-12-13',
         groupSize: 4,
+        adultCount: 2,
+        childCount: 2,
         travelerType: 'family',
       },
       children: 'Compare Chiang Mai activities',
@@ -70,6 +73,7 @@ describe('TrackedAffiliateLink', () => {
       city: 'Chiang Mai',
       hasDates: true,
       hasGroupSize: true,
+      hasOccupancy: true,
       travelerType: 'family',
     }))
     expect(track).not.toHaveBeenCalledWith(

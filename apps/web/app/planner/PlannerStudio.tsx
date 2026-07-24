@@ -39,7 +39,9 @@ const STARTER_CHIPS = [
   'Thailand 7 days Bangkok Chiang Mai Phuket',
 ]
 const PLANNER_STEPS = ['Describe', 'Confirm', 'Compare'] as const
-const GROUP_SIZE_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
+const MAX_CONFIRMED_GROUP_SIZE = 10
+const ADULT_COUNT_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
+const CHILD_COUNT_OPTIONS = Array.from({ length: 10 }, (_, index) => index)
 const TRAVELER_TYPE_OPTIONS: readonly { value: Exclude<TravelerType, 'unspecified'>; label: string }[] = [
   { value: 'solo', label: 'Solo' },
   { value: 'couple', label: 'Couple' },
@@ -126,7 +128,8 @@ export function PlannerStudio({
   const [isSearching, setIsSearching] = useState(false)
   const [searchState, setSearchState] = useState<AiTripSearchResponse | null>(null)
   const [startDate, setStartDate] = useState('')
-  const [groupSize, setGroupSize] = useState('')
+  const [adultCount, setAdultCount] = useState('')
+  const [childCount, setChildCount] = useState('')
   const [travelerType, setTravelerType] = useState<TravelerType>('unspecified')
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
 
@@ -135,6 +138,32 @@ export function PlannerStudio({
   }, [messages, isSearching, searchState])
 
   async function runSearch(parts: string[]) {
+    if ((adultCount === '') !== (childCount === '')) {
+      setMessages(current => [
+        ...current,
+        createMessage({
+          role: 'guide',
+          content: 'Choose both Adults and Children (use 0 children if none), or leave both unset.',
+        }),
+      ])
+      return
+    }
+
+    if (
+      adultCount !== ''
+      && childCount !== ''
+      && Number(adultCount) + Number(childCount) > MAX_CONFIRMED_GROUP_SIZE
+    ) {
+      setMessages(current => [
+        ...current,
+        createMessage({
+          role: 'guide',
+          content: 'Adults and Children must total 10 travelers or fewer.',
+        }),
+      ])
+      return
+    }
+
     setIsSearching(true)
     setSearchState(null)
 
@@ -146,7 +175,8 @@ export function PlannerStudio({
           prompt: mergeTripIdea(parts),
           tripContext: {
             startDate: startDate || null,
-            groupSize: groupSize ? Number(groupSize) : null,
+            adultCount: adultCount === '' ? null : Number(adultCount),
+            childCount: childCount === '' ? null : Number(childCount),
             travelerType: travelerType === 'unspecified' ? null : travelerType,
           },
         }),
@@ -237,7 +267,8 @@ export function PlannerStudio({
     setSearchState(null)
     setDraft('')
     setStartDate('')
-    setGroupSize('')
+    setAdultCount('')
+    setChildCount('')
     setTravelerType('unspecified')
   }
 
@@ -247,13 +278,19 @@ export function PlannerStudio({
     startDate: searchState?.intent?.startDate ?? null,
     endDate: searchState?.intent?.endDate ?? null,
     groupSize: searchState?.intent?.groupSize ?? null,
+    adultCount: searchState?.intent?.adultCount ?? null,
+    childCount: searchState?.intent?.childCount ?? null,
     travelerType: searchState?.intent?.travelerType ?? 'unspecified',
   }
   const confirmedContextLabels = [
     handoffTripContext.startDate && handoffTripContext.endDate
       ? `${formatConfirmedDate(handoffTripContext.startDate)}–${formatConfirmedDate(handoffTripContext.endDate)}`
       : null,
-    handoffTripContext.groupSize ? `${handoffTripContext.groupSize} travelers` : null,
+    handoffTripContext.adultCount !== null && handoffTripContext.childCount !== null
+      ? `${handoffTripContext.adultCount} adult${handoffTripContext.adultCount === 1 ? '' : 's'} · ${handoffTripContext.childCount} child${handoffTripContext.childCount === 1 ? '' : 'ren'}`
+      : handoffTripContext.groupSize
+        ? `${handoffTripContext.groupSize} travelers`
+        : null,
     handoffTripContext.travelerType !== 'unspecified'
       ? TRAVELER_TYPE_OPTIONS.find(option => option.value === handoffTripContext.travelerType)?.label ?? null
       : null,
@@ -315,7 +352,7 @@ export function PlannerStudio({
 
         <fieldset className="border-b border-rs-sage-200/70 bg-rs-sand-50 px-4 py-3 sm:px-5">
           <legend className="sr-only">Optional trip details</legend>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <label htmlFor="planner-start-date" className="text-xs font-bold text-rs-forest-700">
               Start date <span className="font-semibold text-rs-muted">(optional)</span>
               <input
@@ -343,17 +380,32 @@ export function PlannerStudio({
                 ))}
               </select>
             </label>
-            <label htmlFor="planner-group-size" className="text-xs font-bold text-rs-forest-700">
-              Travelers <span className="font-semibold text-rs-muted">(optional)</span>
+            <label htmlFor="planner-adult-count" className="text-xs font-bold text-rs-forest-700">
+              Adults <span className="font-semibold text-rs-muted">(optional)</span>
               <select
-                id="planner-group-size"
-                value={groupSize}
+                id="planner-adult-count"
+                value={adultCount}
                 disabled={isSearching}
-                onChange={event => setGroupSize(event.target.value)}
+                onChange={event => setAdultCount(event.target.value)}
                 className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
               >
                 <option value="">Not set</option>
-                {GROUP_SIZE_OPTIONS.map(size => (
+                {ADULT_COUNT_OPTIONS.map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
+            </label>
+            <label htmlFor="planner-child-count" className="text-xs font-bold text-rs-forest-700">
+              Children <span className="font-semibold text-rs-muted">(optional)</span>
+              <select
+                id="planner-child-count"
+                value={childCount}
+                disabled={isSearching}
+                onChange={event => setChildCount(event.target.value)}
+                className="mt-1.5 min-h-[44px] w-full rounded-rs-sm border border-rs-sage-200 bg-white px-3 text-sm font-semibold text-rs-ink outline-none focus:border-rs-forest-500 focus:ring-2 focus:ring-rs-forest-500/20 disabled:opacity-60"
+              >
+                <option value="">Not set</option>
+                {CHILD_COUNT_OPTIONS.map(size => (
                   <option key={size} value={size}>{size}</option>
                 ))}
               </select>
@@ -361,8 +413,8 @@ export function PlannerStudio({
           </div>
           <p className="mt-2 text-xs font-semibold leading-5 text-rs-muted" aria-live="polite">
             {derivedEndDate
-              ? `Ends ${formatConfirmedDate(derivedEndDate)}. Dates and travelers are used on the next search.`
-              : 'Add a start date after choosing the trip length; RadarScout will derive the end date without guessing.'}
+              ? `Ends ${formatConfirmedDate(derivedEndDate)}. Confirmed dates and occupancy are used on the next search.`
+              : 'Add a start date after choosing the trip length. For stay occupancy, choose both Adults and Children (use 0 children if none).'}
           </p>
         </fieldset>
 

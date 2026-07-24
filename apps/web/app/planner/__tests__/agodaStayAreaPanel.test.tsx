@@ -59,6 +59,8 @@ describe('Planner Agoda stay-area guidance', () => {
           startDate: '2026-12-10',
           endDate: '2026-12-13',
           groupSize: 4,
+          adultCount: 2,
+          childCount: 2,
           travelerType: 'family',
         }}
       />,
@@ -70,15 +72,15 @@ describe('Planner Agoda stay-area guidance', () => {
     expect(markup).toContain('https://www.agoda.com/partners/partnersearch.aspx?cid=1234567')
     expect(markup).toContain('checkin=2026-12-10')
     expect(markup).toContain('checkout=2026-12-13')
-    expect(markup).toContain('confirmed stay dates are included')
-    expect(markup).toContain('does not guess the adult and child mix')
-    expect(markup).not.toContain('NumberofAdults')
-    expect(markup).not.toContain('NumberofChildren')
+    expect(markup).toContain('confirmed stay dates and occupancy are included')
+    expect(markup).toContain('NumberofAdults=2')
+    expect(markup).toContain('NumberofChildren=2')
+    expect(markup).toContain('Rooms=1')
   })
 
   it('renders nothing for unsupported destinations', () => {
     expect(renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, travelerType: 'unspecified' }} />,
+      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, adultCount: null, childCount: null, travelerType: 'unspecified' }} />,
     )).toBe('')
   })
 

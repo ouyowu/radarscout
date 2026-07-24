@@ -184,7 +184,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       prompt: 'Chiang Mai 3 days elephants',
       tripContext: {
         startDate: '2099-12-10',
-        groupSize: 4,
+        adultCount: 2,
+        childCount: 2,
         travelerType: 'couple',
       },
     }))
@@ -193,6 +194,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     expect(res.status).toBe(200)
     expect(body.status).toBe('ok')
     expect(body.itinerary.tripSpec.groupSize).toBe(4)
+    expect(body.intent.adultCount).toBe(2)
+    expect(body.intent.childCount).toBe(2)
     expect(body.itinerary.tripSpec.travelerType).toBe('couple')
     expect(body.products).toHaveLength(1)
     expect(body.products[0].id).toBe('viator_191442p6')
@@ -208,7 +211,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       prompt: 'Chiang Mai 3 days family elephants',
       tripContext: {
         startDate: '2099-12-10',
-        groupSize: 4,
+        adultCount: 2,
+        childCount: 2,
       },
     }))
     const body = await res.json()
@@ -220,10 +224,14 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       startDate: '2099-12-10',
       endDate: '2099-12-13',
       groupSize: 4,
+      adultCount: 2,
+      childCount: 2,
       travelerType: 'family',
       interests: ['elephants'],
     })
     expect(Object.keys(body.intent).sort()).toEqual([
+      'adultCount',
+      'childCount',
       'days',
       'destination',
       'endDate',
@@ -253,6 +261,8 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
       startDate: null,
       endDate: null,
       groupSize: null,
+      adultCount: null,
+      childCount: null,
       travelerType: 'unspecified',
     })
   })
@@ -264,6 +274,11 @@ describe('POST /api/ai-trip/search — API tests 1–20', () => {
     { startDate: '2099-12-10', groupSize: 11 },
     { startDate: '2099-12-10', groupSize: 2, travelerType: 'tour-group' },
     { startDate: '2099-12-10', groupSize: 2, endDate: '2099-12-13' },
+    { adultCount: 2 },
+    { childCount: 0 },
+    { adultCount: 0, childCount: 0 },
+    { adultCount: 10, childCount: 1 },
+    { groupSize: 3, adultCount: 2, childCount: 2 },
   ])('rejects invalid trip context before product selection: %j', async tripContext => {
     const res = await POST(makeRequest({
       prompt: 'Chiang Mai 3 days elephants',

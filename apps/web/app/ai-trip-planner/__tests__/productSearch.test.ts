@@ -37,6 +37,8 @@ function makeSearchIntent(overrides: Partial<PublicSearchIntent> = {}): PublicSe
     startDate: null,
     endDate: null,
     groupSize: null,
+    adultCount: null,
+    childCount: null,
     travelerType: 'unspecified',
     interests: ['elephants'],
     ...overrides,

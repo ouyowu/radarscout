@@ -10,6 +10,8 @@ function makeSearchIntent(overrides: Partial<PublicSearchIntent> = {}): PublicSe
     startDate: null,
     endDate: null,
     groupSize: null,
+    adultCount: null,
+    childCount: null,
     travelerType: 'unspecified',
     interests: ['elephants', 'food', 'temples'],
     ...overrides,
@@ -173,7 +175,7 @@ test('guided studio builds a mobile-safe reviewed route without bypassing produc
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 })
 
-test('guided studio remembers confirmed dates, group size, and traveler type', async ({ page }) => {
+test('guided studio remembers confirmed dates, occupancy, and traveler type', async ({ page }) => {
   let requestBody: Record<string, unknown> | null = null
   await page.route('/api/ai-trip/search', async route => {
     requestBody = route.request().postDataJSON() as Record<string, unknown>
@@ -186,6 +188,8 @@ test('guided studio remembers confirmed dates, group size, and traveler type', a
           startDate: '2026-12-10',
           endDate: '2026-12-13',
           groupSize: 4,
+          adultCount: 2,
+          childCount: 2,
           travelerType: 'family',
         }),
         tripSpec: {
@@ -207,19 +211,21 @@ test('guided studio remembers confirmed dates, group size, and traveler type', a
 
   await page.goto('/planner')
   await page.locator('#planner-start-date').fill('2026-12-10')
-  await page.locator('#planner-group-size').selectOption('4')
+  await page.locator('#planner-adult-count').selectOption('2')
+  await page.locator('#planner-child-count').selectOption('2')
   await page.locator('#planner-traveler-type').selectOption('family')
   await page.getByRole('button', { name: 'Chiang Mai 3 days elephants food temples' }).click()
 
   await expect(page.getByText('Ends Dec 13, 2026')).toBeVisible()
   await expect(page.getByLabel('Remembered trip details')).toContainText('Dec 10, 2026–Dec 13, 2026')
-  await expect(page.getByLabel('Remembered trip details')).toContainText('4 travelers')
+  await expect(page.getByLabel('Remembered trip details')).toContainText('2 adults · 2 children')
   await expect(page.getByLabel('Remembered trip details')).toContainText('Family')
   expect(requestBody).toMatchObject({
     prompt: 'Chiang Mai 3 days elephants food temples',
     tripContext: {
       startDate: '2026-12-10',
-      groupSize: 4,
+      adultCount: 2,
+      childCount: 2,
       travelerType: 'family',
     },
   })

@@ -7,10 +7,13 @@ describe('affiliate trip context', () => {
       startDate: '2099-12-10',
       endDate: '2099-12-13',
       groupSize: 4,
+      adultCount: 2,
+      childCount: 2,
       travelerType: 'family',
     })).toEqual({
       hasDates: true,
       hasGroupSize: true,
+      hasOccupancy: true,
       travelerType: 'family',
     })
   })
@@ -19,6 +22,7 @@ describe('affiliate trip context', () => {
     expect(buildSafeAffiliateAnalyticsContext()).toEqual({
       hasDates: false,
       hasGroupSize: false,
+      hasOccupancy: false,
       travelerType: 'unspecified',
     })
   })

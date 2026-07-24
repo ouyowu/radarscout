@@ -14,6 +14,8 @@ export type TripIntent = {
   budget: TripBudget
   travelerType: TravelerType
   groupSize: number | null
+  adultCount: number | null
+  childCount: number | null
   mustHave: string[]
   avoid: string[]
   accessibilityNeeds: string[]
@@ -63,6 +65,8 @@ export function createEmptyTripIntent(language = 'unknown'): TripIntent {
     budget: 'unspecified',
     travelerType: 'unspecified',
     groupSize: null,
+    adultCount: null,
+    childCount: null,
     mustHave: [],
     avoid: [],
     accessibilityNeeds: [],

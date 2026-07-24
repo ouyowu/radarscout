@@ -14,6 +14,8 @@ describe('confirmed trip context', () => {
     expect(intent.startDate).toBeNull()
     expect(intent.endDate).toBeNull()
     expect(intent.groupSize).toBeNull()
+    expect(intent.adultCount).toBeNull()
+    expect(intent.childCount).toBeNull()
     expect(intent.travelerType).toBe('unspecified')
   })
 
@@ -36,6 +38,22 @@ describe('confirmed trip context', () => {
     expect(deriveTripEndDate('2099-12-10', 3)).toBe('2099-12-13')
   })
 
+  it('derives group size only from explicitly confirmed adult and child counts', () => {
+    const intent = createEmptyTripIntent('en')
+    intent.durationDays = 3
+
+    const result = applyConfirmedTripContext(intent, {
+      adultCount: 2,
+      childCount: 2,
+    })
+
+    expect(result).toMatchObject({
+      groupSize: 4,
+      adultCount: 2,
+      childCount: 2,
+    })
+  })
+
   it.each([
     [{ startDate: 'December 10', groupSize: 2 }],
     [{ startDate: '2026-02-30', groupSize: 2 }],
@@ -44,6 +62,12 @@ describe('confirmed trip context', () => {
     [{ startDate: '2026-12-10', groupSize: 11 }],
     [{ startDate: '2026-12-10', groupSize: 2, travelerType: 'tour-group' }],
     [{ startDate: '2026-12-10', groupSize: 2, endDate: '2026-12-13' }],
+    [{ adultCount: 2 }],
+    [{ childCount: 0 }],
+    [{ adultCount: 0, childCount: 0 }],
+    [{ adultCount: 2, childCount: -1 }],
+    [{ adultCount: 10, childCount: 1 }],
+    [{ groupSize: 3, adultCount: 2, childCount: 2 }],
   ])('rejects unconfirmed or malformed context without guessing: %j', input => {
     const intent = createEmptyTripIntent('en')
     intent.durationDays = 3
