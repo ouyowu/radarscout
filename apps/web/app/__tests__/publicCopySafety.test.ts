@@ -50,9 +50,9 @@ describe('public RadarScout copy safety', () => {
     expect(rootLayoutSource).toContain('Plan Thailand experiences with guided discovery')
     expect(rootLayoutSource).toContain('trusted booking partner handoff')
     expect(rootLayoutSource).toContain('continue with a trusted booking partner')
-    expect(destinationsPageSource).toContain('Thailand-first AI trip planning')
-    expect(destinationsPageSource).toContain('other routes remain planning-only')
-    expect(destinationsPageSource).toContain('planning-only')
+    expect(destinationsPageSource).toContain('reviewed Thailand day trips')
+    expect(destinationsPageSource).toContain('verified Viator affiliate handoff')
+    expect(destinationsPageSource).toContain('Current details and booking remain on Viator')
 
     const metadataSources = [rootLayoutSource, destinationsPageSource].join('\n')
     expect(metadataSources).not.toMatch(/direct-rate/i)
