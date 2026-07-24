@@ -134,6 +134,22 @@ describe('getPublicThailandProduct', () => {
     expect(enrichmentMock.getReviewedEnrichmentByProductId).not.toHaveBeenCalled()
   })
 
+  it('returns a reviewed Chiang Mai Viator product used by Planner Studio', async () => {
+    const result = await loadPublicThailandProductDetail('viator_26152p7')
+
+    expect(result).toMatchObject({
+      status: 'found',
+      product: {
+        id: 'viator_26152p7',
+        city: 'Chiang Mai',
+        bookingPartnerHandoff: {
+          source: 'operator_verified_public_link',
+        },
+      },
+    })
+    expect(dbMock.bokunProduct.findFirst).not.toHaveBeenCalled()
+  })
+
   it('returns null for ineligible product (foreign signal in title)', async () => {
     dbMock.bokunProduct.findFirst.mockResolvedValue(
       makeProduct({ title: 'Singapore City Tour', city: 'Bangkok' }),
