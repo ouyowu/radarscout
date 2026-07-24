@@ -20,26 +20,21 @@ describe('affiliate partner policy', () => {
     expect(getActiveAffiliateProviders('city_guide')).toEqual(['getyourguide'])
     expect(getActiveAffiliateProviders('hotel_results')).toEqual(['agoda'])
     expect(getActiveAffiliateProviders('multi_city_transport')).toEqual([])
-    expect(getActiveAffiliateProviders('pre_departure')).toEqual(['yesim'])
+    expect(getActiveAffiliateProviders('pre_departure')).toEqual([])
   })
 
-  it('exposes Yesim as the single reviewed pre-departure provider', () => {
-    expect(primaryPreDepartureProvider).toBe('yesim')
+  it('keeps pre-departure providers inactive while the provider decision is pending', () => {
+    expect(primaryPreDepartureProvider).toBeNull()
     expect(affiliatePlacementPolicy.pre_departure).toEqual(['airalo', 'yesim'])
-    expect(getActiveAffiliateProviders('pre_departure')).toEqual(['yesim'])
+    expect(getActiveAffiliateProviders('pre_departure')).toEqual([])
   })
 
-  it('builds the reviewed Yesim Thailand eSIM handoff', () => {
-    const offer = buildYesimPreDepartureOffer()
-
-    expect(offer).toEqual({
-      provider: 'yesim',
-      placement: 'pre_departure',
-      destination: 'Thailand',
-      campaign: 'radarscout_thailand_esim',
-      href: 'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
-    })
-    expect(validateAffiliateHref('yesim', offer!.href)).toBe(true)
+  it('does not build a Yesim handoff while the provider decision is pending', () => {
+    expect(buildYesimPreDepartureOffer()).toBeNull()
+    expect(validateAffiliateHref(
+      'yesim',
+      'https://yesim.app/country/thailand/?partner_id=5044&sid=597',
+    )).toBe(false)
   })
 
   it('builds a tracked GetYourGuide city link for reviewed Thailand cities', () => {
