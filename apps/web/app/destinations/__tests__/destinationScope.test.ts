@@ -1,7 +1,12 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { globalDestinations } from '@/lib/global-destinations'
+import {
+  listReviewedViatorPublicCatalogueCities,
+  loadReviewedViatorPublicCatalogue,
+} from '@/lib/viator/reviewedViatorPublicCatalogue'
 import { metadata } from '../page'
+import { reviewedDestinationCoverage } from '../reviewedDestinationCoverage'
 
 const destinationsPageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 const destinationDetailSource = readFileSync(new URL('../[slug]/page.tsx', import.meta.url), 'utf8')
@@ -16,17 +21,38 @@ describe('destination scope positioning', () => {
     expect(planningOnly.every(destination => destination.comingSoon)).toBe(true)
   })
 
-  it('positions the destination portal as Thailand-first', () => {
-    expect(metadata.description).toContain('Thailand-first AI trip planning')
-    expect(metadata.description).toContain('other routes remain planning-only')
-    expect(destinationsPageSource).toContain('Thailand-first destination planning, with other routes planning-only.')
-    expect(destinationsPageSource).toContain('Thailand-first coverage')
-    expect(destinationsPageSource).toContain('Planning guides for future partner coverage.')
-    expect(destinationsPageSource).toContain('remain planning-only until local supplier coverage')
+  it('turns the destination portal into a reviewed Thailand city hub', () => {
+    const products = loadReviewedViatorPublicCatalogue()
+    const cities = listReviewedViatorPublicCatalogueCities()
+    const featuredSlugs = reviewedDestinationCoverage.cities
+      .slice(0, 6)
+      .map((city) => city.slug)
+
+    expect(metadata.title).toBe('Thailand Destinations | RadarScout Day-Trip Planner')
+    expect(metadata.description).toContain('reviewed Thailand day trips')
+    expect(reviewedDestinationCoverage.productCount).toBe(products.length)
+    expect(reviewedDestinationCoverage.cityCount).toBe(cities.length)
+    expect(featuredSlugs).toEqual([
+      'bangkok',
+      'chiang-mai',
+      'phuket',
+      'pattaya',
+      'krabi',
+      'koh-samui',
+    ])
+    expect(reviewedDestinationCoverage.cities.find((city) => city.slug === 'bangkok')?.href)
+      .toBe('/tours?city=bangkok')
+    expect(destinationsPageSource).toContain('Choose a Thailand city. Start with experiences already reviewed.')
+    expect(destinationsPageSource).toContain('Why RadarScout narrowed it down')
+    expect(destinationsPageSource).toContain('Who the experience suits')
+    expect(destinationsPageSource).toContain('What to check before choosing')
 
     expect(destinationsPageSource).not.toContain('selected top travel destinations')
     expect(destinationsPageSource).not.toContain('high-demand travel countries')
     expect(destinationsPageSource).not.toContain('Selected travel countries')
+    expect(destinationsPageSource).not.toContain('Planning guides for future partner coverage.')
+    expect(destinationsPageSource).not.toContain('SupplierPartnerCTA')
+    expect(destinationsPageSource).not.toContain('comingSoonDestinations')
   })
 
   it('keeps non-Thailand destination detail pages clearly planning-only', () => {

@@ -1,51 +1,47 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { AdventureHero } from '../_components/AdventureHero'
 import { DestinationCapsuleCard } from '../_components/DestinationCapsuleCard'
 import { DmcTrustBar } from '../_components/DmcTrustBar'
 import { FAQAccordion } from '../_components/FAQAccordion'
-import { PartnerInventoryNotice } from '../_components/PartnerInventoryNotice'
-import { SupplierPartnerCTA } from '../_components/SupplierPartnerCTA'
-import { globalDestinations } from '@/lib/global-destinations'
+import { reviewedDestinationCoverage } from './reviewedDestinationCoverage'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
 export const metadata: Metadata = {
-  title: 'Destination Portal | RadarScout AI Travel Planning',
+  title: 'Thailand Destinations | RadarScout Day-Trip Planner',
   description:
-    'Explore Thailand-first AI trip planning with RadarScout. Thailand is the first focused experience destination while other routes remain planning-only.',
+    'Choose a Thailand city and compare reviewed Thailand day trips with clear fit guidance and a verified Viator affiliate handoff.',
   alternates: { canonical: `${base}/destinations` },
 }
 
-const liveDestinations = globalDestinations.filter(destination => destination.hasLiveInventory)
-const comingSoonDestinations = globalDestinations.filter(destination => !destination.hasLiveInventory)
-
 const trustItems = [
-  { label: 'Focused now', value: 'Thailand' },
-  { label: 'Planning pages', value: `${comingSoonDestinations.length} destinations` },
-  { label: 'Handoff model', value: 'Booking partner handoff only' },
-  { label: 'Portal focus', value: 'Thailand-first coverage' },
+  { label: 'Reviewed catalogue', value: `${reviewedDestinationCoverage.productCount} experiences` },
+  { label: 'Thailand coverage', value: `${reviewedDestinationCoverage.cityCount} cities` },
+  { label: 'Recommendation style', value: 'Fit before endless sorting' },
+  { label: 'Current details', value: 'Confirmed on Viator' },
 ]
 
 const faqItems = [
   {
-    question: 'Why do some destinations say partner tours coming soon?',
+    question: 'Which Thailand destinations can I browse?',
     answer:
-      'Those destinations are planning pages while RadarScout onboards trusted local suppliers. They are not presented as traveler-ready recommendation pages.',
+      'This page lists every Thailand city or island area represented in RadarScout’s reviewed Viator catalogue. Coverage grows only after product records and affiliate handoffs pass review.',
   },
   {
-    question: 'Which destination is focused now?',
+    question: 'Why does RadarScout narrow the list?',
     answer:
-      'Thailand is currently RadarScout’s first focused experience destination. Other destinations will show traveler-facing recommendations only after supplier coverage and booking partner handoff paths are safe to present.',
+      'The goal is to reduce sorting work. Each public experience includes a short reason to consider it, who it may suit, and what to verify before choosing.',
   },
   {
-    question: 'Do destination pages include external affiliate products?',
+    question: 'Where do current prices and booking details come from?',
     answer:
-      'No. RadarScout does not add external marketplace, affiliate, unsupported, or fake products to the comparison catalog.',
+      'Current details and booking remain on Viator. RadarScout uses verified Viator affiliate links and does not claim to control availability or complete a booking.',
   },
   {
-    question: 'Can suppliers apply for a destination that is coming soon?',
+    question: 'Can I ask the planner to compare a specific city?',
     answer:
-      'Yes. Local tour operators and destination partners can contact RadarScout to discuss onboarding for day tours, private tours, transfers, food tours, cultural experiences, and custom local activities.',
+      'Yes. Open Planner Studio and describe the Thailand city, number of days, interests, group, and preferred pace. The planner matches only reviewed catalogue records.',
   },
 ]
 
@@ -53,60 +49,43 @@ export default function DestinationsPage() {
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AdventureHero
-        eyebrow="Destination planning portal"
-        title="Thailand-first destination planning, with other routes planning-only."
-        subtitle="Explore RadarScout destination pages for Thailand-first AI itinerary planning, private trip design, and reviewed partner-tour readiness."
+        eyebrow="Reviewed Thailand coverage"
+        title="Choose a Thailand city. Start with experiences already reviewed."
+        subtitle="Browse city-by-city shortlists, see why an experience may fit, and check the tradeoffs before continuing to Viator for current details."
         actions={[
-          { label: 'View Thailand tours', href: '/tours' },
-          { label: 'Start AI planner', href: '/ai-trip-planner', variant: 'secondary' },
+          { label: 'Plan my Thailand days', href: '/planner' },
+          { label: 'Browse all experiences', href: '/tours', variant: 'secondary' },
         ]}
-        trustNote="Thailand is RadarScout’s first focused experience destination. Other destinations are planning-only while trusted local suppliers are onboarded."
+        trustNote="Thailand-only for now. Product facts come from reviewed records; current details and booking remain on Viator."
       />
 
       <DmcTrustBar items={trustItems} />
-
-      <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
-              Focused vs planning-only
-            </p>
-            <h2 className="mt-3 font-[var(--font-heading)] text-5xl font-black leading-none tracking-[-0.045em]">
-              Clear coverage status before travelers click.
-            </h2>
-            <p className="mt-4 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
-              Traveler-facing recommendations appear only when RadarScout has enough product detail and a safe booking partner handoff path. Planning-only destinations are useful for route ideas, but they do not pretend to have ready-to-compare experiences.
-            </p>
-          </div>
-          <PartnerInventoryNotice status="planning-only" currentDestination="destinations outside Thailand" />
-        </div>
-      </section>
 
       <section className="bg-[var(--color-bg-secondary)] px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-live-inventory)]">
-                Focused coverage
+                City-by-city discovery
               </p>
               <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-                First focused experience destination.
+                Browse {reviewedDestinationCoverage.cityCount} reviewed Thailand cities.
               </h2>
             </div>
             <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-              Thailand is RadarScout’s first focused experience destination. These pages link into the existing discovery surface instead of creating fake products.
+              Popular hubs appear first. Every card opens the real filtered catalogue—no empty destination page and no invented product coverage.
             </p>
           </div>
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {liveDestinations.map(destination => (
+            {reviewedDestinationCoverage.cities.map((destination) => (
               <DestinationCapsuleCard
                 key={destination.slug}
-                name={destination.name}
-                href={`/destinations/${destination.slug}`}
+                name={destination.label}
+                href={destination.href}
                 status="live"
-                region={destination.region}
-                summary={destination.shortDescription}
-                highlights={destination.popularTourTypes}
+                region={`Thailand · ${destination.productCount} reviewed ${destination.productCount === 1 ? 'experience' : 'experiences'}`}
+                summary={`Compare the reviewed ${destination.label} shortlist, then open a product detail before the Viator handoff.`}
+                highlights={destination.tags}
               />
             ))}
           </div>
@@ -115,36 +94,65 @@ export default function DestinationsPage() {
 
       <section className="bg-[var(--color-bg-primary)] px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-coming-soon)]">
-                Partner onboarding
-              </p>
-              <h2 className="mt-3 font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
-                Planning guides for future partner coverage.
-              </h2>
-            </div>
-            <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
-              These pages remain planning-only until local supplier coverage and booking partner handoff paths are reviewed.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {comingSoonDestinations.map(destination => (
-              <DestinationCapsuleCard
-                key={destination.slug}
-                name={destination.name}
-                href={`/destinations/${destination.slug}`}
-                status="coming-soon"
-                region={destination.region}
-                summary={destination.shortDescription}
-                highlights={destination.popularTourTypes}
-              />
+          <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange-dark)]">
+            Decision support, not another marketplace wall
+          </p>
+          <h2 className="mt-3 max-w-4xl font-[var(--font-heading)] text-4xl font-black leading-tight tracking-[-0.035em]">
+            Three questions before you leave RadarScout.
+          </h2>
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {[
+              {
+                label: '01',
+                title: 'Why RadarScout narrowed it down',
+                copy: 'Look for a clear city, theme, and day-trip fit rather than an unsupported popularity claim.',
+              },
+              {
+                label: '02',
+                title: 'Who the experience suits',
+                copy: 'Use the tags and planner context to judge whether the pace and activity style match your group.',
+              },
+              {
+                label: '03',
+                title: 'What to check before choosing',
+                copy: 'Confirm current timing, meeting details, inclusions, price, and booking terms on Viator.',
+              },
+            ].map((item) => (
+              <article
+                key={item.label}
+                className="rounded-[2rem] border border-[var(--color-border-light)] bg-[var(--color-bg-card)] p-7 shadow-lg"
+              >
+                <span className="text-sm font-black uppercase tracking-[0.14em] text-[var(--color-live-inventory)]">
+                  {item.label}
+                </span>
+                <h3 className="mt-4 font-[var(--font-heading)] text-3xl font-black leading-tight tracking-[-0.03em]">
+                  {item.title}
+                </h3>
+                <p className="mt-4 text-sm font-semibold leading-7 text-[var(--color-text-secondary)]">
+                  {item.copy}
+                </p>
+              </article>
             ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-3 rounded-[2rem] bg-[var(--color-bg-dark)] p-7 text-white sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[var(--color-accent-orange)]">
+                Need help choosing?
+              </p>
+              <p className="mt-2 max-w-2xl text-sm font-semibold leading-7 text-white/75">
+                Tell Planner Studio the city, duration, group, pace, and interests. It will stay within the reviewed Thailand catalogue.
+              </p>
+            </div>
+            <Link
+              href="/planner"
+              className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-orange)] px-7 text-sm font-black text-[var(--color-text-primary)]"
+            >
+              Open Planner Studio
+            </Link>
           </div>
         </div>
       </section>
 
-      <SupplierPartnerCTA />
       <FAQAccordion items={faqItems} title="Destination portal FAQ" />
     </main>
   )
