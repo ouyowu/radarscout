@@ -235,7 +235,7 @@ export function PlannerItineraryWorkspace({
                     href={buildAiTripPlannerDetailHref(
                       selectedProduct.detailHref,
                       selectedProductId ?? undefined,
-                      { hasDates: safeTripContext.hasDates },
+                      safeTripContext,
                     )}
                     className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                   >
@@ -354,7 +354,7 @@ export function PlannerItineraryWorkspace({
                     />
                     <div className="mt-5 grid gap-2">
                       <Link
-                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id, { hasDates: safeTripContext.hasDates })}
+                        href={buildAiTripPlannerDetailHref(product.detailHref, product.id, safeTripContext)}
                         className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill border border-rs-forest-500 px-5 text-sm font-bold text-rs-forest-700 transition hover:bg-rs-sage-100"
                       >
                         Review product details
@@ -405,6 +405,9 @@ export function PlannerItineraryWorkspace({
               </h3>
               <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">
                 Use this optional city-level affiliate handoff when the reviewed Viator matches above do not cover the activity you want. Final product details and the continue step stay on GetYourGuide.
+              </p>
+              <p className="mt-2 text-xs font-semibold leading-5 text-rs-muted">
+                RadarScout keeps your confirmed trip context for comparison analytics, but this city affiliate link cannot prefill GetYourGuide dates or traveler details.
               </p>
             </div>
             <TrackedAffiliateLink

@@ -30,8 +30,11 @@ const UNSAFE_HOST_PATTERNS = [
   /\.internal$/i,
 ]
 
-const UNSAFE_PATH_OR_HOST_PATTERN =
-  /admin|backend|database|extranet|supplier|private|preview|staging|localhost/i
+const UNSAFE_HOST_LABEL_PATTERN =
+  /(^|[.-])(admin|backend|database|extranet|supplier|private|preview|staging|localhost)([.-]|$)/i
+
+const UNSAFE_PATH_SEGMENT_PATTERN =
+  /(^|\/)(admin|backend|database|extranet|supplier|private|preview|staging|localhost)(\/|$)/i
 
 const SENSITIVE_QUERY_KEYS = new Set([
   'api_key',
@@ -64,7 +67,8 @@ function isPublicHttpsUrl(value: unknown): value is string {
 
   const hostname = url.hostname.toLowerCase()
   if (UNSAFE_HOST_PATTERNS.some(pattern => pattern.test(hostname))) return false
-  if (UNSAFE_PATH_OR_HOST_PATTERN.test(`${hostname}${url.pathname}`)) return false
+  if (UNSAFE_HOST_LABEL_PATTERN.test(hostname)) return false
+  if (UNSAFE_PATH_SEGMENT_PATTERN.test(url.pathname)) return false
 
   for (const key of url.searchParams.keys()) {
     if (SENSITIVE_QUERY_KEYS.has(key.toLowerCase())) return false

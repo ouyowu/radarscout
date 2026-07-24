@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { track } from '@/lib/analytics/track'
+import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 export type AiSearchProductCardProps = {
   id: string
@@ -17,9 +18,8 @@ export type AiSearchProductCardProps = {
   ctaLabel?: 'Check availability' | null
   ctaRel?: 'nofollow sponsored noopener noreferrer' | null
   externalHandoff?: boolean
-  handoffContext: {
+  handoffContext: SafeAffiliateAnalyticsContext & {
     destination: string
-    hasDates: boolean
   }
 }
 
@@ -27,9 +27,7 @@ function buildSafeTourFallback(productId?: string): string {
   return productId ? `/tours/${encodeURIComponent(productId)}` : '/tours'
 }
 
-type AiTripPlannerDetailContext = {
-  hasDates?: boolean
-}
+type AiTripPlannerDetailContext = Partial<SafeAffiliateAnalyticsContext>
 
 export function buildAiTripPlannerDetailHref(
   detailHref: string,
@@ -48,6 +46,21 @@ export function buildAiTripPlannerDetailHref(
     params.set('hasDates', '1')
   } else {
     params.delete('hasDates')
+  }
+  if (context.hasGroupSize === true) {
+    params.set('hasGroupSize', '1')
+  } else {
+    params.delete('hasGroupSize')
+  }
+  if (context.hasOccupancy === true) {
+    params.set('hasOccupancy', '1')
+  } else {
+    params.delete('hasOccupancy')
+  }
+  if (context.travelerType && context.travelerType !== 'unspecified') {
+    params.set('travelerType', context.travelerType)
+  } else {
+    params.delete('travelerType')
   }
   const nextQuery = params.toString()
   const hashSuffix = isSafeTourHref && hash ? `#${hash}` : ''
@@ -72,6 +85,10 @@ export function AiSearchProductCard({
   handoffContext,
 }: AiSearchProductCardProps) {
   const hasExternalHandoff = Boolean(externalHandoff && ctaHref)
+  const {
+    destination: handoffDestination,
+    ...safeHandoffContext
+  } = handoffContext
 
   return (
     <article className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#e8dfd2] bg-white shadow-[0_8px_24px_rgba(17,24,39,0.06)]">
@@ -148,9 +165,9 @@ export function AiSearchProductCard({
             onClick={() => track('booking_partner_handoff_clicked', {
               provider: 'viator',
               placement: 'ai_trip_planner_card',
-              city: city ?? handoffContext.destination,
-              destination: handoffContext.destination,
-              hasDates: handoffContext.hasDates,
+              city: city ?? handoffDestination,
+              destination: handoffDestination,
+              ...safeHandoffContext,
               productId: id,
               source: 'ai_trip_planner',
             })}
@@ -160,7 +177,7 @@ export function AiSearchProductCard({
           </a>
         ) : (
           <Link
-            href={buildAiTripPlannerDetailHref(detailHref, id, { hasDates: handoffContext.hasDates })}
+            href={buildAiTripPlannerDetailHref(detailHref, id, handoffContext)}
             aria-label={`View details for ${title}; no reviewed booking partner handoff is available`}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >

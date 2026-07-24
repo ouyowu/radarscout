@@ -71,7 +71,9 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/provider: 'viator'/)
     expect(source).toMatch(/city:/)
     expect(source).toMatch(/buildSafeAffiliateAnalyticsContext\(tripContext\)/)
-    expect(source).toMatch(/buildAiTripPlannerDetailHref\([\s\S]*\{ hasDates: safeTripContext\.hasDates \}\)/)
+    expect(source).toMatch(/selectedProductId \?\? undefined,\s*safeTripContext,/)
+    expect(source).toMatch(/buildAiTripPlannerDetailHref\(product\.detailHref, product\.id, safeTripContext\)/)
+    expect(source).not.toMatch(/\{ hasDates: safeTripContext\.hasDates \}/)
     expect(source).not.toMatch(/searchParams\.set\(['\"](?:startDate|endDate)/)
   })
 
@@ -81,5 +83,6 @@ describe('Planner itinerary workspace', () => {
     expect(source).toMatch(/placement=\{cityGuideOffer\.placement\}/)
     expect(source).toMatch(/tripContext=\{tripContext\}/)
     expect(source).toMatch(/Compare more .* activities on GetYourGuide/)
+    expect(source).toMatch(/cannot prefill GetYourGuide dates or traveler details/)
   })
 })

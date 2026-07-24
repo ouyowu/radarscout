@@ -32,7 +32,7 @@ describe('AI trip planner public copy safety', () => {
     expect(publicCopy).toMatch(/Search real Thailand experiences/i)
     expect(publicCopy).toMatch(/View details/i)
     expect(publicCopy).not.toMatch(/View experience/i)
-    expect(publicCopy).toMatch(/buildAiTripPlannerDetailHref\(detailHref, id, \{ hasDates: handoffContext\.hasDates \}\)/)
+    expect(publicCopy).toMatch(/buildAiTripPlannerDetailHref\(detailHref, id, handoffContext\)/)
     expect(publicCopy).toMatch(/params\.set\('source', 'ai-trip-planner'\)/)
   })
 

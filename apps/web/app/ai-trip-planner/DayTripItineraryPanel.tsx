@@ -1,4 +1,5 @@
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
+import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 import { DecisionGuide } from '../_components/design-system'
 import { buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import { getItineraryDestinations } from './dayTripMap'
@@ -7,9 +8,10 @@ import { ThailandRouteMap } from './ThailandRouteMap'
 
 type DayTripItineraryPanelProps = {
   itinerary: DayTripItinerary
+  handoffContext: SafeAffiliateAnalyticsContext
 }
 
-export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps) {
+export function DayTripItineraryPanel({ itinerary, handoffContext }: DayTripItineraryPanelProps) {
   const destinations = getItineraryDestinations(itinerary)
   const tripSpecChips = buildTripSpecChips(itinerary.tripSpec)
 
@@ -101,7 +103,7 @@ export function DayTripItineraryPanel({ itinerary }: DayTripItineraryPanelProps)
                 className="mt-4"
               />
               <a
-                href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId)}
+                href={buildAiTripPlannerDetailHref(day.experience.detailHref, day.experience.productId, handoffContext)}
                 className="mt-auto pt-4 text-sm font-black text-rs-forest-700 underline decoration-rs-forest-500/30 underline-offset-4 hover:text-rs-terracotta-600"
               >
                 Review product details

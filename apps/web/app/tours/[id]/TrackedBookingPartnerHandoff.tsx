@@ -3,6 +3,7 @@
 import React from 'react'
 import type { MouseEventHandler, ReactNode } from 'react'
 import { track } from '@/lib/analytics/track'
+import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 type TrackedBookingPartnerHandoffProps = {
   href: string
@@ -11,7 +12,10 @@ type TrackedBookingPartnerHandoffProps = {
   source: 'ai-trip-planner' | 'tour-detail'
   placement: 'tour_detail_primary' | 'tour_detail_sticky'
   city: string
-  hasDates: boolean
+  hasDates: SafeAffiliateAnalyticsContext['hasDates']
+  hasGroupSize: SafeAffiliateAnalyticsContext['hasGroupSize']
+  hasOccupancy: SafeAffiliateAnalyticsContext['hasOccupancy']
+  travelerType: SafeAffiliateAnalyticsContext['travelerType']
   className?: string
   children: ReactNode
 }
@@ -24,6 +28,9 @@ export function TrackedBookingPartnerHandoff({
   placement,
   city,
   hasDates,
+  hasGroupSize,
+  hasOccupancy,
+  travelerType,
   className,
   children,
 }: TrackedBookingPartnerHandoffProps) {
@@ -34,6 +41,9 @@ export function TrackedBookingPartnerHandoff({
       city,
       destination: city,
       hasDates,
+      hasGroupSize,
+      hasOccupancy,
+      travelerType,
       productId,
       source,
     })

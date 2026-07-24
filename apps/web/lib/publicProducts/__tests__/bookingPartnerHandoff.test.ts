@@ -23,6 +23,16 @@ describe('validatePublicBookingPartnerHandoff', () => {
     })
   })
 
+  it('accepts a reviewed public Viator product whose title slug contains private', () => {
+    const handoff = validatePublicBookingPartnerHandoff({
+      href: 'https://www.viator.com/tours/Chiang-Mai/Private-Chiang-Rai-Temples-Tour/d5267-26152P7?pid=P00309837',
+      source: 'operator_verified_public_link',
+      verifiedBy: 'operator_manual_review',
+    })
+
+    expect(handoff?.href).toContain('/Private-Chiang-Rai-Temples-Tour/')
+  })
+
   it('rejects internal RadarScout tour links', () => {
     expect(
       validatePublicBookingPartnerHandoff({
@@ -40,6 +50,8 @@ describe('validatePublicBookingPartnerHandoff', () => {
       'https://127.0.0.1/booking',
       'https://10.0.0.2/booking',
       'https://api.bokun.io/admin/experience/1232729',
+      'https://widgets.bokun.io/private/experience/1232729',
+      'https://preview.widgets.bokun.io/experience/1232729',
       'https://widgets.bokun.io/online-sales/public-channel/experience/1232729?token=secret',
     ]
 
