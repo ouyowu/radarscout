@@ -1,6 +1,6 @@
 # RadarScout Trip Planner — Consolidated Status
 
-Last updated: 2026-07-09
+Last updated: 2026-07-26
 
 This single document supersedes and replaces the following status/gate/audit
 docs, which have been removed to stop status-doc sprawl:
@@ -26,20 +26,50 @@ radarscout-ai-trip-release-gate-status.md
 Process rule going forward: do **not** create a new status-only PR or status
 doc unless it changes a decision or unblocks a gate. Update this file in place.
 
+## 0. Current authoritative snapshot
+
+This snapshot supersedes older deploy-candidate and observation history below:
+
+```text
+Development and production SHA:
+ca6596729c6d2003abded1822fccc25896880f4d
+
+Production deployment:
+dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj
+
+Aliases:
+https://radarscout.io
+https://www.radarscout.io
+
+Reviewed Viator catalogue:
+205 products across 19 Thailand cities/areas
+
+SEO pilot:
+6 approved tour-detail routes are index,follow and in sitemap
+all other tour details remain noindex,nofollow and out of sitemap
+
+North-star observation:
+Vercel Hobby custom-event dashboard unavailable
+first-party funnel_event production logs checked for 7 days: 0 events
+```
+
+Planner, reviewed regional map coverage, Viator affiliate handoffs and reviewed
+Agoda stay-area handoffs are live. Maps are regional orientation only, not exact
+routes, pickup points or meeting points. There is no first-party checkout,
+inventory, payment or booking confirmation.
+
 ## 1. What the feature is (verified)
 
 The `/ai-trip-planner` route is a **read-only Thailand trip discovery page**.
 Verified against source on 2026-07-07:
 
 - `robots: { index: false, follow: false }` — the page is noindex.
-- No LLM/OpenAI/Anthropic calls anywhere in `lib/ai-trip` or `lib/aiProducts`.
-  The "planner" is deterministic local intent parsing plus keyword product
-  search over eligible Thailand records (with a hand-maintained interest alias
-  table in `app/api/ai-trip/search/route.ts`).
+- Core parsing, retrieval, matching and itinerary construction are deterministic.
+  An optional Anthropic narration route exists but is fail-closed unless its
+  feature flag/key and limiter are available; it is not required for the product.
 - Read-only: no create/update/delete/upsert in `lib/aiProducts`.
-- `app/api/ai-trip/search/route.ts` `META` explicitly sets
-  `itineraryGenerationEnabled: false`, `bookingEnabled: false`,
-  `availabilityEnabled: false`.
+- `app/api/ai-trip/search/route.ts` returns deterministic itinerary data while
+  booking and availability behavior remain disabled.
 - Public copy is free of booking / payment / availability / rating / Bókun
   backend claims (enforced by `app/ai-trip-planner/__tests__/copySafety.test.ts`
   and `app/__tests__/publicCopySafety.test.ts`).
@@ -245,18 +275,18 @@ Codex must not run `vercel --prod`.
 
 ## 5. Production status
 
-Production was rechecked on 2026-07-09 before preparing the B2 candidate.
+Production was rechecked on 2026-07-26 after the four-PR release batch.
 
 ```text
-Production HEAD: f78254d5ab895a53a1a2a205359f2bd472a32f2c
-Deployment ID: dpl_HMTzVxd3w46NCDrGZg6AE7wFHGGx
-Deployment URL: https://reddit-monitor-qyz3uo48i-ouyowus-projects.vercel.app
+Production HEAD: ca6596729c6d2003abded1822fccc25896880f4d
+Deployment ID: dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj
+Deployment URL: https://reddit-monitor-petnmhecg-ouyowus-projects.vercel.app
 Target: production
 Status: READY
 Aliases:
 - https://radarscout.io
 - https://www.radarscout.io
-Previous obsolete observation: dpl_2v7mRufyuHdh6fuh2wnjR2XWx6c3
+Previous deployment observations below are historical.
 ```
 
 Post-deploy observation:
@@ -296,9 +326,9 @@ Current controlled-opening policy:
   `robots: { index: true, follow: true }`.
 - `/chiang-mai/elephant-camp-finder` is included in `sitemap.xml`.
 - `/ai-trip-planner` remains closed: `robots: { index: false, follow: false }`.
-- `/tours/[id]` remains closed unless a future explicit tour-detail SEO
-  candidate is reviewed and allowlisted.
-- The sitemap must not include `/ai-trip-planner` or unsafe `/tours/{id}` URLs.
+- Six reviewed `/tours/[id]` candidates are open; every other tour detail
+  remains closed unless separately reviewed and allowlisted.
+- The sitemap must not include `/ai-trip-planner` or unapproved `/tours/{id}` URLs.
 - `robots.txt` still disallows the legacy reddit-tool marketing routes.
 
 Regression coverage:
@@ -314,30 +344,32 @@ a dedicated SEO readiness task and human approval.
 
 ## 7. Current Phase 1 evidence and next action
 
-- Production is `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`, built from app-code SHA
-  `cc720a0a8c99cd4a11a51b7d43d19971517bd707`, with aliases
-  `radarscout.io` and `www.radarscout.io`. The current development base adds only
-  the docs-only goal reconciliation at `349fee6`.
+- Production and `origin/codex/travel-mvp-launch` are aligned at `ca659672`;
+  aliases resolve to `dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj`.
 - Vercel reports Web Analytics enabled and `hasData: true`. The project is on
   Hobby, which provides pageview analytics but not custom events. The operator
   has chosen not to upgrade yet, so `booking_partner_handoff_clicked` remains
   unobservable in the dashboard. Do not add another analytics provider.
-- Live smoke passed for homepage, `/planner`, `/ai-trip-planner`, `/tours`, one
-  Viator detail route, `sitemap.xml`, `robots.txt` and the Vercel Insights
-  script. The public search returned six Viator affiliate handoffs with the
-  required `nofollow sponsored noopener noreferrer` relation.
-- The live tour-detail pilot routes remain `noindex, nofollow` and absent from
-  the sitemap, as required before human SEO approval.
+- Live smoke passed for homepage, `/planner`, `/ai-trip-planner`,
+  `/destinations`, public product API, `sitemap.xml` and `robots.txt`.
+- An approved tour detail returns `index, follow` and is present in the sitemap;
+  a representative unapproved detail returns `noindex, nofollow` and is absent.
 - Viator's official Basic Access documentation supports product merchandising
   and Viator checkout handoff. Its certification rules require attraction,
   review and `viatorUniqueContent` content to remain non-indexable. RadarScout's
   seed validator already rejects those protected/raw/commercial fields.
-- The next action is operator approval of a 5–10 product SEO pilot allowlist for
-  `TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B`. No index policy is changed by this
-  observation.
+- The next action is real target traffic plus Search Console observation.
+  Do not start E2 event-table work or data-driven matching changes while
+  `funnel_event` remains at zero.
 
 ## 8. Execution Log
 
+- 2026-07-26 — `TD-RADARSCOUT-AUTHORITATIVE-DOCS-RECONCILE-1`: reconciled
+  the goal contract, architecture, task queue and consolidated status with
+  production `ca659672` / `dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj`, the 205-product
+  reviewed Viator catalogue, six live SEO candidates, reviewed map/Agoda
+  capabilities and the zero-event seven-day observation. No app, SEO policy,
+  provider, DB, schema or env behavior changed.
 - 2026-07-17 — Phase 1 evidence refresh: merged goal reconciliation PR #548 at
   `349fee6`; verified production at `cc720a0` /
   `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`; confirmed Vercel Web Analytics has
@@ -398,14 +430,11 @@ a dedicated SEO readiness task and human approval.
 
 ## 9. Human Approval Queue
 
-- `TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B` needs operator approval of a small
-  pilot allowlist. Recommended review shortlist (not yet approved):
-  `viator_6467bkknight`, `viator_163642p1`, `viator_191442p6`,
-  `viator_163642p25`, `viator_160694p9`, `viator_44720p2`. All six currently
-  return 200, remain `noindex, nofollow`, show `Check availability`, and hand off
-  through a PID-tagged Viator affiliate URL.
-- Enabling index/follow for any shortlist item, merging that policy, deploying
-  it, and submitting it to Search Console are separate human approvals.
+- The initial six-item SEO pilot is complete and live. Any additional candidate
+  still requires an operator-supplied id and separate SEO approval.
+- Search Console submission and indexing requests remain human actions.
+- Real traveler traffic/outreach remains an operator action; engineering must
+  not simulate it or treat headless smoke as user evidence.
 - Vercel Analytics stays on Hobby by operator decision. Do not upgrade or add a
   second analytics vendor automatically.
 - Legacy Bókun API/publication remains dormant red-zone work and is not part of
