@@ -21,14 +21,16 @@ RadarScout 当前不拥有支付、结账、库存、实时可用性或预订确
 
 > 每月由真实用户产生的 `booking_partner_handoff_clicked` 次数。
 
-截至 2026-07-17 的仓库事实：
+截至 2026-07-26 的仓库与生产事实：
 
 - 事件已经在代码中定义并接入 Vercel Web Analytics；
 - Planner、finder 和产品详情 CTA 已触发该事件；
-- 当前 dashboard 中可观察到的真实事件数量尚未完成确认，因此状态是
-  **unknown / not yet verified**，不能写成确定的 0；
-- 71 条人工审核 Viator seed 已存在；
-- `tourDetailSeoCandidates` 仍为空，因此产品详情页没有自然搜索获取面。
+- Vercel Hobby dashboard 不展示 custom events；服务端 first-party
+  `funnel_event` 日志可作为当前观察入口；
+- 最近 7 天生产日志中 `funnel_event` 为 0，当前北极星实测值为 0；
+- 205 条人工审核 Viator seed 已存在，覆盖 19 个泰国城市/区域；
+- 6 个经人工批准的 `tourDetailSeoCandidates` 已上线并进入 sitemap；
+  其余产品详情继续 `noindex, nofollow`。
 
 不要用 PR 数量、文档数量、代码行数或页面数量代替北极星。
 
@@ -39,26 +41,29 @@ Phase 1 只完成以下闭环：
 1. 确认当前生产部署与仓库安全基线一致；
 2. 用普通浏览器验证首页 → Planner → 产品 → `Check availability`；
 3. 确认 pageview 与批准的 funnel events 可在当前 Vercel 方案中观察；
-4. 获得 Viator 对公开展示、图片、缓存、署名、深链接和索引的书面说明；
-5. 由用户逐个批准一小批 SEO candidate；
-6. 通过人工门禁开放这些 candidate，其他产品继续 `noindex`；
-7. 提交 sitemap/Search Console 后观察至少两周真实流量。
+4. 保持 Viator 内容、深链接和索引使用符合已归档的授权边界；
+5. 保持首批 6 个 SEO candidate 上线，其他产品继续 `noindex`；
+6. 人工提交 sitemap/Search Console；
+7. 引入少量真实目标游客并观察至少两周流量与 handoff。
 
 Phase 1 不新增：
 
 - POI、TravelModule、RealityRule 等数据库表；
 - 登录、保存行程、PDF、多语言或 CMS；
-- 酒店、机票或站内支付；
+- 新的酒店/机票 provider、站内支付或预订能力；
 - LLM 检索或事实生成；
-- 地图、地理编码或未经审核的坐标；
+- 新的地图供应链、地理编码或未经审核的坐标；
 - 第二个 analytics provider。
 
 ## 4. 已有资产：只复用，不重建
 
-- 71 条 reviewed Viator seed 与 fail-closed 校验器；
+- 205 条 reviewed Viator seed 与 fail-closed 校验器；
 - Viator-only 产品匹配与 affiliate handoff；
 - `track()` shim、Vercel Analytics 和批准的事件 taxonomy；
 - `tourDetailSeoCandidates`、`getTourDetailRobots` 与 sitemap 闸门；
+- 6 个经人工批准并上线的 SEO candidate；
+- Planner 的 reviewed regional map coverage、MapLibre 工作区和安全说明；
+- 经人工审核的 Agoda stay-area 建议与服务端 affiliate deeplink；
 - prompt-first 首页、Planner、listing、产品详情与响应式设计系统；
 - 页面、组件、内容模型与验收规格；
 - 既有安全、SEO、copy 和 E2E 测试。
@@ -68,12 +73,12 @@ Phase 1 不新增：
 ## 5. 当前真正的关键路径
 
 ```text
-确认生产与 analytics 可观测性
-  → Viator Q1 书面授权
-  → 用户批准首批 candidate id
-  → TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B
-  → 人工 merge / production deploy
-  → Search Console + 两周真实观察
+生产与仓库基线保持一致
+  → 人工提交 Search Console
+  → 获取少量真实目标游客
+  → 观察 funnel_event 与 handoff
+  → 两周数据复盘
+  → 再决定 matching、SEO 扩容或 provider 扩展
 ```
 
 如果 analytics 在当前 Vercel 方案中只能发送而无法查看 custom events，
@@ -100,7 +105,8 @@ Viator Full Access 申请通过与否，不自动等于获得 Viator unique cont
 1. 检索与产品匹配不依赖 LLM；事实来自审核数据和确定性规则。
 2. 请求 N 天时，行程数据结构必须有 N 个明确槽位；缺少产品时显示
    planning-only/empty slot，不伪造产品或地点。
-3. 没有人工审核坐标时不渲染地图；禁止地理编码和 `(0,0)` 回落。
+3. 地图只使用人工审核的区域坐标并明确其为方向参考；没有覆盖时不渲染，
+   禁止地理编码、精确接送点暗示和 `(0,0)` 回落。
 4. CTA 固定为 `Check availability`，直接前往审核后的 affiliate URL。
 5. 外链使用 `nofollow sponsored noopener noreferrer`。
 6. 不伪造价格、库存、可订状态、评分、评论、营业时间或安全保证。
@@ -152,6 +158,6 @@ Viator Full Access 申请通过与否，不自动等于获得 Viator unique cont
 
 - 扩更多泰国城市/产品；
 - 优化 matching；
-- 引入 Agoda 住宿入口；
+- 扩大 Agoda 住宿入口或接入实时酒店目录；
 - 开始 Reality Check；
 - 或重新审视产品假设。

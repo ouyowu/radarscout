@@ -13,7 +13,7 @@ fabricated products / prices / suppliers / booking URLs. Production deploy,
 SEO index opening, and DB changes always require explicit human approval and
 are never automated.
 
-Ground truth refreshed 2026-07-17 (verify before each task — "Step 0: is it
+Ground truth refreshed 2026-07-26 (verify before each task — "Step 0: is it
 already built?"):
 - Homepage finder entry already exists (`app/page.tsx`).
 - `/chiang-mai/elephant-camp-finder` already `robots: { index: true, follow: true }`
@@ -23,12 +23,19 @@ already built?"):
   integrated. The production project reports Web Analytics enabled with pageview
   data, but it is on Vercel Hobby, where custom events are not available. The
   operator has chosen not to upgrade yet, so the north-star custom event remains
-  operationally unobservable; do not add another analytics provider.
-- The safe development base audited for this consolidation is
-  `origin/codex/travel-mvp-launch@349fee6`. The current production app-code
-  deployment is `cc720a0` / `dpl_F5cRvThApDQbBDPd3cNBrNdjXRJS`; the only base
-  commit after it is the docs-only goal reconciliation. Vercel marked that
-  production build `gitDirty=1`, so the next release must use a clean worktree.
+  unavailable in that dashboard; do not add another analytics provider.
+- First-party server `funnel_event` logs are the current custom-event observation
+  fallback. The latest seven-day production query returned zero events; do not
+  interpret missing traffic as a matching defect.
+- The safe development and production baseline is
+  `origin/codex/travel-mvp-launch@ca6596729c6d2003abded1822fccc25896880f4d`,
+  deployed as `dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj`.
+- The reviewed Viator public catalogue contains 205 products across 19 Thailand
+  cities/areas.
+- Six human-approved tour-detail SEO candidates are live, indexable and in the
+  sitemap; all other tour details remain `noindex, nofollow`.
+- Reviewed regional map coverage and reviewed Agoda stay-area affiliate handoff
+  are live. Neither is permission to infer exact routes, prices or availability.
 - The reviewed public catalogue is Viator-first. Legacy Bókun product publication
   must not be reactivated by a current task.
 
@@ -121,14 +128,14 @@ key/secret is committed.
 
 ---
 
-## TD-RADARSCOUT-SEO-INDEX-GUARD-2
+## TD-RADARSCOUT-SEO-INDEX-GUARD-2 — COMPLETED
 
 Branch: `codex/td-radarscout-seo-index-guard-2`
 
-Why: per-page index policy is ALREADY tested — finder=`index:true`
+Historical brief. Per-page index policy is tested — finder=`index:true`
 (`chiang-mai/elephant-camp-finder/__tests__/metadata.test.ts`),
 planner=`index:false` (`ai-trip-planner/__tests__/metadata.test.ts`),
-tours gated by `getTourDetailRobots` with an empty candidate list, plus
+tours gated by `getTourDetailRobots` with a reviewed candidate list, plus
 `app/__tests__/sitemap.test.ts`. The ONE real gap: no single cross-cutting test
 enforces that finder is the *only* newly-indexable marketing page. Per-page tests
 cannot catch a brand-new page added as `index:true`. This task adds exactly that
@@ -138,8 +145,8 @@ Scope (verify + guard only — do NOT change any page's current index policy):
 - Add ONE cross-cutting test (e.g. `app/__tests__/indexPolicyAllowlist.test.ts`)
   that enumerates page `metadata.robots` across the marketing routes and asserts
   the `index:true` set is exactly the approved allowlist: homepage, `/chiang-mai/
-  elephant-camp-finder`, the static legal pages already in `sitemap.ts`, plus any
-  approved `tourDetailSeoCandidates` (currently empty). Everything else
+  elephant-camp-finder`, the static legal pages already in `sitemap.ts`, plus
+  approved `tourDetailSeoCandidates`. Everything else
   (`/ai-trip-planner`, `/tours/[id]` default, `/demo`, reddit-tool routes) must be
   `index:false` or disallowed in `robots.ts`. The test must fail if a new route is
   added `index:true` outside the allowlist.
@@ -160,11 +167,10 @@ than just asserting it.
 
 ---
 
-## TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B — HUMAN-GATED
+## TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B — COMPLETED
 
-Why: the reviewed Viator catalogue exists, but `tourDetailSeoCandidates` is
-empty. The existing fail-closed gate should be populated only for a small,
-operator-approved SEO pilot after Viator licensing is clear.
+Why: the reviewed Viator catalogue required a small, operator-approved SEO pilot
+behind the existing fail-closed gate.
 
 The public-document Q1 review is complete for a conservative pilot surface:
 
@@ -186,15 +192,15 @@ Official evidence:
 - <https://partnerresources.viator.com/travel-commerce/certification/>
 - <https://partnerresources.viator.com/travel-commerce/affiliate/>
 
-Still blocked until the operator supplies a 5–10 product pilot allowlist. Each
-record must include `publicProductId`, `reviewedBy`, `approvedAt`, `reviewNote`
-and `expectedCanonicalPath`. The eventual index-policy change, merge and
-production deploy remain separate human approvals.
+Completed with six operator-approved ids. Production verification confirms an
+approved route is `index, follow` and present in the sitemap, while an
+unapproved route remains `noindex, nofollow` and absent. Any future expansion
+repeats this human-gated process.
 
 Step 0:
 
 - Re-read the current candidate module, metadata helper, sitemap and index guard.
-- Confirm the allowlist is still empty and report current production/SEO truth.
+- Confirm the current allowlist and report current production/SEO truth.
 - If licensing or the operator allowlist is missing, stop without editing code.
 
 Implementation:

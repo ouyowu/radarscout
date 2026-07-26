@@ -1,7 +1,7 @@
 # RadarScout 统一产品与技术架构 v2
 
 状态：Phase 1 当前规格
-更新时间：2026-07-17
+更新时间：2026-07-26
 目标：先证明 reviewed Thailand day-tour catalogue 能产生真实流量与 affiliate handoff 点击，再扩系统。
 
 ## 0. 来源与优先级
@@ -34,22 +34,28 @@ RadarScout 是面向英文自由行游客的泰国城市一日游规划与比较
 
 ## 2. 当前事实基线
 
-截至 2026-07-17，最新安全开发基线核对到
-`origin/codex/travel-mvp-launch@cc720a0`。部署状态必须单独只读确认，
+截至 2026-07-26，最新安全开发与生产基线均为
+`origin/codex/travel-mvp-launch@ca6596729c6d2003abded1822fccc25896880f4d`；
+生产部署为 `dpl_Hpe1bDEfjD5YDaT1Axeo39zLrjxj`。后续仍须逐次只读确认，
 不能从 git 状态推断生产状态。
 
 代码事实：
 
 - Next.js App Router + TypeScript + Tailwind；
 - PostgreSQL + Prisma ORM；托管平台是否为 Supabase 需从实际项目确认；
-- 71 条人工审核 Viator affiliate seed；
+- 205 条人工审核 Viator affiliate seed，覆盖 19 个泰国城市/区域；
 - public Planner/product matching 为 Viator-first；
 - Vercel Web Analytics 已在 root layout 中接入；
 - `booking_partner_handoff_clicked` 已在 Planner、finder 和产品详情 CTA 触发；
-- `tourDetailSeoCandidates` 为空，产品详情默认 `noindex`；
+- 6 个经人工批准的 `tourDetailSeoCandidates` 已上线；其他产品详情默认
+  `noindex, nofollow`；
 - sitemap 由静态安全路由和该 candidate allowlist 生成；
+- Planner 已使用人工审核的区域坐标显示 MapLibre 地图；没有覆盖时
+  fail-closed，不显示推测坐标；
+- 经人工审核的 Agoda stay-area 建议和服务端 affiliate deeplink 已上线；
 - legacy Bókun、Stripe、reddit-monitor crawler 等表面仍在仓库，但不属于当前公开产品路径；
-- 当前 seed 没有人工审核的经纬度字段。
+- 产品 seed 本身不携带精确地点坐标；地图使用独立的人工审核区域覆盖，
+  只作方向参考，不表示产品路线、接送点或集合点。
 
 这里的数量和 SHA 是审计快照，不是永久常量。每个任务 Step 0 必须重查。
 
@@ -86,17 +92,17 @@ Traveler prompt / guided choices
 
 ### 3.3 地图
 
-Phase 1 不做地图。
-
-原因：现有 Viator seed 没有人工审核坐标。地图只有在真实坐标进入安全
-内容模型并经过人工审核后才可启用。未来固定选择：
+Phase 1 已启用受控地图工作区：
 
 - MapLibre GL；
 - MapTiler/OSM 底图；
 - 只有明确允许公开的 MapTiler public token 可进入浏览器；
+- 坐标来自独立的人工审核区域覆盖，不从 Viator 产品文案推断；
 - 不做地理编码；
 - 禁止 `(0,0)` 回落；
-- 地图必须有等价列表/时间线。
+- 地图必须有等价列表/时间线；
+- 页面必须说明地图只用于区域方向，不是精确路线、接送点或集合点；
+- 未覆盖城市 fail-closed，显示暂无已审核地图覆盖。
 
 ## 4. 前端与信息架构
 
@@ -152,7 +158,7 @@ Viator Full Access 申请状态不等于内容 SEO 授权。
 
 - 产品详情保持 `noindex`；
 - 不把 Viator unique content 加入可索引 sitemap；
-- 不推断或批量开放 71 个页面。
+- 不推断或批量开放全部 205 个页面。
 
 ### 5.3 审核流程
 
@@ -177,17 +183,16 @@ read-only API candidate
 - sitemap candidate generation
 - cross-route index policy guard
 
-首轮 SEO 解锁建议只选 5–10 个页面：
+首轮 SEO 解锁已完成 6 个页面：
 
-- 用户逐个批准 id；
+- 用户已逐个批准 id；
 - 页面有 RadarScout 原创、实用且非重复的编辑内容；
 - canonical path 固定；
 - 记录 `reviewedBy`、`approvedAt`、`reviewNote`；
-- 未批准产品保持 `noindex`；
-- PR、merge、production deploy 均需人工批准。
+- 未批准产品保持 `noindex`。
 
-SEO 解锁由
-`TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B` 执行。
+该批 SEO 解锁由 `TD-RADARSCOUT-SEO-CANDIDATE-UNLOCK-2B` 完成。任何新增
+candidate 仍需独立人工审批。
 
 ## 7. Analytics
 
@@ -233,24 +238,26 @@ SEO 解锁由
 
 任何 schema、migration、真实数据迁移或生产连接都是单独审批任务。
 
-Phase 1 不新建数据表。71 条 reviewed Viator seed 继续作为受控静态资产。
+Phase 1 不新建数据表。205 条 reviewed Viator seed 继续作为受控静态资产。
 
 ## 9. Thainight 与 Agoda
 
-Thainight 融合不是 Phase 1 工作。
+Thainight 融合仍不是 Phase 1 工作。Agoda 已以收窄后的 affiliate handoff
+形式进入 Phase 1，但没有酒店目录 API、实时价格、库存或站内预订。
 
-未来默认方向：
+当前方向：
 
 - RadarScout 做旅行规划与活动；
 - 住宿命名空间使用 `stay` / `accommodation`，避免与旧
   `/api/thainight/intelligence` 混淆；
-- 复用经过安全审查的 Agoda deeplink、provider 和 stay strategy；
+- 复用经过安全审查的 Agoda deeplink 和 reviewed stay-area strategy；
 - 访问层统一 Prisma；
 - fixture handoff、公开 CID、认证 fail-open、0 价格和 `(0,0)` 坐标问题
   必须先修复；
 - 是否 301 thainight.co 由用户单独决定。
 
-只有 Phase 1 累积至少两周真实点击数据后，才评估 Agoda。
+只有 Phase 1 累积至少两周真实点击数据后，才评估扩大 Agoda 覆盖或接入
+酒店数据能力。
 
 ## 10. Reality Check
 
@@ -319,9 +326,10 @@ remove。当前公开 Planner 不得回退到 Bókun。
 
 ## 13. 仍需用户回答的问题
 
-### Q1 — Viator 内容与索引授权（唯一 Phase 1 硬阻塞）
+### Q1 — Viator 内容与索引授权
 
-取得第 5.2 节的书面答案，并给出首批 SEO candidate id。
+首批 6 个 SEO candidate 已完成授权边界审查和人工批准。新增 candidate
+仍须重复该门禁。
 
 ### Q2 — Analytics 可观测性
 
@@ -340,4 +348,5 @@ quarantine 还是 remove？
 
 ### Q5 — Phase 1 后续
 
-两周真实数据后再决定 Agoda、Reality Check、更多城市或多国扩张。
+两周真实数据后再决定 matching、SEO candidate 扩容、Agoda 扩展、
+Reality Check、更多城市或多国扩张。
