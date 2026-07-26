@@ -9,7 +9,7 @@ import {
   homepageSteps,
   homepageTrustItems,
 } from './_content/publicSite'
-import { loadReviewedViatorPublicCatalogue } from '@/lib/viator/reviewedViatorPublicCatalogue'
+import { featuredViatorExperiences } from './_content/homepageFeaturedExperiences'
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
 
@@ -33,12 +33,6 @@ export const metadata: Metadata = {
   },
 }
 
-const reviewedViatorPublicCatalogue = loadReviewedViatorPublicCatalogue()
-const featuredViatorCities = ['Bangkok', 'Chiang Mai', 'Phuket', 'Krabi'] as const
-const featuredViatorExperiences = featuredViatorCities.flatMap((city) => {
-  const product = reviewedViatorPublicCatalogue.find((candidate) => candidate.destination === city)
-  return product ? [product] : []
-})
 const thailandPlannerHref = '/planner'
 
 export default function LandingPage() {
@@ -64,7 +58,7 @@ export default function LandingPage() {
           title="Skip the endless sorting. Start with day tours we have already narrowed down."
           lead="Each experience is selected for clear destination fit, useful themes, and a verified Viator handoff. Current price, inclusions, and booking terms are confirmed on Viator."
         >
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {featuredViatorExperiences.map(product => (
               <ExperienceCard
                 key={product.id}

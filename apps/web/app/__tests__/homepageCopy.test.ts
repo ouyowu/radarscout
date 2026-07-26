@@ -2,11 +2,17 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { metadata } from '../page'
 import { expectNoForbiddenPublicCopy } from './publicSafetyPatterns'
+import { featuredViatorExperiences } from '../_content/homepageFeaturedExperiences'
+import { listTourDetailSeoCandidates } from '@/lib/publicProducts/tourDetailSeoCandidates'
 
 const homepageSource = readFileSync(new URL('../page.tsx', import.meta.url), 'utf8')
 const publicSiteShellSource = readFileSync(new URL('../_components/PublicSiteShell.tsx', import.meta.url), 'utf8')
 const promptHeroSource = readFileSync(new URL('../_components/PromptHero.tsx', import.meta.url), 'utf8')
 const promptHeroHelperSource = readFileSync(new URL('../_components/promptHero.helpers.ts', import.meta.url), 'utf8')
+const homepageFeaturedExperiencesSource = readFileSync(
+  new URL('../_content/homepageFeaturedExperiences.ts', import.meta.url),
+  'utf8',
+)
 const publicSiteContentSource = readFileSync(new URL('../_content/publicSite.ts', import.meta.url), 'utf8')
 const homepageVisibleCopySources = [
   homepageSource,
@@ -52,7 +58,8 @@ describe('homepage public copy safety', () => {
   it('presents reviewed Viator experiences across Thailand cities without legacy products', () => {
     expect(homepageSource).toContain("RadarScout's Viator shortlist")
     expect(homepageSource).toContain('Skip the endless sorting. Start with day tours we have already narrowed down.')
-    expect(homepageSource).toContain('loadReviewedViatorPublicCatalogue')
+    expect(homepageFeaturedExperiencesSource).toContain('loadReviewedViatorPublicCatalogue')
+    expect(homepageFeaturedExperiencesSource).toContain('listTourDetailSeoCandidates')
     expect(homepageSource).toContain('featuredViatorExperiences')
     expect(homepageSource).not.toContain('pilotPartnerProducts')
     expect(homepageSource).not.toContain('partner_cm_')
@@ -60,6 +67,17 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).toContain('whyRecommended={product.summary}')
     expect(homepageSource).toContain('bestFor={product.tags.slice(0, 3)}')
     expect(homepageSource).toContain('watchOut=')
+  })
+
+  it('links every approved SEO pilot product from the indexable homepage', () => {
+    const approvedCandidates = listTourDetailSeoCandidates()
+
+    expect(featuredViatorExperiences.map(product => product.id)).toEqual(
+      approvedCandidates.map(candidate => candidate.publicProductId),
+    )
+    expect(featuredViatorExperiences.map(product => product.detailHref)).toEqual(
+      approvedCandidates.map(candidate => candidate.expectedCanonicalPath),
+    )
   })
 
   it('uses the shared public site shell and keeps the homepage Thailand day-trip focused', () => {
