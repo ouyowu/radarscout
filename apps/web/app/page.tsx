@@ -117,14 +117,24 @@ export default function LandingPage() {
                 Use the guided planner to choose your travel style, compare reviewed matches, and inspect the suggested day before opening a product detail.
               </p>
             </div>
-            <TrackedLink
-              href={thailandPlannerHref}
-              event="homepage_finder_entry_clicked"
-              eventProps={{ source: 'thailand_planner_section' }}
-              className="relative inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-            >
-              Plan my Thailand day
-            </TrackedLink>
+            <div className="relative flex flex-col gap-3">
+              <TrackedLink
+                href={thailandPlannerHref}
+                event="homepage_finder_entry_clicked"
+                eventProps={{ source: 'thailand_planner_section' }}
+                className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+              >
+                Plan my Thailand day
+              </TrackedLink>
+              <TrackedLink
+                href="/thailand-trip-planner"
+                event="homepage_finder_entry_clicked"
+                eventProps={{ source: 'thailand_planning_guide' }}
+                className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-white/40 px-7 text-sm font-bold text-white transition hover:bg-white/10"
+              >
+                Read the Thailand planning guide
+              </TrackedLink>
+            </div>
           </div>
         </Section>
 

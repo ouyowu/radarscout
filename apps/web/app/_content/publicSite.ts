@@ -1,5 +1,5 @@
 export const publicNavLinks = [
-  { href: '/planner', label: 'Plan a day' },
+  { href: '/thailand-trip-planner', label: 'Thailand planner' },
   { href: '/tours', label: 'Experiences' },
   { href: '/destinations', label: 'Destinations' },
   { href: '/about-us', label: 'About' },

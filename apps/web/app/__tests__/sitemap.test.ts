@@ -44,6 +44,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).toContain(`${BASE}`)
+    expect(urls).toContain(`${BASE}/thailand-trip-planner`)
     expect(urls).toContain(`${BASE}/contact`)
     expect(urls).toContain(`${BASE}/privacy-policy`)
     expect(urls).toContain(`${BASE}/terms-of-service`)
@@ -101,7 +102,7 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(11)
+    expect(entries).toHaveLength(12)
     expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 
@@ -124,6 +125,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).toContain(`${BASE}/chiang-mai/elephant-camp-finder`)
+    expect(urls).toContain(`${BASE}/thailand-trip-planner`)
   })
 
   it('does not include other noindex public pages while they remain closed to indexing', async () => {

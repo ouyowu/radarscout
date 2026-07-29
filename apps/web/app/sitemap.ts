@@ -3,6 +3,7 @@ import { listTourDetailSeoCandidates } from '@/lib/publicProducts/tourDetailSeoC
 
 const routes = [
   ['', 'weekly', 1.0],
+  ['/thailand-trip-planner', 'weekly', 0.9],
   ['/chiang-mai/elephant-camp-finder', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],

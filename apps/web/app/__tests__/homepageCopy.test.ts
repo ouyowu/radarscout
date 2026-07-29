@@ -147,6 +147,14 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('elephant-camp-finder')
   })
 
+  it('links the indexable homepage to the Thailand trip planner SEO hub', () => {
+    expect(homepageSource).toContain('href="/thailand-trip-planner"')
+    expect(homepageSource).toContain('Read the Thailand planning guide')
+    expect(publicSiteContentSource).toContain(
+      "{ href: '/thailand-trip-planner', label: 'Thailand planner' }",
+    )
+  })
+
   it('keeps the shared Planner entry instrumented without restoring the legacy finder path', () => {
     expect(homepageSource).toContain("const thailandPlannerHref = '/planner'")
     expect(promptHeroSource).toContain("track('homepage_finder_entry_clicked', { source })")
@@ -170,7 +178,9 @@ describe('homepage public copy safety', () => {
   })
 
   it('keeps public navigation focused on traveler tasks', () => {
-    expect(publicSiteContentSource).toContain("{ href: '/planner', label: 'Plan a day' }")
+    expect(publicSiteContentSource).toContain(
+      "{ href: '/thailand-trip-planner', label: 'Thailand planner' }",
+    )
     expect(publicSiteContentSource).not.toContain("{ href: '/ai-trip-planner', label: 'Plan a day' }")
     expect(homepageVisibleCopySources).not.toContain('href="/ai-trip-planner"')
     expect(publicSiteContentSource).toContain("{ href: '/tours', label: 'Experiences' }")
