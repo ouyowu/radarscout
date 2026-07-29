@@ -179,7 +179,7 @@ describe('/internal/ routes — Basic Auth required', () => {
   })
 })
 
-describe('stale SaaS marketing routes — redirected to travel homepage', () => {
+describe('legacy off-topic routes — permanently gone', () => {
   for (const path of [
     '/pricing',
     '/demo',
@@ -193,11 +193,32 @@ describe('stale SaaS marketing routes — redirected to travel homepage', () => 
     '/social-listening-reddit',
     '/reddit-competitor-monitoring',
     '/reddit-customer-discovery',
+    '/search',
+    '/itineraries/austria-germany-france-11-days',
   ]) {
-    it(`redirects ${path} to /`, () => {
+    it(`returns 410 without redirecting ${path}`, () => {
       const res = middleware(makeReq(path, null))
-      expect(res?.status).toBe(308)
-    expect(res?.headers.get('location')).toBe('https://www.radarscout.io/')
+      expect(res?.status).toBe(410)
+      expect(res?.headers.get('location')).toBeNull()
     })
   }
+
+  for (const path of [
+    '/buying-guides',
+    '/buying-guides/best-blood-glucose-monitors',
+    '/reviews',
+    '/reviews/eight-sleep-pod-4-review',
+  ]) {
+    it(`returns 410 for legacy content prefix ${path}`, () => {
+      const res = middleware(makeReq(path, null))
+      expect(res?.status).toBe(410)
+      expect(res?.headers.get('location')).toBeNull()
+    })
+  }
+
+  it('preserves the active Thailand itinerary route', () => {
+    expect(
+      middleware(makeReq('/itineraries/thailand/bangkok/3-days', null)),
+    ).toBeUndefined()
+  })
 })
