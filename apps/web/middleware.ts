@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 const PROTECTED = ['/monitors', '/billing', '/dashboard']
 const INTERNAL_PREFIX = '/internal/'
-const LEGACY_COMPARISONS_PREFIX = '/comparisons'
+const LEGACY_GONE_PREFIXES = ['/comparisons', '/buying-guides', '/reviews']
 
 function checkInternalBasicAuth(
   req: { headers: { get: (name: string) => string | null } },
@@ -26,7 +26,7 @@ function checkInternalBasicAuth(
 
   return decoded.slice(colonIndex + 1) === secret
 }
-const STALE_MARKETING_PATHS = new Set([
+const LEGACY_GONE_PATHS = new Set([
   '/demo',
   '/use-cases',
   '/pricing',
@@ -39,6 +39,8 @@ const STALE_MARKETING_PATHS = new Set([
   '/social-listening-reddit',
   '/reddit-competitor-monitoring',
   '/reddit-customer-discovery',
+  '/search',
+  '/itineraries/austria-germany-france-11-days',
 ])
 const SESSION_COOKIE_NAMES = [
   'authjs.session-token',
@@ -67,13 +69,11 @@ export default function middleware(req: Request & { nextUrl: URL; cookies: { get
     return NextResponse.next()
   }
 
-  if (STALE_MARKETING_PATHS.has(pathname)) {
-    return NextResponse.redirect(new URL('/', req.url), 308)
-  }
-
   if (
-    pathname === LEGACY_COMPARISONS_PREFIX
-    || pathname.startsWith(`${LEGACY_COMPARISONS_PREFIX}/`)
+    LEGACY_GONE_PATHS.has(pathname)
+    || LEGACY_GONE_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    )
   ) {
     return new NextResponse('Gone', { status: 410 })
   }
