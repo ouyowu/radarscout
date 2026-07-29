@@ -29,12 +29,19 @@ import { metadata as notFoundMetadata } from '../not-found'
 import { metadata as plannerStudioMetadata } from '../planner/page'
 import { metadata as privacyMetadata } from '../privacy-policy/page'
 import { metadata as termsMetadata } from '../terms-of-service/page'
+import { metadata as thailandTripPlannerMetadata } from '../thailand-trip-planner/page'
+import { generateMetadata as generateThailandCityMetadata } from '../thailand/[city]/page'
+import { cityHubSlugs } from '../thailand/cityHubContent'
 import { generateMetadata as generateTourDetailMetadata } from '../tours/[id]/page'
 import { globalDestinations } from '@/lib/global-destinations'
 
 const BASE = 'https://www.radarscout.io'
 const CURRENT_INDEXABLE_SITEMAP_URLS = [
   BASE,
+  `${BASE}/thailand-trip-planner`,
+  `${BASE}/thailand/bangkok`,
+  `${BASE}/thailand/chiang-mai`,
+  `${BASE}/thailand/phuket`,
   `${BASE}/chiang-mai/elephant-camp-finder`,
   `${BASE}/contact`,
   `${BASE}/privacy-policy`,
@@ -99,6 +106,15 @@ describe('controlled SEO opening guard', () => {
     expect(privacyMetadata.robots).toBeUndefined()
     expect(termsMetadata.robots).toBeUndefined()
     expect(chiangMaiFinderMetadata.robots).toMatchObject({ index: true, follow: true })
+    expect(thailandTripPlannerMetadata.robots).toMatchObject({ index: true, follow: true })
+    expect(thailandTripPlannerMetadata.alternates?.canonical).toBe(
+      `${BASE}/thailand-trip-planner`,
+    )
+    for (const city of cityHubSlugs) {
+      const cityMetadata = generateThailandCityMetadata({ params: { city } })
+      expect(cityMetadata.robots, city).toMatchObject({ index: true, follow: true })
+      expect(cityMetadata.alternates?.canonical, city).toBe(`${BASE}/thailand/${city}`)
+    }
     expect(aiTripPlannerMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(plannerStudioMetadata.robots).toMatchObject({ index: false, follow: false })
     expect(demoMetadata.robots).toMatchObject({ index: false, follow: false })

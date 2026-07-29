@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { FAQAccordion } from './_components/FAQAccordion'
+import { JsonLd } from './_components/JsonLd'
 import { PromptHero } from './_components/PromptHero'
 import { PublicSiteShell } from './_components/PublicSiteShell'
 import { TrackedLink } from './_components/TrackedLink'
@@ -11,7 +12,26 @@ import {
 } from './_content/publicSite'
 import { featuredViatorExperiences } from './_content/homepageFeaturedExperiences'
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
+const base = 'https://www.radarscout.io'
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${base}/#organization`,
+      name: 'RadarScout',
+      url: base,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${base}/#website`,
+      name: 'RadarScout',
+      url: base,
+      publisher: { '@id': `${base}/#organization` },
+    },
+  ],
+}
 
 export const metadata: Metadata = {
   title: 'RadarScout | Personalized Thailand Experience Planner',
@@ -38,6 +58,7 @@ const thailandPlannerHref = '/planner'
 export default function LandingPage() {
   return (
     <PublicSiteShell>
+      <JsonLd data={structuredData} />
       <main className="bg-rs-sand-50 font-rs-body text-rs-ink">
         <PromptHero />
 
@@ -117,14 +138,24 @@ export default function LandingPage() {
                 Use the guided planner to choose your travel style, compare reviewed matches, and inspect the suggested day before opening a product detail.
               </p>
             </div>
-            <TrackedLink
-              href={thailandPlannerHref}
-              event="homepage_finder_entry_clicked"
-              eventProps={{ source: 'thailand_planner_section' }}
-              className="relative inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-            >
-              Plan my Thailand day
-            </TrackedLink>
+            <div className="relative flex flex-col gap-3">
+              <TrackedLink
+                href={thailandPlannerHref}
+                event="homepage_finder_entry_clicked"
+                eventProps={{ source: 'thailand_planner_section' }}
+                className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-7 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+              >
+                Plan my Thailand day
+              </TrackedLink>
+              <TrackedLink
+                href="/thailand-trip-planner"
+                event="homepage_finder_entry_clicked"
+                eventProps={{ source: 'thailand_planning_guide' }}
+                className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-white/40 px-7 text-sm font-bold text-white transition hover:bg-white/10"
+              >
+                Read the Thailand planning guide
+              </TrackedLink>
+            </div>
           </div>
         </Section>
 
