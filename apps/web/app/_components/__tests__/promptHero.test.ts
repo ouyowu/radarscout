@@ -50,6 +50,12 @@ describe('PromptHero component source', () => {
     expect(source).toContain('Describe your ideal Thailand trip')
   })
 
+  it('uses the owned Thailand hero artwork as a responsive priority image', () => {
+    expect(source).toContain('src="/images/thailand-planner-hero.png"')
+    expect(source).toContain('sizes="100vw"')
+    expect(source).toContain('priority')
+  })
+
   it('wires a submit action and the chips to the planner via buildIdeaHref', () => {
     expect(source).toContain('Plan my trip')
     expect(source).toContain('buildIdeaHref')
@@ -65,6 +71,8 @@ describe('PromptHero component source', () => {
 
   it('keeps honest, safe hero copy — no AI/price/availability/cart claims', () => {
     expect(source).toContain('Curated Viator shortlist')
+    expect(source).toContain('Your Thailand day,')
+    expect(source).toContain('planned around you.')
     expect(source).toContain('We narrow the options before you compare')
     expect(source).not.toMatch(/\bAI\b/)
     expect(source).not.toMatch(/\bprice\b/i)
