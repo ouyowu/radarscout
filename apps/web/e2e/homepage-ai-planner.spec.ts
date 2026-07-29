@@ -69,7 +69,7 @@ test.describe('Homepage Trip Planner entry', () => {
 
     await expect(page).toHaveTitle('RadarScout | Personalized Thailand Experience Planner')
     await expect(page.getByRole('heading', {
-      name: 'Tell us your ideal Thailand day. We narrow it to real, reviewed Viator experiences.',
+      name: 'Your Thailand day, planned around you.',
     })).toBeVisible()
     await expect(page.getByText('Curated Viator shortlist · Thailand day trips')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Plan my trip' })).toBeVisible()

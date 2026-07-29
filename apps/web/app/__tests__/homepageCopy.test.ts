@@ -91,7 +91,9 @@ describe('homepage public copy safety', () => {
   })
 
   it('links to the Trip Planner with safe prompt-first copy', () => {
-    expect(promptHeroSource).toContain('Tell us your ideal Thailand day. We narrow it to real, reviewed Viator experiences.')
+    expect(promptHeroSource).toContain('Your Thailand day,')
+    expect(promptHeroSource).toContain('planned around you.')
+    expect(promptHeroSource).toContain('src="/images/thailand-planner-hero.png"')
     expect(promptHeroSource).toContain('Curated Viator shortlist')
     expect(promptHeroSource).toContain('Plan my trip')
     expect(promptHeroSource).toContain('Thailand-first · Personalized matching · Trusted booking partner handoff')
