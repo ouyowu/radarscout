@@ -1,7 +1,7 @@
 # RadarScout 统一产品与技术架构 v2
 
 状态：Phase 1 当前规格
-更新时间：2026-07-26
+更新时间：2026-07-29
 目标：先证明 reviewed Thailand day-tour catalogue 能产生真实流量与 affiliate handoff 点击，再扩系统。
 
 ## 0. 来源与优先级
@@ -350,3 +350,227 @@ quarantine 还是 remove？
 
 两周真实数据后再决定 matching、SEO candidate 扩容、Agoda 扩展、
 Reality Check、更多城市或多国扩张。
+
+## 14. Future RadarScout MCP API
+
+状态：架构预设计，不属于 Phase 1，不批准运行时代码、部署、env、数据库或
+新 provider。
+
+目标：让支持远程 MCP 的 ChatGPT、Claude、Gemini 等客户端查询 RadarScout
+已经人工审核的泰国一日游推荐，而不是让通用模型根据训练记忆猜产品、优缺点
+或联盟链接。
+
+MCP 是新的分发接口，不是新的事实来源。唯一事实链继续是：
+
+```text
+reviewed Viator seed
+  → existing fail-closed validator
+  → deterministic matching
+  → reviewed recommendation signals
+  → validated affiliate handoff
+  → read-only MCP response
+```
+
+### 14.1 协议与部署边界
+
+- 本地开发使用 `stdio`；
+- 远程版本使用单一 `/mcp` Streamable HTTP endpoint；
+- 远程实现必须校验 `Origin`、限制请求频率，并在需要保护访问时遵循 MCP
+  HTTP authorization 规范；
+- 工具必须声明严格的 JSON Schema、`outputSchema` 和只读 annotations；
+- 返回 `structuredContent`，同时提供简短 text fallback；
+- 不使用旧 HTTP+SSE 作为新实现的首选；
+- 不为 ChatGPT、Claude、Gemini 分别维护三套业务逻辑；三者共享一个 MCP
+  server 和一份契约；
+- 如某个消费端暂不支持目标 MCP 能力，只允许做同一 domain service 的薄适配，
+  不复制 matching、审核或 handoff 逻辑。
+
+规范依据：
+
+- [MCP transports](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports)
+- [MCP tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)
+- [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)
+
+### 14.2 最小工具面
+
+首版只提供三个只读工具，不为 elephant、island hopping、ATV、snorkeling、
+temple tour 分别造工具：
+
+1. `search_thailand_experiences`
+   - 用于 “best elephant sanctuary”“best snorkeling”等发现请求；
+   - 输入目的地、类别、游客类型、pace 和 limit；
+   - 返回审核后的确定性排序结果。
+2. `get_thailand_experience`
+   - 按 RadarScout public product id 读取一个审核产品；
+   - id 不存在或未通过公开门禁时返回 not found，不回退到 provider API。
+3. `list_thailand_experience_facets`
+   - 返回当前真实覆盖的 destinations、categories 和 traveler types；
+   - 让客户端先发现能力，避免模型编造不存在的类别或城市。
+
+`search_thailand_experiences` 输入契约：
+
+```ts
+type SearchThailandExperiencesInput = {
+  query: string
+  destination?: string
+  categories?: Array<
+    | 'elephant'
+    | 'island_hopping'
+    | 'atv'
+    | 'snorkeling'
+    | 'temple'
+    | 'food'
+    | 'culture'
+    | 'nature'
+    | 'boat'
+  >
+  travelerType?: 'solo' | 'couple' | 'family' | 'friends'
+  pace?: 'easy' | 'balanced' | 'active'
+  limit?: number // 1..10
+}
+```
+
+不要把 “best” 实现成未经证明的绝对销量、评分或价格结论。工具描述和结果应
+使用 “top reviewed matches” 或 “reviewed recommendations”，除非未来获得
+可合法展示且可审计的排序数据。
+
+### 14.3 输出契约
+
+```ts
+type RadarScoutMcpRecommendation = {
+  id: string
+  title: string
+  destination: string
+  categories: string[]
+  whyRecommended: string
+  bestFor: string[]
+  pros: string[]
+  cons: string[]
+  partner: 'viator'
+  partnerLink: string
+  handoffLabel: 'Check availability'
+  reviewedAt: string
+  sourceStatus: 'human_reviewed'
+}
+
+type SearchThailandExperiencesOutput = {
+  query: string
+  normalizedIntent: {
+    destination: string | null
+    categories: string[]
+    travelerType: string | null
+    pace: string | null
+  }
+  recommendations: RadarScoutMcpRecommendation[]
+  coverage: 'complete' | 'limited' | 'none'
+  caveats: string[]
+}
+```
+
+字段来源必须可追溯：
+
+| MCP field | 允许来源 |
+| --- | --- |
+| `title`, `destination`, `categories`, `reviewedAt` | validated reviewed Viator seed |
+| `whyRecommended`, `bestFor` | existing deterministic recommendation signals |
+| `pros` | 只允许从审核 tags、summary 和明确匹配原因生成的确定性、正面事实 |
+| `cons` | existing `watchOut` 或未来人工审核的 tradeoff 字段 |
+| `partnerLink` | existing Viator affiliate URL validator 通过的 URL |
+
+如果当前审核数据不足以生成具体 `pros`，返回空数组；如果没有具体 tradeoff，
+`cons` 只返回现有通用 `watchOut`。不得让调用 MCP 的模型自行补写这些字段。
+
+### 14.4 安全与商业边界
+
+MCP 永远不得输出：
+
+- raw Viator JSON、API key、单独的 affiliate account id 字段或内部审核备注；
+- supplier、commission、net rate 或其他商业字段；
+- 未获授权的完整 provider description 或图片；
+- 未核验价格、评分、评论、库存、实时可用性；
+- checkout、payment、booking confirmation；
+- 用户 PII 或其他用户的 prompt；
+- 未通过审核门禁的产品或 URL。
+
+`partnerLink` 可以包含 Viator 要求的归因参数，但不得把这些参数拆成独立字段，
+也不得在日志或其他 metadata 中重复暴露。
+
+每次调用：
+
+- 只读静态 reviewed catalogue，不实时请求 Viator；
+- `limit` 最大为 10，拒绝未知字段和自由 SQL/filter 操作符；
+- 相同输入与相同 catalogue version 必须得到相同排序；
+- URL 再次通过 allowlist/affiliate validator；
+- 任一产品校验失败就从结果移除，而不是降级暴露原始记录；
+- 日志只记录 tool name、destination/category、result count、latency 和
+  catalogue version，不记录原始 query、完整 partner link 或 PII。
+
+MCP 点击本身不等于 affiliate handoff。只有用户实际打开 `partnerLink` 时才算
+商业转化意图；未来如需归因，复用 `booking_partner_handoff_clicked` 的安全
+事件语义，不新建含完整 URL 的分析 payload。
+
+### 14.5 目录版本与错误语义
+
+每次成功响应应带 server-level metadata：
+
+```ts
+type RadarScoutMcpMetadata = {
+  schemaVersion: '1.0'
+  catalogueVersion: string
+  generatedAt: string
+  providerCoverage: ['viator']
+}
+```
+
+- 没有匹配时返回 `recommendations: []`、`coverage: 'none'` 和可用 facets；
+- 城市有少量审核产品时返回 `coverage: 'limited'`，不跨城市偷偷补产品；
+- 未知 product id 返回稳定的 not-found tool error；
+- 内部 validator 或 catalogue load 失败时 fail-closed，返回服务错误，不返回
+  部分未校验数据。
+
+### 14.6 分阶段实施
+
+#### MCP-0 — Contract and fixtures
+
+- 只落地 TypeScript schemas、tool descriptions、fixtures 和 contract tests；
+- 复用现有 matching/signals/handoff，不写 server transport；
+- 证明五个目标查询只返回审核产品和合法 affiliate URL。
+
+#### MCP-1 — Local read-only server
+
+- `stdio` server；
+- 三个工具；
+- 无 auth、无网络 provider call、无数据库/schema/env 变更；
+- 用 MCP Inspector 和本地 Claude/Codex/Gemini client 验证。
+
+#### MCP-2 — Remote private pilot
+
+- `/mcp` Streamable HTTP；
+- rate limit、Origin validation、request timeout、structured logs；
+- private access / OAuth 方案需单独安全评审；
+- 不加入 sitemap，不开放 SEO。
+
+#### MCP-3 — Cross-client certification
+
+- 分别验证 ChatGPT/OpenAI Responses、Claude 和 Gemini 的远程 MCP 调用；
+- 同一 fixture 在三个客户端返回同一产品集合和同一 partner link；
+- 客户端可以调整自然语言表达，但不得改变结构化事实。
+
+#### MCP-4 — Public distribution decision
+
+只有在 private pilot 有真实使用证据、成本与安全指标可接受后，由用户决定是否
+公开 MCP server 或提交到各平台目录。不得自动公开。
+
+### 14.7 MCP-0 验收
+
+- “Best elephant sanctuary”“Best island hopping”“Best ATV”
+  “Best snorkeling”“Best temple tour”均有 contract fixture；
+- 每个结果都有 `whyRecommended`、`bestFor`、`pros`、`cons` 和
+  `partnerLink` 字段；
+- 所有结果来自 `loadReviewedViatorProducts()`；
+- 所有链接通过 `isReviewedViatorAffiliateUrl()`；
+- 结果不包含 forbidden/commercial/raw provider fields；
+- 无匹配时明确返回空结果，不让模型猜；
+- 相同输入得到确定性排序；
+- 未新增数据库表、provider API call、支付、库存或 booking；
+- 尚未部署、尚未对外发布。
