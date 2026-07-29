@@ -7,7 +7,7 @@ import { TrackedLink } from '../_components/TrackedLink'
 import { ExperienceCard, Section } from '../_components/design-system'
 import { featuredViatorExperiences } from '../_content/homepageFeaturedExperiences'
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
+const base = 'https://www.radarscout.io'
 const canonicalPath = '/thailand-trip-planner'
 const canonicalUrl = `${base}${canonicalPath}`
 
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 const cityStartingPoints = [
   {
     name: 'Bangkok',
-    href: '/tours?city=Bangkok',
+    href: '/thailand/bangkok',
     planHref: '/planner?idea=Bangkok%203%20days%20food%20temples',
     summary:
       'Balance temples, canals, food, and practical day trips without sending every day across the city.',
@@ -44,7 +44,7 @@ const cityStartingPoints = [
   },
   {
     name: 'Chiang Mai',
-    href: '/tours?city=Chiang%20Mai',
+    href: '/thailand/chiang-mai',
     planHref: '/planner?idea=Chiang%20Mai%203%20days%20nature%20food',
     summary:
       'Compare nature, cooking, temples, and elephant-care experiences from a reviewed shortlist.',
@@ -53,7 +53,7 @@ const cityStartingPoints = [
   },
   {
     name: 'Phuket',
-    href: '/tours?city=Phuket',
+    href: '/thailand/phuket',
     planHref: '/planner?idea=Phuket%203%20days%20islands%20snorkeling',
     summary:
       'Separate island days, water activities, and land-based options so the route stays realistic.',
@@ -273,7 +273,7 @@ export default function ThailandTripPlannerHubPage() {
                 </dl>
                 <div className="mt-auto flex flex-wrap gap-4 pt-7 text-sm font-semibold">
                   <Link href={city.href} className="text-rs-terracotta-600 underline-offset-4 hover:underline">
-                    Review {city.name} tours
+                    Open the {city.name} guide
                   </Link>
                   <Link href={city.planHref} className="text-rs-forest-700 underline-offset-4 hover:underline">
                     Plan this city
@@ -337,6 +337,25 @@ export default function ThailandTripPlannerHubPage() {
             >
               Read the affiliate disclosure
             </Link>
+          </div>
+        </section>
+
+        <section className="border-b border-rs-sage-200/70 bg-white px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-[1240px] gap-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-terracotta-600">
+                Editorial method
+              </p>
+              <h2 className="mt-3 font-rs-display text-3xl font-semibold">
+                Reviewed by the RadarScout Editorial Team
+              </h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-rs-muted">
+                We review destination fit, traveler fit, practical timing and transfer caveats,
+                display-safe product content, and the verified affiliate handoff. Current product
+                terms are confirmed on the booking partner page.
+              </p>
+            </div>
+            <p className="text-sm text-rs-muted">Last reviewed: July 29, 2026</p>
           </div>
         </section>
 

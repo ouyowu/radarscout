@@ -37,7 +37,7 @@ describe('sitemap', () => {
     process.env.NEXT_PUBLIC_BASE_URL = BASE
   })
 
-  it('always includes all four static routes', async () => {
+  it('always includes the controlled static routes and Thailand city hubs', async () => {
     listMock.listPublicThailandProducts.mockResolvedValue([])
 
     const entries = await sitemap()
@@ -45,6 +45,9 @@ describe('sitemap', () => {
 
     expect(urls).toContain(`${BASE}`)
     expect(urls).toContain(`${BASE}/thailand-trip-planner`)
+    expect(urls).toContain(`${BASE}/thailand/bangkok`)
+    expect(urls).toContain(`${BASE}/thailand/chiang-mai`)
+    expect(urls).toContain(`${BASE}/thailand/phuket`)
     expect(urls).toContain(`${BASE}/contact`)
     expect(urls).toContain(`${BASE}/privacy-policy`)
     expect(urls).toContain(`${BASE}/terms-of-service`)
@@ -102,7 +105,7 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(12)
+    expect(entries).toHaveLength(15)
     expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 

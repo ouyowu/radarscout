@@ -32,6 +32,10 @@ describe('Thailand trip planner SEO hub', () => {
     expect(hubSource).toContain('Why recommended')
     expect(hubSource).toContain('Best for')
     expect(hubSource).toContain('What to check')
+    expect(hubSource).toContain("href: '/thailand/bangkok'")
+    expect(hubSource).toContain("href: '/thailand/chiang-mai'")
+    expect(hubSource).toContain("href: '/thailand/phuket'")
+    expect(hubSource).toContain('RadarScout Editorial Team')
   })
 
   it('uses original decision-support copy without unsafe commerce claims', () => {

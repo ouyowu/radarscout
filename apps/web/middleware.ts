@@ -51,6 +51,12 @@ export default function middleware(req: Request & { nextUrl: URL; cookies: { get
   const { pathname } = req.nextUrl
   const isAuthed = SESSION_COOKIE_NAMES.some((name) => Boolean(req.cookies.get(name)?.value))
 
+  if (req.nextUrl.hostname === 'radarscout.io') {
+    const canonicalUrl = new URL(req.url)
+    canonicalUrl.hostname = 'www.radarscout.io'
+    return NextResponse.redirect(canonicalUrl, 308)
+  }
+
   if (pathname.startsWith(INTERNAL_PREFIX)) {
     if (!checkInternalBasicAuth(req)) {
       return new NextResponse('Unauthorized', {

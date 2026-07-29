@@ -4,6 +4,9 @@ import { listTourDetailSeoCandidates } from '@/lib/publicProducts/tourDetailSeoC
 const routes = [
   ['', 'weekly', 1.0],
   ['/thailand-trip-planner', 'weekly', 0.9],
+  ['/thailand/bangkok', 'weekly', 0.8],
+  ['/thailand/chiang-mai', 'weekly', 0.8],
+  ['/thailand/phuket', 'weekly', 0.8],
   ['/chiang-mai/elephant-camp-finder', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],
@@ -13,7 +16,7 @@ const routes = [
 export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.radarscout.io'
+  const base = 'https://www.radarscout.io'
   const now = new Date()
 
   const staticRoutes: MetadataRoute.Sitemap = routes.map(([path, changeFrequency, priority]) => ({

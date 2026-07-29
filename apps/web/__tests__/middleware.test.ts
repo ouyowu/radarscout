@@ -12,11 +12,15 @@ import _middleware from '../middleware'
 const middleware = _middleware as unknown as (req: NextRequest) => Response | undefined
 
 function makeReq(pathname: string, authValue: unknown = null) {
-  const req = new NextRequest(`https://radarscout.io${pathname}`)
+  const req = new NextRequest(`https://www.radarscout.io${pathname}`)
   if ((authValue as { user?: unknown } | null)?.user) {
     req.cookies.set('authjs.session-token', 'test-session')
   }
   return req
+}
+
+function makeCanonicalReq(pathname: string) {
+  return new NextRequest(`https://www.radarscout.io${pathname}`)
 }
 
 const authed = { user: { email: 'u@example.com' } }
@@ -77,9 +81,25 @@ describe('protected routes — require auth', () => {
 describe('public routes — no auth required', () => {
   for (const path of ['/', '/api/health']) {
     it(`allows unauthenticated user to access ${path}`, () => {
-      expect(middleware(makeReq(path, null))).toBeUndefined()
+      expect(middleware(makeCanonicalReq(path))).toBeUndefined()
     })
   }
+})
+
+describe('canonical hostname — www.radarscout.io', () => {
+  it('redirects the apex hostname to www and preserves path and query', () => {
+    const req = new NextRequest('https://radarscout.io/thailand/bangkok?days=3')
+    const res = middleware(req)
+
+    expect(res?.status).toBe(308)
+    expect(res?.headers.get('location')).toBe(
+      'https://www.radarscout.io/thailand/bangkok?days=3',
+    )
+  })
+
+  it('does not redirect the canonical www hostname', () => {
+    expect(middleware(makeCanonicalReq('/thailand/bangkok'))).toBeUndefined()
+  })
 })
 
 describe('legacy comparison routes — permanently gone', () => {
@@ -105,7 +125,7 @@ describe('/internal/ routes — Basic Auth required', () => {
   })
 
   function makeInternalReq(pathname: string, authHeader?: string) {
-    return new NextRequest(`https://radarscout.io${pathname}`, {
+    return new NextRequest(`https://www.radarscout.io${pathname}`, {
       headers: authHeader ? { authorization: authHeader } : {},
     })
   }
@@ -177,7 +197,7 @@ describe('stale SaaS marketing routes — redirected to travel homepage', () => 
     it(`redirects ${path} to /`, () => {
       const res = middleware(makeReq(path, null))
       expect(res?.status).toBe(308)
-      expect(res?.headers.get('location')).toBe('https://radarscout.io/')
+    expect(res?.headers.get('location')).toBe('https://www.radarscout.io/')
     })
   }
 })
