@@ -47,9 +47,11 @@ describe('Planner Agoda stay-area guidance', () => {
     expect(panelSource).toMatch(/Where to stay/)
     expect(panelSource).toMatch(/Best for/)
     expect(panelSource).toMatch(/What to check/)
+    expect(panelSource).toMatch(/Why this fits your trip/)
+    expect(panelSource).toMatch(/Budget reality check/)
     expect(panelSource).toMatch(/Search Agoda stays/)
     expect(panelSource).toMatch(/TrackedAffiliateLink/)
-    expect(panelSource).toMatch(/getReviewedAgodaStayAreasForDestination/)
+    expect(panelSource).toMatch(/buildAgodaStayAreaDecisions/)
 
     const markup = renderToStaticMarkup(
       <AgodaStayAreaPanel
@@ -62,6 +64,11 @@ describe('Planner Agoda stay-area guidance', () => {
           adultCount: 2,
           childCount: 2,
           travelerType: 'family',
+        }}
+        decisionContext={{
+          travelerType: 'family',
+          interests: ['cafes'],
+          budget: 'mid-range',
         }}
       />,
     )
@@ -76,11 +83,20 @@ describe('Planner Agoda stay-area guidance', () => {
     expect(markup).toContain('NumberofAdults=2')
     expect(markup).toContain('NumberofChildren=2')
     expect(markup).toContain('Rooms=1')
+    expect(markup).toContain('Why this fits your trip')
+    expect(markup).toContain('Budget reality check')
+    expect(markup).toContain('mid-range')
+    expect(markup).toContain('current Agoda results')
   })
 
   it('renders nothing for unsupported destinations', () => {
     expect(renderToStaticMarkup(
-      <AgodaStayAreaPanel destination="Tokyo" offers={[reviewedOffer]} tripContext={{ startDate: null, endDate: null, groupSize: null, adultCount: null, childCount: null, travelerType: 'unspecified' }} />,
+      <AgodaStayAreaPanel
+        destination="Tokyo"
+        offers={[reviewedOffer]}
+        tripContext={{ startDate: null, endDate: null, groupSize: null, adultCount: null, childCount: null, travelerType: 'unspecified' }}
+        decisionContext={{ travelerType: 'unspecified', interests: [], budget: 'unspecified' }}
+      />,
     )).toBe('')
   })
 
