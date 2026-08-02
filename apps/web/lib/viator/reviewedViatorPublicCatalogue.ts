@@ -16,6 +16,7 @@ export type ReviewedViatorPublicProduct = {
   summary: string
   imageUrl: string
   tags: string[]
+  reviewedAt: string
   retailPrice: null
   currency: null
   detailHref: `/tours/${string}`
@@ -60,6 +61,7 @@ function toPublicProduct(
     summary: product.shortSummary,
     imageUrl: product.imageUrl,
     tags: [...product.tags],
+    reviewedAt: product.reviewedAt,
     retailPrice: null,
     currency: null,
     detailHref: `/tours/${encodeURIComponent(product.id)}`,
