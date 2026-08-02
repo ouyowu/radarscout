@@ -3,10 +3,11 @@
 import React from 'react'
 import type { MouseEventHandler, ReactNode } from 'react'
 import type { AffiliatePlacement, AffiliateProvider } from '@/lib/affiliates/affiliatePartners'
+import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
 import {
-  buildSafeAffiliateAnalyticsContext,
-  type AffiliateTripContext,
-} from '@/lib/affiliates/affiliateTripContext'
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
 import { track } from '@/lib/analytics/track'
 
 type TrackedAffiliateLinkProps = {
@@ -30,22 +31,26 @@ export function TrackedAffiliateLink({
   children,
   className,
 }: TrackedAffiliateLinkProps) {
-  const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
-    const safeTripContext = buildSafeAffiliateAnalyticsContext(tripContext)
+  const handoff = createPartnerHandoffRecord({
+    href,
+    provider,
+    placement,
+    destination,
+    campaign,
+    tripContext,
+  })
 
+  if (!handoff) return null
+
+  const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
     track('affiliate_partner_handoff_clicked', {
-      provider,
-      placement,
-      city: destination,
-      destination,
-      ...safeTripContext,
-      campaign,
+      ...buildPartnerHandoffAnalyticsProps(handoff),
     })
   }
 
   return (
     <a
-      href={href}
+      href={handoff.href}
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
       className={className}
