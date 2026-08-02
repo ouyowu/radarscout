@@ -17,6 +17,7 @@ describe('reviewedViatorPublicCatalogue', () => {
       expect(product.detailHref).toBe(`/tours/${product.id}`)
       expect(product.retailPrice).toBeNull()
       expect(product.currency).toBeNull()
+      expect(Number.isNaN(Date.parse(product.reviewedAt))).toBe(false)
       expect(product.bookingPartnerHandoff).toMatchObject({
         label: 'Check availability',
         rel: 'nofollow sponsored noopener noreferrer',

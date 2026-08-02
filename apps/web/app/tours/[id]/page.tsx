@@ -13,6 +13,8 @@ import {
 } from '@/lib/publicProducts/getPublicThailandProduct'
 import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
 import { parseSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
+import { getAiReadyProductById } from '@/lib/aiProducts/aiReadyProductSchema'
+import { AiAnswerCard } from './AiAnswerCard'
 
 export const dynamic = 'force-dynamic'
 
@@ -271,6 +273,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
   const { product } = result
   const rows = factRows(product.facts)
   const location = productLocation(product)
+  const aiAnswerCard = getAiReadyProductById(product.id)
 
   return (
     <PublicSiteShell>
@@ -336,11 +339,15 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
             Decide whether this experience fits your day.
           </h2>
         </div>
-        <DecisionGuide
-          whyRecommended={displaySummary(product)}
-          bestFor={displayBestFor(product, location)}
-          watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
-        />
+        {aiAnswerCard ? (
+          <AiAnswerCard card={aiAnswerCard} />
+        ) : (
+          <DecisionGuide
+            whyRecommended={displaySummary(product)}
+            bestFor={displayBestFor(product, location)}
+            watchOut="Review meeting details, timing, inclusions, and current terms on the booking partner page."
+          />
+        )}
       </Section>
 
       <Section variant="sand" className="pt-8" contentClassName="max-w-[1240px]">
