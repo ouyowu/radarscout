@@ -59,6 +59,8 @@ export type ElephantFinderRecommendation = {
   campName: string
   city: 'Chiang Mai'
   reasons: string[]
+  bestFor: string[]
+  notIdealFor: string[]
   cautionNotes: string[]
   ctaHref: string
   ctaLabel: 'View experience' | 'Check availability'

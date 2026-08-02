@@ -366,20 +366,52 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
         </ul>
       </div>
 
-      {recommendation.cautionNotes.length > 0 ? (
-        <div className="mt-3 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-3">
-          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#a35c09]">
-            Good to know
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-[1rem] border border-[#d8eadf] bg-[#f5fbf7] p-3">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
+            Best for
           </p>
           <ul className="mt-2 space-y-1">
-            {recommendation.cautionNotes.map(note => (
-              <li key={note} className="text-xs font-semibold leading-5 text-[#8a4f07]">
-                {note}
+            {recommendation.bestFor.map(item => (
+              <li key={item} className="text-xs font-semibold leading-5 text-[#36414a]">
+                • {item}
               </li>
             ))}
           </ul>
         </div>
-      ) : null}
+
+        <div className="rounded-[1rem] border border-[#eadfce] bg-[#fffdf7] p-3">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6b5d4d]">
+            Not ideal for
+          </p>
+          <ul className="mt-2 space-y-1">
+            {recommendation.notIdealFor.map(item => (
+              <li key={item} className="text-xs font-semibold leading-5 text-[#6b5d4d]">
+                • {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-[1rem] border border-[#f3d6aa] bg-[#fff8e8] p-3">
+        <p className="text-xs font-black uppercase tracking-[0.12em] text-[#a35c09]">
+          Review before choosing
+        </p>
+        <ul className="mt-2 space-y-1">
+          {recommendation.cautionNotes.map(note => (
+            <li key={note} className="text-xs font-semibold leading-5 text-[#8a4f07]">
+              • {note}
+            </li>
+          ))}
+          <li className="text-xs font-semibold leading-5 text-[#8a4f07]">
+            • Confirm current pickup coverage and timing on the partner page.
+          </li>
+          <li className="text-xs font-semibold leading-5 text-[#8a4f07]">
+            • Review current cancellation terms before choosing.
+          </li>
+        </ul>
+      </div>
 
       <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
         {recommendation.externalHandoff ? (

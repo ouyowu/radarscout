@@ -582,6 +582,14 @@ describe('ElephantCampFinderClient view model', () => {
     }
   })
 
+  it('renders decision support sections for fit, limitations, and partner review', () => {
+    expect(finderClientSource).toContain('Best for')
+    expect(finderClientSource).toContain('Not ideal for')
+    expect(finderClientSource).toContain('Review before choosing')
+    expect(finderClientSource).toContain('Why this matches')
+    expect(finderClientSource).toContain('Opens the partner page in a new tab')
+  })
+
   it('does not expose profile assumption comments in the public view model', () => {
     const view = buildElephantFinderViewModel({
       input: getInitialElephantFinderInput(),
