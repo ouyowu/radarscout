@@ -10,6 +10,45 @@ function requestWithJson(body: unknown): Request {
 }
 
 describe('POST /api/events', () => {
+  it('records the safe partner handoff source and intent without accepting a full outbound URL', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const response = await POST(new Request('http://localhost/api/events', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        event: 'booking_partner_handoff_clicked',
+        provider: 'viator',
+        placement: 'tour_detail_primary',
+        city: 'Chiang Mai',
+        productId: 'viator_12345p1',
+        attributionSource: 'viator_affiliate',
+        targetHost: 'www.viator.com',
+        hasDates: true,
+        hasGroupSize: true,
+        hasOccupancy: true,
+        travelerType: 'family',
+        href: 'https://www.viator.com/private?pid=secret',
+        commissionPercent: 12,
+      }),
+    }))
+
+    expect(response.status).toBe(204)
+    expect(log).toHaveBeenCalledWith(JSON.stringify({
+      tag: 'funnel_event',
+      event: 'booking_partner_handoff_clicked',
+      provider: 'viator',
+      placement: 'tour_detail_primary',
+      city: 'Chiang Mai',
+      productId: 'viator_12345p1',
+      attributionSource: 'viator_affiliate',
+      targetHost: 'www.viator.com',
+      hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: true,
+      travelerType: 'family',
+    }))
+  })
+
   afterEach(() => {
     vi.restoreAllMocks()
   })

@@ -18,13 +18,20 @@ export type SafeFunnelEventPayload = {
   placement?: string
   city?: string
   productId?: string
+  attributionSource?: string
+  targetHost?: string
   hasDates?: boolean
+  hasGroupSize?: boolean
+  hasOccupancy?: boolean
+  travelerType?: string
 }
 
 const APPROVED_PROVIDERS = new Set([
   '12go',
   'agoda',
   'airalo',
+  'bokun',
+  'direct_partner',
   'expedia',
   'getyourguide',
   'klook',
@@ -70,6 +77,42 @@ const APPROVED_CITIES = new Set([
   'Thailand',
 ])
 
+const APPROVED_ATTRIBUTION_SOURCES = new Set([
+  '12go_affiliate',
+  'agoda_affiliate',
+  'airalo_affiliate',
+  'bokun_public_widget',
+  'direct_partner',
+  'expedia_affiliate',
+  'getyourguide_affiliate',
+  'klook_affiliate',
+  'trip_com_affiliate',
+  'viator_affiliate',
+  'yesim_affiliate',
+])
+
+const APPROVED_TARGET_HOSTS = new Set([
+  '12go.asia',
+  'yesim.app',
+  'www.agoda.com',
+  'www.airalo.com',
+  'www.expedia.com',
+  'www.getyourguide.com',
+  'www.klook.com',
+  'www.trip.com',
+  'www.viator.com',
+  'widgets.bokun.io',
+])
+
+const APPROVED_TRAVELER_TYPES = new Set([
+  'business',
+  'couple',
+  'family',
+  'friends',
+  'solo',
+  'unspecified',
+])
+
 const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/
 
 function isFunnelEvent(value: unknown): value is FunnelEvent {
@@ -93,12 +136,23 @@ export function buildSafeFunnelEventPayload(
   const placement = approvedValue(props.placement, APPROVED_PLACEMENTS)
   const city = approvedValue(props.city, APPROVED_CITIES)
   const productId = safeProductId(props.productId)
+  const attributionSource = approvedValue(
+    props.attributionSource,
+    APPROVED_ATTRIBUTION_SOURCES,
+  )
+  const targetHost = approvedValue(props.targetHost, APPROVED_TARGET_HOSTS)
+  const travelerType = approvedValue(props.travelerType, APPROVED_TRAVELER_TYPES)
 
   if (provider) payload.provider = provider
   if (placement) payload.placement = placement
   if (city) payload.city = city
   if (productId) payload.productId = productId
+  if (attributionSource) payload.attributionSource = attributionSource
+  if (targetHost) payload.targetHost = targetHost
   if (typeof props.hasDates === 'boolean') payload.hasDates = props.hasDates
+  if (typeof props.hasGroupSize === 'boolean') payload.hasGroupSize = props.hasGroupSize
+  if (typeof props.hasOccupancy === 'boolean') payload.hasOccupancy = props.hasOccupancy
+  if (travelerType) payload.travelerType = travelerType
 
   return payload
 }

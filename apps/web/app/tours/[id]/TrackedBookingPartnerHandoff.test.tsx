@@ -43,17 +43,42 @@ describe('TrackedBookingPartnerHandoff', () => {
       provider: 'viator',
       placement: 'tour_detail_primary',
       city: 'Chiang Mai',
-      destination: 'Chiang Mai',
+      productId: 'viator_12345p1',
+      attributionSource: 'viator_affiliate',
+      targetHost: 'www.viator.com',
       hasDates: true,
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
-      productId: 'viator_12345p1',
-      source: 'ai-trip-planner',
     })
     expect(track).not.toHaveBeenCalledWith(
       'booking_partner_handoff_clicked',
       expect.objectContaining({ href: expect.any(String) }),
     )
+  })
+
+  it('attributes a reviewed public widget to Bókun rather than Viator', () => {
+    const href = 'https://widgets.bokun.io/online-sales/channel/experience/1232729'
+    const element = TrackedBookingPartnerHandoff({
+      href,
+      rel: 'nofollow sponsored noopener noreferrer',
+      productId: 'partner_cm_1232729',
+      source: 'tour-detail',
+      placement: 'tour_detail_primary',
+      city: 'Chiang Mai',
+      hasDates: false,
+      hasGroupSize: false,
+      hasOccupancy: false,
+      travelerType: 'unspecified',
+      children: 'Check availability',
+    }) as ReactElement<{ onClick: () => void }>
+
+    element.props.onClick()
+
+    expect(track).toHaveBeenLastCalledWith('booking_partner_handoff_clicked', expect.objectContaining({
+      provider: 'bokun',
+      attributionSource: 'bokun_public_widget',
+      targetHost: 'widgets.bokun.io',
+    }))
   })
 })
