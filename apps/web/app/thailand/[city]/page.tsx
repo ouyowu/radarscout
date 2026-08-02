@@ -14,7 +14,7 @@ import {
 } from '../cityHubContent'
 
 const base = 'https://www.radarscout.io'
-const editorialUpdatedAt = '2026-07-29'
+const editorialUpdatedAt = '2026-08-02'
 
 export function generateStaticParams() {
   return cityHubSlugs.map(city => ({ city }))
@@ -34,6 +34,7 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
     title: `${city.title} | RadarScout`,
     description: city.description,
     alternates: { canonical: canonicalUrl },
+    authors: [{ name: 'RadarScout Editorial Team', url: `${base}/about-us` }],
     robots: { index: true, follow: true },
     openGraph: {
       title: `${city.title} | RadarScout`,
@@ -57,17 +58,20 @@ function structuredDataFor(citySlug: CityHubSlug) {
     '@context': 'https://schema.org',
     '@graph': [
       {
+        '@type': 'Organization',
+        '@id': `${base}/#organization`,
+        name: 'RadarScout',
+        url: base,
+      },
+      {
         '@type': 'WebPage',
         '@id': `${canonicalUrl}#webpage`,
         url: canonicalUrl,
         name: city.title,
         description: city.description,
         dateModified: editorialUpdatedAt,
-        author: {
-          '@type': 'Organization',
-          name: 'RadarScout Editorial Team',
-          url: `${base}/about-us`,
-        },
+        author: { '@id': `${base}/#organization` },
+        publisher: { '@id': `${base}/#organization` },
         about: {
           '@type': 'City',
           name: city.name,
@@ -126,6 +130,9 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
                   {city.name} day trips, planned realistically
                 </h1>
                 <p className="mt-7 max-w-3xl text-lg leading-8 text-white/78">{city.intro}</p>
+                <p className="mt-4 max-w-3xl text-sm leading-7 text-white/68">
+                  {city.brandEntityStatement}
+                </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <TrackedLink
                     href={plannerHref}
@@ -225,7 +232,7 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
                 Current product terms remain the responsibility of Viator.
               </p>
             </div>
-            <p className="text-sm text-rs-muted">Last reviewed: July 29, 2026</p>
+            <p className="text-sm text-rs-muted">Last reviewed: August 2, 2026</p>
           </div>
         </section>
       </main>
