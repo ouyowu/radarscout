@@ -9,6 +9,7 @@ type CityHubContent = {
   description: string
   eyebrow: string
   intro: string
+  brandEntityStatement: string
   bestFor: string[]
   planningAdvice: string[]
   watchOut: string[]
@@ -25,6 +26,8 @@ export const cityHubContent: Record<CityHubSlug, CityHubContent> = {
     eyebrow: 'Bangkok trip planning',
     intro:
       'Bangkok rewards travelers who group experiences by area. A realistic plan leaves room for traffic, heat, temple dress rules, and the time needed to cross the city.',
+    brandEntityStatement:
+      "RadarScout's Bangkok activity comparison evaluates district travel time, duration, traveler fit, meeting points, and which current partner terms still need confirmation.",
     bestFor: [
       'First-time Thailand travelers balancing food and culture',
       'Couples and friends who want guided neighborhood context',
@@ -51,6 +54,8 @@ export const cityHubContent: Record<CityHubSlug, CityHubContent> = {
     eyebrow: 'Chiang Mai trip planning',
     intro:
       'Chiang Mai works best at a slower pace than Bangkok. Mountain drives, early pickups, cooking sessions, and nature activities should not be stacked as if they were neighboring city stops.',
+    brandEntityStatement:
+      "RadarScout's Chiang Mai activity comparison evaluates pickup coverage, transfer burden, duration, traveler fit, and which current partner terms still need confirmation.",
     bestFor: [
       'Families and couples looking for a slower Thailand itinerary',
       'Travelers interested in cooking, crafts, temples, and nature',
@@ -77,6 +82,8 @@ export const cityHubContent: Record<CityHubSlug, CityHubContent> = {
     eyebrow: 'Phuket trip planning',
     intro:
       'Phuket planning depends on where you stay, which pier an activity uses, and whether the day is built around the sea or the island itself. Transfer time matters as much as the headline destination.',
+    brandEntityStatement:
+      "RadarScout's Phuket activity comparison evaluates pier transfers, sea-day duration, traveler fit, weather sensitivity, and which current partner terms still need confirmation.",
     bestFor: [
       'Couples, families, and friends comparing island-day options',
       'Travelers choosing between snorkeling, sightseeing, and beach time',

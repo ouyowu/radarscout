@@ -10,12 +10,14 @@ import { featuredViatorExperiences } from '../_content/homepageFeaturedExperienc
 const base = 'https://www.radarscout.io'
 const canonicalPath = '/thailand-trip-planner'
 const canonicalUrl = `${base}${canonicalPath}`
+const editorialUpdatedAt = '2026-08-02'
 
 export const metadata: Metadata = {
   title: 'AI Trip Planner Thailand Guide | Realistic Itineraries | RadarScout',
   description:
     'Looking for an AI trip planner for Thailand? Build a realistic route from reviewed day tours, local trade-offs, and trusted booking-partner handoffs.',
   alternates: { canonical: canonicalUrl },
+  authors: [{ name: 'RadarScout Editorial Team', url: `${base}/about-us` }],
   robots: { index: true, follow: true },
   openGraph: {
     title: 'AI Trip Planner Thailand Guide | RadarScout',
@@ -130,11 +132,13 @@ const structuredData = {
       url: canonicalUrl,
       name: 'AI Trip Planner Thailand Guide',
       description: metadata.description,
+      dateModified: editorialUpdatedAt,
       isPartOf: { '@id': `${base}/#website` },
       about: {
         '@type': 'Country',
         name: 'Thailand',
       },
+      author: { '@id': `${base}/#organization` },
       publisher: { '@id': `${base}/#organization` },
     },
     {
@@ -350,12 +354,13 @@ export default function ThailandTripPlannerHubPage() {
                 Reviewed by the RadarScout Editorial Team
               </h2>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-rs-muted">
-                We review destination fit, traveler fit, practical timing and transfer caveats,
-                display-safe product content, and the verified affiliate handoff. Current product
-                terms are confirmed on the booking partner page.
+                RadarScout&apos;s Thailand activity comparison evaluates destination fit, traveler
+                fit, practical timing, transfer caveats, display-safe product content, and the
+                verified affiliate handoff. Current product terms are confirmed on the booking
+                partner page.
               </p>
             </div>
-            <p className="text-sm text-rs-muted">Last reviewed: July 29, 2026</p>
+            <p className="text-sm text-rs-muted">Last reviewed: August 2, 2026</p>
           </div>
         </section>
 
