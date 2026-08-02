@@ -148,6 +148,14 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
                   >
                     Browse reviewed tours
                   </Link>
+                  {params.city === 'phuket' ? (
+                    <Link
+                      href="/phuket/island-day-selector"
+                      className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-rs-terracotta px-7 text-sm font-bold uppercase tracking-[0.1em] text-rs-terracotta transition hover:bg-rs-terracotta hover:text-rs-ink"
+                    >
+                      Find my Phuket island day
+                    </Link>
+                  ) : null}
                 </div>
               </div>
 
