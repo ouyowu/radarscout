@@ -4,6 +4,7 @@ import { loadReviewedViatorPublicCatalogue } from '../viator/reviewedViatorPubli
 import {
   AI_READY_PRODUCT_SCHEMA_VERSION,
   buildAiReadyProduct,
+  getAiReadyProductById,
   loadAiReadyProductCatalogue,
   validateAiReadyProduct,
 } from './aiReadyProductSchema'
@@ -24,6 +25,27 @@ describe('AI-ready reviewed product schema', () => {
       expect(product.recommendation.bestFor.length).toBeGreaterThan(0)
       expect(product.recommendation.strengths.length).toBeGreaterThan(0)
       expect(product.recommendation.tradeoffs.length).toBeGreaterThan(0)
+      expect(product.fit.suitableFor).toMatchObject({
+        status: 'derived_from_reviewed_fields',
+      })
+      expect(product.fit.suitableFor.values.length).toBeGreaterThan(0)
+      expect(product.fit.notSuitableFor).toEqual({
+        status: 'not_reviewed',
+        values: [],
+      })
+      expect(product.logistics).toEqual({
+        pickupAreas: { status: 'not_reviewed', values: [] },
+        duration: { status: 'not_reviewed', value: null },
+        childRules: { status: 'not_reviewed', value: null },
+      })
+      expect(product.experience.features).toEqual({
+        status: 'human_reviewed',
+        values: product.themes,
+      })
+      expect(product.experience.ethicalFeatures).toEqual({
+        status: 'not_reviewed',
+        values: [],
+      })
       expect(product.partnerLink).toBe(
         `https://www.radarscout.io/tours/${product.id}`,
       )
@@ -32,6 +54,17 @@ describe('AI-ready reviewed product schema', () => {
         label: 'Check availability',
         availabilityClaimed: false,
       })
+      expect(product.partnerHandoff).toMatchObject({
+        platform: 'Viator',
+        role: 'booking_partner',
+        label: 'Check availability',
+        currentDetailsOwner: 'Viator',
+        availabilityClaimed: false,
+      })
+      expect(product.partnerHandoff.url).toMatch(
+        /^https:\/\/(?:[^/]+\.)?viator\.com\/.+[?&]pid=P00309837(?:&|$)/,
+      )
+      expect(Number.isNaN(Date.parse(product.provenance.lastVerifiedAt))).toBe(false)
       expect(validateAiReadyProduct(product)).toEqual({
         ok: true,
         value: product,
@@ -48,6 +81,8 @@ describe('AI-ready reviewed product schema', () => {
     expect(product.summary).toBe(source.summary)
     expect(product.destination.city).toBe(source.destination)
     expect(product.themes).toEqual(source.tags)
+    expect(product.provenance.lastVerifiedAt).toBe(source.reviewedAt)
+    expect(product.partnerHandoff.url).toBe(source.bookingPartnerHandoff.href)
 
     for (const field of [
       'bookingPartnerHandoff',
@@ -63,9 +98,7 @@ describe('AI-ready reviewed product schema', () => {
     ]) {
       expect(product).not.toHaveProperty(field)
     }
-    expect(JSON.stringify(product)).not.toMatch(
-      /https:\/\/(?:[^/]+\.)?viator\.com|available now|live availability/i,
-    )
+    expect(JSON.stringify(product)).not.toMatch(/available now|live availability/i)
   })
 
   it('fails closed when an AI-ready record contains forbidden or unknown fields', () => {
@@ -84,6 +117,7 @@ describe('AI-ready reviewed product schema', () => {
 
   it('rejects off-domain partner links and unsupported schema versions', () => {
     const product = loadAiReadyProductCatalogue()[0]
+    const otherProduct = loadAiReadyProductCatalogue()[1]
 
     expect(validateAiReadyProduct({
       ...product,
@@ -92,7 +126,46 @@ describe('AI-ready reviewed product schema', () => {
 
     expect(validateAiReadyProduct({
       ...product,
-      schemaVersion: 'radarscout.ai-ready-product.v2',
+      schemaVersion: 'radarscout.ai-ready-product.v3',
     })).toEqual({ ok: false, error: 'invalid_shape' })
+
+    expect(validateAiReadyProduct({
+      ...product,
+      partnerHandoff: {
+        ...product.partnerHandoff,
+        url: 'https://example.com/not-a-reviewed-handoff',
+      },
+    })).toEqual({ ok: false, error: 'invalid_shape' })
+
+    expect(validateAiReadyProduct({
+      ...product,
+      partnerHandoff: {
+        ...product.partnerHandoff,
+        url: otherProduct.partnerHandoff.url,
+      },
+    })).toEqual({ ok: false, error: 'invalid_shape' })
+  })
+
+  it('fails closed instead of inventing logistics, child, suitability, or ethics facts', () => {
+    const product = loadAiReadyProductCatalogue()[0]
+
+    for (const mutation of [
+      { logistics: { ...product.logistics, duration: { status: 'human_reviewed', value: '8 hours' } } },
+      { fit: { ...product.fit, notSuitableFor: { status: 'human_reviewed', values: ['Children'] } } },
+      { experience: { ...product.experience, ethicalFeatures: { status: 'human_reviewed', values: ['Ethical'] } } },
+    ]) {
+      expect(validateAiReadyProduct({ ...product, ...mutation })).toEqual({
+        ok: false,
+        error: 'invalid_shape',
+      })
+    }
+  })
+
+  it('looks up only reviewed catalogue IDs', () => {
+    const product = loadAiReadyProductCatalogue()[0]
+
+    expect(getAiReadyProductById(`  ${product.id}  `)?.id).toBe(product.id)
+    expect(getAiReadyProductById('viator_not_reviewed')).toBeNull()
+    expect(getAiReadyProductById('')).toBeNull()
   })
 })

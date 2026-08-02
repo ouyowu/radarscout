@@ -38,12 +38,12 @@ describe('TrackedAffiliateLink', () => {
       provider: 'getyourguide',
       placement: 'city_guide',
       city: 'Bangkok',
-      destination: 'Bangkok',
+      attributionSource: 'getyourguide_affiliate',
+      targetHost: 'www.getyourguide.com',
       hasDates: false,
       hasGroupSize: false,
       hasOccupancy: false,
       travelerType: 'unspecified',
-      campaign: 'radarscout_city_guide_bangkok',
     })
   })
 

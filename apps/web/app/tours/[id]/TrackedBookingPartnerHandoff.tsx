@@ -4,6 +4,11 @@ import React from 'react'
 import type { MouseEventHandler, ReactNode } from 'react'
 import { track } from '@/lib/analytics/track'
 import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
+import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+  resolveReviewedBookingHandoffProvider,
+} from '@/lib/affiliates/partnerHandoff'
 
 type TrackedBookingPartnerHandoffProps = {
   href: string
@@ -34,24 +39,38 @@ export function TrackedBookingPartnerHandoff({
   className,
   children,
 }: TrackedBookingPartnerHandoffProps) {
-  const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
-    track('booking_partner_handoff_clicked', {
-      provider: 'viator',
-      placement,
-      city,
-      destination: city,
+  const provider = resolveReviewedBookingHandoffProvider(href)
+  if (!provider) return null
+
+  const handoff = createPartnerHandoffRecord({
+    href,
+    provider,
+    placement,
+    destination: city,
+    productId,
+    recommendationSource: source,
+    // The server-rendered product page only passes handoffs that already passed
+    // validatePublicBookingPartnerHandoff.
+    trustedPublicHandoff: true,
+    safeIntent: {
       hasDates,
       hasGroupSize,
       hasOccupancy,
       travelerType,
-      productId,
-      source,
+    },
+  })
+
+  if (!handoff) return null
+
+  const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
+    track('booking_partner_handoff_clicked', {
+      ...buildPartnerHandoffAnalyticsProps(handoff),
     })
   }
 
   return (
     <a
-      href={href}
+      href={handoff.href}
       target="_blank"
       rel={rel}
       className={className}
