@@ -296,7 +296,8 @@ export function PlannerStudio({
       : null,
   ].filter((label): label is string => Boolean(label))
   const currentIdea = mergeTripIdea(ideaParts)
-  const currentDurationDays = parseMergedTripIdea(ideaParts).intent.durationDays
+  const parsedCurrentIntent = parseMergedTripIdea(ideaParts).intent
+  const currentDurationDays = parsedCurrentIntent.durationDays
   const minimumStartDate = new Date().toISOString().slice(0, 10)
   const derivedEndDate = startDate ? deriveTripEndDate(startDate, currentDurationDays) : null
   const routeOverview = itinerary ? buildDeterministicRouteOverview(itinerary) : null
@@ -566,6 +567,11 @@ export function PlannerStudio({
                 destination={itinerary.tripSpec.destination}
                 offers={agodaStayAreaOffers}
                 tripContext={handoffTripContext}
+                decisionContext={{
+                  travelerType: searchState?.intent?.travelerType ?? parsedCurrentIntent.travelerType,
+                  interests: searchState?.intent?.interests ?? parsedCurrentIntent.interests,
+                  budget: parsedCurrentIntent.budget,
+                }}
               />
               <YesimEsimCard />
               <p className="text-sm font-semibold leading-6 text-rs-muted">
