@@ -185,6 +185,23 @@ describe('scoreElephantCampProducts', () => {
     expect(new Set(recommendations.map(r => r.recommendationId)).size).toBe(3)
   })
 
+  it('carries reviewed suitability and limitation copy into each recommendation', () => {
+    const recommendations = scoreElephantCampProducts({
+      input: baseInput,
+      profiles: [
+        profile('decision-copy', {
+          bestFor: ['Families', 'First-time sanctuary visitors'],
+          notIdealFor: ['Travelers who require bathing'],
+        }),
+      ],
+    })
+
+    expect(recommendations[0]).toMatchObject({
+      bestFor: ['Families', 'First-time sanctuary visitors'],
+      notIdealFor: ['Travelers who require bathing'],
+    })
+  })
+
   it('returns the top 3 unique owner-managed Chiang Mai recommendations', () => {
     const recommendations = scoreElephantCampProducts({
       input: baseInput,

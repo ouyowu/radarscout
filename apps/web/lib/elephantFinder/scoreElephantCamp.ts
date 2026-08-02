@@ -67,9 +67,6 @@ function buildCautionNotes(input: ElephantFinderInput, profile: ElephantCampProd
   if (input.wantsBathing && !profile.bathingAvailable) {
     notes.push('Bathing is not listed for this experience.')
   }
-  if (profile.notIdealFor.length > 0) {
-    notes.push(...profile.notIdealFor.slice(0, 2))
-  }
 
   return notes
 }
@@ -195,6 +192,8 @@ export function scoreElephantCampProducts(params: {
       campName: profile.campName,
       city: profile.city,
       reasons: buildReasons(params.input, profile),
+      bestFor: profile.bestFor.slice(0, 3),
+      notIdealFor: profile.notIdealFor.slice(0, 2),
       cautionNotes: buildCautionNotes(params.input, profile),
     }))
     .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
