@@ -24,6 +24,11 @@ export type SafeFunnelEventPayload = {
   hasGroupSize?: boolean
   hasOccupancy?: boolean
   travelerType?: string
+  source?: string
+  stepId?: string
+  choiceId?: string
+  resultPosition?: number
+  resultCount?: number
 }
 
 const APPROVED_PROVIDERS = new Set([
@@ -113,7 +118,31 @@ const APPROVED_TRAVELER_TYPES = new Set([
   'unspecified',
 ])
 
-const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/
+const APPROVED_FINDER_SOURCES = new Set(['form', 'planner'])
+const APPROVED_FINDER_STEP_IDS = new Set(['style', 'group', 'time', 'preferences'])
+const APPROVED_FINDER_CHOICE_IDS = new Set([
+  'gentle-elephant',
+  'family-half-day',
+  'cooking-food',
+  'nature-day',
+  'low-intensity',
+  'photo-friendly',
+  'solo',
+  'couple',
+  'family',
+  'friends',
+  'group',
+  'half-day',
+  'full-day',
+  'flexible-time',
+  'feeding',
+  'bathing-listed',
+  'ethical-priority',
+  'easy-pace',
+  'hotel-area-friendly',
+])
+
+const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_:-]{0,79}$/
 
 function isFunnelEvent(value: unknown): value is FunnelEvent {
   return typeof value === 'string' && FUNNEL_EVENTS.some(event => event === value)
@@ -125,6 +154,12 @@ function approvedValue(value: unknown, approved: Set<string>): string | undefine
 
 function safeProductId(value: unknown): string | undefined {
   return typeof value === 'string' && SAFE_PRODUCT_ID.test(value) ? value : undefined
+}
+
+function safeResultMetric(value: unknown, minimum: number): number | undefined {
+  return typeof value === 'number' && Number.isInteger(value) && value >= minimum && value <= 20
+    ? value
+    : undefined
 }
 
 export function buildSafeFunnelEventPayload(
@@ -142,6 +177,11 @@ export function buildSafeFunnelEventPayload(
   )
   const targetHost = approvedValue(props.targetHost, APPROVED_TARGET_HOSTS)
   const travelerType = approvedValue(props.travelerType, APPROVED_TRAVELER_TYPES)
+  const source = approvedValue(props.source, APPROVED_FINDER_SOURCES)
+  const stepId = approvedValue(props.stepId, APPROVED_FINDER_STEP_IDS)
+  const choiceId = approvedValue(props.choiceId, APPROVED_FINDER_CHOICE_IDS)
+  const resultPosition = safeResultMetric(props.resultPosition, 1)
+  const resultCount = safeResultMetric(props.resultCount, 0)
 
   if (provider) payload.provider = provider
   if (placement) payload.placement = placement
@@ -153,6 +193,11 @@ export function buildSafeFunnelEventPayload(
   if (typeof props.hasGroupSize === 'boolean') payload.hasGroupSize = props.hasGroupSize
   if (typeof props.hasOccupancy === 'boolean') payload.hasOccupancy = props.hasOccupancy
   if (travelerType) payload.travelerType = travelerType
+  if (source) payload.source = source
+  if (stepId) payload.stepId = stepId
+  if (choiceId) payload.choiceId = choiceId
+  if (resultPosition) payload.resultPosition = resultPosition
+  if (resultCount !== undefined) payload.resultCount = resultCount
 
   return payload
 }

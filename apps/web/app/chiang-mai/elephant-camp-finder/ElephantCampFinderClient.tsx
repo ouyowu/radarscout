@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { track } from '@/lib/analytics/track'
 import { scoreElephantCampProducts } from '@/lib/elephantFinder/scoreElephantCamp'
@@ -334,7 +334,15 @@ function matchLabel(matchType: ElephantFinderRecommendation['matchType']) {
   return 'Alternative option'
 }
 
-function RecommendationCard({ recommendation }: { recommendation: ElephantFinderRecommendation }) {
+function RecommendationCard({
+  recommendation,
+  resultPosition,
+  resultCount,
+}: {
+  recommendation: ElephantFinderRecommendation
+  resultPosition: number
+  resultCount: number
+}) {
   return (
     <article className="flex flex-col rounded-[1.5rem] border border-[#e8dfd2] bg-white p-5 shadow-[0_12px_28px_rgba(17,24,39,0.08)]">
       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f766e]">
@@ -419,7 +427,16 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
             href={recommendation.ctaHref}
             rel={recommendation.linkRel}
             target="_blank"
-            onClick={() => track('booking_partner_handoff_clicked', { recommendationId: recommendation.recommendationId })}
+            onClick={() => track('booking_partner_handoff_clicked', {
+              provider: 'bokun',
+              placement: 'planner_filtered_matches',
+              city: 'Chiang Mai',
+              productId: recommendation.recommendationId,
+              attributionSource: 'bokun_public_widget',
+              targetHost: 'widgets.bokun.io',
+              resultPosition,
+              resultCount,
+            })}
             className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {recommendation.ctaLabel}
@@ -472,6 +489,27 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
   const [selectedChatChoices, setSelectedChatChoices] = useState<Record<string, string[]>>({})
 
   const view = buildElephantFinderViewModel({ input, profiles, submitted })
+  const recommendationFingerprint = view.recommendations
+    .map(recommendation => recommendation.recommendationId)
+    .join('|')
+
+  useEffect(() => {
+    if (!submitted || view.recommendations.length === 0) return
+
+    view.recommendations.forEach((recommendation, index) => {
+      track('finder_recommendations_rendered', {
+        provider: 'bokun',
+        placement: 'planner_filtered_matches',
+        city: 'Chiang Mai',
+        productId: recommendation.recommendationId,
+        attributionSource: 'bokun_public_widget',
+        targetHost: 'widgets.bokun.io',
+        source: 'planner',
+        resultPosition: index + 1,
+        resultCount: view.recommendations.length,
+      })
+    })
+  }, [recommendationFingerprint, submitted])
 
   function patchInput(patch: Partial<ElephantFinderInput>) {
     setInput(current => updateElephantFinderInput(current, patch))
@@ -748,8 +786,13 @@ export function ElephantCampFinderClient({ profiles }: ElephantCampFinderClientP
         ) : (
           <div className={RECOMMENDATION_RESULTS_CLASS}>
             {itinerarySummary ? <ItinerarySummaryCard summary={itinerarySummary} /> : null}
-            {view.recommendations.map(recommendation => (
-              <RecommendationCard key={recommendation.recommendationId} recommendation={recommendation} />
+            {view.recommendations.map((recommendation, index) => (
+              <RecommendationCard
+                key={recommendation.recommendationId}
+                recommendation={recommendation}
+                resultPosition={index + 1}
+                resultCount={view.recommendations.length}
+              />
             ))}
           </div>
         )}
