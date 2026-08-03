@@ -148,6 +148,12 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
                   >
                     Browse reviewed tours
                   </Link>
+                  <Link
+                    href={`/guides/${params.city}`}
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-white/40 px-7 text-sm font-bold uppercase tracking-[0.1em] text-white transition hover:bg-white/10"
+                  >
+                    Read {city.name} guides
+                  </Link>
                   {params.city === 'phuket' ? (
                     <Link
                       href="/phuket/island-day-selector"

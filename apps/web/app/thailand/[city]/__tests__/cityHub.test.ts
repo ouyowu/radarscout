@@ -44,6 +44,7 @@ describe('Thailand city SEO hubs', () => {
     expect(source).toContain("author: { '@id': `${base}/#organization` }")
     expect(source).toContain("publisher: { '@id': `${base}/#organization` }")
     expect(source).toContain('city.brandEntityStatement')
+    expect(source).toContain('href={`/guides/${params.city}`}')
     expect(source).not.toContain("'Offer'")
     expect(source).not.toContain("'AggregateRating'")
     expect(source).not.toMatch(/['"]use client['"]/)

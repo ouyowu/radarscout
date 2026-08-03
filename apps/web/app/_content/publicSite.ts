@@ -1,5 +1,6 @@
 export const publicNavLinks = [
   { href: '/thailand-trip-planner', label: 'Thailand planner' },
+  { href: '/guides', label: 'Guides' },
   { href: '/tours', label: 'Experiences' },
   { href: '/destinations', label: 'Destinations' },
   { href: '/about-us', label: 'About' },
@@ -8,7 +9,7 @@ export const publicNavLinks = [
 export const publicFooterGroups = [
   {
     label: 'Discover',
-    links: publicNavLinks.slice(0, 3),
+    links: publicNavLinks.slice(0, 4),
   },
   {
     label: 'Company',
