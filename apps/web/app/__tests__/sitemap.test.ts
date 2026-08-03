@@ -48,6 +48,13 @@ describe('sitemap', () => {
     expect(urls).toContain(`${BASE}/thailand/bangkok`)
     expect(urls).toContain(`${BASE}/thailand/chiang-mai`)
     expect(urls).toContain(`${BASE}/thailand/phuket`)
+    expect(urls).toContain(`${BASE}/guides`)
+    expect(urls).toContain(`${BASE}/guides/bangkok`)
+    expect(urls).toContain(`${BASE}/guides/chiang-mai`)
+    expect(urls).toContain(`${BASE}/guides/phuket`)
+    expect(urls).toContain(`${BASE}/guides/bangkok/best-areas-to-stay-first-time-visitors`)
+    expect(urls).toContain(`${BASE}/guides/chiang-mai/how-to-choose-an-elephant-sanctuary`)
+    expect(urls).toContain(`${BASE}/guides/phuket/phi-phi-vs-james-bond-island`)
     expect(urls).toContain(`${BASE}/contact`)
     expect(urls).toContain(`${BASE}/privacy-policy`)
     expect(urls).toContain(`${BASE}/terms-of-service`)
@@ -105,7 +112,7 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(15)
+    expect(entries).toHaveLength(22)
     expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 

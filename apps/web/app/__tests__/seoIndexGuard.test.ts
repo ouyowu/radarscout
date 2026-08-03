@@ -29,6 +29,10 @@ import { metadata as notFoundMetadata } from '../not-found'
 import { metadata as plannerStudioMetadata } from '../planner/page'
 import { metadata as privacyMetadata } from '../privacy-policy/page'
 import { metadata as termsMetadata } from '../terms-of-service/page'
+import { metadata as guidesHubMetadata } from '../guides/page'
+import { generateMetadata as generateGuideCityMetadata } from '../guides/[city]/page'
+import { generateMetadata as generateGuideArticleMetadata } from '../guides/[city]/[slug]/page'
+import { thailandGuideArticles } from '@/lib/guides/thailandGuides'
 import { metadata as thailandTripPlannerMetadata } from '../thailand-trip-planner/page'
 import { generateMetadata as generateThailandCityMetadata } from '../thailand/[city]/page'
 import { cityHubSlugs } from '../thailand/cityHubContent'
@@ -42,6 +46,13 @@ const CURRENT_INDEXABLE_SITEMAP_URLS = [
   `${BASE}/thailand/bangkok`,
   `${BASE}/thailand/chiang-mai`,
   `${BASE}/thailand/phuket`,
+  `${BASE}/guides`,
+  `${BASE}/guides/bangkok`,
+  `${BASE}/guides/chiang-mai`,
+  `${BASE}/guides/phuket`,
+  `${BASE}/guides/bangkok/best-areas-to-stay-first-time-visitors`,
+  `${BASE}/guides/chiang-mai/how-to-choose-an-elephant-sanctuary`,
+  `${BASE}/guides/phuket/phi-phi-vs-james-bond-island`,
   `${BASE}/chiang-mai/elephant-camp-finder`,
   `${BASE}/contact`,
   `${BASE}/privacy-policy`,
@@ -107,6 +118,17 @@ describe('controlled SEO opening guard', () => {
     expect(termsMetadata.robots).toBeUndefined()
     expect(chiangMaiFinderMetadata.robots).toMatchObject({ index: true, follow: true })
     expect(thailandTripPlannerMetadata.robots).toMatchObject({ index: true, follow: true })
+    expect(guidesHubMetadata.robots).toMatchObject({ index: true, follow: true })
+    expect(guidesHubMetadata.alternates?.canonical).toBe(`${BASE}/guides`)
+    for (const article of thailandGuideArticles) {
+      const cityMetadata = generateGuideCityMetadata({ params: { city: article.citySlug } })
+      const articleMetadata = generateGuideArticleMetadata({
+        params: { city: article.citySlug, slug: article.slug },
+      })
+      expect(cityMetadata.robots).toMatchObject({ index: true, follow: true })
+      expect(articleMetadata.robots).toMatchObject({ index: true, follow: true })
+      expect(articleMetadata.alternates?.canonical).toBe(article.canonicalUrl)
+    }
     expect(thailandTripPlannerMetadata.alternates?.canonical).toBe(
       `${BASE}/thailand-trip-planner`,
     )

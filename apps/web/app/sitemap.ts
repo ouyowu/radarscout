@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { listTourDetailSeoCandidates } from '@/lib/publicProducts/tourDetailSeoCandidates'
+import { thailandGuideArticles } from '@/lib/guides/thailandGuides'
 
 const routes = [
   ['', 'weekly', 1.0],
@@ -7,6 +8,10 @@ const routes = [
   ['/thailand/bangkok', 'weekly', 0.8],
   ['/thailand/chiang-mai', 'weekly', 0.8],
   ['/thailand/phuket', 'weekly', 0.8],
+  ['/guides', 'weekly', 0.8],
+  ['/guides/bangkok', 'weekly', 0.7],
+  ['/guides/chiang-mai', 'weekly', 0.7],
+  ['/guides/phuket', 'weekly', 0.7],
   ['/chiang-mai/elephant-camp-finder', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],
@@ -33,5 +38,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  return [...staticRoutes, ...tourDetailCandidates]
+  const guideArticles: MetadataRoute.Sitemap = thailandGuideArticles.map(article => ({
+    url: article.canonicalUrl,
+    lastModified: new Date(article.updatedAt),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }))
+
+  return [...staticRoutes, ...guideArticles, ...tourDetailCandidates]
 }

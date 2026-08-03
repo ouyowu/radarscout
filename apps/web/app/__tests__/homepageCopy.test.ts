@@ -192,6 +192,7 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toContain('href="/ai-trip-planner"')
     expect(publicSiteContentSource).toContain("{ href: '/tours', label: 'Experiences' }")
     expect(publicSiteContentSource).toContain("{ href: '/destinations', label: 'Destinations' }")
+    expect(publicSiteContentSource).toContain("{ href: '/guides', label: 'Guides' }")
     expect(publicSiteContentSource).not.toContain('AI Planner')
   })
 
