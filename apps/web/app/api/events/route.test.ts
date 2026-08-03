@@ -27,6 +27,11 @@ describe('POST /api/events', () => {
         hasGroupSize: true,
         hasOccupancy: true,
         travelerType: 'family',
+        source: 'planner',
+        stepId: 'style',
+        choiceId: 'gentle-elephant',
+        resultPosition: 1,
+        resultCount: 3,
         href: 'https://www.viator.com/private?pid=secret',
         commissionPercent: 12,
       }),
@@ -46,6 +51,11 @@ describe('POST /api/events', () => {
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
+      source: 'planner',
+      stepId: 'style',
+      choiceId: 'gentle-elephant',
+      resultPosition: 1,
+      resultCount: 3,
     }))
   })
 
@@ -118,6 +128,11 @@ describe('POST /api/events', () => {
         city: 'traveler@example.com',
         productId: 'https://example.com/product',
         hasDates: 'yes',
+        source: 'private-source',
+        stepId: 'email-address',
+        choiceId: 'traveler@example.com',
+        resultPosition: 0,
+        resultCount: 999,
         prompt: 'private trip prompt',
       }),
     )
@@ -126,6 +141,42 @@ describe('POST /api/events', () => {
     expect(JSON.parse(String(log.mock.calls[0]?.[0]))).toEqual({
       tag: 'funnel_event',
       event: 'affiliate_partner_handoff_clicked',
+    })
+  })
+
+  it('keeps safe finder evidence dimensions without logging search text or outbound URLs', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+
+    const response = await POST(
+      requestWithJson({
+        event: 'finder_recommendations_rendered',
+        provider: 'bokun',
+        placement: 'planner_filtered_matches',
+        city: 'Chiang Mai',
+        productId: 'bokun:1232731',
+        attributionSource: 'bokun_public_widget',
+        targetHost: 'widgets.bokun.io',
+        source: 'planner',
+        resultPosition: 2,
+        resultCount: 3,
+        prompt: 'family elephant day near my hotel',
+        href: 'https://widgets.bokun.io/private',
+      }),
+    )
+
+    expect(response.status).toBe(204)
+    expect(JSON.parse(String(log.mock.calls[0]?.[0]))).toEqual({
+      tag: 'funnel_event',
+      event: 'finder_recommendations_rendered',
+      provider: 'bokun',
+      placement: 'planner_filtered_matches',
+      city: 'Chiang Mai',
+      productId: 'bokun:1232731',
+      attributionSource: 'bokun_public_widget',
+      targetHost: 'widgets.bokun.io',
+      source: 'planner',
+      resultPosition: 2,
+      resultCount: 3,
     })
   })
 })
