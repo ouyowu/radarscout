@@ -26,11 +26,19 @@ const guideSources = [
 ].join('\n')
 
 describe('Thailand travel guides editorial catalogue', () => {
-  it('launches one reviewed original guide for each approved city', () => {
+  it('publishes two reviewed original guides for each approved city', () => {
     expect(guideCitySlugs).toEqual(['bangkok', 'chiang-mai', 'phuket'])
-    expect(thailandGuideArticles).toHaveLength(3)
-    expect(thailandGuideArticles.map(article => article.citySlug).sort()).toEqual(
-      [...guideCitySlugs].sort(),
+    expect(thailandGuideArticles).toHaveLength(6)
+    for (const city of guideCitySlugs) {
+      expect(thailandGuideArticles.filter(article => article.citySlug === city)).toHaveLength(2)
+    }
+
+    expect(thailandGuideArticles.map(article => article.slug)).toEqual(
+      expect.arrayContaining([
+        'ayutthaya-vs-floating-market-day-trip',
+        'doi-inthanon-vs-chiang-rai-day-trip',
+        'old-town-vs-island-day',
+      ]),
     )
 
     const canonicalUrls = thailandGuideArticles.map(article => article.canonicalUrl)
