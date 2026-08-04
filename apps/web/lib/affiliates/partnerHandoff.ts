@@ -4,6 +4,8 @@ import {
   type AffiliateTripContext,
   type SafeAffiliateAnalyticsContext,
 } from './affiliateTripContext'
+import type { RecommendationReasonCode } from '../ai-trip/recommendation-signals'
+import type { TripPace } from '../ai-trip/intent-schema'
 
 export type PartnerHandoffProvider = AffiliateProvider
   | 'viator'
@@ -11,6 +13,8 @@ export type PartnerHandoffProvider = AffiliateProvider
   | 'direct_partner'
 
 export type PartnerHandoffPlacement = AffiliatePlacement
+  | 'planner_day_workspace'
+  | 'planner_filtered_matches'
   | 'tour_detail_primary'
   | 'tour_detail_sticky'
 
@@ -26,7 +30,10 @@ export type PartnerHandoffInput = {
   destination: string
   productId?: string
   campaign?: string
-  recommendationSource?: 'ai-trip-planner' | 'tour-detail'
+  recommendationSource?: 'ai-trip-planner' | 'planner' | 'tour-detail'
+  reasonCode?: RecommendationReasonCode
+  durationDays?: number
+  pace?: TripPace
   tripContext?: AffiliateTripContext
   safeIntent?: SafeAffiliateAnalyticsContext
   trustedPublicHandoff?: boolean
@@ -40,6 +47,9 @@ export type PartnerHandoffRecord = {
   productId?: string
   campaign?: string
   recommendationSource?: PartnerHandoffInput['recommendationSource']
+  reasonCode?: RecommendationReasonCode
+  durationDays?: number
+  pace?: TripPace
   attributionSource: PartnerAttributionSource
   targetHost: string
   intent: SafeAffiliateAnalyticsContext
@@ -125,6 +135,11 @@ export function createPartnerHandoffRecord(
     ...(input.recommendationSource
       ? { recommendationSource: input.recommendationSource }
       : {}),
+    ...(input.reasonCode ? { reasonCode: input.reasonCode } : {}),
+    ...(Number.isInteger(input.durationDays) && input.durationDays! >= 1 && input.durationDays! <= 14
+      ? { durationDays: input.durationDays }
+      : {}),
+    ...(input.pace ? { pace: input.pace } : {}),
     attributionSource: ATTRIBUTION_SOURCES[input.provider],
     targetHost: target.hostname,
     intent: input.safeIntent ?? buildSafeAffiliateAnalyticsContext(input.tripContext),
@@ -137,6 +152,12 @@ export function buildPartnerHandoffAnalyticsProps(record: PartnerHandoffRecord) 
     placement: record.placement,
     city: record.destination,
     ...(record.productId ? { productId: record.productId } : {}),
+    ...(record.recommendationSource
+      ? { recommendationSource: record.recommendationSource }
+      : {}),
+    ...(record.reasonCode ? { reasonCode: record.reasonCode } : {}),
+    ...(record.durationDays ? { durationDays: record.durationDays } : {}),
+    ...(record.pace ? { pace: record.pace } : {}),
     attributionSource: record.attributionSource,
     targetHost: record.targetHost,
     ...record.intent,

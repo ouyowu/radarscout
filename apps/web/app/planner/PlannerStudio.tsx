@@ -21,6 +21,8 @@ import {
 import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
 import { AgodaStayAreaPanel } from './AgodaStayAreaPanel'
 import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
+import { buildPlannerRecommendationEvents } from './plannerRecommendationTracking'
+import { track } from '@/lib/analytics/track'
 
 type StudioMessage = {
   id: number
@@ -136,6 +138,20 @@ export function PlannerStudio({
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [messages, isSearching, searchState])
+
+  useEffect(() => {
+    if (searchState?.status !== 'ok' || !searchState.tripSpec) return
+
+    for (const props of buildPlannerRecommendationEvents({
+      destination: searchState.tripSpec.destination,
+      durationDays: searchState.tripSpec.durationDays,
+      pace: searchState.tripSpec.pace,
+      travelerType: searchState.tripSpec.travelerType,
+      products: searchState.products,
+    })) {
+      track('finder_recommendations_rendered', props)
+    }
+  }, [searchState])
 
   async function runSearch(parts: string[]) {
     if ((adultCount === '') !== (childCount === '')) {

@@ -69,6 +69,10 @@ describe('track', () => {
       price: 99,
       destination: 'Chiang Mai',
       source: 'tour-detail',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'destination_match',
+      durationDays: 3,
+      pace: 'moderate',
     })
 
     expect(sendBeacon).toHaveBeenCalledTimes(1)
@@ -82,6 +86,10 @@ describe('track', () => {
       city: 'Chiang Mai',
       productId: 'viator_6467bkknight',
       hasDates: true,
+      recommendationSource: 'tour-detail',
+      reasonCode: 'destination_match',
+      durationDays: 3,
+      pace: 'moderate',
     })
   })
 

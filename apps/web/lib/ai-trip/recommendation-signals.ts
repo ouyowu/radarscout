@@ -1,6 +1,13 @@
 import type { TripIntent, TripPace, TravelerType } from './intent-schema'
 
+export type RecommendationReasonCode =
+  | 'interest_match'
+  | 'destination_match'
+  | 'theme_match'
+  | 'reviewed_fallback'
+
 export type ProductRecommendationSignals = {
+  reasonCode?: RecommendationReasonCode
   whyRecommended: string
   bestFor: string[]
   watchOut: string
@@ -142,15 +149,21 @@ export function buildProductRecommendationSignals(
   const destination = context.destination?.trim() || city || 'Thailand'
 
   let whyRecommended: string
+  let reasonCode: RecommendationReasonCode
   if (interests.length > 0 && city) {
+    reasonCode = 'interest_match'
     whyRecommended = `This reviewed ${city} experience matches your interest in ${sentenceList(interests)}.`
   } else if (interests.length > 0) {
+    reasonCode = 'interest_match'
     whyRecommended = `This reviewed experience matches your interest in ${sentenceList(interests)}.`
   } else if (city) {
+    reasonCode = 'destination_match'
     whyRecommended = `This reviewed ${city} option matches the confirmed ${destination} route.`
   } else if (product.tags.length > 0) {
+    reasonCode = 'theme_match'
     whyRecommended = `This reviewed option supports themes such as ${sentenceList(product.tags.slice(0, 2))}.`
   } else {
+    reasonCode = 'reviewed_fallback'
     whyRecommended = 'This is a reviewed Thailand day-trip option for comparison.'
   }
 
@@ -196,6 +209,7 @@ export function buildProductRecommendationSignals(
   }
 
   return {
+    reasonCode,
     whyRecommended,
     bestFor: bestFor.slice(0, 3),
     watchOut,

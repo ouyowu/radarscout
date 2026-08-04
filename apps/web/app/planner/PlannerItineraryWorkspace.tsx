@@ -7,6 +7,10 @@ import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContex
 import { track } from '@/lib/analytics/track'
 import { buildGetYourGuideCityGuideOffer } from '@/lib/affiliates/affiliatePartners'
 import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
+import {
   buildSafeAffiliateAnalyticsContext,
   type AffiliateTripContext,
 } from '@/lib/affiliates/affiliateTripContext'
@@ -101,6 +105,20 @@ export function PlannerItineraryWorkspace({
     : null
   const cityGuideOffer = buildGetYourGuideCityGuideOffer(itinerary.tripSpec.destination)
   const safeTripContext = buildSafeAffiliateAnalyticsContext(tripContext)
+  const selectedHandoff = selectedHandoffHref && selectedProductId
+    ? createPartnerHandoffRecord({
+        href: selectedHandoffHref,
+        provider: 'viator',
+        placement: 'planner_day_workspace',
+        destination: selectedProduct?.city ?? itinerary.tripSpec.destination,
+        productId: selectedProductId,
+        recommendationSource: 'planner',
+        reasonCode: selectedDecisionSignals?.reasonCode ?? 'reviewed_fallback',
+        durationDays: itinerary.tripSpec.durationDays,
+        pace: itinerary.tripSpec.pace,
+        safeIntent: safeTripContext,
+      })
+    : null
 
   function toggleTheme(theme: string) {
     setSelectedThemes(current => current.includes(theme)
@@ -241,19 +259,15 @@ export function PlannerItineraryWorkspace({
                   >
                     Review product details
                   </Link>
-                  {selectedHandoffHref ? (
+                  {selectedHandoff ? (
                     <a
-                      href={selectedHandoffHref}
+                      href={selectedHandoff.href}
                       target="_blank"
                       rel="nofollow sponsored noopener noreferrer"
-                      onClick={() => track('booking_partner_handoff_clicked', {
-                        provider: 'viator',
-                        placement: 'planner_day_workspace',
-                        city: selectedProduct.city ?? itinerary.tripSpec.destination,
-                        destination: itinerary.tripSpec.destination,
-                        ...safeTripContext,
-                        productId: selectedProductId ?? '',
-                      })}
+                      onClick={() => track(
+                        'booking_partner_handoff_clicked',
+                        buildPartnerHandoffAnalyticsProps(selectedHandoff),
+                      )}
                       className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
                     >
                       Check availability
@@ -322,6 +336,20 @@ export function PlannerItineraryWorkspace({
                 pace,
                 selectedThemes,
               )
+              const handoff = handoffHref
+                ? createPartnerHandoffRecord({
+                    href: handoffHref,
+                    provider: 'viator',
+                    placement: 'planner_filtered_matches',
+                    destination: product.city ?? itinerary.tripSpec.destination,
+                    productId: product.id,
+                    recommendationSource: 'planner',
+                    reasonCode: decisionSignals?.reasonCode ?? 'reviewed_fallback',
+                    durationDays: itinerary.tripSpec.durationDays,
+                    pace: itinerary.tripSpec.pace,
+                    safeIntent: safeTripContext,
+                  })
+                : null
 
               return (
                 <article key={product.id} className="min-w-0 overflow-hidden rounded-rs-lg border border-rs-sage-200/80 bg-white shadow-rs-soft">
@@ -359,19 +387,15 @@ export function PlannerItineraryWorkspace({
                       >
                         Review product details
                       </Link>
-                      {handoffHref ? (
+                      {handoff ? (
                         <a
-                          href={handoffHref}
+                          href={handoff.href}
                           target="_blank"
                           rel="nofollow sponsored noopener noreferrer"
-                          onClick={() => track('booking_partner_handoff_clicked', {
-                            provider: 'viator',
-                            placement: 'planner_filtered_matches',
-                            city: product.city ?? itinerary.tripSpec.destination,
-                            destination: itinerary.tripSpec.destination,
-                            ...safeTripContext,
-                            productId: product.id,
-                          })}
+                          onClick={() => track(
+                            'booking_partner_handoff_clicked',
+                            buildPartnerHandoffAnalyticsProps(handoff),
+                          )}
                           className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
                         >
                           Check availability
