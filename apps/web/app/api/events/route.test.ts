@@ -27,6 +27,10 @@ describe('POST /api/events', () => {
         hasGroupSize: true,
         hasOccupancy: true,
         travelerType: 'family',
+        recommendationSource: 'planner',
+        reasonCode: 'interest_match',
+        durationDays: 3,
+        pace: 'moderate',
         href: 'https://www.viator.com/private?pid=secret',
         commissionPercent: 12,
       }),
@@ -46,6 +50,10 @@ describe('POST /api/events', () => {
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
+      recommendationSource: 'planner',
+      reasonCode: 'interest_match',
+      durationDays: 3,
+      pace: 'moderate',
     }))
   })
 
@@ -119,6 +127,10 @@ describe('POST /api/events', () => {
         productId: 'https://example.com/product',
         hasDates: 'yes',
         prompt: 'private trip prompt',
+        recommendationSource: 'private prompt source',
+        reasonCode: 'because the user said something private',
+        durationDays: 365,
+        pace: 'extreme',
       }),
     )
 
@@ -126,6 +138,39 @@ describe('POST /api/events', () => {
     expect(JSON.parse(String(log.mock.calls[0]?.[0]))).toEqual({
       tag: 'funnel_event',
       event: 'affiliate_partner_handoff_clicked',
+    })
+  })
+
+  it('records a safe recommendation impression without raw user text', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+
+    const response = await POST(requestWithJson({
+      event: 'finder_recommendations_rendered',
+      provider: 'viator',
+      placement: 'planner_filtered_matches',
+      city: 'Phuket',
+      productId: 'viator_123p1',
+      recommendationSource: 'planner',
+      reasonCode: 'interest_match',
+      durationDays: 4,
+      pace: 'relaxed',
+      travelerType: 'couple',
+      prompt: 'private free-form request',
+    }))
+
+    expect(response.status).toBe(204)
+    expect(JSON.parse(String(log.mock.calls[0]?.[0]))).toEqual({
+      tag: 'funnel_event',
+      event: 'finder_recommendations_rendered',
+      provider: 'viator',
+      placement: 'planner_filtered_matches',
+      city: 'Phuket',
+      productId: 'viator_123p1',
+      recommendationSource: 'planner',
+      reasonCode: 'interest_match',
+      durationDays: 4,
+      pace: 'relaxed',
+      travelerType: 'couple',
     })
   })
 })

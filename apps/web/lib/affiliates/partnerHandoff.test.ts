@@ -15,6 +15,9 @@ describe('partnerHandoff', () => {
       destination: 'Chiang Mai',
       productId: 'viator_12345p1',
       recommendationSource: 'tour-detail',
+      reasonCode: 'destination_match',
+      durationDays: 3,
+      pace: 'moderate',
       tripContext: {
         startDate: '2099-12-10',
         endDate: '2099-12-13',
@@ -32,6 +35,9 @@ describe('partnerHandoff', () => {
       destination: 'Chiang Mai',
       productId: 'viator_12345p1',
       recommendationSource: 'tour-detail',
+      reasonCode: 'destination_match',
+      durationDays: 3,
+      pace: 'moderate',
       attributionSource: 'viator_affiliate',
       targetHost: 'www.viator.com',
       intent: {
@@ -86,6 +92,28 @@ describe('partnerHandoff', () => {
     expect(analytics).not.toHaveProperty('campaign')
     expect(analytics).not.toHaveProperty('startDate')
     expect(analytics).not.toHaveProperty('adultCount')
+  })
+
+  it('keeps only structured recommendation context in analytics props', () => {
+    const record = createPartnerHandoffRecord({
+      href: 'https://www.viator.com/tours/Phuket/example/d349-123P1?pid=P00309837',
+      provider: 'viator',
+      placement: 'planner_filtered_matches',
+      destination: 'Phuket',
+      productId: 'viator_123p1',
+      recommendationSource: 'planner',
+      reasonCode: 'interest_match',
+      durationDays: 4,
+      pace: 'relaxed',
+    })
+
+    expect(buildPartnerHandoffAnalyticsProps(record!)).toMatchObject({
+      productId: 'viator_123p1',
+      recommendationSource: 'planner',
+      reasonCode: 'interest_match',
+      durationDays: 4,
+      pace: 'relaxed',
+    })
   })
 
   it('fails closed when the provider and outbound host do not match', () => {

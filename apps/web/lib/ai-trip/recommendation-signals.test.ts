@@ -21,6 +21,12 @@ describe('deterministic product recommendation signals', () => {
       })
 
       expect(signals.whyRecommended.trim()).not.toBe('')
+      expect([
+        'interest_match',
+        'destination_match',
+        'theme_match',
+        'reviewed_fallback',
+      ]).toContain(signals.reasonCode)
       expect(signals.bestFor.length).toBeGreaterThan(0)
       expect(signals.watchOut.trim()).not.toBe('')
       expect(JSON.stringify(signals)).not.toMatch(
@@ -45,6 +51,7 @@ describe('deterministic product recommendation signals', () => {
 
     expect(signals.whyRecommended).toMatch(/Chiang Mai/i)
     expect(signals.whyRecommended).toMatch(/nature/i)
+    expect(signals.reasonCode).toBe('interest_match')
     expect(signals.bestFor).toContain('Families comparing this route')
     expect(signals.bestFor).toContain('A relaxed itinerary')
     expect(signals.watchOut).toMatch(/rainy-season/i)

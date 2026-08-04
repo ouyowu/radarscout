@@ -44,6 +44,7 @@ describe('TrackedBookingPartnerHandoff', () => {
       placement: 'tour_detail_primary',
       city: 'Chiang Mai',
       productId: 'viator_12345p1',
+      recommendationSource: 'ai-trip-planner',
       attributionSource: 'viator_affiliate',
       targetHost: 'www.viator.com',
       hasDates: true,

@@ -24,6 +24,10 @@ export type SafeFunnelEventPayload = {
   hasGroupSize?: boolean
   hasOccupancy?: boolean
   travelerType?: string
+  recommendationSource?: string
+  reasonCode?: string
+  durationDays?: number
+  pace?: string
 }
 
 const APPROVED_PROVIDERS = new Set([
@@ -113,6 +117,21 @@ const APPROVED_TRAVELER_TYPES = new Set([
   'unspecified',
 ])
 
+const APPROVED_RECOMMENDATION_SOURCES = new Set([
+  'ai-trip-planner',
+  'planner',
+  'tour-detail',
+])
+
+const APPROVED_REASON_CODES = new Set([
+  'interest_match',
+  'destination_match',
+  'theme_match',
+  'reviewed_fallback',
+])
+
+const APPROVED_PACES = new Set(['relaxed', 'moderate', 'packed', 'unspecified'])
+
 const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/
 
 function isFunnelEvent(value: unknown): value is FunnelEvent {
@@ -142,6 +161,12 @@ export function buildSafeFunnelEventPayload(
   )
   const targetHost = approvedValue(props.targetHost, APPROVED_TARGET_HOSTS)
   const travelerType = approvedValue(props.travelerType, APPROVED_TRAVELER_TYPES)
+  const recommendationSource = approvedValue(
+    props.recommendationSource,
+    APPROVED_RECOMMENDATION_SOURCES,
+  )
+  const reasonCode = approvedValue(props.reasonCode, APPROVED_REASON_CODES)
+  const pace = approvedValue(props.pace, APPROVED_PACES)
 
   if (provider) payload.provider = provider
   if (placement) payload.placement = placement
@@ -153,6 +178,15 @@ export function buildSafeFunnelEventPayload(
   if (typeof props.hasGroupSize === 'boolean') payload.hasGroupSize = props.hasGroupSize
   if (typeof props.hasOccupancy === 'boolean') payload.hasOccupancy = props.hasOccupancy
   if (travelerType) payload.travelerType = travelerType
+  if (recommendationSource) payload.recommendationSource = recommendationSource
+  if (reasonCode) payload.reasonCode = reasonCode
+  if (
+    typeof props.durationDays === 'number'
+    && Number.isInteger(props.durationDays)
+    && props.durationDays >= 1
+    && props.durationDays <= 14
+  ) payload.durationDays = props.durationDays
+  if (pace) payload.pace = pace
 
   return payload
 }
