@@ -40,7 +40,7 @@ describe('Thailand city SEO hubs', () => {
     expect(source).toContain('How we review')
     expect(source).toContain("'WebPage'")
     expect(source).toContain("'BreadcrumbList'")
-    expect(source).toContain("'Organization'")
+    expect(source).toContain('buildRadarScoutOrganization()')
     expect(source).toContain("author: { '@id': `${base}/#organization` }")
     expect(source).toContain("publisher: { '@id': `${base}/#organization` }")
     expect(source).toContain('city.brandEntityStatement')

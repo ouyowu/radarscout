@@ -6,6 +6,7 @@ import { PublicSiteShell } from '../../_components/PublicSiteShell'
 import { TrackedLink } from '../../_components/TrackedLink'
 import { ExperienceCard, Section } from '../../_components/design-system'
 import { loadReviewedViatorPublicCatalogue } from '@/lib/viator/reviewedViatorPublicCatalogue'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 import {
   cityHubContent,
   cityHubSlugs,
@@ -57,12 +58,7 @@ function structuredDataFor(citySlug: CityHubSlug) {
   return {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${base}/#organization`,
-        name: 'RadarScout',
-        url: base,
-      },
+      buildRadarScoutOrganization(),
       {
         '@type': 'WebPage',
         '@id': `${canonicalUrl}#webpage`,

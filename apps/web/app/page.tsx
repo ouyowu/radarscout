@@ -11,18 +11,14 @@ import {
   homepageTrustItems,
 } from './_content/publicSite'
 import { featuredViatorExperiences } from './_content/homepageFeaturedExperiences'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 
 const base = 'https://www.radarscout.io'
 
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': `${base}/#organization`,
-      name: 'RadarScout',
-      url: base,
-    },
+    buildRadarScoutOrganization(),
     {
       '@type': 'WebSite',
       '@id': `${base}/#website`,

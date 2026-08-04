@@ -27,7 +27,7 @@ const homepageVisibleCopySources = [
 
 describe('homepage public copy safety', () => {
   it('publishes Organization and WebSite schema for the canonical www homepage', () => {
-    expect(homepageSource).toContain("'@type': 'Organization'")
+    expect(homepageSource).toContain('buildRadarScoutOrganization()')
     expect(homepageSource).toContain("'@type': 'WebSite'")
     expect(homepageSource).toContain("const base = 'https://www.radarscout.io'")
     expect(homepageSource).toContain('<JsonLd data={structuredData} />')

@@ -10,6 +10,7 @@ import {
   thailandGuideArticles,
   thailandGuideCities,
 } from '@/lib/guides/thailandGuides'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 
 const base = 'https://www.radarscout.io'
 const canonicalUrl = `${base}/guides`
@@ -38,12 +39,7 @@ export const metadata: Metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': `${base}/#organization`,
-      name: 'RadarScout',
-      url: base,
-    },
+    buildRadarScoutOrganization(),
     {
       '@type': 'CollectionPage',
       '@id': `${canonicalUrl}#collection`,

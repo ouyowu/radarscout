@@ -23,6 +23,7 @@ const guideSources = [
   fs.readFileSync(path.resolve(__dirname, '../[city]/page.tsx'), 'utf8'),
   fs.readFileSync(path.resolve(__dirname, '../[city]/[slug]/page.tsx'), 'utf8'),
   fs.readFileSync(path.resolve(__dirname, '../../../lib/guides/thailandGuides.ts'), 'utf8'),
+  fs.readFileSync(path.resolve(__dirname, '../../../lib/seo/radarscoutEntity.ts'), 'utf8'),
 ].join('\n')
 
 describe('Thailand travel guides editorial catalogue', () => {

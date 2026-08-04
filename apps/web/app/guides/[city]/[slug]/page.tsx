@@ -8,6 +8,7 @@ import {
   getThailandGuideArticle,
   thailandGuideArticles,
 } from '@/lib/guides/thailandGuides'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 
 const base = 'https://www.radarscout.io'
 
@@ -44,12 +45,7 @@ export default function ThailandGuideArticlePage({ params }: { params: { city: s
   const articleSchema = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${base}/#organization`,
-        name: 'RadarScout',
-        url: base,
-      },
+      buildRadarScoutOrganization(),
       {
         '@type': 'Article',
         '@id': `${article.canonicalUrl}#article`,

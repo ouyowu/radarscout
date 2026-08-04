@@ -6,6 +6,7 @@ import { PublicSiteShell } from '../_components/PublicSiteShell'
 import { TrackedLink } from '../_components/TrackedLink'
 import { ExperienceCard, Section } from '../_components/design-system'
 import { featuredViatorExperiences } from '../_content/homepageFeaturedExperiences'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 
 const base = 'https://www.radarscout.io'
 const canonicalPath = '/thailand-trip-planner'
@@ -120,12 +121,7 @@ const faqItems = [
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': `${base}/#organization`,
-      name: 'RadarScout',
-      url: base,
-    },
+    buildRadarScoutOrganization(),
     {
       '@type': 'WebPage',
       '@id': `${canonicalUrl}#webpage`,
