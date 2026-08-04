@@ -67,6 +67,7 @@ describe('Planner Studio filters', () => {
     )
 
     expect(result).toEqual({
+      reasonCode: 'theme_match',
       whyRecommended: 'This reviewed Chiang Mai option matches the confirmed route. It also matches your selected nature theme.',
       bestFor: ['Couples comparing this route', 'A relaxed itinerary', 'Travelers interested in nature'],
       watchOut: 'Rainy-season conditions may affect outdoor comfort or routing; review current operator details on Viator before choosing.',

@@ -85,7 +85,9 @@ export function adaptPlannerDecisionSignals(
     : signals.watchOut
 
   return {
-    ...(signals.reasonCode ? { reasonCode: signals.reasonCode } : {}),
+    ...(matchingThemes.length > 0
+      ? { reasonCode: 'theme_match' as const }
+      : signals.reasonCode ? { reasonCode: signals.reasonCode } : {}),
     whyRecommended,
     bestFor: [...stableBestFor, PACE_BEST_FOR[pace], ...currentInterestFit].slice(0, 3),
     watchOut,
