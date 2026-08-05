@@ -23,6 +23,12 @@ export type ActivityFeedV1Item = {
   }
   title: string
   summary: string
+  recommendation: {
+    whyRecommended: ActivityFeedField<string>
+    bestFor: ActivityFeedField<string[]>
+    strengths: ActivityFeedField<string[]>
+    tradeoffs: ActivityFeedField<string[]>
+  }
   suitableFor: ActivityFeedField<string[]>
   notSuitableFor: ActivityFeedField<string[]>
   startingPrice: ActivityFeedField<null>
@@ -32,14 +38,21 @@ export type ActivityFeedV1Item = {
   fitnessLevel: ActivityFeedField<string | null>
   cancellationPolicy: ActivityFeedField<string | null>
   ethicalAttributes: ActivityFeedField<string[]>
+  experienceFeatures: ActivityFeedField<string[]>
   themes: string[]
   partnerHandoff: {
     provider: 'Viator'
     url: string
     label: 'Check availability'
     availabilityClaimed: false
+    source: 'operator_verified_public_link'
+    verifiedBy: 'operator_manual_review'
   }
-  verifiedAt: string
+  provenance: {
+    source: 'reviewed_viator_catalog'
+    reviewStatus: 'human_reviewed'
+    verifiedAt: string
+  }
 }
 
 function notReviewed<T>(value: T): ActivityFeedField<T> {
@@ -60,6 +73,14 @@ function fromValue<T>(field: {
   return { status: field.status, value: field.value }
 }
 
+function derivedValue<T>(value: T): ActivityFeedField<T> {
+  return { status: 'derived_from_reviewed_fields', value }
+}
+
+function derivedValues(values: string[]): ActivityFeedField<string[]> {
+  return { status: 'derived_from_reviewed_fields', value: [...values] }
+}
+
 function fromAiReadyProduct(product: AiReadyProduct): ActivityFeedV1Item {
   return {
     schemaVersion: ACTIVITY_FEED_V1_SCHEMA_VERSION,
@@ -67,6 +88,12 @@ function fromAiReadyProduct(product: AiReadyProduct): ActivityFeedV1Item {
     destination: product.destination,
     title: product.title,
     summary: product.summary,
+    recommendation: {
+      whyRecommended: derivedValue(product.recommendation.whyRecommended),
+      bestFor: derivedValues(product.recommendation.bestFor),
+      strengths: derivedValues(product.recommendation.strengths),
+      tradeoffs: derivedValues(product.recommendation.tradeoffs),
+    },
     suitableFor: fromValues(product.fit.suitableFor),
     notSuitableFor: fromValues(product.fit.notSuitableFor),
     // The reviewed catalogue intentionally does not contain a public price.
@@ -78,15 +105,53 @@ function fromAiReadyProduct(product: AiReadyProduct): ActivityFeedV1Item {
     fitnessLevel: notReviewed(null),
     cancellationPolicy: notReviewed(null),
     ethicalAttributes: fromValues(product.experience.ethicalFeatures),
+    experienceFeatures: fromValues(product.experience.features),
     themes: [...product.themes],
     partnerHandoff: {
       provider: product.partnerHandoff.platform,
       url: product.partnerHandoff.url,
       label: product.partnerHandoff.label,
       availabilityClaimed: product.partnerHandoff.availabilityClaimed,
+      source: 'operator_verified_public_link',
+      verifiedBy: 'operator_manual_review',
     },
-    verifiedAt: product.provenance.lastVerifiedAt,
+    provenance: {
+      source: product.provenance.source,
+      reviewStatus: product.provenance.reviewStatus,
+      verifiedAt: product.provenance.lastVerifiedAt,
+    },
   }
+}
+
+export type ActivityFeedV1ValidationResult =
+  | { ok: true; value: ActivityFeedV1Item }
+  | { ok: false; error: 'invalid_shape' | 'unknown_product' | 'source_mismatch' }
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+/**
+ * Fail-closed validation for consumers that receive a serialized feed item.
+ * The reviewed catalogue remains the source of truth; arbitrary external
+ * product records cannot enter the feed by matching the TypeScript shape alone.
+ */
+export function validateActivityFeedV1Item(
+  value: unknown,
+): ActivityFeedV1ValidationResult {
+  if (!isRecord(value) || typeof value.id !== 'string') {
+    return { ok: false, error: 'invalid_shape' }
+  }
+
+  const expected = loadActivityFeedV1().find(item => item.id === value.id)
+  if (!expected) return { ok: false, error: 'unknown_product' }
+  if (value.schemaVersion !== ACTIVITY_FEED_V1_SCHEMA_VERSION) {
+    return { ok: false, error: 'invalid_shape' }
+  }
+
+  return JSON.stringify(value) === JSON.stringify(expected)
+    ? { ok: true, value: expected }
+    : { ok: false, error: 'source_mismatch' }
 }
 
 export type LoadActivityFeedV1Options = {

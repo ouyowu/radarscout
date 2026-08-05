@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ACTIVITY_FEED_V1_SCHEMA_VERSION,
   loadActivityFeedV1,
+  validateActivityFeedV1Item,
 } from './activityFeedV1'
 
 describe('Activity Feed v1 adapter', () => {
@@ -14,6 +15,9 @@ describe('Activity Feed v1 adapter', () => {
     expect(items.every((item) => item.partnerHandoff.provider === 'Viator')).toBe(true)
     expect(items.every((item) => item.partnerHandoff.label === 'Check availability')).toBe(true)
     expect(items.every((item) => item.partnerHandoff.availabilityClaimed === false)).toBe(true)
+    expect(items.every((item) => item.provenance.reviewStatus === 'human_reviewed')).toBe(true)
+    expect(items.every((item) => item.recommendation.whyRecommended.value.length > 0)).toBe(true)
+    expect(items.every((item) => item.experienceFeatures.value.length > 0)).toBe(true)
   })
 
   it('keeps unreviewed commercial and logistics fields explicit', () => {
@@ -26,6 +30,20 @@ describe('Activity Feed v1 adapter', () => {
     expect(item.fitnessLevel).toEqual({ status: 'not_reviewed', value: null })
     expect(item.cancellationPolicy).toEqual({ status: 'not_reviewed', value: null })
     expect(item.ethicalAttributes).toEqual({ status: 'not_reviewed', value: [] })
+  })
+
+  it('accepts only items generated from the reviewed source catalogue', () => {
+    const [item] = loadActivityFeedV1({ take: 1 })
+
+    expect(validateActivityFeedV1Item(item)).toEqual({ ok: true, value: item })
+    expect(validateActivityFeedV1Item({ ...item, summary: 'unreviewed claim' })).toEqual({
+      ok: false,
+      error: 'source_mismatch',
+    })
+    expect(validateActivityFeedV1Item({ ...item, id: 'viator_not_reviewed' })).toEqual({
+      ok: false,
+      error: 'unknown_product',
+    })
   })
 
   it('supports deterministic destination filtering and bounded reads', () => {
@@ -54,4 +72,3 @@ describe('Activity Feed v1 adapter', () => {
     }
   })
 })
-
