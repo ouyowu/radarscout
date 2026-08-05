@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from 'react'
 import { track } from '@/lib/analytics/track'
+import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
 import { filterItineraryProducts, getStopsForPace } from '@/lib/itineraries/itineraryFilters'
 import type {
   ThailandItineraryPace,
@@ -168,14 +172,25 @@ export function ItineraryWorkspace({ template, products, publicMapToken }: Itine
                     href={product.productUrl}
                     target="_blank"
                     rel="nofollow sponsored noopener noreferrer"
-                    onClick={() => track('booking_partner_handoff_clicked', {
-                      provider: 'viator',
-                      placement: 'itinerary_template',
-                      city: product.city,
-                      destination: template.citySlug,
-                      hasDates: false,
-                      productId: product.id,
-                    })}
+                    onClick={() => {
+                      const handoff = createPartnerHandoffRecord({
+                        href: product.productUrl,
+                        provider: 'viator',
+                        placement: 'planner_filtered_matches',
+                        destination: product.city,
+                        productId: product.id,
+                        recommendationSource: 'planner',
+                        safeIntent: {
+                          hasDates: false,
+                          hasGroupSize: false,
+                          hasOccupancy: false,
+                          travelerType: 'unspecified',
+                        },
+                      })
+                      if (handoff) {
+                        track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                      }
+                    }}
                     className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
                   >
                     Check availability

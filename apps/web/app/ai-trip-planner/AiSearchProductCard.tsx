@@ -1,5 +1,9 @@
 import Link from 'next/link'
 import { track } from '@/lib/analytics/track'
+import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
 import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 export type AiSearchProductCardProps = {
@@ -162,15 +166,20 @@ export function AiSearchProductCard({
             target="_blank"
             rel={ctaRel ?? 'nofollow sponsored noopener noreferrer'}
             aria-label={`Check availability for ${title} with the booking partner`}
-            onClick={() => track('booking_partner_handoff_clicked', {
-              provider: 'viator',
-              placement: 'ai_trip_planner_card',
-              city: city ?? handoffDestination,
-              destination: handoffDestination,
-              ...safeHandoffContext,
-              productId: id,
-              source: 'ai_trip_planner',
-            })}
+            onClick={() => {
+              const handoff = createPartnerHandoffRecord({
+                href: ctaHref ?? '',
+                provider: 'viator',
+                placement: 'planner_filtered_matches',
+                destination: city ?? handoffDestination,
+                productId: id,
+                recommendationSource: 'ai-trip-planner',
+                safeIntent: safeHandoffContext,
+              })
+              if (handoff) {
+                track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+              }
+            }}
             className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {ctaLabel ?? 'Check availability'}

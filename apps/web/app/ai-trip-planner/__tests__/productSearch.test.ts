@@ -99,7 +99,8 @@ describe('canSearchFromConfirmed (test 21–22)', () => {
 describe('planner search funnel analytics', () => {
   it('does not add unapproved Trip Planner search analytics outside the approved taxonomy', () => {
     expect(intentParserDemoSource).not.toContain("track('planner_search_submitted')")
-    expect(intentParserDemoSource).toContain("track('booking_partner_handoff_clicked'")
+    expect(intentParserDemoSource).toContain('createPartnerHandoffRecord')
+    expect(intentParserDemoSource).toContain("recommendationSource: 'ai-trip-planner'")
     expect(intentParserDemoSource).not.toMatch(/navigator\.sendBeacon/i)
     expect(intentParserDemoSource).not.toMatch(/google-analytics|gtag|plausible|vercel analytics/i)
   })
@@ -311,15 +312,15 @@ describe('AiSearchProductCardProps type contract (tests 27–28)', () => {
 
   it('tracks bounded provider and trip context for every AI Trip Planner partner handoff', () => {
     expect(intentParserDemoSource).toMatch(/provider: 'viator'/)
-    expect(intentParserDemoSource).toMatch(/placement: 'ai_trip_planner_top_match'/)
+    expect(intentParserDemoSource).toMatch(/placement: 'planner_filtered_matches'/)
     expect(intentParserDemoSource).toMatch(/buildSafeAffiliateAnalyticsContext/)
     expect(intentParserDemoSource).toMatch(/\.\.\.searchSafeTripContext/)
     expect(intentParserDemoSource).toMatch(/handoffContext=\{\{[\s\S]*destination: searchDestination,[\s\S]*\.\.\.searchSafeTripContext/)
     expect(intentParserDemoSource).toMatch(/<DayTripItineraryPanel itinerary=\{searchState\.itinerary\} handoffContext=\{searchSafeTripContext\} \/>/)
     expect(aiSearchProductCardSource).toMatch(/provider: 'viator'/)
-    expect(aiSearchProductCardSource).toMatch(/placement: 'ai_trip_planner_card'/)
-    expect(aiSearchProductCardSource).toMatch(/city: city \?\? handoffDestination/)
-    expect(aiSearchProductCardSource).toMatch(/\.\.\.safeHandoffContext/)
+    expect(aiSearchProductCardSource).toMatch(/placement: 'planner_filtered_matches'/)
+    expect(aiSearchProductCardSource).toMatch(/destination: city \?\? handoffDestination/)
+    expect(aiSearchProductCardSource).toMatch(/safeIntent: safeHandoffContext/)
   })
 })
 

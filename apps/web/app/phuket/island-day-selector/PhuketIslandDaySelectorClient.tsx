@@ -5,6 +5,10 @@ import { useMemo, useState } from 'react'
 
 import { track } from '@/lib/analytics/track'
 import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
+import {
   selectPhuketIslandDayMatches,
   type PhuketIslandExperience,
   type PhuketIslandPace,
@@ -230,14 +234,25 @@ export function PhuketIslandDaySelectorClient({ products }: PhuketIslandDaySelec
                         href={match.product.bookingPartnerHandoff.href}
                         target="_blank"
                         rel={match.product.bookingPartnerHandoff.rel}
-                        onClick={() => track('booking_partner_handoff_clicked', {
-                          provider: 'viator',
-                          placement: 'phuket_island_day_selector',
-                          city: 'Phuket',
-                          destination: 'phuket',
-                          hasDates: false,
-                          productId: match.product.id,
-                        })}
+                        onClick={() => {
+                          const handoff = createPartnerHandoffRecord({
+                            href: match.product.bookingPartnerHandoff.href,
+                            provider: 'viator',
+                            placement: 'planner_filtered_matches',
+                            destination: 'Phuket',
+                            productId: match.product.id,
+                            recommendationSource: 'planner',
+                            safeIntent: {
+                              hasDates: false,
+                              hasGroupSize: false,
+                              hasOccupancy: false,
+                              travelerType: 'unspecified',
+                            },
+                          })
+                          if (handoff) {
+                            track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                          }
+                        }}
                         className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-black text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
                       >
                         Check availability
