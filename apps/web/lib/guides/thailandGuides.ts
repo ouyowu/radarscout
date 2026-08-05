@@ -92,6 +92,12 @@ const dailyEditorial = {
   updatedAt: '2026-08-04',
 } as const
 
+const dailyEditorialAugust5 = {
+  ...sharedEditorial,
+  publishedAt: '2026-08-05',
+  updatedAt: '2026-08-05',
+} as const
+
 const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'>[] = [
   {
     citySlug: 'chiang-mai',
@@ -556,6 +562,236 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
       },
     ],
     ...dailyEditorial,
+  },
+  {
+    citySlug: 'bangkok',
+    cityName: 'Bangkok',
+    slug: 'food-tour-vs-temple-day',
+    title: 'Bangkok Food Tour vs Temple Day: Which First Day Fits You?',
+    seoTitle: 'Bangkok Food Tour vs Temple Day | RadarScout',
+    description:
+      'Compare a Bangkok food day with a temple-led day by walking, heat, timing, neighborhood structure, and traveler fit before choosing a first outing.',
+    eyebrow: 'Bangkok first-day decision guide',
+    quickAnswer:
+      'Choose a temple-led day when Bangkok history, architecture, and river landmarks are your priority. Choose a food-led day when local flavors, markets, and neighborhood atmosphere matter more. Both can work for first-time visitors, but the walking, start time, dress expectations, and heat exposure are different.',
+    bestFor: [
+      'First-time visitors deciding what kind of Bangkok day to start with',
+      'Travelers balancing temples, street food, markets, and a flexible evening',
+      'Families and couples who want to match the day to energy and comfort',
+    ],
+    notIdealFor: [
+      'Travelers treating every temple or food route as interchangeable',
+      'Anyone who has not considered heat, walking, dress, or meal timing',
+      'A packed arrival day with no margin for transport delays',
+    ],
+    sections: [
+      {
+        heading: 'Start with the memory you want from Bangkok',
+        paragraphs: [
+          'A temple-led day gives Bangkok a historical and architectural frame. The route may connect major riverside and old-city landmarks, but the quality of the day depends on how much walking, waiting, and moving between sites your group can comfortably handle.',
+          'A food-led day is a neighborhood and appetite decision. Markets, small shops, street stalls, and local dishes can reveal a different Bangkok, but the route may involve standing, short walks between stops, unfamiliar ingredients, and a schedule shaped by meal times rather than monument opening hours.',
+        ],
+      },
+      {
+        heading: 'The practical difference is rhythm, not importance',
+        paragraphs: [
+          'Temple routes often benefit from an earlier start and a clear dress plan. Shoulders, knees, heat, stairs, and outdoor waiting can matter more than the number of landmarks in the title. Check the current route and access details before assuming a temple day is easy for every traveler.',
+          'Food routes may feel more flexible, but they still require appetite, patience, and willingness to eat at several small stops. Travelers with allergies, dietary restrictions, or young children should ask how the current experience handles those needs rather than relying on a generic “food tour” label.',
+        ],
+        checklist: [
+          'Temple day: confirm dress, heat, walking, stairs, and start time.',
+          'Food day: confirm dietary handling, stop sequence, and meal portions.',
+          'Leave the evening flexible until the route and return timing are clear.',
+        ],
+      },
+      {
+        heading: 'Match the choice to the rest of your stay',
+        paragraphs: [
+          'If your itinerary already includes a market-heavy evening or a cooking experience, a temple-led first day may add more variety. If you plan to visit several formal sights later, a food and neighborhood route can make the opening day feel less repetitive.',
+          'Arrival time matters. A long, fixed activity is a fragile choice immediately after a flight, while a short neighborhood plan can be easier to adjust. RadarScout recommends protecting a margin before committing to a partner handoff with a fixed start time.',
+        ],
+      },
+      {
+        heading: 'Use a two-step comparison',
+        paragraphs: [
+          'First choose the day character: history and architecture, or food and neighborhood life. Then compare reviewed products by pickup or meeting point, walking, schedule, group needs, and what the current partner description explicitly includes.',
+          'RadarScout explains fit and trade-offs using stable editorial guidance. Current operating details, inclusions, cancellation terms, and transaction information belong on the partner page and should be checked there before proceeding.',
+        ],
+        checklist: [
+          'Priority: temples and history, or food and neighborhood atmosphere?',
+          'Comfort: walking, heat, dress, diet, and meal timing?',
+          'Schedule: fixed early route or more adaptable local outing?',
+          'Final check: current details and terms at the partner handoff?',
+        ],
+      },
+    ],
+    takeaway:
+      'Choose the Bangkok day that fits your energy and curiosity first. The most famous route is not automatically the best first route for your group.',
+    plannerHref: '/planner?idea=Bangkok%203%20days%20food%20temples%20markets',
+    plannerLabel: 'Compare Bangkok day ideas',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Bangkok destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/bangkok/219',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Banglamphu one-day route',
+        href: 'https://www.tourismthailand.org/Articles/1-day-at-banglamphu',
+      },
+    ],
+    ...dailyEditorialAugust5,
+  },
+  {
+    citySlug: 'chiang-mai',
+    cityName: 'Chiang Mai',
+    slug: 'old-city-vs-nimman-where-to-stay',
+    title: 'Chiang Mai Old City vs Nimman: Which Area Fits Your Stay?',
+    seoTitle: 'Chiang Mai Old City vs Nimman: Where to Stay | RadarScout',
+    description:
+      'Compare Chiang Mai Old City and Nimman by atmosphere, walking, food, evening plans, airport access, and day-trip convenience before choosing a base.',
+    eyebrow: 'Chiang Mai stay-area decision',
+    quickAnswer:
+      'Choose the Old City for temple walks, historic atmosphere, and a compact first-visit base. Choose Nimman for cafés, contemporary dining, creative spaces, and an easy urban evening rhythm. Neither area is universally better: the right base reduces travel for the days you care about most.',
+    bestFor: [
+      'First-time visitors choosing between Chiang Mai’s two familiar base areas',
+      'Travelers balancing temples and local atmosphere with cafés and evening dining',
+      'Visitors planning both city time and one or more rural day trips',
+    ],
+    notIdealFor: [
+      'Travelers choosing only from hotel photos without checking daily routes',
+      'Anyone assuming every attraction is walkable from either neighborhood',
+      'A group with different evening preferences that has not discussed transport',
+    ],
+    sections: [
+      {
+        heading: 'Old City and Nimman answer different needs',
+        paragraphs: [
+          'The Old City is the natural fit for travelers who want to step into historic Chiang Mai, visit temples, walk smaller streets, and build days around the moat and central landmarks. It creates a more traditional first impression, although the exact hotel location still affects comfort and noise.',
+          'Nimman is a contemporary base built around cafés, restaurants, creative businesses, shopping, and a more modern evening scene. It can suit travelers who want a lively urban rhythm and easy access to airport-side routes, but it is not a substitute for being beside every Old City landmark.',
+        ],
+      },
+      {
+        heading: 'Choose by your repeated trips, not one attraction',
+        paragraphs: [
+          'A hotel area matters because you repeat the journey every day. If your mornings begin with temple walks, Sunday markets, or Old City food, staying closer can reduce transfers. If your evenings are built around cafés, design shops, and contemporary restaurants, Nimman may remove more friction from the part of the day you use most.',
+          'Day tours complicate the decision. Pickup coverage, meeting points, traffic, and return timing vary by product. Do not assume an area is “central” enough without checking the current partner details for the experience you actually plan to take.',
+        ],
+        checklist: [
+          'List the three places or experiences you will repeat most often.',
+          'Check walking comfort and late-evening transport for your group.',
+          'Confirm day-tour pickup or meeting rules before treating a base as convenient.',
+        ],
+      },
+      {
+        heading: 'Comfort and atmosphere are part of the trade-off',
+        paragraphs: [
+          'The Old City can feel calmer and more atmospheric, but historic streets, older buildings, and narrow lanes do not guarantee the facilities or quiet you expect. Read the property details and location carefully, especially if mobility, sleep, or family space matters.',
+          'Nimman can feel easier for dining and short evening plans, while its popular streets may be busier and more modern than the Chiang Mai image you had in mind. The best area is not the one with the strongest online identity; it is the one that fits your actual daily pattern.',
+        ],
+      },
+      {
+        heading: 'A simple rule for a first Chiang Mai visit',
+        paragraphs: [
+          'Pick the Old City when temples, walking, and historic atmosphere are the main reason for the trip. Pick Nimman when cafés, contemporary food, and a flexible urban evening matter more. If your stay is short and your priorities are split, choose the area that reduces the most repeated transfers rather than trying to stay halfway between both.',
+          'RadarScout can help compare the activity side of the plan, but hotel availability, current room details, and booking terms remain with the accommodation partner at handoff.',
+        ],
+        checklist: [
+          'Old City: temples, walking, historic atmosphere, compact sightseeing.',
+          'Nimman: cafés, dining, creative spaces, contemporary evenings.',
+          'Short stay: optimize for the area you will use repeatedly.',
+          'Before booking: verify current property and partner details.',
+        ],
+      },
+    ],
+    takeaway:
+      'Chiang Mai’s best base is the one that makes your repeated days easier. Choose the neighborhood around your actual rhythm, not a generic “best area” ranking.',
+    plannerHref: '/planner?idea=Chiang%20Mai%203%20days%20temples%20cafes%20nature',
+    plannerLabel: 'Plan a Chiang Mai stay',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Chiang Mai destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Mai/101',
+      },
+    ],
+    ...dailyEditorialAugust5,
+  },
+  {
+    citySlug: 'phuket',
+    cityName: 'Phuket',
+    slug: 'private-vs-shared-island-tour',
+    title: 'Private vs Shared Phuket Island Tour: Which Fits Your Group?',
+    seoTitle: 'Private vs Shared Phuket Island Tour | RadarScout',
+    description:
+      'Compare private and shared Phuket island tours by flexibility, group rhythm, transfer expectations, boat format, and traveler fit before choosing a sea day.',
+    eyebrow: 'Phuket boat-day decision guide',
+    quickAnswer:
+      'Choose a private trip when your group values control over timing, stops, and pace. Choose a shared trip when a defined route and simpler group logistics are acceptable. The decision is not only about privacy: boat type, pier, weather, swimming, pickup zone, and the operator’s current route still determine the day.',
+    bestFor: [
+      'Families and friends deciding whether flexibility is worth the extra complexity',
+      'Travelers comparing a fixed shared route with a more adaptable private day',
+      'Groups that need to discuss motion, swimming, boarding, and transfer comfort',
+    ],
+    notIdealFor: [
+      'Travelers expecting a private boat to guarantee a specific marine condition',
+      'Anyone choosing only by the word “private” without checking the inclusions',
+      'Groups that have not agreed on pace, stops, or time on the water',
+    ],
+    sections: [
+      {
+        heading: 'Private means control, not a universal upgrade',
+        paragraphs: [
+          'A private route may give your group more influence over start time, stop duration, and the balance between swimming, scenery, and rest. That flexibility is valuable when travelers have different energy levels, young children, or a strong preference for a slower day.',
+          'It does not automatically change the sea, the pier, the boat’s physical limits, or the current route. Read what the product actually says about the vessel, inclusions, crew, and route before treating private as a guarantee of a particular experience.',
+        ],
+      },
+      {
+        heading: 'Shared trips trade control for a clearer structure',
+        paragraphs: [
+          'A shared tour can work well when the published route suits your group and you prefer a defined schedule. It may simplify meeting, transport, and cost expectations, but the day has to move at the group’s pace. Waiting, boarding, and stop timing are shared parts of the experience.',
+          'Families, older travelers, and people sensitive to motion should check the current boat and boarding details rather than assuming a shared route is easier. A structured day is only comfortable when the structure fits the group.',
+        ],
+        checklist: [
+          'Private: confirm which timing or route choices are actually flexible.',
+          'Shared: confirm group size, vessel, stops, and meeting or pickup rules.',
+          'Both: check boarding, shade, restrooms, swimming expectations, and transfer time.',
+        ],
+      },
+      {
+        heading: 'Compare the whole day, not the boat label',
+        paragraphs: [
+          'The hotel-to-pier transfer can be a large part of the day, especially when the hotel is far from the selected departure point. Add pickup, check-in, boarding, sea time, stops, and the return journey before deciding which option gives your group more usable time.',
+          'Private trips may make it easier to pause or return early, while shared trips may have less room to change the sequence. Neither removes the need to follow safety instructions or the operator’s decisions about marine conditions.',
+        ],
+      },
+      {
+        heading: 'Use your group’s strongest constraint as the tie-breaker',
+        paragraphs: [
+          'Choose private when different travelers need different pacing, when a child or older guest needs more control, or when the group has a clear route preference. Choose shared when the published itinerary already fits and a predictable group format is more important than changing the day.',
+          'After choosing the format, compare reviewed products by pier, boat, pickup area, stop sequence, and traveler fit. Current inclusions, cancellation terms, and operational guidance remain on the partner page at handoff.',
+        ],
+        checklist: [
+          'Strongest constraint: flexibility, budget, motion, mobility, or route?',
+          'Private: verify the promised flexibility in the current details.',
+          'Shared: verify the group rhythm and fixed route before proceeding.',
+          'Leave room for conditions and partner-led operational decisions.',
+        ],
+      },
+    ],
+    takeaway:
+      'Private and shared tours solve different group problems. Decide whether control or a defined route matters more, then verify the boat and handoff details.',
+    plannerHref: '/planner?idea=Phuket%203%20days%20islands%20snorkeling%20family',
+    plannerLabel: 'Compare Phuket sea days',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: recommended Phuket one-day route',
+        href: 'https://www.tourismthailand.org/Trip-Planner/Suggestion-Detail/recommended-route-for-one-day-3',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Ko Phi Phi overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Ko-Phi-Phi/359',
+      },
+    ],
+    ...dailyEditorialAugust5,
   },
 ]
 

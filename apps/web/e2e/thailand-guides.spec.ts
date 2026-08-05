@@ -31,6 +31,21 @@ const publishedArticles = [
     href: '/guides/phuket/old-town-vs-island-day',
     heading: 'Phuket Old Town vs Island Day: Which Belongs in Your Itinerary?',
   },
+  {
+    city: 'bangkok',
+    href: '/guides/bangkok/food-tour-vs-temple-day',
+    heading: 'Bangkok Food Tour vs Temple Day: Which First Day Fits You?',
+  },
+  {
+    city: 'chiang-mai',
+    href: '/guides/chiang-mai/old-city-vs-nimman-where-to-stay',
+    heading: 'Chiang Mai Old City vs Nimman: Which Area Fits Your Stay?',
+  },
+  {
+    city: 'phuket',
+    href: '/guides/phuket/private-vs-shared-island-tour',
+    heading: 'Private vs Shared Phuket Island Tour: Which Fits Your Group?',
+  },
 ] as const
 
 test.describe('Thailand Travel Guides', () => {
@@ -49,14 +64,14 @@ test.describe('Thailand Travel Guides', () => {
       await page.goto('/guides')
     }
 
-    await page.goto(publishedArticles[4].href)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(publishedArticles[4].heading)
+    await page.goto(publishedArticles[7].href)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(publishedArticles[7].heading)
     await expect(page.getByText('Reviewed by RadarScout Thailand desk')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Quick answer' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Editorial review and sources' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Compare Chiang Mai regional days' })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Plan a Chiang Mai stay' })).toHaveAttribute(
       'href',
-      '/planner?idea=Chiang%20Mai%204%20days%20mountains%20temples%20nature',
+      '/planner?idea=Chiang%20Mai%203%20days%20temples%20cafes%20nature',
     )
   })
 
