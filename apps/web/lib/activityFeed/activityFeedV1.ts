@@ -178,3 +178,9 @@ export function loadActivityFeedV1(
     .slice(0, take)
     .map(fromAiReadyProduct)
 }
+
+export function getActivityFeedV1ItemById(id: string): ActivityFeedV1Item | null {
+  const normalizedId = id.trim()
+  if (!normalizedId) return null
+  return loadActivityFeedV1().find(item => item.id === normalizedId) ?? null
+}
