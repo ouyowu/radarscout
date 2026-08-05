@@ -16,6 +16,7 @@ export type ActivityFeedField<T> = {
 export type ActivityFeedV1Item = {
   schemaVersion: typeof ACTIVITY_FEED_V1_SCHEMA_VERSION
   id: string
+  detailHref: `/tours/${string}`
   destination: {
     country: 'Thailand'
     countryCode: 'TH'
@@ -85,6 +86,7 @@ function fromAiReadyProduct(product: AiReadyProduct): ActivityFeedV1Item {
   return {
     schemaVersion: ACTIVITY_FEED_V1_SCHEMA_VERSION,
     id: product.id,
+    detailHref: `/tours/${encodeURIComponent(product.id)}`,
     destination: product.destination,
     title: product.title,
     summary: product.summary,

@@ -4,7 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 
-import { loadAiReadyProductCatalogue } from '@/lib/aiProducts/aiReadyProductSchema'
+import { loadActivityFeedV1 } from '@/lib/activityFeed/activityFeedV1'
 import { AiAnswerCard } from '../AiAnswerCard'
 
 const pageSource = readFileSync(join(process.cwd(), 'app', 'tours', '[id]', 'page.tsx'), 'utf8')
@@ -12,15 +12,15 @@ const cardSource = readFileSync(join(process.cwd(), 'app', 'tours', '[id]', 'AiA
 
 describe('tour detail AI Answer Card', () => {
   it('embeds the reviewed machine-readable card and keeps unknown facts explicit', () => {
-    expect(pageSource).toContain('getAiReadyProductById(product.id)')
+    expect(pageSource).toContain('loadActivityFeedV1().find(item => item.id === product.id)')
     expect(pageSource).toContain('<AiAnswerCard card={aiAnswerCard} />')
 
-    const card = loadAiReadyProductCatalogue()[0]
+    const card = loadActivityFeedV1()[0]
     const markup = renderToStaticMarkup(createElement(AiAnswerCard, { card }))
 
     expect(markup).toContain('type="application/json"')
     expect(markup).toContain('data-radarscout-ai-answer-card="true"')
-    expect(markup).toContain('radarscout.ai-ready-product.v2')
+    expect(markup).toContain('radarscout.activity-feed.v1')
     expect(markup).toContain('"status":"not_reviewed"')
     expect(markup).toContain('Last reviewed')
     expect(cardSource).toContain("replace(/</g, '\\\\u003c')")
