@@ -29,6 +29,7 @@ export type PartnerHandoffInput = {
   placement: PartnerHandoffPlacement
   destination: string
   productId?: string
+  recommendationId?: string
   campaign?: string
   recommendationSource?: 'ai-trip-planner' | 'planner' | 'tour-detail'
   reasonCode?: RecommendationReasonCode
@@ -45,6 +46,7 @@ export type PartnerHandoffRecord = {
   placement: PartnerHandoffPlacement
   destination: string
   productId?: string
+  recommendationId?: string
   campaign?: string
   recommendationSource?: PartnerHandoffInput['recommendationSource']
   reasonCode?: RecommendationReasonCode
@@ -69,7 +71,7 @@ const PROVIDER_HOSTS: Record<PartnerHandoffProvider, ReadonlySet<string>> = {
   yesim: new Set(['yesim.app']),
 }
 
-const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/
+const SAFE_IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9:_-]{0,79}$/
 
 const ATTRIBUTION_SOURCES: Record<PartnerHandoffProvider, PartnerAttributionSource> = {
   '12go': '12go_affiliate',
@@ -123,7 +125,8 @@ export function createPartnerHandoffRecord(
     input.trustedPublicHandoff,
   )
   if (!target) return null
-  if (input.productId && !SAFE_PRODUCT_ID.test(input.productId)) return null
+  if (input.productId && !SAFE_IDENTIFIER.test(input.productId)) return null
+  if (input.recommendationId && !SAFE_IDENTIFIER.test(input.recommendationId)) return null
 
   return {
     href: target.toString(),
@@ -131,6 +134,7 @@ export function createPartnerHandoffRecord(
     placement: input.placement,
     destination: input.destination,
     ...(input.productId ? { productId: input.productId } : {}),
+    ...(input.recommendationId ? { recommendationId: input.recommendationId } : {}),
     ...(input.campaign ? { campaign: input.campaign } : {}),
     ...(input.recommendationSource
       ? { recommendationSource: input.recommendationSource }
@@ -152,6 +156,7 @@ export function buildPartnerHandoffAnalyticsProps(record: PartnerHandoffRecord) 
     placement: record.placement,
     city: record.destination,
     ...(record.productId ? { productId: record.productId } : {}),
+    ...(record.recommendationId ? { recommendationId: record.recommendationId } : {}),
     ...(record.recommendationSource
       ? { recommendationSource: record.recommendationSource }
       : {}),

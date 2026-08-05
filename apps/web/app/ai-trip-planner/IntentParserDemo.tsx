@@ -18,6 +18,10 @@ import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchPro
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary, orderCityEntriesBySourceText } from './resultFitSummary'
 import { track } from '@/lib/analytics/track'
+import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+} from '@/lib/affiliates/partnerHandoff'
 import { buildSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 
 const defaultPrompt = 'Chiang Mai 3 days food temples elephants, less crowded'
@@ -595,15 +599,20 @@ export function IntentParserDemo() {
                             ? `Check availability for top match ${topProduct.title} with the booking partner`
                             : buildAiTripTopMatchDetailAriaLabel(topProduct.title)}
                           onClick={topProductHasExternalHandoff
-                            ? () => track('booking_partner_handoff_clicked', {
-                              provider: 'viator',
-                              placement: 'ai_trip_planner_top_match',
-                              city: topProduct.city ?? searchDestination,
-                              destination: searchDestination,
-                              ...searchSafeTripContext,
-                              productId: topProduct.id,
-                              source: 'ai_trip_planner_top_match',
-                            })
+                            ? () => {
+                              const handoff = createPartnerHandoffRecord({
+                                href: topProduct.ctaHref ?? '',
+                                provider: 'viator',
+                                placement: 'planner_filtered_matches',
+                                destination: topProduct.city ?? searchDestination,
+                                productId: topProduct.id,
+                                recommendationSource: 'ai-trip-planner',
+                                safeIntent: searchSafeTripContext,
+                              })
+                              if (handoff) {
+                                track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                              }
+                            }
                             : undefined}
                           className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
                         >

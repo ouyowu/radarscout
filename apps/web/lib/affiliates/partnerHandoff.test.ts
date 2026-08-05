@@ -116,6 +116,21 @@ describe('partnerHandoff', () => {
     })
   })
 
+  it('keeps a reviewed recommendation id while excluding the handoff URL', () => {
+    const record = createPartnerHandoffRecord({
+      href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
+      provider: 'bokun',
+      placement: 'planner_filtered_matches',
+      destination: 'Chiang Mai',
+      recommendationId: 'bokun:1232729',
+      recommendationSource: 'planner',
+    })
+
+    const analytics = buildPartnerHandoffAnalyticsProps(record!)
+    expect(analytics.recommendationId).toBe('bokun:1232729')
+    expect(analytics).not.toHaveProperty('href')
+  })
+
   it('fails closed when the provider and outbound host do not match', () => {
     expect(createPartnerHandoffRecord({
       href: 'https://example.com/redirect?cid=1969005',

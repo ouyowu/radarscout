@@ -3,6 +3,11 @@
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { track } from '@/lib/analytics/track'
+import {
+  buildPartnerHandoffAnalyticsProps,
+  createPartnerHandoffRecord,
+  resolveReviewedBookingHandoffProvider,
+} from '@/lib/affiliates/partnerHandoff'
 import { scoreElephantCampProducts } from '@/lib/elephantFinder/scoreElephantCamp'
 import type {
   ElephantCampProductProfile,
@@ -419,7 +424,21 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
             href={recommendation.ctaHref}
             rel={recommendation.linkRel}
             target="_blank"
-            onClick={() => track('booking_partner_handoff_clicked', { recommendationId: recommendation.recommendationId })}
+            onClick={() => {
+              const provider = resolveReviewedBookingHandoffProvider(recommendation.ctaHref)
+              if (!provider) return
+              const handoff = createPartnerHandoffRecord({
+                href: recommendation.ctaHref,
+                provider,
+                placement: 'planner_filtered_matches',
+                destination: 'Chiang Mai',
+                recommendationId: recommendation.recommendationId,
+                recommendationSource: 'planner',
+              })
+              if (handoff) {
+                track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+              }
+            }}
             className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
           >
             {recommendation.ctaLabel}
