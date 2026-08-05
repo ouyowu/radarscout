@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const launchArticles = [
+const publishedArticles = [
   {
     city: 'bangkok',
     href: '/guides/bangkok/best-areas-to-stay-first-time-visitors',
@@ -16,6 +16,21 @@ const launchArticles = [
     href: '/guides/phuket/phi-phi-vs-james-bond-island',
     heading: 'Phi Phi vs James Bond Island: Which Phuket Day Trip Fits You?',
   },
+  {
+    city: 'bangkok',
+    href: '/guides/bangkok/ayutthaya-vs-floating-market-day-trip',
+    heading: 'Ayutthaya vs Floating Market: Which Bangkok Day Trip Fits You?',
+  },
+  {
+    city: 'chiang-mai',
+    href: '/guides/chiang-mai/doi-inthanon-vs-chiang-rai-day-trip',
+    heading: 'Doi Inthanon vs Chiang Rai: Which Day Trip from Chiang Mai Fits You?',
+  },
+  {
+    city: 'phuket',
+    href: '/guides/phuket/old-town-vs-island-day',
+    heading: 'Phuket Old Town vs Island Day: Which Belongs in Your Itinerary?',
+  },
 ] as const
 
 test.describe('Thailand Travel Guides', () => {
@@ -27,27 +42,27 @@ test.describe('Thailand Travel Guides', () => {
       'Thailand travel guides for better decisions',
     )
 
-    for (const article of launchArticles) {
+    for (const article of publishedArticles) {
       await expect(page.getByRole('link', { name: article.heading })).toHaveAttribute('href', article.href)
       await page.goto(`/guides/${article.city}`)
       await expect(page.getByRole('link', { name: article.heading })).toHaveAttribute('href', article.href)
       await page.goto('/guides')
     }
 
-    await page.goto(launchArticles[1].href)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(launchArticles[1].heading)
+    await page.goto(publishedArticles[4].href)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(publishedArticles[4].heading)
     await expect(page.getByText('Reviewed by RadarScout Thailand desk')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Quick answer' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Editorial review and sources' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Compare Chiang Mai elephant experiences' })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Compare Chiang Mai regional days' })).toHaveAttribute(
       'href',
-      '/chiang-mai/elephant-camp-finder',
+      '/planner?idea=Chiang%20Mai%204%20days%20mountains%20temples%20nature',
     )
   })
 
   test('has no horizontal overflow on a mobile guide article', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto(launchArticles[2].href)
+    await page.goto(publishedArticles[5].href)
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     expect(overflow).toBeLessThanOrEqual(1)

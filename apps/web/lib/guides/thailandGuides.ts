@@ -86,6 +86,12 @@ const sharedEditorial = {
     'RadarScout compares stable destination trade-offs, traveler fit, transfer burden, activity intensity, and questions to confirm with the transaction partner. We do not present changing stock status, operator promises, or copied partner descriptions as editorial fact.',
 } as const
 
+const dailyEditorial = {
+  ...sharedEditorial,
+  publishedAt: '2026-08-04',
+  updatedAt: '2026-08-04',
+} as const
+
 const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'>[] = [
   {
     citySlug: 'chiang-mai',
@@ -316,6 +322,240 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
       },
     ],
     ...sharedEditorial,
+  },
+  {
+    citySlug: 'bangkok',
+    cityName: 'Bangkok',
+    slug: 'ayutthaya-vs-floating-market-day-trip',
+    title: 'Ayutthaya vs Floating Market: Which Bangkok Day Trip Fits You?',
+    seoTitle: 'Ayutthaya vs Floating Market Day Trip | RadarScout',
+    description:
+      'Compare Ayutthaya and floating-market day trips from Bangkok by history, route style, transfer burden, walking, and traveler fit.',
+    eyebrow: 'Bangkok day-trip comparison',
+    quickAnswer:
+      'Choose Ayutthaya when historic temples, ruins, and a site-to-site cultural route are the priority. Choose a floating-market route when canals, market activity, and a shorter list of concentrated stops matter more. The practical decision depends on departure time, road transfer, walking, boat access, and the exact market included.',
+    bestFor: [
+      'First-time visitors choosing one major day trip from Bangkok',
+      'Travelers deciding between history-led sightseeing and a market-led morning',
+      'Families and couples who want to compare route intensity before selecting a product',
+    ],
+    notIdealFor: [
+      'Travelers expecting every floating market to operate on the same schedule',
+      'Anyone adding a long regional day trip without checking pickup and return timing',
+      'Visitors who have not considered heat, walking, steps, or boat boarding',
+    ],
+    sections: [
+      {
+        heading: 'Choose the kind of day before choosing the product',
+        paragraphs: [
+          'Ayutthaya is a history-first decision. The former capital sits north of Bangkok, and a typical visit connects several temple or palace sites rather than one single attraction. It suits travelers who enjoy architectural context, outdoor ruins, and a day that develops through a sequence of stops.',
+          'A floating-market trip is a market-and-waterway decision. The experience can focus on a canal community, food, boat movement, or a wider route that adds another attraction. The market name matters because location, operating pattern, and atmosphere are not interchangeable. Confirm the exact market instead of booking from the generic phrase alone.',
+        ],
+      },
+      {
+        heading: 'Transfer time and start time shape both options',
+        paragraphs: [
+          'Neither choice is simply a quick extension of central Bangkok. Ayutthaya involves a regional road or rail journey and movement between historic sites. Floating-market routes also leave the city and may require an early departure to reach the market during its useful visiting window.',
+          'Compare the complete day, not only the advertised attraction time. Hotel pickup, shared collection, traffic, rest stops, transfers between sites, and the return to Bangkok determine whether the route fits an evening reservation. Keep the evening flexible unless the current partner itinerary gives you enough margin.',
+        ],
+        checklist: [
+          'Confirm the pickup point and realistic departure window.',
+          'Check how many stops are included and how long each receives.',
+          'Do not place a fixed evening activity immediately after an uncertain return.',
+        ],
+      },
+      {
+        heading: 'Match the physical rhythm to your group',
+        paragraphs: [
+          'Ayutthaya can involve exposed outdoor areas, uneven surfaces, steps, and repeated vehicle exits. It may suit travelers comfortable with walking in heat, while visitors with mobility concerns should ask about the current route and access at each stop.',
+          'Floating-market trips replace some walking with boarding, narrow access points, or time in small boats. That is not automatically easier. Families, older travelers, and anyone uncomfortable on water should confirm boarding assistance, seating, shade, and whether a boat ride is optional or central to the product.',
+        ],
+      },
+      {
+        heading: 'Use a simple decision rule',
+        paragraphs: [
+          'Pick Ayutthaya if your Bangkok plan still lacks a substantial historic day and you are happy to spend more time moving among cultural sites. Pick a floating-market route if you want a market-and-canal experience and the exact market, timing, and boat format fit your group.',
+          'After selecting the route family, compare only reviewed products that match your transfer, pace, and access needs. RadarScout explains the decision; the transaction partner remains responsible for current inclusions, cancellation terms, and operational details.',
+        ],
+        checklist: [
+          'Priority: historic sites or market-and-canal atmosphere?',
+          'Tolerance: outdoor walking or boat boarding?',
+          'Schedule: full regional day or concentrated market route?',
+          'Final check: current pickup, inclusions, and terms on the partner page?',
+        ],
+      },
+    ],
+    takeaway:
+      'Ayutthaya and a floating market are not substitutes. Choose the day character first, then compare the products that deliver it with a realistic route.',
+    plannerHref: '/planner?idea=Bangkok%203%20days%20Ayutthaya%20markets%20temples',
+    plannerLabel: 'Compare Bangkok day-trip ideas',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Ayutthaya destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Phra-Nakhon-Si-Ayutthaya/229',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Samut Songkhram destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/samut-songkhram/236',
+      },
+    ],
+    ...dailyEditorial,
+  },
+  {
+    citySlug: 'chiang-mai',
+    cityName: 'Chiang Mai',
+    slug: 'doi-inthanon-vs-chiang-rai-day-trip',
+    title: 'Doi Inthanon vs Chiang Rai: Which Day Trip from Chiang Mai Fits You?',
+    seoTitle: 'Doi Inthanon vs Chiang Rai from Chiang Mai | RadarScout',
+    description:
+      'Compare Doi Inthanon and Chiang Rai day trips from Chiang Mai by scenery, road time, climate, activity intensity, and traveler fit.',
+    eyebrow: 'Chiang Mai regional-day comparison',
+    quickAnswer:
+      'Choose Doi Inthanon for a mountain-and-nature day with changing elevation and outdoor stops. Choose Chiang Rai only when its temples and regional sights are a high priority and your group accepts a much longer road-led day. If your Chiang Mai stay is short, Doi Inthanon is usually easier to fit without sacrificing as much city time.',
+    bestFor: [
+      'Travelers choosing one regional excursion during a Chiang Mai stay',
+      'Visitors comparing mountain nature with a long cultural sightseeing route',
+      'Groups that want road time and physical comfort included in the decision',
+    ],
+    notIdealFor: [
+      'Anyone treating Chiang Rai as a nearby Chiang Mai neighborhood',
+      'Travelers stacking a long excursion beside another fixed late-night plan',
+      'Visitors who have not prepared for cooler or changing mountain conditions',
+    ],
+    sections: [
+      {
+        heading: 'The two trips solve different travel goals',
+        paragraphs: [
+          'Doi Inthanon is a mountain-and-nature route within Chiang Mai province. The appeal comes from elevation, forest, viewpoints, waterfalls, walking, and the contrast with the city. Individual products combine those elements differently, so the exact stop sequence still matters.',
+          'Chiang Rai is a separate northern province. From Chiang Mai, it is a road-intensive cultural excursion built around selected temples or regional sights. It makes sense when those places are important enough to justify the transfer, not simply because there is an unused day in the itinerary.',
+        ],
+      },
+      {
+        heading: 'Road time is the decisive difference',
+        paragraphs: [
+          'Both options require leaving central Chiang Mai, but Chiang Rai asks for a larger commitment to the road. A product may present an attractive list of landmarks while giving less attention to how much of the day happens in transit. Read the full sequence and compare the time allocated to stops with the transfer burden.',
+          'Doi Inthanon also needs an early, organized day, yet the route remains a Chiang Mai mountain excursion rather than an inter-province sightseeing run. Whichever you choose, avoid placing a non-refundable evening plan directly after the expected return.',
+        ],
+        checklist: [
+          'Count the meaningful stops, not just the names in the title.',
+          'Ask whether the vehicle and break pattern fit your group.',
+          'Leave a recovery window after either regional day.',
+        ],
+      },
+      {
+        heading: 'Prepare for different kinds of physical demand',
+        paragraphs: [
+          'Doi Inthanon can bring cooler temperatures, rain, slopes, steps, and outdoor walking. Clothing that works in Chiang Mai city may not feel sufficient at higher elevation. Confirm the current route and bring layers and rain protection appropriate to the season.',
+          'Chiang Rai may involve less continuous nature walking but more sitting, repeated vehicle exits, temple dress requirements, and a very long overall day. Travelers with back, motion, or fatigue concerns should treat vehicle time as part of accessibility, not as empty space between attractions.',
+        ],
+      },
+      {
+        heading: 'Decide by stay length and priority',
+        paragraphs: [
+          'For a short Chiang Mai visit, protect enough time for the old city, food, and a slower local day before adding a distant route. Doi Inthanon fits travelers who want nature without turning the day into a separate destination visit. Chiang Rai fits travelers who would otherwise regret missing its specific cultural sights.',
+          'Once the destination is chosen, compare reviewed products by pickup area, vehicle, stop sequence, walking demands, and return expectations. Current operating details and transaction terms must be confirmed with the partner at handoff.',
+        ],
+        checklist: [
+          'Nature and elevation: start with Doi Inthanon.',
+          'Specific Chiang Rai landmarks: accept the longer road day deliberately.',
+          'Only one or two full days in Chiang Mai: consider staying closer.',
+          'Unclear return or accessibility details: confirm before proceeding.',
+        ],
+      },
+    ],
+    takeaway:
+      'Doi Inthanon is a Chiang Mai mountain day; Chiang Rai is a long regional excursion. Choose by the experience you value enough to justify the road time.',
+    plannerHref: '/planner?idea=Chiang%20Mai%204%20days%20mountains%20temples%20nature',
+    plannerLabel: 'Compare Chiang Mai regional days',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Doi Inthanon mountain overview',
+        href: 'https://www.tourismthailand.org/Articles/mountain-savouring-the-greens-at-doi-inthanon',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Chiang Rai destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Rai/102',
+      },
+    ],
+    ...dailyEditorial,
+  },
+  {
+    citySlug: 'phuket',
+    cityName: 'Phuket',
+    slug: 'old-town-vs-island-day',
+    title: 'Phuket Old Town vs Island Day: Which Belongs in Your Itinerary?',
+    seoTitle: 'Phuket Old Town vs Island Day | RadarScout',
+    description:
+      'Compare a Phuket Old Town day with an island day by food, culture, sea time, transfers, weather flexibility, and traveler fit.',
+    eyebrow: 'Phuket itinerary decision',
+    quickAnswer:
+      'Choose Phuket Old Town when food, architecture, local streets, and a flexible land day are the priority. Choose an island day when the sea is the main reason for visiting and your group accepts the pier transfer, boat ride, and current marine conditions. On a three-day stay, protect one flexible day rather than booking long boat routes back to back.',
+    bestFor: [
+      'First-time Phuket visitors balancing the island itself with an offshore trip',
+      'Travelers deciding how to use one weather-flexible day',
+      'Families and couples comparing a self-paced land day with a structured boat day',
+    ],
+    notIdealFor: [
+      'Anyone assuming Phuket is only a launch point for other islands',
+      'Travelers booking a boat route without checking pier and transfer details',
+      'A tightly packed schedule with no room for changing marine conditions',
+    ],
+    sections: [
+      {
+        heading: 'Old Town and an island day create different memories',
+        paragraphs: [
+          'Phuket Old Town is a land-based culture and food decision. Streets, historic architecture, cafés, museums, markets, and nearby viewpoints can be combined at a slower pace. The day is easier to shorten, reorder, or pause when weather or energy changes.',
+          'An island day is a sea-and-route decision. The destination name matters, but the boat, pier, stop sequence, swimming expectations, and time on the water determine the actual experience. It is a more structured commitment and usually offers less freedom to change the day after departure.',
+        ],
+      },
+      {
+        heading: 'Use flexibility as part of the value calculation',
+        paragraphs: [
+          'A land day can absorb a late start, a long lunch, or a passing shower more easily. That flexibility can be valuable after arrival, before departure, or between two intensive excursions. It also gives travelers who do not enjoy boats a meaningful Phuket experience without treating the day as a compromise.',
+          'A sea day may be the trip highlight, but it depends more heavily on current marine conditions and operator decisions. RadarScout does not claim live conditions. Keep the latest operational guidance, suitability rules, and any route changes with the transaction partner.',
+        ],
+        checklist: [
+          'Which day has the best schedule flexibility?',
+          'Does the current product explain the boat, pier, and pickup clearly?',
+          'Can your group board, sit, swim, and transfer comfortably?',
+        ],
+      },
+      {
+        heading: 'Compare the full transfer burden',
+        paragraphs: [
+          'Old Town still requires planning because Phuket is spread out and traffic can affect a cross-island route. Group nearby land stops and avoid treating every attraction as a quick detour. The exact hotel location changes how easy the day feels.',
+          'For an island trip, add the hotel-to-pier journey to the boat route itself. An attractive departure time can hide a much earlier pickup. Travelers staying far from the selected pier should compare that burden before deciding that two similar island products are equivalent.',
+        ],
+      },
+      {
+        heading: 'Build a balanced short Phuket stay',
+        paragraphs: [
+          'With three days, a practical structure is one sea day, one Phuket land day, and one flexible day for rest, food, beaches, or a weather-dependent choice. If you have only one full day, choose the experience that matches the reason you came: local Phuket character or an offshore route.',
+          'After making that choice, use reviewed product details to narrow the island route or use the city guide to group a realistic land day. The goal is not to collect the most famous names. It is to avoid spending the trip moving between activities that do not fit together.',
+        ],
+        checklist: [
+          'One full day: choose land character or sea experience.',
+          'Three days: avoid placing long boat days back to back.',
+          'Keep one day flexible when conditions or energy may change.',
+          'Confirm current partner details before the external transaction handoff.',
+        ],
+      },
+    ],
+    takeaway:
+      'Phuket Old Town is not the backup plan for an island day. It is a different, more flexible experience that belongs in the itinerary when local food and place matter.',
+    plannerHref: '/planner?idea=Phuket%203%20days%20old%20town%20islands%20food',
+    plannerLabel: 'Balance a Phuket itinerary',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: recommended Phuket one-day route',
+        href: 'https://www.tourismthailand.org/Trip-Planner/Suggestion-Detail/recommended-route-for-one-day-3',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Ko Phi Phi overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Ko-Phi-Phi/359',
+      },
+    ],
+    ...dailyEditorial,
   },
 ]
 
