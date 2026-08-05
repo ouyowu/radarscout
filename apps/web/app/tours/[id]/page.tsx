@@ -13,7 +13,7 @@ import {
 } from '@/lib/publicProducts/getPublicThailandProduct'
 import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
 import { parseSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
-import { getAiReadyProductById } from '@/lib/aiProducts/aiReadyProductSchema'
+import { loadActivityFeedV1 } from '@/lib/activityFeed/activityFeedV1'
 import { AiAnswerCard } from './AiAnswerCard'
 
 export const dynamic = 'force-dynamic'
@@ -273,7 +273,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
   const { product } = result
   const rows = factRows(product.facts)
   const location = productLocation(product)
-  const aiAnswerCard = getAiReadyProductById(product.id)
+  const aiAnswerCard = loadActivityFeedV1().find(item => item.id === product.id) ?? null
 
   return (
     <PublicSiteShell>

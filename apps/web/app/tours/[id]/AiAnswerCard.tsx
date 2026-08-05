@@ -1,9 +1,9 @@
 import React from 'react'
 
-import type { AiReadyProduct } from '@/lib/aiProducts/aiReadyProductSchema'
+import type { ActivityFeedV1Item } from '@/lib/activityFeed/activityFeedV1'
 
 type AiAnswerCardProps = {
-  card: AiReadyProduct
+  card: ActivityFeedV1Item
 }
 
 function formatReviewedDate(value: string): string {
@@ -36,24 +36,24 @@ export function AiAnswerCard({ card }: AiAnswerCardProps) {
             </h2>
           </div>
           <p className="text-xs font-semibold text-rs-muted">
-            Last reviewed {formatReviewedDate(card.provenance.lastVerifiedAt)}
+            Last reviewed {formatReviewedDate(card.provenance.verifiedAt)}
           </p>
         </div>
 
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Why recommended</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.recommendation.whyRecommended}</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.recommendation.whyRecommended.value}</p>
           </section>
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-trust">Best for</p>
             <ul className="mt-2 space-y-1 text-sm font-semibold leading-6 text-rs-muted">
-              {card.fit.suitableFor.values.map(value => <li key={value}>{value}</li>)}
+              {card.suitableFor.value.map(value => <li key={value}>{value}</li>)}
             </ul>
           </section>
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-terracotta-600">Check before choosing</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.recommendation.tradeoffs[0]}</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.recommendation.tradeoffs.value[0]}</p>
           </section>
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Not suitable for</p>
@@ -63,7 +63,7 @@ export function AiAnswerCard({ card }: AiAnswerCardProps) {
           </section>
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Experience features</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.experience.features.values.join(' · ')}</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">{card.experienceFeatures.value.join(' · ')}</p>
           </section>
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Pickup, duration and child rules</p>
@@ -74,7 +74,7 @@ export function AiAnswerCard({ card }: AiAnswerCardProps) {
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-rs-forest-700">Current partner</p>
             <p className="mt-2 text-sm font-semibold leading-6 text-rs-muted">
-              {card.partnerHandoff.platform} handles current product details and the final transaction.
+              {card.partnerHandoff.provider} handles current product details and the final transaction.
             </p>
           </section>
         </div>
