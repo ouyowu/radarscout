@@ -28,9 +28,9 @@ const guideSources = [
 describe('Thailand travel guides editorial catalogue', () => {
   it('publishes three reviewed original guides for each approved city', () => {
     expect(guideCitySlugs).toEqual(['bangkok', 'chiang-mai', 'phuket'])
-    expect(thailandGuideArticles).toHaveLength(9)
+    expect(thailandGuideArticles).toHaveLength(12)
     for (const city of guideCitySlugs) {
-      expect(thailandGuideArticles.filter(article => article.citySlug === city)).toHaveLength(3)
+      expect(thailandGuideArticles.filter(article => article.citySlug === city)).toHaveLength(4)
     }
 
     expect(thailandGuideArticles.map(article => article.slug)).toEqual(
@@ -41,6 +41,9 @@ describe('Thailand travel guides editorial catalogue', () => {
         'food-tour-vs-temple-day',
         'old-city-vs-nimman-where-to-stay',
         'private-vs-shared-island-tour',
+        'canals-vs-chinatown-evening',
+        'doi-suthep-vs-mae-kampong-half-day',
+        'beach-day-vs-boat-day-short-stay',
       ]),
     )
 

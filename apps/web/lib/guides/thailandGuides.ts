@@ -98,6 +98,12 @@ const dailyEditorialAugust5 = {
   updatedAt: '2026-08-05',
 } as const
 
+const dailyEditorialAugust6 = {
+  ...sharedEditorial,
+  publishedAt: '2026-08-06',
+  updatedAt: '2026-08-06',
+} as const
+
 const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'>[] = [
   {
     citySlug: 'chiang-mai',
@@ -792,6 +798,240 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
       },
     ],
     ...dailyEditorialAugust5,
+  },
+  {
+    citySlug: 'bangkok',
+    cityName: 'Bangkok',
+    slug: 'canals-vs-chinatown-evening',
+    title: 'Bangkok Canals vs Chinatown Evening: Which Fits Your Trip?',
+    seoTitle: 'Bangkok Canals vs Chinatown Evening | RadarScout',
+    description:
+      'Compare a Bangkok canal-focused outing with a Chinatown evening by atmosphere, walking, food, timing, and traveler fit before choosing your next city experience.',
+    eyebrow: 'Bangkok evening decision guide',
+    quickAnswer:
+      'Choose canals when you want a slower look at Bangkok’s waterways, neighborhoods, and riverside character. Choose Chinatown when food, lights, markets, and a concentrated evening atmosphere matter more. The better choice depends on your energy, start time, and tolerance for walking and crowds.',
+    bestFor: [
+      'Travelers choosing between a scenic local outing and a food-led evening',
+      'Short-stay visitors who want a distinct Bangkok memory without another full-day tour',
+      'Groups comparing walking, meal timing, and a flexible return plan',
+    ],
+    notIdealFor: [
+      'Travelers expecting a canal route and Chinatown walk to feel interchangeable',
+      'Anyone planning the evening without checking start time, heat, or walking comfort',
+      'A group that has not agreed whether food or scenery is the main priority',
+    ],
+    sections: [
+      {
+        heading: 'Choose the kind of Bangkok you want to notice',
+        paragraphs: [
+          'A canal-focused outing is about movement, water, residential edges, and a different view of how Bangkok is organized. It can feel more spacious and observational, but the experience depends on the route, boarding point, weather, and how much time your group is comfortable spending in transit.',
+          'Chinatown is a concentrated evening decision. Food stalls, market streets, old shopfronts, and bright signs create a stronger sensory rhythm, but the route can involve crowds, standing, narrow sidewalks, and repeated food stops. Choose it because you want that energy, not because it is simply the more famous option.',
+        ],
+      },
+      {
+        heading: 'Time and energy change the answer',
+        paragraphs: [
+          'Canal outings can work well earlier in the day or when you want a quieter break from landmark-heavy sightseeing. Confirm the current meeting or pickup point, boarding details, and route length before assuming the outing will be a short detour.',
+          'Chinatown often works best when your group is ready to eat and walk later in the day. Travelers with children, mobility needs, allergies, or a low heat tolerance should plan pauses and ask current experience providers how the route handles those constraints.',
+        ],
+        checklist: [
+          'Canals: check boarding, shade, route length, and return timing.',
+          'Chinatown: check walking, meal sequence, dietary needs, and crowd comfort.',
+          'Keep the next morning realistic if the evening ends late.',
+        ],
+      },
+      {
+        heading: 'Build the evening around one anchor',
+        paragraphs: [
+          'If your day already includes temples and old-city landmarks, canals can add a different perspective without repeating the same type of stop. If your group is most excited by local dishes and street atmosphere, Chinatown can be the stronger anchor with a simpler plan around it.',
+          'Avoid stacking both into one rushed evening. The transfer between neighborhoods, meal timing, and the need to slow down can turn two good ideas into a tiring checklist. One well-matched experience is usually more useful than two partial ones.',
+        ],
+      },
+      {
+        heading: 'Use a practical tie-breaker',
+        paragraphs: [
+          'Choose canals when the priority is scenery, neighborhood perspective, and a calmer rhythm. Choose Chinatown when the priority is food, atmosphere, and an evening that feels immediately local. Then compare reviewed options by start point, walking, group needs, and what the current partner description explicitly includes.',
+          'RadarScout explains the stable trade-offs. Current operating details, inclusions, cancellation terms, and transaction information belong on the partner page and should be checked there before proceeding.',
+        ],
+        checklist: [
+          'Priority: waterways and neighborhoods, or food and evening atmosphere?',
+          'Comfort: walking, crowds, heat, diet, and start time?',
+          'Schedule: one focused outing with enough return-time margin?',
+          'Final check: current details and terms at the partner handoff?',
+        ],
+      },
+    ],
+    takeaway:
+      'Bangkok canals and Chinatown solve different evening needs. Pick the rhythm your group will enjoy, then leave enough time to experience it without rushing.',
+    plannerHref: '/planner?idea=Bangkok%203%20days%20canals%20Chinatown%20food',
+    plannerLabel: 'Plan a Bangkok evening',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Bangkok destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/bangkok/219',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Bangkok travel ideas',
+        href: 'https://www.tourismthailand.org/Articles/1-day-at-banglamphu',
+      },
+    ],
+    ...dailyEditorialAugust6,
+  },
+  {
+    citySlug: 'chiang-mai',
+    cityName: 'Chiang Mai',
+    slug: 'doi-suthep-vs-mae-kampong-half-day',
+    title: 'Doi Suthep vs Mae Kampong: Which Chiang Mai Half-Day Fits?',
+    seoTitle: 'Doi Suthep vs Mae Kampong Half-Day | RadarScout',
+    description:
+      'Compare a Doi Suthep visit with a Mae Kampong outing by travel time, walking, elevation, cultural focus, and traveler fit before adding a Chiang Mai half-day.',
+    eyebrow: 'Chiang Mai half-day decision guide',
+    quickAnswer:
+      'Choose Doi Suthep when a close-to-city temple visit and a clear cultural landmark are your priority. Choose Mae Kampong when you want a rural mountain village atmosphere and are comfortable with a longer transfer and a less compact day. Neither is automatically the easier choice for every group.',
+    bestFor: [
+      'Travelers with one open half-day who want to choose a different Chiang Mai rhythm',
+      'Visitors comparing a landmark-focused outing with a rural mountain experience',
+      'Groups balancing transfer time, walking, elevation, and interest in local place',
+    ],
+    notIdealFor: [
+      'Travelers assuming every mountain outing has the same transfer burden',
+      'Anyone who has not considered stairs, roads, motion, or changing weather',
+      'A packed itinerary that leaves no margin for a longer rural return journey',
+    ],
+    sections: [
+      {
+        heading: 'Doi Suthep is the compact landmark choice',
+        paragraphs: [
+          'Doi Suthep suits travelers who want a recognizable Chiang Mai cultural landmark without committing the whole day to a rural route. The temple setting, city views, stairs, and elevation create a focused outing, but comfort still depends on the route, transport, weather, and the physical needs of your group.',
+          'It is a strong choice when you want to keep the rest of the day open for the Old City, food, or a slower evening. Treat the short transfer as a planning advantage, not as a promise that the visit will be effortless for every traveler.',
+        ],
+      },
+      {
+        heading: 'Mae Kampong is a rural atmosphere choice',
+        paragraphs: [
+          'Mae Kampong appeals to travelers who want a mountain village setting, cooler-feeling scenery, and more time away from the city. The experience is less about checking one landmark and more about accepting the road, village pace, uneven surfaces, and a longer commitment to the route.',
+          'That makes it a poor fit for a tightly packed schedule or anyone who dislikes winding transfers. Before choosing it, confirm the current itinerary, rest stops, walking expectations, and return timing with the transaction partner.',
+        ],
+        checklist: [
+          'Doi Suthep: check stairs, dress, elevation, and city return timing.',
+          'Mae Kampong: check road time, walking surfaces, rest stops, and village etiquette.',
+          'Both: leave margin for weather and the group’s energy.',
+        ],
+      },
+      {
+        heading: 'Match the half-day to the rest of Chiang Mai',
+        paragraphs: [
+          'If your plan already contains an elephant experience or another long transfer, Doi Suthep may create a more balanced day. If you have several city days and want a stronger change of setting, Mae Kampong can be worth the extra travel burden when your group is comfortable with it.',
+          'Avoid treating distance as the only measure. A shorter route with stairs and heat can feel more demanding than a longer route with pauses. Compare the whole sequence rather than the attraction name at the top of the listing.',
+        ],
+      },
+      {
+        heading: 'Ask what “half-day” really means',
+        paragraphs: [
+          'Half-day labels vary. Check whether they describe time at the destination or the full door-to-door schedule, and whether pickup, guiding, meals, or entry details are included. This is especially important when a rural route looks short on a map but carries a larger transfer commitment.',
+          'RadarScout can explain the stable fit and trade-offs. Current route details, inclusions, cancellation terms, and operational guidance remain with the partner page at handoff.',
+        ],
+        checklist: [
+          'What is the full door-to-door duration?',
+          'How much walking, climbing, or uneven ground is involved?',
+          'Does the group want a landmark or a change of setting?',
+          'What current details must be confirmed before the handoff?',
+        ],
+      },
+    ],
+    takeaway:
+      'Choose Doi Suthep for a focused cultural landmark near the city; choose Mae Kampong for a longer rural reset. The right answer is the one your remaining itinerary can absorb.',
+    plannerHref: '/planner?idea=Chiang%20Mai%203%20days%20Doi%20Suthep%20Mae%20Kampong%20nature',
+    plannerLabel: 'Plan a Chiang Mai half-day',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Chiang Mai destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Mai/101',
+      },
+      {
+        label: 'Tourism Authority of Thailand: recommended Chiang Mai route',
+        href: 'https://www.tourismthailand.org/Trip-Planner/Suggestion-Detail/recommended-route-for-one-day-3',
+      },
+    ],
+    ...dailyEditorialAugust6,
+  },
+  {
+    citySlug: 'phuket',
+    cityName: 'Phuket',
+    slug: 'beach-day-vs-boat-day-short-stay',
+    title: 'Phuket Beach Day vs Boat Day: Which Fits a Short Stay?',
+    seoTitle: 'Phuket Beach Day vs Boat Day for a Short Stay | RadarScout',
+    description:
+      'Compare a Phuket beach-focused day with an island boat day by transfer burden, flexibility, sea time, swimming, and traveler fit for a short Thailand stay.',
+    eyebrow: 'Phuket short-stay decision guide',
+    quickAnswer:
+      'Choose a beach day when you want flexibility, easier pauses, and a lower transfer commitment. Choose a boat day when the sea, islands, and a structured excursion are the main reason for visiting Phuket. A short stay often benefits from choosing one anchor day instead of forcing both into the same schedule.',
+    bestFor: [
+      'First-time visitors deciding how to use one open Phuket day',
+      'Families and mixed groups comparing flexibility with a structured sea excursion',
+      'Travelers who need to account for transfer time, motion, swimming, and rest',
+    ],
+    notIdealFor: [
+      'Travelers assuming a beach day is automatically easy or a boat day is always better',
+      'Anyone who has not checked pier distance, boarding, swimming, or weather sensitivity',
+      'A short itinerary that schedules multiple fixed excursions back to back',
+    ],
+    sections: [
+      {
+        heading: 'A beach day protects flexibility',
+        paragraphs: [
+          'A beach-focused day can be easier to pace around heat, naps, meals, and changing energy. It gives your group more control over when to stop or return, but it still requires a sensible choice of beach, transport, shade, and expectations about crowds and facilities.',
+          'This option is useful after arrival, before departure, or between fixed excursions. It is not a guarantee of quiet water, empty sand, or perfect conditions. Choose the flexibility, then check the current local details for the beach and transport plan.',
+        ],
+      },
+      {
+        heading: 'A boat day makes the sea the main event',
+        paragraphs: [
+          'A boat day can deliver the strongest sense of leaving Phuket behind, with a defined route, marine scenery, and time on the water. It also creates a more fragile schedule: pickup, pier check-in, boarding, sea motion, swimming, and the return journey all matter to the experience.',
+          'Travelers who are sensitive to motion, traveling with young children, or short on recovery time should compare those demands honestly. Current operator guidance and route decisions belong with the transaction partner, not a generic destination promise.',
+        ],
+        checklist: [
+          'Beach day: check shade, access, facilities, transport, and return flexibility.',
+          'Boat day: check pier, boat, boarding, swimming, motion, and pickup details.',
+          'Both: keep enough time for food and recovery instead of stacking plans.',
+        ],
+      },
+      {
+        heading: 'Use the rest of the trip as the tie-breaker',
+        paragraphs: [
+          'If your group already has a long island excursion, use the open day for a beach, food, or Old Town rhythm. If you have only one full day in Phuket and the sea is the reason for the visit, a boat day may deserve the fixed slot while a more flexible beach plan surrounds it.',
+          'Where you stay changes the equation. A beach close to your base can preserve time, while a pier far across the island can add a large hidden transfer. Compare door-to-door burden, not just the time printed beside the attraction.',
+        ],
+      },
+      {
+        heading: 'Choose the day your group can actually enjoy',
+        paragraphs: [
+          'Choose a beach day when control, rest, and easy adjustment are the strongest needs. Choose a boat day when the group is comfortable with a fixed route and wants the marine experience to be the highlight. Then compare reviewed options by transfer, physical demands, and what is explicitly included.',
+          'RadarScout describes stable trade-offs and traveler fit. Current operating details, inclusions, cancellation terms, and marine guidance remain on the partner page at handoff.',
+        ],
+        checklist: [
+          'Priority: flexibility and rest, or islands and sea time?',
+          'Constraint: motion, swimming, mobility, heat, or transfer distance?',
+          'Short stay: keep one clear anchor day and keep the other time adaptable.',
+          'Final check: current details and terms before the partner handoff?',
+        ],
+      },
+    ],
+    takeaway:
+      'For a short Phuket stay, the best day is the one that matches your group’s strongest constraint. Flexibility is a feature; a boat day is a commitment.',
+    plannerHref: '/planner?idea=Phuket%203%20days%20beach%20boat%20family%20snorkeling',
+    plannerLabel: 'Plan a Phuket short stay',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: recommended Phuket one-day route',
+        href: 'https://www.tourismthailand.org/Trip-Planner/Suggestion-Detail/recommended-route-for-one-day-3',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Phuket destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Phuket/350',
+      },
+    ],
+    ...dailyEditorialAugust6,
   },
 ]
 
