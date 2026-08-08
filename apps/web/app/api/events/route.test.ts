@@ -1,4 +1,17 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
+const { createPartnerHandoffLog } = vi.hoisted(() => ({
+  createPartnerHandoffLog: vi.fn().mockResolvedValue({ id: 'handoff-1' }),
+}))
+
+vi.mock('@reddit-monitor/db', () => ({
+  db: {
+    partnerHandoffLog: {
+      create: createPartnerHandoffLog,
+    },
+  },
+}))
+
 import { POST } from './route'
 
 function requestWithJson(body: unknown): Request {
@@ -59,6 +72,66 @@ describe('POST /api/events', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+    createPartnerHandoffLog.mockClear()
+  })
+
+  it('persists only safe structured handoff dimensions for later partner reporting', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+
+    const response = await POST(requestWithJson({
+      event: 'booking_partner_handoff_clicked',
+      provider: 'viator',
+      placement: 'tour_detail_primary',
+      city: 'Chiang Mai',
+      productId: 'viator_12345p1',
+      attributionSource: 'viator_affiliate',
+      targetHost: 'www.viator.com',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'destination_match',
+      durationDays: 3,
+      pace: 'moderate',
+      hasDates: true,
+      hasGroupSize: true,
+      hasOccupancy: false,
+      travelerType: 'family',
+      prompt: 'raw prompt must not persist',
+      commissionPercent: 12,
+    }))
+
+    expect(response.status).toBe(204)
+    expect(createPartnerHandoffLog).toHaveBeenCalledWith({
+      data: {
+        provider: 'viator',
+        placement: 'tour_detail_primary',
+        city: 'Chiang Mai',
+        productId: 'viator_12345p1',
+        attributionSource: 'viator_affiliate',
+        targetHost: 'www.viator.com',
+        recommendationSource: 'tour-detail',
+        reasonCode: 'destination_match',
+        durationDays: 3,
+        pace: 'moderate',
+        intent: {
+          hasDates: true,
+          hasGroupSize: true,
+          hasOccupancy: false,
+          travelerType: 'family',
+        },
+      },
+    })
+    expect(log).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not persist non-handoff funnel events', async () => {
+    const response = await POST(requestWithJson({
+      event: 'finder_recommendations_rendered',
+      provider: 'viator',
+      placement: 'planner_filtered_matches',
+      city: 'Phuket',
+    }))
+
+    expect(response.status).toBe(204)
+    expect(createPartnerHandoffLog).not.toHaveBeenCalled()
   })
 
   it('logs only the approved funnel event dimensions', async () => {
