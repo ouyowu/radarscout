@@ -38,4 +38,11 @@ describe('tour detail AI Answer Card', () => {
 
     expect(cardSource).not.toMatch(/available now|live availability|instant confirmation|buy now|checkout|payment/i)
   })
+
+  it('keeps product trust metadata visible without exposing reviewer identifiers', () => {
+    expect(pageSource).toContain('productTrustItems(product)')
+    expect(pageSource).toContain("{ label: 'Last verified', value: formatReviewedDate(reviewedAt) }")
+    expect(pageSource).toContain("{ label: 'Editorial review', value: 'RadarScout Editorial Team' }")
+    expect(pageSource).not.toContain('product.reviewedEnrichment?.reviewedBy}</')
+  })
 })

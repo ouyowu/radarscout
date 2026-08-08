@@ -44,6 +44,8 @@ type ReviewedEnrichment = {
   cleanedTitle: string | null
   shortSummary: string | null
   suggestedTags: string[]
+  reviewedBy: string | null
+  reviewedAt: string | null
 }
 
 type BookingPartnerHandoff = {
@@ -168,6 +170,30 @@ const trustItems = [
   { label: 'Product source', value: 'Trusted partner record' },
   { label: 'Next step', value: 'Booking partner handoff' },
 ]
+
+function formatReviewedDate(value: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value))
+}
+
+function productTrustItems(product: ProductDetail) {
+  const reviewedAt = product.reviewedEnrichment?.reviewedAt
+  const hasReviewer = Boolean(product.reviewedEnrichment?.reviewedBy)
+
+  return [
+    ...trustItems,
+    ...(reviewedAt
+      ? [{ label: 'Last verified', value: formatReviewedDate(reviewedAt) }]
+      : []),
+    ...(hasReviewer
+      ? [{ label: 'Editorial review', value: 'RadarScout Editorial Team' }]
+      : []),
+  ]
+}
 
 const faqItems = [
   {
@@ -328,7 +354,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
         trustNote="RadarScout helps you compare experience details before you continue with a booking partner."
       />
 
-      <DmcTrustBar items={trustItems} />
+      <DmcTrustBar items={productTrustItems(product)} />
 
       <Section variant="cloud" className="py-8 sm:py-10" contentClassName="max-w-[1240px]">
         <div className="mb-6 max-w-3xl">
