@@ -46,6 +46,21 @@ const publishedArticles = [
     href: '/guides/phuket/private-vs-shared-island-tour',
     heading: 'Private vs Shared Phuket Island Tour: Which Fits Your Group?',
   },
+  {
+    city: 'bangkok',
+    href: '/guides/bangkok/canals-vs-chinatown-evening',
+    heading: 'Bangkok Canals vs Chinatown Evening: Which Fits Your Trip?',
+  },
+  {
+    city: 'chiang-mai',
+    href: '/guides/chiang-mai/doi-suthep-vs-mae-kampong-half-day',
+    heading: 'Doi Suthep vs Mae Kampong: Which Chiang Mai Half-Day Fits?',
+  },
+  {
+    city: 'phuket',
+    href: '/guides/phuket/beach-day-vs-boat-day-short-stay',
+    heading: 'Phuket Beach Day vs Boat Day: Which Fits a Short Stay?',
+  },
 ] as const
 
 test.describe('Thailand Travel Guides', () => {

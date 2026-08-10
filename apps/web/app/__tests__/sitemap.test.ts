@@ -55,12 +55,15 @@ describe('sitemap', () => {
     expect(urls).toContain(`${BASE}/guides/bangkok/best-areas-to-stay-first-time-visitors`)
     expect(urls).toContain(`${BASE}/guides/bangkok/ayutthaya-vs-floating-market-day-trip`)
     expect(urls).toContain(`${BASE}/guides/bangkok/food-tour-vs-temple-day`)
+    expect(urls).toContain(`${BASE}/guides/bangkok/canals-vs-chinatown-evening`)
     expect(urls).toContain(`${BASE}/guides/chiang-mai/how-to-choose-an-elephant-sanctuary`)
     expect(urls).toContain(`${BASE}/guides/chiang-mai/doi-inthanon-vs-chiang-rai-day-trip`)
     expect(urls).toContain(`${BASE}/guides/chiang-mai/old-city-vs-nimman-where-to-stay`)
+    expect(urls).toContain(`${BASE}/guides/chiang-mai/doi-suthep-vs-mae-kampong-half-day`)
     expect(urls).toContain(`${BASE}/guides/phuket/phi-phi-vs-james-bond-island`)
     expect(urls).toContain(`${BASE}/guides/phuket/old-town-vs-island-day`)
     expect(urls).toContain(`${BASE}/guides/phuket/private-vs-shared-island-tour`)
+    expect(urls).toContain(`${BASE}/guides/phuket/beach-day-vs-boat-day-short-stay`)
     expect(urls).toContain(`${BASE}/contact`)
     expect(urls).toContain(`${BASE}/privacy-policy`)
     expect(urls).toContain(`${BASE}/terms-of-service`)
@@ -118,7 +121,7 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(28)
+    expect(entries).toHaveLength(31)
     expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 
