@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Phuket island day selector | RadarScout',
   description: 'Compare three reviewed Phuket island-day options by traveler fit, pace, and practical trade-offs before continuing to Viator.',
   alternates: { canonical: 'https://www.radarscout.io/phuket/island-day-selector' },
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
 }
 
 export default function PhuketIslandDaySelectorPage() {
