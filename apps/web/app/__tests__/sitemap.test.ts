@@ -118,7 +118,7 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(28)
+    expect(entries).toHaveLength(29)
     expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
   })
 
@@ -141,6 +141,7 @@ describe('sitemap', () => {
     const urls = entries.map(e => e.url)
 
     expect(urls).toContain(`${BASE}/chiang-mai/elephant-camp-finder`)
+    expect(urls).toContain(`${BASE}/phuket/island-day-selector`)
     expect(urls).toContain(`${BASE}/thailand-trip-planner`)
   })
 

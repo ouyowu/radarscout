@@ -13,6 +13,7 @@ const routes = [
   ['/guides/chiang-mai', 'weekly', 0.7],
   ['/guides/phuket', 'weekly', 0.7],
   ['/chiang-mai/elephant-camp-finder', 'weekly', 0.8],
+  ['/phuket/island-day-selector', 'weekly', 0.8],
   ['/contact', 'monthly', 0.6],
   ['/privacy-policy', 'yearly', 0.3],
   ['/terms-of-service', 'yearly', 0.3],

@@ -14,7 +14,7 @@ const cityHubSource = readFileSync(
 describe('Phuket island day selector', () => {
   it('presents a narrow three-match decision funnel without commerce overclaims', () => {
     expect(pageSource).toContain('Phuket island day selector')
-    expect(pageSource).toContain('index: false')
+    expect(pageSource).toContain('index: true')
     expect(clientSource).toContain('See my 3 matches')
     expect(clientSource).toContain('Why RadarScout recommends it')
     expect(clientSource).toContain('Best for')
@@ -35,7 +35,7 @@ describe('Phuket island day selector', () => {
     }
   })
 
-  it('is discoverable from the existing Phuket city hub without changing index policy', () => {
+  it('is discoverable from the existing Phuket city hub and has an open SEO policy', () => {
     expect(cityHubSource).toContain('/phuket/island-day-selector')
     expect(cityHubSource).toContain('Find my Phuket island day')
   })
