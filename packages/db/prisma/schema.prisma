@@ -205,3 +205,26 @@ model BookingInquiry {
   @@index([status])
   @@index([createdAt])
 }
+
+model PartnerHandoffLog {
+  id                   String    @id @default(cuid())
+  provider             String
+  placement            String?
+  city                 String?
+  productId            String?
+  attributionSource    String?
+  targetHost           String?
+  recommendationSource String?
+  reasonCode           String?
+  durationDays         Int?
+  pace                 String?
+  intent               Json      @default("{}")
+  clickedAt            DateTime  @default(now())
+  revenueAmount        Decimal?  @db.Decimal(10, 2)
+  revenueCurrency      String?
+  revenueRecordedAt    DateTime?
+
+  @@index([provider, clickedAt])
+  @@index([productId, clickedAt])
+  @@index([clickedAt])
+}
