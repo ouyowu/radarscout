@@ -16,7 +16,7 @@ describe('Vercel analytics provider', () => {
 
   it('flushes approved funnel events through the Vercel analytics provider without secrets', () => {
     expect(analyticsSource).toContain("import { track as trackVercelEvent } from '@vercel/analytics'")
-    expect(analyticsSource).toContain('trackVercelEvent(event, props)')
+    expect(analyticsSource).toContain('trackVercelEvent(event, vercelProps)')
     expect(funnelEventSource).toContain('homepage_finder_entry_clicked')
     expect(funnelEventSource).toContain('finder_planner_choice_selected')
     expect(funnelEventSource).toContain('finder_matching_experiences_clicked')

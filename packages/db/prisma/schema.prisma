@@ -208,6 +208,7 @@ model BookingInquiry {
 
 model PartnerHandoffLog {
   id                   String    @id @default(cuid())
+  sessionId            String?
   provider             String
   placement            String?
   city                 String?
@@ -218,6 +219,7 @@ model PartnerHandoffLog {
   reasonCode           String?
   durationDays         Int?
   pace                 String?
+  clickResult          String    @default("clicked")
   intent               Json      @default("{}")
   clickedAt            DateTime  @default(now())
   revenueAmount        Decimal?  @db.Decimal(10, 2)
@@ -227,4 +229,5 @@ model PartnerHandoffLog {
   @@index([provider, clickedAt])
   @@index([productId, clickedAt])
   @@index([clickedAt])
+  @@index([sessionId, clickedAt])
 }

@@ -45,6 +45,8 @@ describe('partnerHandoff', () => {
         hasGroupSize: true,
         hasOccupancy: true,
         travelerType: 'family',
+        companionType: 'family',
+        groupSizeBand: '3-4',
       },
     })
   })
@@ -74,6 +76,8 @@ describe('partnerHandoff', () => {
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
+      companionType: 'family',
+      groupSizeBand: '3-4',
     })
 
     const analytics = buildPartnerHandoffAnalyticsProps(record!)
@@ -87,6 +91,8 @@ describe('partnerHandoff', () => {
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
+      companionType: 'family',
+      groupSizeBand: '3-4',
     })
     expect(analytics).not.toHaveProperty('href')
     expect(analytics).not.toHaveProperty('campaign')

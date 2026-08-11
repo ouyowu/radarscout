@@ -290,6 +290,7 @@ export function PlannerStudio({
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
   const okProductCount = searchState?.status === 'ok' ? searchState.products.length : 0
+  const parsedCurrentIntent = parseMergedTripIdea(ideaParts).intent
   const handoffTripContext: AffiliateTripContext = {
     startDate: searchState?.intent?.startDate ?? null,
     endDate: searchState?.intent?.endDate ?? null,
@@ -297,6 +298,9 @@ export function PlannerStudio({
     adultCount: searchState?.intent?.adultCount ?? null,
     childCount: searchState?.intent?.childCount ?? null,
     travelerType: searchState?.intent?.travelerType ?? 'unspecified',
+    interests: searchState?.intent?.interests ?? [],
+    budgetRange: parsedCurrentIntent.budget,
+    travelMonth: searchState?.intent?.startDate?.slice(0, 7) ?? null,
   }
   const confirmedContextLabels = [
     handoffTripContext.startDate && handoffTripContext.endDate
@@ -312,7 +316,6 @@ export function PlannerStudio({
       : null,
   ].filter((label): label is string => Boolean(label))
   const currentIdea = mergeTripIdea(ideaParts)
-  const parsedCurrentIntent = parseMergedTripIdea(ideaParts).intent
   const currentDurationDays = parsedCurrentIntent.durationDays
   const minimumStartDate = new Date().toISOString().slice(0, 10)
   const derivedEndDate = startDate ? deriveTripEndDate(startDate, currentDurationDays) : null

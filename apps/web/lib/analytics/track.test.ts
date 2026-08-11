@@ -93,6 +93,28 @@ describe('track', () => {
     })
   })
 
+  it('reuses an anonymous browser session id without storing traveler identity', async () => {
+    const storage = new Map<string, string>()
+    const fakeWindow = {
+      localStorage: {
+        getItem: (key: string) => storage.get(key) ?? null,
+        setItem: (key: string, value: string) => storage.set(key, value),
+      },
+    } as unknown as Window
+    const bodies: Blob[] = []
+    vi.stubGlobal('window', fakeWindow)
+    vi.stubGlobal('navigator', { sendBeacon: (_path: string, body: Blob) => { bodies.push(body); return true } })
+
+    track('booking_partner_handoff_clicked', { provider: 'viator' })
+    track('booking_partner_handoff_clicked', { provider: 'viator' })
+
+    const first = JSON.parse(await bodies[0].text()) as { sessionId?: string; email?: string }
+    const second = JSON.parse(await bodies[1].text()) as { sessionId?: string }
+    expect(first.sessionId).toBeTruthy()
+    expect(second.sessionId).toBe(first.sessionId)
+    expect(first).not.toHaveProperty('email')
+  })
+
   it('keeps analytics and handoff callers safe when the event beacon fails', () => {
     const fakeWindow = {} as Window
     const sendBeacon = vi.fn(() => {

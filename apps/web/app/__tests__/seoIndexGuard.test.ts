@@ -50,6 +50,7 @@ const CURRENT_INDEXABLE_SITEMAP_URLS = [
   `${BASE}/guides/bangkok`,
   `${BASE}/guides/chiang-mai`,
   `${BASE}/guides/phuket`,
+  `${BASE}/guides/chiang-mai/best-elephant-sanctuary-for-kids`,
   `${BASE}/guides/bangkok/best-areas-to-stay-first-time-visitors`,
   `${BASE}/guides/bangkok/ayutthaya-vs-floating-market-day-trip`,
   `${BASE}/guides/bangkok/food-tour-vs-temple-day`,

@@ -10,10 +10,11 @@ export const FUNNEL_EVENTS = [
 ] as const
 
 export type FunnelEvent = (typeof FUNNEL_EVENTS)[number]
-export type FunnelEventProps = Record<string, string | number | boolean>
+export type FunnelEventProps = Record<string, string | number | boolean | string[]>
 
 export type SafeFunnelEventPayload = {
   event: FunnelEvent
+  sessionId?: string
   provider?: string
   placement?: string
   city?: string
@@ -28,6 +29,11 @@ export type SafeFunnelEventPayload = {
   reasonCode?: string
   durationDays?: number
   pace?: string
+  travelMonth?: string
+  budgetRange?: string
+  companionType?: string
+  groupSizeBand?: string
+  interests?: string[]
 }
 
 const APPROVED_PROVIDERS = new Set([
@@ -131,6 +137,15 @@ const APPROVED_REASON_CODES = new Set([
 ])
 
 const APPROVED_PACES = new Set(['relaxed', 'moderate', 'packed', 'unspecified'])
+const APPROVED_BUDGET_RANGES = new Set(['budget', 'mid-range', 'premium', 'luxury', 'unspecified'])
+const APPROVED_COMPANION_TYPES = new Set(['solo', 'couple', 'family', 'friends', 'business', 'unspecified'])
+const APPROVED_GROUP_SIZE_BANDS = new Set(['1', '2', '3-4', '5+'])
+const SAFE_SESSION_ID = /^[a-z0-9-]{16,80}$/i
+const SAFE_TRAVEL_MONTH = /^20\d{2}-(0[1-9]|1[0-2])$/
+const APPROVED_INTERESTS = new Set([
+  'animals', 'beaches', 'culture', 'elephants', 'family', 'food', 'islands',
+  'nature', 'nightlife', 'snorkeling', 'temples', 'wellness',
+])
 
 const SAFE_PRODUCT_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/
 
@@ -151,6 +166,9 @@ export function buildSafeFunnelEventPayload(
   props: FunnelEventProps = {},
 ): SafeFunnelEventPayload {
   const payload: SafeFunnelEventPayload = { event }
+  const sessionId = typeof props.sessionId === 'string' && SAFE_SESSION_ID.test(props.sessionId)
+    ? props.sessionId
+    : undefined
   const provider = approvedValue(props.provider, APPROVED_PROVIDERS)
   const placement = approvedValue(props.placement, APPROVED_PLACEMENTS)
   const city = approvedValue(props.city, APPROVED_CITIES)
@@ -167,7 +185,17 @@ export function buildSafeFunnelEventPayload(
   )
   const reasonCode = approvedValue(props.reasonCode, APPROVED_REASON_CODES)
   const pace = approvedValue(props.pace, APPROVED_PACES)
+  const budgetRange = approvedValue(props.budgetRange, APPROVED_BUDGET_RANGES)
+  const companionType = approvedValue(props.companionType, APPROVED_COMPANION_TYPES)
+  const groupSizeBand = approvedValue(props.groupSizeBand, APPROVED_GROUP_SIZE_BANDS)
+  const travelMonth = typeof props.travelMonth === 'string' && SAFE_TRAVEL_MONTH.test(props.travelMonth)
+    ? props.travelMonth
+    : undefined
+  const interests = Array.isArray(props.interests)
+    ? props.interests.filter((value): value is string => typeof value === 'string' && APPROVED_INTERESTS.has(value)).slice(0, 5)
+    : undefined
 
+  if (sessionId) payload.sessionId = sessionId
   if (provider) payload.provider = provider
   if (placement) payload.placement = placement
   if (city) payload.city = city
@@ -187,6 +215,11 @@ export function buildSafeFunnelEventPayload(
     && props.durationDays <= 14
   ) payload.durationDays = props.durationDays
   if (pace) payload.pace = pace
+  if (travelMonth) payload.travelMonth = travelMonth
+  if (budgetRange) payload.budgetRange = budgetRange
+  if (companionType) payload.companionType = companionType
+  if (groupSizeBand) payload.groupSizeBand = groupSizeBand
+  if (interests && interests.length > 0) payload.interests = interests
 
   return payload
 }
