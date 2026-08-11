@@ -94,6 +94,12 @@ describe('POST /api/events', () => {
       hasGroupSize: true,
       hasOccupancy: false,
       travelerType: 'family',
+      sessionId: 'sess-12345678901234',
+      travelMonth: '2026-12',
+      budgetRange: 'mid-range',
+      companionType: 'family',
+      groupSizeBand: '3-4',
+      interests: ['elephants', 'food', 'not-approved'],
       prompt: 'raw prompt must not persist',
       commissionPercent: 12,
     }))
@@ -101,6 +107,7 @@ describe('POST /api/events', () => {
     expect(response.status).toBe(204)
     expect(createPartnerHandoffLog).toHaveBeenCalledWith({
       data: {
+        sessionId: 'sess-12345678901234',
         provider: 'viator',
         placement: 'tour_detail_primary',
         city: 'Chiang Mai',
@@ -111,11 +118,17 @@ describe('POST /api/events', () => {
         reasonCode: 'destination_match',
         durationDays: 3,
         pace: 'moderate',
+        clickResult: 'clicked',
         intent: {
           hasDates: true,
           hasGroupSize: true,
           hasOccupancy: false,
           travelerType: 'family',
+          travelMonth: '2026-12',
+          budgetRange: 'mid-range',
+          companionType: 'family',
+          groupSizeBand: '3-4',
+          interests: ['elephants', 'food'],
         },
       },
     })

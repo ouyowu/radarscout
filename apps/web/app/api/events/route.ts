@@ -24,6 +24,7 @@ export async function POST(request: Request): Promise<Response> {
     try {
       await db.partnerHandoffLog.create({
         data: {
+          ...(payload.sessionId ? { sessionId: payload.sessionId } : {}),
           provider: payload.provider ?? 'unknown',
           placement: payload.placement,
           city: payload.city,
@@ -34,11 +35,17 @@ export async function POST(request: Request): Promise<Response> {
           reasonCode: payload.reasonCode,
           durationDays: payload.durationDays,
           pace: payload.pace,
+          clickResult: 'clicked',
           intent: {
             ...(payload.hasDates !== undefined ? { hasDates: payload.hasDates } : {}),
             ...(payload.hasGroupSize !== undefined ? { hasGroupSize: payload.hasGroupSize } : {}),
             ...(payload.hasOccupancy !== undefined ? { hasOccupancy: payload.hasOccupancy } : {}),
             ...(payload.travelerType ? { travelerType: payload.travelerType } : {}),
+            ...(payload.travelMonth ? { travelMonth: payload.travelMonth } : {}),
+            ...(payload.budgetRange ? { budgetRange: payload.budgetRange } : {}),
+            ...(payload.companionType ? { companionType: payload.companionType } : {}),
+            ...(payload.groupSizeBand ? { groupSizeBand: payload.groupSizeBand } : {}),
+            ...(payload.interests ? { interests: payload.interests } : {}),
           },
         },
       })

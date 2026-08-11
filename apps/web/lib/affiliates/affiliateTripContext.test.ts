@@ -18,6 +18,8 @@ describe('affiliate trip context', () => {
       hasGroupSize: true,
       hasOccupancy: true,
       travelerType: 'family',
+      companionType: 'family',
+      groupSizeBand: '3-4',
     })
   })
 
