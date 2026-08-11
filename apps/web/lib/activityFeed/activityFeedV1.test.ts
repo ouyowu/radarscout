@@ -32,6 +32,22 @@ describe('Activity Feed v1 adapter', () => {
     expect(item.ethicalAttributes).toEqual({ status: 'not_reviewed', value: [] })
   })
 
+  it('provides one verified Viator offer that preserves the reviewed handoff', () => {
+    const [item] = loadActivityFeedV1({ take: 1 })
+
+    expect(item.offers).toEqual([
+      {
+        provider: 'viator',
+        inventorySource: 'reviewed_viator_catalog',
+        affiliatePartner: 'viator',
+        deeplink: item.partnerHandoff.url,
+        availabilityClaimed: false,
+        priceSnapshot: { status: 'not_reviewed', value: null },
+        verifiedAt: item.provenance.verifiedAt,
+      },
+    ])
+  })
+
   it('accepts only items generated from the reviewed source catalogue', () => {
     const [item] = loadActivityFeedV1({ take: 1 })
 
