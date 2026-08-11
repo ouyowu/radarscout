@@ -22,6 +22,14 @@ import { buildDeterministicRouteOverview } from './deterministicRouteOverview'
 import { AgodaStayAreaPanel } from './AgodaStayAreaPanel'
 import { PlannerItineraryWorkspace } from './PlannerItineraryWorkspace'
 import { buildPlannerRecommendationEvents } from './plannerRecommendationTracking'
+import {
+  buildAnonymousTripMemory,
+  clearAnonymousTripMemory,
+  formatAnonymousTripMemoryIdea,
+  readAnonymousTripMemory,
+  writeAnonymousTripMemory,
+  type AnonymousTripMemory,
+} from './anonymousTripMemory'
 import { track } from '@/lib/analytics/track'
 
 type StudioMessage = {
@@ -133,6 +141,8 @@ export function PlannerStudio({
   const [adultCount, setAdultCount] = useState('')
   const [childCount, setChildCount] = useState('')
   const [travelerType, setTravelerType] = useState<TravelerType>('unspecified')
+  const [rememberTripPreferences, setRememberTripPreferences] = useState(false)
+  const [savedTripMemory, setSavedTripMemory] = useState<AnonymousTripMemory | null>(null)
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -152,6 +162,37 @@ export function PlannerStudio({
       track('finder_recommendations_rendered', props)
     }
   }, [searchState])
+
+  useEffect(() => {
+    try {
+      setSavedTripMemory(readAnonymousTripMemory(window.localStorage))
+    } catch {
+      setSavedTripMemory(null)
+    }
+  }, [])
+
+  function saveConfirmedTripMemory(parts: string[], response: AiTripSearchResponse) {
+    if (!rememberTripPreferences || response.status !== 'ok' || !response.intent) return
+
+    const parsedIntent = parseMergedTripIdea(parts).intent
+    const memory = buildAnonymousTripMemory({
+      destination: response.intent.destination,
+      durationDays: response.intent.days,
+      interests: response.intent.interests,
+      budgetRange: parsedIntent.budget,
+      travelerType: response.intent.travelerType,
+      groupSize: response.intent.groupSize,
+      startDate: response.intent.startDate,
+    })
+    if (!memory) return
+
+    try {
+      writeAnonymousTripMemory(window.localStorage, memory)
+      setSavedTripMemory(memory)
+    } catch {
+      // Browser storage is optional; planning remains available when it is blocked.
+    }
+  }
 
   async function runSearch(parts: string[]) {
     if ((adultCount === '') !== (childCount === '')) {
@@ -199,6 +240,7 @@ export function PlannerStudio({
       })
       const data = await res.json() as AiTripSearchResponse
       setSearchState(data)
+      saveConfirmedTripMemory(parts, data)
       setMessages(current => [...current, buildResultGuideMessage(data)])
     } catch {
       setMessages(current => [
@@ -286,6 +328,24 @@ export function PlannerStudio({
     setAdultCount('')
     setChildCount('')
     setTravelerType('unspecified')
+  }
+
+  function handleUseSavedTripMemory() {
+    if (!savedTripMemory) return
+
+    setDraft(formatAnonymousTripMemoryIdea(savedTripMemory))
+    setTravelerType(savedTripMemory.travelerType)
+    setRememberTripPreferences(true)
+  }
+
+  function handleClearSavedTripMemory() {
+    try {
+      clearAnonymousTripMemory(window.localStorage)
+    } catch {
+      // Clearing local storage is best-effort and never blocks the planner.
+    }
+    setSavedTripMemory(null)
+    setRememberTripPreferences(false)
   }
 
   const itinerary = searchState?.status === 'ok' ? searchState.itinerary ?? null : null
@@ -438,6 +498,32 @@ export function PlannerStudio({
           </p>
         </fieldset>
 
+        {savedTripMemory ? (
+          <aside className="border-b border-rs-sage-200/70 bg-white px-4 py-3 sm:px-5" aria-label="Saved trip preferences">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-rs-forest-500">Saved on this device</p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-rs-ink">
+              {savedTripMemory.destination} · {savedTripMemory.durationDays} day{savedTripMemory.durationDays === 1 ? '' : 's'}
+              {savedTripMemory.interests.length > 0 ? ` · ${savedTripMemory.interests.join(', ')}` : ''}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={handleUseSavedTripMemory}
+                className="min-h-[40px] rounded-rs-pill bg-rs-sage-100 px-3 text-xs font-bold text-rs-forest-700 transition hover:bg-rs-sage-200"
+              >
+                Use saved preferences
+              </button>
+              <button
+                type="button"
+                onClick={handleClearSavedTripMemory}
+                className="min-h-[40px] rounded-rs-pill border border-rs-sage-200 px-3 text-xs font-bold text-rs-muted transition hover:border-rs-forest-500 hover:text-rs-forest-700"
+              >
+                Clear saved preferences
+              </button>
+            </div>
+          </aside>
+        ) : null}
+
         <div
           aria-label="Conversation messages"
           className="flex min-h-[320px] flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 sm:px-5"
@@ -541,6 +627,17 @@ export function PlannerStudio({
               Send
             </button>
           </div>
+          <label className="mt-3 flex cursor-pointer items-start gap-2 text-xs font-semibold leading-5 text-rs-muted">
+            <input
+              type="checkbox"
+              checked={rememberTripPreferences}
+              onChange={event => setRememberTripPreferences(event.target.checked)}
+              className="mt-0.5 size-4 rounded border-rs-sage-200 text-rs-forest-700 focus:ring-rs-forest-500"
+            />
+            <span>
+              Remember confirmed trip preferences on this device. You can clear them anytime; RadarScout does not save your name, email, exact dates, or messages.
+            </span>
+          </label>
           <p className="mt-2 text-xs font-semibold leading-5 text-rs-muted">
             Local parsing · reviewed Thailand matches · external booking partner handoff
           </p>
