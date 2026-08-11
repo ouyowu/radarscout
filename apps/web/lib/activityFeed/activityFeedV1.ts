@@ -13,6 +13,16 @@ export type ActivityFeedField<T> = {
   value: T
 }
 
+export type ActivityFeedOffer = {
+  provider: 'viator'
+  inventorySource: 'reviewed_viator_catalog'
+  affiliatePartner: 'viator'
+  deeplink: string
+  availabilityClaimed: false
+  priceSnapshot: ActivityFeedField<null>
+  verifiedAt: string
+}
+
 export type ActivityFeedV1Item = {
   schemaVersion: typeof ACTIVITY_FEED_V1_SCHEMA_VERSION
   id: string
@@ -41,6 +51,7 @@ export type ActivityFeedV1Item = {
   ethicalAttributes: ActivityFeedField<string[]>
   experienceFeatures: ActivityFeedField<string[]>
   themes: string[]
+  offers: ActivityFeedOffer[]
   partnerHandoff: {
     provider: 'Viator'
     url: string
@@ -109,6 +120,17 @@ function fromAiReadyProduct(product: AiReadyProduct): ActivityFeedV1Item {
     ethicalAttributes: fromValues(product.experience.ethicalFeatures),
     experienceFeatures: fromValues(product.experience.features),
     themes: [...product.themes],
+    offers: [
+      {
+        provider: 'viator',
+        inventorySource: 'reviewed_viator_catalog',
+        affiliatePartner: 'viator',
+        deeplink: product.partnerHandoff.url,
+        availabilityClaimed: false,
+        priceSnapshot: notReviewed(null),
+        verifiedAt: product.provenance.lastVerifiedAt,
+      },
+    ],
     partnerHandoff: {
       provider: product.partnerHandoff.platform,
       url: product.partnerHandoff.url,
