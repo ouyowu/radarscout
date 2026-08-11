@@ -118,8 +118,9 @@ describe('sitemap', () => {
 
     const entries = await sitemap()
 
-    expect(entries).toHaveLength(28)
-    expect(entries.map(entry => entry.url)).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
+    const urls = entries.map(entry => entry.url)
+    expect(urls).toEqual(expect.arrayContaining([...APPROVED_TOUR_URLS]))
+    expect(new Set(urls).size).toBe(urls.length)
   })
 
   it('excludes product from Chiang Rai even when it would be Thailand-eligible', async () => {

@@ -793,6 +793,87 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
     ],
     ...dailyEditorialAugust5,
   },
+  {
+    citySlug: 'chiang-mai',
+    cityName: 'Chiang Mai',
+    slug: 'best-elephant-sanctuary-for-kids',
+    title: 'Best Chiang Mai Elephant Sanctuary for Kids: What to Check First',
+    seoTitle: 'Best Chiang Mai Elephant Sanctuary for Kids | RadarScout',
+    description:
+      'Choose a Chiang Mai elephant experience for children by checking contact expectations, walking, transfer time, facilities, and the questions to confirm before a partner handoff.',
+    eyebrow: 'Chiang Mai family decision guide',
+    quickAnswer:
+      'For a family, start with the least mobile traveler and the clearest care rules. Compare contact expectations, walking and heat, pickup burden, changing facilities, child guidance, and a realistic return time before comparing individual products.',
+    bestFor: [
+      'Parents comparing a first elephant experience in Chiang Mai',
+      'Families deciding between a lighter half-day and a longer rural program',
+      'Travelers who want fit and care questions answered before choosing a partner listing',
+    ],
+    notIdealFor: [
+      'Families expecting every product to offer the same type of contact',
+      'Groups that have not checked walking, heat, mud, or changing requirements',
+      'A tightly scheduled day that cannot absorb a long pickup or return journey',
+    ],
+    sections: [
+      {
+        heading: 'The best family option is the clearest fit, not the most dramatic photo',
+        paragraphs: [
+          'Children can enjoy an elephant-care day, but the right choice depends on what the experience actually asks them to do. Look for a clear description of observation, feeding, bathing, walking, guide support, and visitor behavior rather than assuming that the word sanctuary explains the program.',
+          'A family-friendly decision also protects the animals and the adults. Choose an experience whose contact rules, group rhythm, and care explanation are understandable before you treat it as a good fit for your child.',
+        ],
+        checklist: [
+          'What contact is explicitly described, and what is not promised?',
+          'Can the child follow the operator’s safety and behavior guidance?',
+          'Does the product explain the group sequence and guide support?',
+        ],
+      },
+      {
+        heading: 'Check the physical day before checking the headline activity',
+        paragraphs: [
+          'Heat, mud, slopes, steps, walking, rain, changing, and rural facilities can decide whether a child remembers the day fondly. Ask about the least mobile member of the group first, and treat missing accessibility details as an unanswered question rather than a reassuring assumption.',
+          'A half-day may suit a younger child, a shorter Chiang Mai stay, or a family that wants an easy evening afterward. A longer program can work when the group is comfortable with more travel and a slower return, but the extra hours should be understood before choosing.',
+        ],
+        checklist: [
+          'Confirm walking, stairs, mud, heat, rain, and changing expectations.',
+          'Check whether children need specific clothing, shoes, or supervision.',
+          'Leave recovery time after a rural pickup and return.',
+        ],
+      },
+      {
+        heading: 'Pickup time is part of the family experience',
+        paragraphs: [
+          'A product can look close on a map while the hotel pickup and shared collection sequence make the morning long. Confirm whether your Chiang Mai hotel area is covered, when the group must be ready, and how the stated return time is described by the current partner.',
+          'Families should avoid placing a fixed evening reservation immediately after an out-of-town experience. A realistic plan keeps a margin for traffic, stops, changing, and the energy of the child who has just spent a full day outdoors.',
+        ],
+      },
+      {
+        heading: 'Use RadarScout to narrow the choice, then verify the partner details',
+        paragraphs: [
+          'RadarScout compares reviewed public fields and explains why an option may fit a family. It does not invent a current price, promise availability, or replace the partner’s live product terms. If a field is not confirmed, the page should leave it open for you to check rather than fill the gap with a guess.',
+          'Before continuing, compare the final product details on the partner page: current inclusions, age rules, pickup coverage, cancellation terms, and the exact contact or care format. The best choice is the one that leaves the fewest important questions unanswered for your group.',
+        ],
+        checklist: [
+          'Fit: care rules, child comfort, walking, heat, and transfer burden.',
+          'Avoid if: your group cannot meet the stated physical or timing demands.',
+          'Final check: current product details and terms at the Viator handoff.',
+          'Price: confirm the current partner price; RadarScout does not publish an unverified amount.',
+        ],
+      },
+    ],
+    takeaway:
+      'For children, the best Chiang Mai elephant experience is the one with clear care rules, manageable physical demands, and a transfer plan your family can actually enjoy.',
+    plannerHref: '/chiang-mai/elephant-camp-finder',
+    plannerLabel: 'Compare Chiang Mai elephant experiences',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Chiang Mai destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Mai/101',
+      },
+    ],
+    ...sharedEditorial,
+    publishedAt: '2026-08-11',
+    updatedAt: '2026-08-11',
+  },
 ]
 
 export const thailandGuideArticles: readonly ThailandGuideArticle[] = articleDrafts.map(article => {
