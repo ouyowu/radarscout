@@ -5,7 +5,8 @@
   "scripts": {
     "generate": "prisma generate",
     "migrate:dev": "prisma migrate dev",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "handoff:report": "node scripts/handoff-report.mjs"
   },
   "exports": {
     ".": "./src/index.ts"

@@ -9,6 +9,7 @@
     "db:generate": "pnpm --filter @reddit-monitor/db generate",
     "db:migrate:dev": "pnpm --filter @reddit-monitor/db migrate:dev",
     "db:studio": "pnpm --filter @reddit-monitor/db studio",
+    "handoff:report": "pnpm --filter @reddit-monitor/db handoff:report",
     "lint": "pnpm -r lint",
     "test": "pnpm -r --if-present test",
     "test:vercel-preview-guard": "node --test scripts/__tests__/radarscout-vercel-preview-guard.test.js scripts/__tests__/radarscout-vercel-preview-link-cleanup.test.js",
