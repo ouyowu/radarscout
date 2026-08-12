@@ -104,7 +104,10 @@ async function main() {
     printTable('By placement', countBy(rows, 'placement'), total)
     printTable('By city', countBy(rows, 'city'), total)
     printTable('Top products', countBy(rows, 'productId').slice(0, 10), total)
-    printTable('By attribution source (?ref=…)', countBy(rows, 'attributionSource'), total)
+    // Note: attributionSource records which partner the click went OUT to
+    // (e.g. viator_affiliate), not which channel the visitor came FROM.
+    // Inbound channel is not captured on this table today.
+    printTable('By outbound attribution', countBy(rows, 'attributionSource'), total)
 
     const byDay = countBy(
       rows.map(row => ({ day: formatDay(row.clickedAt) })),
