@@ -117,4 +117,14 @@ describe('planner studio public copy safety', () => {
     expect(studioSource).toMatch(/<YesimEsimCard\s*\/>/)
     expect(studioSource.indexOf('<YesimEsimCard')).toBeGreaterThan(studioSource.indexOf('<PlannerItineraryWorkspace'))
   })
+
+  it('auto-runs a homepage-provided idea once on mount instead of only prefilling the draft', () => {
+    const studioSource = readPlannerSource('PlannerStudio.tsx')
+
+    // A one-time mount guard must drive the homepage idea through the same
+    // conversation entry point, so `/planner?idea=...` reaches results without
+    // the visitor re-typing and re-submitting.
+    expect(studioSource).toMatch(/autoRanInitialIdeaRef/)
+    expect(studioSource).toMatch(/sendTravelerMessage\(safeInitialIdea\)/)
+  })
 })
