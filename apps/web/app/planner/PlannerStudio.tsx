@@ -144,6 +144,8 @@ export function PlannerStudio({
   const [rememberTripPreferences, setRememberTripPreferences] = useState(false)
   const [savedTripMemory, setSavedTripMemory] = useState<AnonymousTripMemory | null>(null)
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
+  // Guards the one-time auto-run of a homepage-provided idea so it fires once.
+  const autoRanInitialIdeaRef = useRef(false)
 
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -169,6 +171,17 @@ export function PlannerStudio({
     } catch {
       setSavedTripMemory(null)
     }
+  }, [])
+
+  // When a visitor arrives from the homepage prompt (`/planner?idea=...`), run
+  // that idea through the same conversation flow instead of leaving it sitting
+  // in the draft box. A complete idea advances straight to reviewed results; an
+  // incomplete one gets the normal guided follow-up. Fires once on mount.
+  useEffect(() => {
+    if (autoRanInitialIdeaRef.current || !safeInitialIdea) return
+    autoRanInitialIdeaRef.current = true
+    sendTravelerMessage(safeInitialIdea)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function saveConfirmedTripMemory(parts: string[], response: AiTripSearchResponse) {
