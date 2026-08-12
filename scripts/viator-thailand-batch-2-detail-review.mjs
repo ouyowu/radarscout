@@ -37,6 +37,75 @@ function readDurationMinutes(value) {
   return Number.isInteger(minutes) && minutes > 0 && minutes <= 1_440 ? minutes : null
 }
 
+function readBoolean(value) {
+  return typeof value === 'boolean' ? value : null
+}
+
+function readInteger(value, max = 1_440) {
+  return Number.isInteger(value) && value >= 0 && value <= max ? value : null
+}
+
+function readDistinctStrings(value, {
+  maxItems = 12,
+  maxLength = 300,
+  keys = [],
+} = {}) {
+  if (!Array.isArray(value)) return []
+
+  const strings = value
+    .map((item) => {
+      const record = asRecord(item)
+      if (!record) return null
+      for (const key of keys) {
+        const text = readString(record[key], maxLength)
+        if (text) return text
+      }
+      return null
+    })
+    .filter(Boolean)
+
+  return [...new Set(strings)].slice(0, maxItems)
+}
+
+function readPickup(value) {
+  const pickup = asRecord(asRecord(value)?.travelerPickup)
+
+  return {
+    optionType: readString(pickup?.pickupOptionType, 80),
+    allowCustomTravelerPickup: readBoolean(pickup?.allowCustomTravelerPickup),
+    locations: readDistinctStrings(pickup?.locations, {
+      maxItems: 20,
+      maxLength: 160,
+      keys: ['locationName', 'name'],
+    }),
+    leadMinutes: readInteger(pickup?.minutesBeforeDepartureTimeForPickup),
+  }
+}
+
+function readSchedule(value) {
+  const logistics = asRecord(value)
+  return {
+    startTimes: readDistinctStrings(logistics?.start, {
+      maxItems: 8,
+      maxLength: 80,
+      keys: ['time', 'startTime'],
+    }),
+    endTimes: readDistinctStrings(logistics?.end, {
+      maxItems: 8,
+      maxLength: 80,
+      keys: ['time', 'endTime'],
+    }),
+  }
+}
+
+const pendingHumanReviewFields = [
+  'childPolicy',
+  'ethicalAttributes',
+  'fitnessLevel',
+  'pickupTravelTimeFromUserLocation',
+  'returnBeforeTime',
+]
+
 function readPrimaryDestinationId(value) {
   if (!Array.isArray(value)) return null
 
@@ -85,6 +154,11 @@ function safeDetailFromBody(candidate, body) {
       inclusionHighlights: readHighlights(product.inclusions),
       exclusionHighlights: readHighlights(product.exclusions),
       durationMinutes: readDurationMinutes(product.itinerary),
+      pickup: readPickup(product.logistics),
+      schedule: readSchedule(product.logistics),
+      // Viator does not provide enough stable structured facts to derive these
+      // user-facing decisions. Keep them explicitly pending, never inferred.
+      pendingHumanReviewFields: [...pendingHumanReviewFields],
     },
   }
 }
@@ -93,12 +167,15 @@ export async function fetchViatorProductDetailForReview(candidate, {
   apiKey,
   fetchFn = fetch,
   sleepFn = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+  requestTimeoutMs = 8_000,
 } = {}) {
   if (!isReviewCandidate(candidate)) return { ok: false, reason: 'invalid_candidate' }
   if (!apiKey?.trim()) return { ok: false, reason: 'not_configured' }
 
   let response
   for (let attempt = 0; attempt < 2; attempt += 1) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), requestTimeoutMs)
     try {
       response = await fetchFn(`https://api.viator.com/partner/products/${encodeURIComponent(candidate.productCode)}`, {
         headers: {
@@ -106,9 +183,15 @@ export async function fetchViatorProductDetailForReview(candidate, {
           'Accept-Language': 'en-US',
           'exp-api-key': apiKey,
         },
+        signal: controller.signal,
       })
-    } catch {
-      return { ok: false, reason: 'upstream_error' }
+    } catch (error) {
+      return {
+        ok: false,
+        reason: controller.signal.aborted ? 'upstream_timeout' : 'upstream_error',
+      }
+    } finally {
+      clearTimeout(timeout)
     }
 
     if (response.status !== 429 || attempt === 1) break
