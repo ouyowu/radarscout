@@ -27,6 +27,16 @@ test('keeps only non-commercial product detail fields in the private detail revi
       inclusions: [{ otherDescription: 'Lunch' }],
       exclusions: [{ description: 'Personal expenses' }],
       itinerary: { duration: { fixedDurationInMinutes: 420 } },
+      logistics: {
+        travelerPickup: {
+          pickupOptionType: 'PICKUP_EVERYONE',
+          allowCustomTravelerPickup: false,
+          locations: [{ locationName: 'Central Bangkok hotels' }],
+          minutesBeforeDepartureTimeForPickup: 30,
+        },
+        start: [{ time: '18:00' }],
+        end: [{ time: '22:00' }],
+      },
       pricingInfo: { pricingType: 'PER_PERSON' },
       bookingRequirements: { minTravelers: 1 },
       supplier: { name: 'Not public' },
@@ -48,6 +58,76 @@ test('keeps only non-commercial product detail fields in the private detail revi
       inclusionHighlights: ['Lunch'],
       exclusionHighlights: ['Personal expenses'],
       durationMinutes: 420,
+      pickup: {
+        optionType: 'PICKUP_EVERYONE',
+        allowCustomTravelerPickup: false,
+        locations: ['Central Bangkok hotels'],
+        leadMinutes: 30,
+      },
+      schedule: {
+        startTimes: ['18:00'],
+        endTimes: ['22:00'],
+      },
+      pendingHumanReviewFields: [
+        'childPolicy',
+        'ethicalAttributes',
+        'fitnessLevel',
+        'pickupTravelTimeFromUserLocation',
+        'returnBeforeTime',
+      ],
+    },
+  })
+})
+
+test('omits unsupported logistics values instead of preserving provider raw fields', async () => {
+  const result = await fetchViatorProductDetailForReview(candidate, {
+    apiKey: 'production-test-key',
+    fetchFn: async () => new Response(JSON.stringify({
+      productCode: '5553790P1',
+      logistics: {
+        travelerPickup: {
+          pickupOptionType: 'PICKUP_EVERYONE',
+          locations: [{ locationName: 'Central Bangkok hotels', raw: { supplier: 'private' } }],
+          raw: { internal: true },
+        },
+        start: [{ time: '18:00', price: 99 }],
+        end: [{ time: '22:00', availability: true }],
+      },
+      raw: { supplier: { name: 'private' } },
+    }), { status: 200 }),
+  })
+
+  assert.deepEqual(result, {
+    ok: true,
+    detail: {
+      city: 'Bangkok',
+      destinationId: '343',
+      productCode: '5553790P1',
+      title: 'Floating market day trip',
+      productUrl: 'https://www.viator.com/tours/Bangkok/floating-market/d343-5553790P1?pid=P00309837',
+      imageUrl: 'https://images.example.test/floating-market.jpg',
+      primaryDestinationId: null,
+      description: null,
+      inclusionHighlights: [],
+      exclusionHighlights: [],
+      durationMinutes: null,
+      pickup: {
+        optionType: 'PICKUP_EVERYONE',
+        allowCustomTravelerPickup: null,
+        locations: ['Central Bangkok hotels'],
+        leadMinutes: null,
+      },
+      schedule: {
+        startTimes: ['18:00'],
+        endTimes: ['22:00'],
+      },
+      pendingHumanReviewFields: [
+        'childPolicy',
+        'ethicalAttributes',
+        'fitnessLevel',
+        'pickupTravelTimeFromUserLocation',
+        'returnBeforeTime',
+      ],
     },
   })
 })
@@ -82,6 +162,18 @@ test('waits for Retry-After and retries a rate-limited product detail once', asy
   assert.equal(result.ok, true)
   assert.equal(requestCount, 2)
   assert.deepEqual(waits, [2_000])
+})
+
+test('fails closed when the Viator detail request exceeds its timeout', async () => {
+  const result = await fetchViatorProductDetailForReview(candidate, {
+    apiKey: 'production-test-key',
+    requestTimeoutMs: 5,
+    fetchFn: (_url, options) => new Promise((_, reject) => {
+      options.signal.addEventListener('abort', () => reject(new Error('aborted')))
+    }),
+  })
+
+  assert.deepEqual(result, { ok: false, reason: 'upstream_timeout' })
 })
 
 test('builds a private detail-review bundle only for candidates that passed title triage', async () => {
