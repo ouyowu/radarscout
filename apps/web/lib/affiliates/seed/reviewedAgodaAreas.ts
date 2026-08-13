@@ -18,7 +18,7 @@ const reviewedAreas = [
         "The atmosphere is commercial rather than historic."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:43:57Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "bangkok-ari",
@@ -34,7 +34,7 @@ const reviewedAreas = [
         "Late-night options are less extensive than central Sukhumvit."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:43:57Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "bangkok-riverside",
@@ -50,7 +50,7 @@ const reviewedAreas = [
         "Nearby street life differs greatly between properties."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:43:57Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "chiang-mai-old-city",
@@ -66,7 +66,7 @@ const reviewedAreas = [
         "Trips to Nimman and the river still require local transport."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:46:35Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "chiang-mai-nimman",
@@ -82,7 +82,7 @@ const reviewedAreas = [
         "Popular streets can feel busy at night."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:46:35Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "chiang-mai-riverside",
@@ -98,7 +98,7 @@ const reviewedAreas = [
         "Some properties have limited convenience outside their grounds."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:46:35Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "pattaya-jomtien",
@@ -114,7 +114,7 @@ const reviewedAreas = [
         "Central Pattaya trips require transport."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:47:32Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "pattaya-north-pattaya",
@@ -130,7 +130,7 @@ const reviewedAreas = [
         "North Pattaya and Naklua labels can cover different beach access."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:47:32Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "pattaya-pratumnak",
@@ -146,7 +146,7 @@ const reviewedAreas = [
         "Dining and beach access vary by exact lane."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:47:32Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "phuket-kata-karon",
@@ -162,7 +162,7 @@ const reviewedAreas = [
         "Journeys to the airport and northern Phuket remain substantial."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:48:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "phuket-bang-tao",
@@ -178,7 +178,7 @@ const reviewedAreas = [
         "A transport budget is important for exploring beyond the immediate area."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:48:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "phuket-old-town",
@@ -194,7 +194,7 @@ const reviewedAreas = [
         "Some streets become busier around markets and events."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:48:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "koh-samui-bophut",
@@ -210,7 +210,7 @@ const reviewedAreas = [
         "Popular evenings can feel busy."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:49:29Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "koh-samui-chaweng",
@@ -226,7 +226,7 @@ const reviewedAreas = [
         "It is not the right base for a quiet island retreat."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:49:29Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "koh-samui-maenam",
@@ -242,7 +242,7 @@ const reviewedAreas = [
         "Cross-island nightlife trips require transport."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:49:29Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "krabi-ao-nang",
@@ -258,7 +258,7 @@ const reviewedAreas = [
         "Travelers seeking a quiet resort stay should check the exact location carefully."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:50:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "krabi-railay",
@@ -274,7 +274,7 @@ const reviewedAreas = [
         "Daytime visitor traffic and a smaller range of everyday services may not suit every stay."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:50:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     },
     {
       id: "krabi-krabi-town",
@@ -290,7 +290,7 @@ const reviewedAreas = [
         "The accommodation experience is more urban than resort-led."
       ],
       reviewedBy: "ouyowu",
-      reviewedAt: "2026-07-22T17:50:28Z"
+      reviewedAt: "2026-08-13T00:00:00Z"
     }
   ] as const
 
