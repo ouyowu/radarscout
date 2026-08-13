@@ -1,8 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+// The stay-area guides render a server-only Agoda offer builder.
+vi.mock('server-only', () => ({}))
 
 import { expectNoForbiddenPublicCopy } from '../../__tests__/publicSafetyPatterns'
+import { AGODA_AREA_CITY_NAMES } from '@/lib/affiliates/agodaAreaRecommendations'
+import { reviewedAgodaAreaRecommendations } from '@/lib/affiliates/seed/reviewedAgodaAreas'
 import {
   guideCitySlugs,
   thailandGuideArticles,
@@ -98,5 +103,38 @@ describe('Thailand travel guides editorial catalogue', () => {
     expect(guideSources).not.toContain("'AggregateRating'")
     expect(guideSources).not.toMatch(/['"]use client['"]/)
     expectNoForbiddenPublicCopy(guideSources)
+  })
+
+  it('offers reviewed Agoda stay areas only on stay-area guides', () => {
+    const stayGuides = thailandGuideArticles.filter(article => article.stayAreaCitySlug)
+    const otherGuides = thailandGuideArticles.filter(article => !article.stayAreaCitySlug)
+
+    // The two stay-area decision guides are the ones whose reader is choosing
+    // where to book, so they carry the accommodation handoff.
+    expect(stayGuides.map(article => article.slug).sort()).toEqual([
+      'best-areas-to-stay-first-time-visitors',
+      'old-city-vs-nimman-where-to-stay',
+    ])
+
+    // Each flagged guide must point at a city that actually has reviewed areas,
+    // otherwise the panel would render empty.
+    for (const article of stayGuides) {
+      const cityName = AGODA_AREA_CITY_NAMES[article.stayAreaCitySlug!]
+      expect(
+        reviewedAgodaAreaRecommendations.some(area => area.city === cityName),
+      ).toBe(true)
+    }
+
+    // Guides about activities, not lodging, stay free of an accommodation CTA.
+    expect(otherGuides.length).toBeGreaterThan(0)
+
+    const articleSource = fs.readFileSync(
+      path.resolve(__dirname, '../[city]/[slug]/page.tsx'),
+      'utf8',
+    )
+    expect(articleSource).toContain('article.stayAreaCitySlug ?')
+    // No invented dates or occupancy: a guide reader has no confirmed trip.
+    expect(articleSource).toContain('startDate: null')
+    expect(articleSource).toContain('adultCount: null')
   })
 })
