@@ -1,3 +1,5 @@
+import type { AgodaAreaCitySlug } from '../affiliates/agodaAreaRecommendations'
+
 const BASE = 'https://www.radarscout.io'
 
 export const guideCitySlugs = ['bangkok', 'chiang-mai', 'phuket'] as const
@@ -14,6 +16,13 @@ export type ThailandGuideArticle = {
   citySlug: GuideCitySlug
   cityName: string
   slug: string
+  /**
+   * Set on stay-area decision guides. A reader who has just compared
+   * neighbourhoods is choosing where to book, so those guides show the
+   * reviewed Agoda area panel. Guides that are not about where to stay leave
+   * this unset and render no accommodation handoff.
+   */
+  stayAreaCitySlug?: AgodaAreaCitySlug
   href: string
   canonicalUrl: string
   title: string
@@ -260,6 +269,7 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
     citySlug: 'bangkok',
     cityName: 'Bangkok',
     slug: 'best-areas-to-stay-first-time-visitors',
+    stayAreaCitySlug: 'bangkok',
     title: 'Best Bangkok Areas to Stay for First-Time Visitors',
     seoTitle: 'Best Areas to Stay in Bangkok for First-Timers | RadarScout',
     description:
@@ -645,6 +655,7 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
     citySlug: 'chiang-mai',
     cityName: 'Chiang Mai',
     slug: 'old-city-vs-nimman-where-to-stay',
+    stayAreaCitySlug: 'chiang-mai',
     title: 'Chiang Mai Old City vs Nimman: Which Area Fits Your Stay?',
     seoTitle: 'Chiang Mai Old City vs Nimman: Where to Stay | RadarScout',
     description:

@@ -4,10 +4,32 @@ import { notFound } from 'next/navigation'
 
 import { JsonLd } from '../../../_components/JsonLd'
 import { PublicSiteShell } from '../../../_components/PublicSiteShell'
+import { AgodaStayAreaPanel } from '../../../planner/AgodaStayAreaPanel'
+import { AGODA_AREA_CITY_NAMES } from '@/lib/affiliates/agodaAreaRecommendations'
+import { buildReviewedAgodaStayAreaOffers } from '@/lib/affiliates/agodaAffiliate'
+import { reviewedAgodaAreaRecommendations } from '@/lib/affiliates/seed/reviewedAgodaAreas'
 import {
   getThailandGuideArticle,
   thailandGuideArticles,
 } from '@/lib/guides/thailandGuides'
+
+// A guide reader has no planner session, so there is no confirmed trip context
+// to pass on. Everything stays null and the Agoda link degrades to an area
+// search without invented dates or occupancy.
+const GUIDE_TRIP_CONTEXT = {
+  startDate: null,
+  endDate: null,
+  groupSize: null,
+  adultCount: null,
+  childCount: null,
+  travelerType: 'unspecified',
+} as const
+
+const GUIDE_STAY_DECISION_CONTEXT = {
+  travelerType: 'unspecified',
+  interests: [],
+  budget: 'unspecified',
+} as const
 
 const base = 'https://www.radarscout.io'
 
@@ -135,6 +157,17 @@ export default function ThailandGuideArticlePage({ params }: { params: { city: s
                   {article.plannerLabel}
                 </Link>
               </section>
+
+              {article.stayAreaCitySlug ? (
+                <div className="mt-12">
+                  <AgodaStayAreaPanel
+                    destination={AGODA_AREA_CITY_NAMES[article.stayAreaCitySlug]}
+                    offers={buildReviewedAgodaStayAreaOffers(reviewedAgodaAreaRecommendations)}
+                    tripContext={GUIDE_TRIP_CONTEXT}
+                    decisionContext={GUIDE_STAY_DECISION_CONTEXT}
+                  />
+                </div>
+              ) : null}
 
               <section className="mt-12 border-t border-rs-sage-200/70 pt-8">
                 <h2 className="font-rs-display text-3xl font-semibold">Editorial review and sources</h2>
