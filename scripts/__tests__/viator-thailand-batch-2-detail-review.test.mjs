@@ -38,7 +38,19 @@ test('keeps only non-commercial product detail fields in the private detail revi
         end: [{ time: '22:00' }],
       },
       pricingInfo: { pricingType: 'PER_PERSON' },
-      bookingRequirements: { minTravelers: 1 },
+      bookingRequirements: {
+        minTravelersPerBooking: 1,
+        maxTravelersPerBooking: 8,
+        requiresAdultForBooking: true,
+      },
+      cancellationPolicy: {
+        type: 'STANDARD',
+        refundEligibility: 'FULL_REFUND',
+        cancelIfBadWeather: true,
+        cancelIfInsufficientTravelers: false,
+        description: 'Cancel at least 24 hours in advance for a full refund.',
+      },
+      lastUpdatedAt: '2026-08-15T08:00:00Z',
       supplier: { name: 'Not public' },
       reviews: { totalReviews: 100 },
     }), { status: 200 }),
@@ -68,6 +80,19 @@ test('keeps only non-commercial product detail fields in the private detail revi
         startTimes: ['18:00'],
         endTimes: ['22:00'],
       },
+      bookingRequirements: {
+        minTravelersPerBooking: 1,
+        maxTravelersPerBooking: 8,
+        requiresAdultForBooking: true,
+      },
+      cancellationPolicy: {
+        type: 'STANDARD',
+        refundEligibility: 'FULL_REFUND',
+        cancelIfBadWeather: true,
+        cancelIfInsufficientTravelers: false,
+        description: 'Cancel at least 24 hours in advance for a full refund.',
+      },
+      lastUpdatedAt: '2026-08-15T08:00:00Z',
       pendingHumanReviewFields: [
         'childPolicy',
         'ethicalAttributes',
@@ -121,6 +146,19 @@ test('omits unsupported logistics values instead of preserving provider raw fiel
         startTimes: ['18:00'],
         endTimes: ['22:00'],
       },
+      bookingRequirements: {
+        minTravelersPerBooking: null,
+        maxTravelersPerBooking: null,
+        requiresAdultForBooking: null,
+      },
+      cancellationPolicy: {
+        type: null,
+        refundEligibility: null,
+        cancelIfBadWeather: null,
+        cancelIfInsufficientTravelers: null,
+        description: null,
+      },
+      lastUpdatedAt: null,
       pendingHumanReviewFields: [
         'childPolicy',
         'ethicalAttributes',
@@ -212,4 +250,28 @@ test('accepts the expanded title-review pool status without weakening candidate 
 
   assert.equal(result.ok, true)
   assert.equal(result.review.candidateCount, 1)
+})
+
+test('limits a detail-review bundle to explicitly selected title-reviewed product codes', async () => {
+  const secondCandidate = {
+    ...candidate,
+    productCode: '5567417P3',
+    productUrl: 'https://www.viator.com/tours/Bangkok/second-product/d343-5567417P3?pid=P00309837',
+  }
+  const fetchedCodes = []
+  const result = await buildViatorThailandBatch2DetailReview({
+    status: 'title_review_complete_detail_review_pending',
+    candidates: [candidate, secondCandidate],
+  }, {
+    apiKey: 'production-test-key',
+    productCodes: [secondCandidate.productCode],
+    fetchProduct: async (value) => {
+      fetchedCodes.push(value.productCode)
+      return { ok: true, detail: { ...value } }
+    },
+  })
+
+  assert.equal(result.ok, true)
+  assert.equal(result.review.candidateCount, 1)
+  assert.deepEqual(fetchedCodes, ['5567417P3'])
 })

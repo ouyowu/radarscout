@@ -98,6 +98,31 @@ function readSchedule(value) {
   }
 }
 
+function readBookingRequirements(value) {
+  const requirements = asRecord(value)
+  return {
+    minTravelersPerBooking: readInteger(requirements?.minTravelersPerBooking, 100),
+    maxTravelersPerBooking: readInteger(requirements?.maxTravelersPerBooking, 100),
+    requiresAdultForBooking: readBoolean(requirements?.requiresAdultForBooking),
+  }
+}
+
+function readCancellationPolicy(value) {
+  const policy = asRecord(value)
+  return {
+    type: readString(policy?.type, 80),
+    refundEligibility: readString(policy?.refundEligibility, 80),
+    cancelIfBadWeather: readBoolean(policy?.cancelIfBadWeather),
+    cancelIfInsufficientTravelers: readBoolean(policy?.cancelIfInsufficientTravelers),
+    description: readString(policy?.description, 1_000),
+  }
+}
+
+function readLastUpdatedAt(value) {
+  const timestamp = readString(value, 80)
+  return timestamp && Number.isFinite(Date.parse(timestamp)) ? timestamp : null
+}
+
 const pendingHumanReviewFields = [
   'childPolicy',
   'ethicalAttributes',
@@ -156,6 +181,9 @@ function safeDetailFromBody(candidate, body) {
       durationMinutes: readDurationMinutes(product.itinerary),
       pickup: readPickup(product.logistics),
       schedule: readSchedule(product.logistics),
+      bookingRequirements: readBookingRequirements(product.bookingRequirements),
+      cancellationPolicy: readCancellationPolicy(product.cancellationPolicy),
+      lastUpdatedAt: readLastUpdatedAt(product.lastUpdatedAt),
       // Viator does not provide enough stable structured facts to derive these
       // user-facing decisions. Keep them explicitly pending, never inferred.
       pendingHumanReviewFields: [...pendingHumanReviewFields],
@@ -211,6 +239,7 @@ export async function buildViatorThailandBatch2DetailReview(titleReview, {
   apiKey,
   fetchProduct = fetchViatorProductDetailForReview,
   fetchedAt = new Date().toISOString(),
+  productCodes = null,
 } = {}) {
   const review = asRecord(titleReview)
   const candidates = Array.isArray(review?.candidates) ? review.candidates : null
@@ -223,8 +252,14 @@ export async function buildViatorThailandBatch2DetailReview(titleReview, {
   }
   if (!apiKey?.trim()) return { ok: false, reason: 'not_configured' }
 
+  const selectedProductCodes = Array.isArray(productCodes)
+    ? new Set(productCodes.filter((productCode) => typeof productCode === 'string' && productCode.trim() !== ''))
+    : null
   const detailCandidates = []
-  for (const candidate of candidates.filter(isReviewCandidate)) {
+  for (const candidate of candidates.filter((value) => (
+    isReviewCandidate(value)
+    && (!selectedProductCodes || selectedProductCodes.has(value.productCode))
+  ))) {
     const result = await fetchProduct(candidate, { apiKey })
     if (!result.ok) {
       return {
@@ -262,6 +297,9 @@ export async function writeViatorThailandBatch2DetailReview(review, {
 async function main() {
   const inputPath = process.env.VIATOR_BATCH_2_TITLE_REVIEW_INPUT_PATH?.trim() || defaultInputPath
   const outputPath = process.env.VIATOR_BATCH_2_DETAIL_REVIEW_OUTPUT_PATH?.trim() || defaultOutputPath
+  const productCodes = process.env.VIATOR_PRODUCT_CODES?.split(',')
+    .map((productCode) => productCode.trim())
+    .filter(Boolean)
 
   let titleReview
   try {
@@ -274,6 +312,7 @@ async function main() {
 
   const result = await buildViatorThailandBatch2DetailReview(titleReview, {
     apiKey: process.env.VIATOR_PRODUCTION_API_KEY,
+    productCodes,
   })
   if (!result.ok) {
     process.stderr.write(`${JSON.stringify(result)}\n`)
