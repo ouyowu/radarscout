@@ -62,9 +62,11 @@ describe('homepage public copy safety', () => {
     expect(homepageSource).not.toContain('marketplace for every destination')
   })
 
-  it('presents reviewed Viator experiences across Thailand cities without legacy products', () => {
-    expect(homepageSource).toContain("RadarScout's Viator shortlist")
-    expect(homepageSource).toContain('Skip the endless sorting. Start with day tours we have already narrowed down.')
+  it('presents reviewed Viator experiences as a Thailand activity comparison entry without legacy products', () => {
+    expect(homepageSource).toContain('Compare Thailand activities')
+    expect(homepageSource).toContain('Choose the Thailand day tour that fits you best.')
+    expect(homepageSource).toContain('Compare reviewed experiences')
+    expect(homepageSource).toContain("eventProps={{ source: 'homepage_activity_compare' }}")
     expect(homepageFeaturedExperiencesSource).toContain('loadReviewedViatorPublicCatalogue')
     expect(homepageFeaturedExperiencesSource).toContain('listTourDetailSeoCandidates')
     expect(homepageSource).toContain('featuredViatorExperiences')
@@ -219,10 +221,10 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 
-  it('positions RadarScout as a reviewed shortlist instead of an unproven ranking service', () => {
-    expect(homepageSource).toContain('Skip the endless sorting. Start with day tours we have already narrowed down.')
-    expect(homepageSource).toContain('selected for clear destination fit, useful themes, and a verified Viator handoff')
-    expect(homepageSource).toContain('Current price, inclusions, and booking terms are confirmed on Viator.')
+  it('positions RadarScout as a reviewed activity comparison instead of an unproven ranking service', () => {
+    expect(homepageSource).toContain('Compare Thailand activities')
+    expect(homepageSource).toContain('Compare reviewed experiences by destination and travel style')
+    expect(homepageSource).toContain('current product details and terms')
     expect(homepageVisibleCopySources).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 })
