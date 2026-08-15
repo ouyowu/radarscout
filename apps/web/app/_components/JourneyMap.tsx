@@ -24,12 +24,12 @@ type JourneyCity = {
 }
 
 const CITIES: readonly JourneyCity[] = [
-  { name: 'Chiang Mai', known: 'Elephants · Old City vs Nimman', href: '/guides/chiang-mai', x: 34, y: 14, scene: 'mountains' },
-  { name: 'Bangkok', known: 'Canals · Markets · First-time bases', href: '/guides/bangkok', x: 47, y: 40, scene: 'skyline' },
-  { name: 'Pattaya', known: 'Jomtien · Day trips worth the drive', href: '/thailand/bangkok', x: 66, y: 49, scene: 'coast' },
-  { name: 'Koh Samui', known: 'Bophut · Gulf-season timing', href: '/thailand/bangkok', x: 74, y: 66, scene: 'island' },
-  { name: 'Krabi', known: 'Railay · Ao Nang · Island runs', href: '/thailand/phuket', x: 36, y: 70, scene: 'coast' },
-  { name: 'Phuket', known: 'Andaman islands · Kata vs Bang Tao', href: '/guides/phuket', x: 28, y: 86, scene: 'island' },
+  { name: 'Chiang Mai', known: 'Elephants · Old City vs Nimman', href: '/guides/chiang-mai', x: 34, y: 14, scene: 'mountains', photo: '/images/cities/chiang-mai.jpg' },
+  { name: 'Bangkok', known: 'Canals · Markets · First-time bases', href: '/guides/bangkok', x: 47, y: 40, scene: 'skyline', photo: '/images/cities/bangkok.jpg' },
+  { name: 'Pattaya', known: 'Jomtien · Day trips worth the drive', href: '/thailand/bangkok', x: 66, y: 49, scene: 'coast', photo: '/images/cities/pattaya.jpg' },
+  { name: 'Koh Samui', known: 'Bophut · Gulf-season timing', href: '/thailand/bangkok', x: 74, y: 66, scene: 'island', photo: '/images/cities/koh-samui.jpg' },
+  { name: 'Krabi', known: 'Railay · Ao Nang · Island runs', href: '/thailand/phuket', x: 36, y: 70, scene: 'coast', photo: '/images/cities/krabi.jpg' },
+  { name: 'Phuket', known: 'Andaman islands · Kata vs Bang Tao', href: '/guides/phuket', x: 28, y: 86, scene: 'island', photo: '/images/cities/phuket.jpg' },
 ]
 
 const SCENES: Record<CityScene, { from: string; via: string; to: string; art: React.ReactNode }> = {

@@ -13,7 +13,9 @@ import { thailandGuideArticles } from '@/lib/guides/thailandGuides'
  * the file in `public/images/guides/` and map it by slug below.
  */
 const PHOTO_BY_SLUG: Record<string, string> = {
-  // 'old-city-vs-nimman-where-to-stay': '/images/guides/chiang-mai-nimman.jpg',
+  'how-to-choose-an-elephant-sanctuary': '/images/guides/how-to-choose-an-elephant-sanctuary.jpg',
+  'phi-phi-vs-james-bond-island': '/images/guides/phi-phi-vs-james-bond-island.jpg',
+  'best-areas-to-stay-first-time-visitors': '/images/guides/best-areas-to-stay-first-time-visitors.jpg',
 }
 
 const SCENES = [
