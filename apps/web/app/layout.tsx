@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Fraunces, Source_Sans_3 } from 'next/font/google'
+import { Caveat, Fraunces, Source_Sans_3 } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -12,6 +12,14 @@ const fraunces = Fraunces({
 const sourceSans = Source_Sans_3({
   subsets: ['latin'],
   variable: '--font-source-sans-3',
+  display: 'swap',
+})
+
+// Handwriting face for the field-journal accents: the reviewer's own note on a
+// photo, and the one emphasized phrase per headline. Self-hosted by next/font.
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
   display: 'swap',
 })
 
@@ -44,7 +52,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${sourceSans.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${sourceSans.variable} ${caveat.variable}`}>
       <body className="bg-rs-sand-50 font-rs-body text-rs-ink">
         {children}
         <Analytics />

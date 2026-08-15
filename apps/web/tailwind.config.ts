@@ -12,28 +12,34 @@ const config: Config = {
         sans: ['var(--font-source-sans-3)', 'system-ui', 'sans-serif'],
         'rs-display': ['var(--rs-font-display)'],
         'rs-body': ['var(--rs-font-body)'],
+        'rs-script': ['var(--rs-font-script)'],
       },
       colors: {
+        // Channel form so `/opacity` modifiers actually emit a rule; the hex
+        // vars in globals.css remain the source of truth for plain CSS.
         rs: {
-          ink: 'var(--rs-ink)',
+          ink: 'rgb(var(--rs-ink-rgb) / <alpha-value>)',
           forest: {
-            900: 'var(--rs-forest-900)',
-            700: 'var(--rs-forest-700)',
-            500: 'var(--rs-forest-500)',
+            900: 'rgb(var(--rs-forest-900-rgb) / <alpha-value>)',
+            800: 'rgb(var(--rs-forest-800-rgb) / <alpha-value>)',
+            700: 'rgb(var(--rs-forest-700-rgb) / <alpha-value>)',
+            500: 'rgb(var(--rs-forest-500-rgb) / <alpha-value>)',
           },
           sage: {
-            200: 'var(--rs-sage-200)',
+            200: 'rgb(var(--rs-sage-200-rgb) / <alpha-value>)',
+            100: 'rgb(var(--rs-sage-100-rgb) / <alpha-value>)',
           },
           terracotta: {
-            DEFAULT: 'var(--rs-terracotta)',
-            600: 'var(--rs-terracotta-600)',
+            DEFAULT: 'rgb(var(--rs-terracotta-rgb) / <alpha-value>)',
+            600: 'rgb(var(--rs-terracotta-600-rgb) / <alpha-value>)',
           },
           sand: {
-            50: 'var(--rs-sand-50)',
-            100: 'var(--rs-sand-100)',
+            50: 'rgb(var(--rs-sand-50-rgb) / <alpha-value>)',
+            100: 'rgb(var(--rs-sand-100-rgb) / <alpha-value>)',
           },
-          cloud: 'var(--rs-cloud)',
-          muted: 'var(--rs-muted)',
+          cloud: 'rgb(var(--rs-cloud-rgb) / <alpha-value>)',
+          muted: 'rgb(var(--rs-muted-rgb) / <alpha-value>)',
+          gold: 'rgb(var(--rs-gold-rgb) / <alpha-value>)',
         },
       },
       borderRadius: {

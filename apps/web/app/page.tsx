@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { FAQAccordion } from './_components/FAQAccordion'
+import { FieldNotes } from './_components/FieldNotes'
+import { JourneyMap } from './_components/JourneyMap'
 import { JsonLd } from './_components/JsonLd'
 import { PromptHero } from './_components/PromptHero'
 import { PublicSiteShell } from './_components/PublicSiteShell'
@@ -107,6 +109,9 @@ export default function LandingPage() {
             </TrackedLink>
           </div>
         </Section>
+
+        <JourneyMap />
+        <FieldNotes />
 
         <Section
           variant="sand"

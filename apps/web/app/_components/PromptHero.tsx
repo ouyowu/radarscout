@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { track } from '@/lib/analytics/track'
+import { TornEdge } from './design-system'
 import { buildIdeaHref, exampleChips } from './promptHero.helpers'
 
 /**
@@ -36,18 +37,27 @@ export function PromptHero() {
         sizes="100vw"
         className="pointer-events-none -z-30 object-cover object-[62%_center] sm:object-center"
       />
-      <div className="pointer-events-none absolute inset-0 -z-20 bg-black/25" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(7,14,13,0.96)_0%,rgba(7,14,13,0.82)_40%,rgba(7,14,13,0.3)_72%,rgba(7,14,13,0.48)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(5,10,9,0.72)_0%,transparent_42%,rgba(5,10,9,0.18)_100%)]" />
+      {/* Warm brown-black scrims rather than the previous cold green-black: the
+          photograph is a gold sunset, and a cool overlay fought it. Lighter on
+          the right so the temple and the sun stay legible behind the copy. */}
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[#1c110a]/15" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(24,14,8,0.9)_0%,rgba(24,14,8,0.68)_38%,rgba(24,14,8,0.16)_66%,rgba(24,14,8,0.34)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(18,10,6,0.8)_0%,transparent_46%,rgba(18,10,6,0.12)_100%)]" />
+
+      {/* The page is a field journal; the hero photograph is pasted onto it. */}
+      <TornEdge tone="sand" className="absolute inset-x-0 bottom-0 z-10" />
 
       <div className="mx-auto flex w-full max-w-[1240px] items-center px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="w-full max-w-4xl">
-          <p className="inline-flex rounded-rs-pill border border-white/25 bg-black/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#ffd483] shadow-sm backdrop-blur-sm">
+          <p className="inline-flex rounded-rs-pill border border-white/25 bg-black/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#f0c98a] shadow-sm backdrop-blur-sm">
             Curated Viator shortlist · Thailand day trips
           </p>
 
-          <h1 className="mt-7 max-w-4xl text-balance font-rs-display text-[clamp(3rem,7vw,6rem)] font-semibold leading-[0.94] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.38)]">
-            Your Thailand day, <span className="text-[#f9ab00]">planned around you.</span>
+          <h1 className="mt-7 max-w-4xl text-balance font-rs-display text-[clamp(3rem,7vw,6rem)] font-semibold leading-[0.94] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.45)]">
+            Your Thailand day,{' '}
+            <span className="rs-script text-[1.12em] font-medium tracking-[0.01em] text-[#e8a23c]">
+              planned around you.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:text-xl">
@@ -68,11 +78,11 @@ export function PromptHero() {
               value={idea}
               onChange={event => setIdea(event.target.value)}
               placeholder="e.g. Gentle elephant and cooking day in Chiang Mai"
-              className="min-h-[60px] w-full flex-1 rounded-rs-pill border border-white/80 bg-white px-6 text-base font-semibold text-rs-ink shadow-rs-soft outline-none placeholder:text-rs-muted focus:border-[#f9ab00] focus:ring-4 focus:ring-[#f9ab00]/20"
+              className="min-h-[60px] w-full flex-1 rounded-rs-pill border border-white/80 bg-white px-6 text-base font-semibold text-rs-ink shadow-rs-soft outline-none placeholder:text-rs-muted focus:border-[#e8a23c] focus:ring-4 focus:ring-[#e8a23c]/20"
             />
             <button
               type="submit"
-              className="inline-flex min-h-[60px] items-center justify-center rounded-rs-pill bg-[#f9ab00] px-8 text-sm font-bold text-[#18201f] shadow-rs-soft transition hover:bg-[#ffc44d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffd483]"
+              className="inline-flex min-h-[60px] items-center justify-center rounded-rs-pill bg-[#e8a23c] px-8 text-sm font-bold text-[#241a12] shadow-rs-soft transition hover:bg-[#f5bd63] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f0c98a]"
             >
               Plan my trip
             </button>
@@ -85,7 +95,7 @@ export function PromptHero() {
                 key={chip}
                 type="button"
                 onClick={() => go(chip, 'hero_chip')}
-                className="inline-flex min-h-[40px] items-center rounded-rs-pill border border-white/25 bg-black/25 px-4 text-sm font-semibold text-white transition hover:border-[#f9ab00] hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffd483]"
+                className="inline-flex min-h-[40px] items-center rounded-rs-pill border border-white/25 bg-black/25 px-4 text-sm font-semibold text-white transition hover:border-[#e8a23c] hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f0c98a]"
               >
                 {chip}
               </button>

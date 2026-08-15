@@ -1,6 +1,6 @@
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
-html, body { background: #fffaf5; }
+html, body { background: #f0e7d6; }
 
 @tailwind base;
 @tailwind components;
@@ -8,23 +8,51 @@ html, body { background: #fffaf5; }
 
 @layer base {
   :root {
-    /* Warm travel UI: original RadarScout implementation informed by the
-       approved visual audit. The CTA orange comes from the owner-supplied
-       reference image. */
-    --rs-ink: #2d3436;
-    --rs-forest-900: #214f4b;
-    --rs-forest-700: #2a6f66;
-    --rs-forest-500: #2a9d8f;
-    --rs-trust: #2a9d8f;
-    --rs-sage-200: #d9ece8;
-    --rs-terracotta: #f9ab00;
-    --rs-terracotta-600: #e37400;
-    --rs-sand-50: #fffaf5;
-    --rs-sand-100: #fff3ee;
-    --rs-cloud: #ffffff;
-    --rs-muted: #66706f;
+    /* Field-journal palette. The ground is aged paper rather than clinical
+       white, and the accents are sampled from the owner-supplied hero
+       photograph: the ember of the sunset and the gold leaf on the temple
+       roof. Ink and muted are warmed off neutral grey so nothing on the page
+       reads as a different light source than the photograph. */
+    --rs-ink: #241a12;
+    --rs-forest-900: #1b2b26;
+    /* forest-800 and sage-100 were referenced by the guides and planner but
+       never defined, so those utilities generated nothing — planner chat
+       bubbles and chips had been rendering with no fill at all. */
+    --rs-forest-800: #24413a;
+    --rs-forest-700: #2f574e;
+    --rs-forest-500: #3e6b60;
+    --rs-trust: #3e6b60;
+    --rs-sage-200: #d6c9ad;
+    --rs-sage-100: #ece1cc;
+    --rs-terracotta: #c25a2c;
+    --rs-terracotta-600: #a4471f;
+    --rs-gold: #b8912b;
+    --rs-sand-50: #f0e7d6;
+    --rs-sand-100: #e6dac3;
+    --rs-cloud: #faf5ea;
+    --rs-muted: #6b5a46;
+    /* Channel copies of the palette. Tailwind cannot inject an alpha value
+       into a bare var(), so every `/opacity` modifier on an rs- colour was
+       emitting no rule at all and falling back to the default grey border.
+       The utilities are generated from these; the hex vars above stay for
+       direct use in CSS and SVG fills. Keep the two in sync. */
+    --rs-ink-rgb: 36 26 18;
+    --rs-forest-900-rgb: 27 43 38;
+    --rs-forest-800-rgb: 36 65 58;
+    --rs-forest-700-rgb: 47 87 78;
+    --rs-forest-500-rgb: 62 107 96;
+    --rs-sage-200-rgb: 214 201 173;
+    --rs-sage-100-rgb: 236 225 204;
+    --rs-terracotta-rgb: 194 90 44;
+    --rs-terracotta-600-rgb: 164 71 31;
+    --rs-gold-rgb: 184 145 43;
+    --rs-sand-50-rgb: 240 231 214;
+    --rs-sand-100-rgb: 230 218 195;
+    --rs-cloud-rgb: 250 245 234;
+    --rs-muted-rgb: 107 90 70;
     --rs-font-display: var(--font-fraunces), Georgia, Cambria, "Times New Roman", Times, serif;
     --rs-font-body: var(--font-source-sans-3), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --rs-font-script: var(--font-caveat), "Snell Roundhand", "Segoe Script", cursive;
     --rs-space-1: 0.25rem;
     --rs-space-2: 0.5rem;
     --rs-space-3: 0.75rem;
@@ -42,27 +70,27 @@ html, body { background: #fffaf5; }
     --rs-shadow-soft: 0 12px 30px rgba(45, 52, 54, 0.08);
 
     --font-display: var(--rs-font-display);
-    --color-accent-orange: #f9ab00;
-    --color-accent-orange-dark: #e37400;
-    --color-accent-orange-light: #fbc040;
-    --color-accent-orange-pale: #feeabf;
-    --color-bg-primary: #fffaf5;
-    --color-bg-secondary: #fff3ee;
-    --color-bg-muted: #f6eeeb;
-    --color-bg-card: #ffffff;
-    --color-bg-dark: #214f4b;
-    --color-text-primary: #2d3436;
-    --color-text-secondary: #566260;
-    --color-text-muted: #7a8583;
-    --color-text-inverse: #ffffff;
-    --color-border-light: #f0e5e2;
-    --color-border-medium: #dfd0cc;
-    --color-live-inventory: #2a9d8f;
-    --color-coming-soon: #e37400;
-    --color-ai-feature: #2a9d8f;
+    --color-accent-orange: #c25a2c;
+    --color-accent-orange-dark: #a4471f;
+    --color-accent-orange-light: #d9713c;
+    --color-accent-orange-pale: #ecd9bf;
+    --color-bg-primary: #f0e7d6;
+    --color-bg-secondary: #e6dac3;
+    --color-bg-muted: #ddd0b6;
+    --color-bg-card: #faf5ea;
+    --color-bg-dark: #1b2b26;
+    --color-text-primary: #241a12;
+    --color-text-secondary: #4a3c2e;
+    --color-text-muted: #6b5a46;
+    --color-text-inverse: #faf5ea;
+    --color-border-light: #e2d5bb;
+    --color-border-medium: #cbb894;
+    --color-live-inventory: #3e6b60;
+    --color-coming-soon: #a4471f;
+    --color-ai-feature: #3e6b60;
     --font-body: var(--rs-font-body);
     --font-heading: var(--rs-font-display);
-    --font-script: var(--rs-font-display);
+    --font-script: var(--rs-font-script);
   }
 
   h1,
@@ -82,6 +110,49 @@ html, body { background: #fffaf5; }
 
 /* Prevent layout shift on font load */
 body { font-family: var(--rs-font-body); }
+
+/* ── Field-journal surface treatments ─────────────────────────────── */
+
+/* Paper grain. Applied as a multiply overlay so it darkens the tooth of the
+   stock without tinting it. Decorative only — never sits above content. */
+.rs-paper { position: relative; }
+.rs-paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The reviewer's own handwriting: one emphasized phrase per headline, and the
+   note pinned under a photograph. Script faces sit high in their em box. */
+.rs-script {
+  font-family: var(--rs-font-script);
+  font-weight: 500;
+  display: inline-block;
+  transform: translateY(0.05em);
+}
+
+/* Prints laid onto the page by hand sit slightly off-square. The angle comes
+   from grid position so a row of cards varies instead of marching in step; it
+   straightens on hover so reading is never done at an angle. */
+.rs-polaroid { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease; }
+.rs-polaroid:nth-child(3n + 1) { transform: rotate(-0.7deg); }
+.rs-polaroid:nth-child(3n + 2) { transform: rotate(0.5deg); }
+.rs-polaroid:nth-child(3n + 3) { transform: rotate(-0.35deg); }
+.rs-polaroid:hover,
+.rs-polaroid:focus-within { transform: rotate(0deg) translateY(-4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-polaroid,
+  .rs-polaroid:nth-child(3n + 1),
+  .rs-polaroid:nth-child(3n + 2),
+  .rs-polaroid:nth-child(3n + 3),
+  .rs-polaroid:hover,
+  .rs-polaroid:focus-within { transform: none; }
+}
 
 /* ── Ambient blob drift ───────────────────────────────────────────── */
 @keyframes blob-drift {
