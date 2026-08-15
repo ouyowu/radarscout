@@ -67,7 +67,7 @@ export function MapLibreDayMap({
       const bounds = new maplibre.LngLatBounds()
       stops.forEach((stop, index) => {
         bounds.extend([stop.lng, stop.lat])
-        new maplibre.Marker({ color: '#f9ab00' })
+        new maplibre.Marker({ color: '#c25a2c' })
           .setLngLat([stop.lng, stop.lat])
           .setPopup(new maplibre.Popup({ offset: 18 }).setText(`${index + 1}. ${stop.name}`))
           .addTo(map!)

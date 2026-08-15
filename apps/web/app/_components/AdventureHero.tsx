@@ -33,7 +33,7 @@ export function AdventureHero({
   trustNote,
 }: AdventureHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#fffaf5_0%,#fff3ee_70%,#feeabf_150%)] px-4 py-14 text-rs-ink sm:px-6 lg:px-8 lg:py-20">
+    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#f0e7d6_0%,#fff3ee_70%,#ecd9bf_150%)] px-4 py-14 text-rs-ink sm:px-6 lg:px-8 lg:py-20">
       <div className="absolute -right-20 top-10 h-72 w-72 rounded-full bg-rs-trust/10 blur-3xl" />
       <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
         <div>
@@ -80,7 +80,7 @@ export function AdventureHero({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={imageUrl} alt={imageAlt} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full items-end bg-[linear-gradient(135deg,#feeabf,#fff3ee_55%,#2a9d8f)] p-8">
+            <div className="flex h-full items-end bg-[linear-gradient(135deg,#ecd9bf,#fff3ee_55%,#3e6b60)] p-8">
               <p className="max-w-sm font-rs-display text-4xl font-semibold leading-none text-rs-ink">
                 Curated local experiences, not endless listings.
               </p>

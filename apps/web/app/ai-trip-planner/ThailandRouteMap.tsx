@@ -58,14 +58,14 @@ export function ThailandRouteMap({ itinerary }: ThailandRouteMapProps) {
           ))}
           {model.stops.map(stop => (
             <g key={stop.city}>
-              <circle cx={stop.x} cy={stop.y} r="11" fill="#f9ab00" opacity="0.24" />
-              <circle cx={stop.x} cy={stop.y} r="6.5" fill="#f9ab00" stroke="#ffffff" strokeWidth="2" />
+              <circle cx={stop.x} cy={stop.y} r="11" fill="#c25a2c" opacity="0.24" />
+              <circle cx={stop.x} cy={stop.y} r="6.5" fill="#c25a2c" stroke="#ffffff" strokeWidth="2" />
               <text
                 x={stop.x + 12}
                 y={stop.y + 4}
                 fontSize="13"
                 fontWeight="700"
-                fill="#2d3436"
+                fill="#241a12"
               >
                 {stop.city}
               </text>

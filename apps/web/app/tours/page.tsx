@@ -197,7 +197,7 @@ export default async function ToursExperienceDiscoveryPage({ searchParams }: Tou
   return (
     <PublicSiteShell>
       <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
-        <section className="border-b border-[var(--color-border-light)] bg-[linear-gradient(135deg,#fffaf5_0%,#fff3ee_75%,#feeabf_155%)] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <section className="border-b border-[var(--color-border-light)] bg-[linear-gradient(135deg,#f0e7d6_0%,#fff3ee_75%,#ecd9bf_155%)] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="mx-auto grid max-w-[1240px] gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rs-forest-500">Thailand day trips</p>

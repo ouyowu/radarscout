@@ -12,6 +12,7 @@ const config: Config = {
         sans: ['var(--font-source-sans-3)', 'system-ui', 'sans-serif'],
         'rs-display': ['var(--rs-font-display)'],
         'rs-body': ['var(--rs-font-body)'],
+        'rs-script': ['var(--rs-font-script)'],
       },
       colors: {
         rs: {
@@ -34,6 +35,7 @@ const config: Config = {
           },
           cloud: 'var(--rs-cloud)',
           muted: 'var(--rs-muted)',
+          gold: 'var(--rs-gold)',
         },
       },
       borderRadius: {
