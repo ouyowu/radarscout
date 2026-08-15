@@ -75,9 +75,9 @@ export default function LandingPage() {
 
         <Section
           variant="cloud"
-          eyebrow="RadarScout's Viator shortlist"
-          title="Skip the endless sorting. Start with day tours we have already narrowed down."
-          lead="Each experience is selected for clear destination fit, useful themes, and a verified Viator handoff. Current price, inclusions, and booking terms are confirmed on Viator."
+          eyebrow="Compare Thailand activities"
+          title="Choose the Thailand day tour that fits you best."
+          lead="Compare reviewed experiences by destination and travel style before continuing to Viator for current product details and terms."
         >
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {featuredViatorExperiences.map(product => (
@@ -100,10 +100,10 @@ export default function LandingPage() {
             <TrackedLink
               href="/tours"
               event="homepage_finder_entry_clicked"
-              eventProps={{ source: 'featured_experiences' }}
+              eventProps={{ source: 'homepage_activity_compare' }}
               className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-rs-forest-500 bg-white px-6 text-sm font-semibold uppercase tracking-[0.12em] text-rs-forest-700 transition hover:bg-rs-sand-100"
             >
-              Browse experiences
+              Compare reviewed experiences
             </TrackedLink>
           </div>
         </Section>
