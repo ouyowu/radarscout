@@ -4,6 +4,7 @@ import React from 'react'
 import type { MouseEventHandler, ReactNode } from 'react'
 import { track } from '@/lib/analytics/track'
 import type { SafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
+import type { RecommendationReasonCode } from '@/lib/ai-trip/recommendation-signals'
 import {
   buildPartnerHandoffAnalyticsProps,
   createPartnerHandoffRecord,
@@ -15,7 +16,8 @@ type TrackedBookingPartnerHandoffProps = {
   rel: 'nofollow sponsored noopener noreferrer'
   productId: string
   source: 'ai-trip-planner' | 'tour-detail'
-  placement: 'tour_detail_primary' | 'tour_detail_sticky'
+  placement: 'tour_detail_primary' | 'tour_detail_sticky' | 'tour_detail_compare'
+  reasonCode?: RecommendationReasonCode
   city: string
   hasDates: SafeAffiliateAnalyticsContext['hasDates']
   hasGroupSize: SafeAffiliateAnalyticsContext['hasGroupSize']
@@ -31,6 +33,7 @@ export function TrackedBookingPartnerHandoff({
   productId,
   source,
   placement,
+  reasonCode,
   city,
   hasDates,
   hasGroupSize,
@@ -49,6 +52,7 @@ export function TrackedBookingPartnerHandoff({
     destination: city,
     productId,
     recommendationSource: source,
+    reasonCode,
     // The server-rendered product page only passes handoffs that already passed
     // validatePublicBookingPartnerHandoff.
     trustedPublicHandoff: true,
