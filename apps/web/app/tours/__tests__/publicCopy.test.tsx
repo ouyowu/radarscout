@@ -74,8 +74,8 @@ describe('tour public copy safety', () => {
 
     expect((markup.match(/Review details before partner handoff/g) ?? [])).toHaveLength(12)
     expect(markup).toContain('/tours/viator_')
-    expect(markup).toContain('205 reviewed experiences')
-    expect(markup).toContain('Page 1 of 18')
+    expect(markup).toContain('253 reviewed experiences')
+    expect(markup).toContain('Page 1 of 22')
     expect(markup).toContain('aria-label="Next catalogue page"')
     expect(markup).toContain('page=2')
     expect(markup).not.toContain('Price not listed')
