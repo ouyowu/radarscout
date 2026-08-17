@@ -12,7 +12,8 @@ const cardSource = readFileSync(join(process.cwd(), 'app', 'tours', '[id]', 'AiA
 
 describe('tour detail AI Answer Card', () => {
   it('embeds the reviewed machine-readable card and keeps unknown facts explicit', () => {
-    expect(pageSource).toContain('loadActivityFeedV1().find(item => item.id === product.id)')
+    expect(pageSource).toContain('const activityFeed = loadActivityFeedV1()')
+    expect(pageSource).toContain('activityFeed.find(item => item.id === product.id)')
     expect(pageSource).toContain('<AiAnswerCard card={aiAnswerCard} />')
 
     const card = loadActivityFeedV1()[0]

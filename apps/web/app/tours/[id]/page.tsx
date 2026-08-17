@@ -14,7 +14,9 @@ import {
 import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
 import { parseSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 import { loadActivityFeedV1 } from '@/lib/activityFeed/activityFeedV1'
+import { selectDetailComparisonCandidates } from '@/lib/activityFeed/detailComparison'
 import { AiAnswerCard } from './AiAnswerCard'
+import { DetailComparisonBlock } from './DetailComparisonBlock'
 
 export const dynamic = 'force-dynamic'
 
@@ -299,7 +301,11 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
   const { product } = result
   const rows = factRows(product.facts)
   const location = productLocation(product)
-  const aiAnswerCard = loadActivityFeedV1().find(item => item.id === product.id) ?? null
+  const activityFeed = loadActivityFeedV1()
+  const aiAnswerCard = activityFeed.find(item => item.id === product.id) ?? null
+  const comparisonCandidates = aiAnswerCard
+    ? selectDetailComparisonCandidates(aiAnswerCard, activityFeed)
+    : []
 
   return (
     <PublicSiteShell>
@@ -375,6 +381,13 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           />
         )}
       </Section>
+
+      {aiAnswerCard ? (
+        <DetailComparisonBlock
+          primary={aiAnswerCard}
+          candidates={comparisonCandidates}
+        />
+      ) : null}
 
       <Section variant="sand" className="pt-8" contentClassName="max-w-[1240px]">
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-start">
