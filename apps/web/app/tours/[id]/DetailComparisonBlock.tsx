@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import type { ActivityFeedV1Item } from '@/lib/activityFeed/activityFeedV1'
 import type { DetailComparisonCandidate } from '@/lib/activityFeed/detailComparison'
+import { selectReviewedActivityOffer } from '@/lib/activityFeed/activityOfferSelection'
 import { Card } from '@/app/_components/design-system'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 
@@ -67,7 +68,10 @@ export function DetailComparisonBlock({ primary, candidates }: DetailComparisonB
         </div>
 
         <div className="mt-7 grid gap-5 lg:grid-cols-2">
-          {candidates.map(({ item, sharedThemes }) => (
+          {candidates.map(({ item, sharedThemes }) => {
+            const offer = selectReviewedActivityOffer(item)
+
+            return (
             <Card key={item.id} className="flex flex-col p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -101,25 +105,28 @@ export function DetailComparisonBlock({ primary, candidates }: DetailComparisonB
                 >
                   Compare details
                 </Link>
-                <TrackedBookingPartnerHandoff
-                  href={item.partnerHandoff.url}
-                  rel="nofollow sponsored noopener noreferrer"
-                  productId={item.id}
-                  source="tour-detail"
-                  placement="tour_detail_compare"
-                  reasonCode="theme_match"
-                  city={item.destination.city}
-                  hasDates={false}
-                  hasGroupSize={false}
-                  hasOccupancy={false}
-                  travelerType="unspecified"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-                >
-                  {item.partnerHandoff.label}
-                </TrackedBookingPartnerHandoff>
+                {offer ? (
+                  <TrackedBookingPartnerHandoff
+                    href={offer.deeplink}
+                    rel="nofollow sponsored noopener noreferrer"
+                    productId={item.id}
+                    source="tour-detail"
+                    placement="tour_detail_compare"
+                    reasonCode="theme_match"
+                    city={item.destination.city}
+                    hasDates={false}
+                    hasGroupSize={false}
+                    hasOccupancy={false}
+                    travelerType="unspecified"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+                  >
+                    {item.partnerHandoff.label}
+                  </TrackedBookingPartnerHandoff>
+                ) : null}
               </div>
             </Card>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
