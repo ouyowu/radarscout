@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AdventureHero } from '../_components/AdventureHero'
 import { DmcTrustBar } from '../_components/DmcTrustBar'
+import { SiteOperatorImprint } from './SiteOperatorImprint'
 
 export const metadata: Metadata = {
   title: 'About RadarScout | Thailand Day-Trip Decision Support',
@@ -124,6 +125,7 @@ export default function AboutUsPage() {
           </article>
         </div>
       </section>
+      <SiteOperatorImprint />
     </main>
   )
 }
