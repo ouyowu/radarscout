@@ -18,6 +18,7 @@ export type PartnerHandoffPlacement = AffiliatePlacement
   | 'tour_detail_primary'
   | 'tour_detail_sticky'
   | 'tour_detail_compare'
+  | 'post_handoff_next_step'
 
 export type PartnerAttributionSource =
   | `${AffiliateProvider | 'viator'}_affiliate`

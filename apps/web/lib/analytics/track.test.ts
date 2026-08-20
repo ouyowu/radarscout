@@ -115,6 +115,30 @@ describe('track', () => {
     expect(first).not.toHaveProperty('email')
   })
 
+  it('keeps the post-handoff placement in the server beacon allowlist', async () => {
+    const fakeWindow = {} as Window
+    const sendBeacon = vi.fn(() => true)
+    vi.stubGlobal('window', fakeWindow)
+    vi.stubGlobal('navigator', { sendBeacon })
+
+    track('booking_partner_handoff_clicked', {
+      provider: 'viator',
+      placement: 'post_handoff_next_step',
+      city: 'Chiang Mai',
+      productId: 'viator_123p1',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'theme_match',
+    })
+
+    const [, body] = sendBeacon.mock.calls[0] as unknown as [string, Blob]
+    expect(JSON.parse(await body.text())).toMatchObject({
+      placement: 'post_handoff_next_step',
+      productId: 'viator_123p1',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'theme_match',
+    })
+  })
+
   it('keeps analytics and handoff callers safe when the event beacon fails', () => {
     const fakeWindow = {} as Window
     const sendBeacon = vi.fn(() => {

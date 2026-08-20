@@ -113,4 +113,31 @@ describe('TrackedBookingPartnerHandoff', () => {
       expect.objectContaining({ href }),
     )
   })
+
+  it('records the next-step placement and reveals the local recommendation panel through its callback', () => {
+    const onTrackedClick = vi.fn()
+    const element = TrackedBookingPartnerHandoff({
+      href: 'https://www.viator.com/tours/Chiang-Mai/Reviewed-Day-Trip/d5267-12345P1?pid=P00309837&mcid=42383&medium=link',
+      rel: 'nofollow sponsored noopener noreferrer',
+      productId: 'viator_12345p1',
+      source: 'tour-detail',
+      placement: 'post_handoff_next_step',
+      reasonCode: 'theme_match',
+      city: 'Chiang Mai',
+      hasDates: false,
+      hasGroupSize: false,
+      hasOccupancy: false,
+      travelerType: 'unspecified',
+      onTrackedClick,
+      children: 'Check availability',
+    }) as ReactElement<{ onClick: () => void }>
+
+    element.props.onClick()
+
+    expect(track).toHaveBeenLastCalledWith('booking_partner_handoff_clicked', expect.objectContaining({
+      placement: 'post_handoff_next_step',
+      reasonCode: 'theme_match',
+    }))
+    expect(onTrackedClick).toHaveBeenCalledTimes(1)
+  })
 })
