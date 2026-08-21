@@ -16,7 +16,7 @@ type TrackedBookingPartnerHandoffProps = {
   rel: 'nofollow sponsored noopener noreferrer'
   productId: string
   source: 'ai-trip-planner' | 'tour-detail'
-  placement: 'tour_detail_primary' | 'tour_detail_sticky' | 'tour_detail_compare'
+  placement: 'tour_detail_primary' | 'tour_detail_sticky' | 'tour_detail_compare' | 'post_handoff_next_step'
   reasonCode?: RecommendationReasonCode
   city: string
   hasDates: SafeAffiliateAnalyticsContext['hasDates']
@@ -24,6 +24,7 @@ type TrackedBookingPartnerHandoffProps = {
   hasOccupancy: SafeAffiliateAnalyticsContext['hasOccupancy']
   travelerType: SafeAffiliateAnalyticsContext['travelerType']
   className?: string
+  onTrackedClick?: () => void
   children: ReactNode
 }
 
@@ -40,6 +41,7 @@ export function TrackedBookingPartnerHandoff({
   hasOccupancy,
   travelerType,
   className,
+  onTrackedClick,
   children,
 }: TrackedBookingPartnerHandoffProps) {
   const provider = resolveReviewedBookingHandoffProvider(href)
@@ -70,6 +72,7 @@ export function TrackedBookingPartnerHandoff({
     track('booking_partner_handoff_clicked', {
       ...buildPartnerHandoffAnalyticsProps(handoff),
     })
+    onTrackedClick?.()
   }
 
   return (

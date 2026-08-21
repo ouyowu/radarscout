@@ -122,6 +122,26 @@ describe('partnerHandoff', () => {
     })
   })
 
+  it('allows post-handoff next-step attribution without retaining the outbound URL', () => {
+    const record = createPartnerHandoffRecord({
+      href: 'https://www.viator.com/tours/Chiang-Mai/example/d5267-123P1?pid=P00309837',
+      provider: 'viator',
+      placement: 'post_handoff_next_step',
+      destination: 'Chiang Mai',
+      productId: 'viator_123p1',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'theme_match',
+    })
+
+    expect(buildPartnerHandoffAnalyticsProps(record!)).toMatchObject({
+      placement: 'post_handoff_next_step',
+      productId: 'viator_123p1',
+      recommendationSource: 'tour-detail',
+      reasonCode: 'theme_match',
+    })
+    expect(buildPartnerHandoffAnalyticsProps(record!)).not.toHaveProperty('href')
+  })
+
   it('keeps a reviewed recommendation id while excluding the handoff URL', () => {
     const record = createPartnerHandoffRecord({
       href: 'https://widgets.bokun.io/online-sales/channel/experience/1232729',
