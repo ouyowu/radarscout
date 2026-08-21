@@ -33,8 +33,8 @@ const guideSources = [
 describe('Thailand travel guides editorial catalogue', () => {
   it('publishes the reviewed original guide catalogue for approved cities', () => {
     expect(guideCitySlugs).toEqual(['bangkok', 'chiang-mai', 'phuket'])
-    expect(thailandGuideArticles).toHaveLength(10)
-    expect(thailandGuideArticles.filter(article => article.citySlug === 'chiang-mai')).toHaveLength(4)
+    expect(thailandGuideArticles).toHaveLength(11)
+    expect(thailandGuideArticles.filter(article => article.citySlug === 'chiang-mai')).toHaveLength(5)
     expect(thailandGuideArticles.filter(article => article.citySlug === 'bangkok')).toHaveLength(3)
     expect(thailandGuideArticles.filter(article => article.citySlug === 'phuket')).toHaveLength(3)
 
@@ -47,6 +47,7 @@ describe('Thailand travel guides editorial catalogue', () => {
         'old-city-vs-nimman-where-to-stay',
         'private-vs-shared-island-tour',
         'best-elephant-sanctuary-for-kids',
+        'doi-inthanon-vs-elephant-sanctuary',
       ]),
     )
 
