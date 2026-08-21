@@ -13,6 +13,7 @@ import {
   getThailandGuideArticle,
   thailandGuideArticles,
 } from '@/lib/guides/thailandGuides'
+import { buildRadarScoutOrganization } from '@/lib/seo/radarscoutEntity'
 
 // A guide reader has no planner session, so there is no confirmed trip context
 // to pass on. Everything stays null and the Agoda link degrades to an area
@@ -102,12 +103,7 @@ export default function ThailandGuideArticlePage({ params }: { params: { city: s
   const articleSchema = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${base}/#organization`,
-        name: 'RadarScout',
-        url: base,
-      },
+      buildRadarScoutOrganization(),
       {
         '@type': 'Article',
         '@id': `${article.canonicalUrl}#article`,

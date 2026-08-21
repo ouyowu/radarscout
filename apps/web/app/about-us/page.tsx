@@ -2,6 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AdventureHero } from '../_components/AdventureHero'
 import { DmcTrustBar } from '../_components/DmcTrustBar'
+import { JsonLd } from '../_components/JsonLd'
+import {
+  RADARSCOUT_BRAND_DESCRIPTION,
+  buildRadarScoutOrganization,
+} from '@/lib/seo/radarscoutEntity'
 
 export const metadata: Metadata = {
   title: 'About RadarScout | Thailand Day-Trip Decision Support',
@@ -37,6 +42,12 @@ const recommendationPrinciples = [
 export default function AboutUsPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [buildRadarScoutOrganization()],
+        }}
+      />
       <AdventureHero
         eyebrow="Thailand-focused decision support"
         title="Thailand trip decisions should feel clearer—not more crowded."
@@ -60,6 +71,9 @@ export default function AboutUsPage() {
               Better guidance before another marketplace page.
             </h2>
             <p className="mt-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
+              {RADARSCOUT_BRAND_DESCRIPTION}
+            </p>
+            <p className="mt-4 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
               Travelers can already find thousands of Thailand activities. The harder job is deciding which kind of day makes sense, which option fits the group, and what must be checked before committing. RadarScout focuses on that decision.
             </p>
           </div>

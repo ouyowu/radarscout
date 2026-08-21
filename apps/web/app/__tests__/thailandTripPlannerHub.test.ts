@@ -49,7 +49,7 @@ describe('Thailand trip planner SEO hub', () => {
   it('publishes WebPage and breadcrumb semantics without invented product offers', () => {
     expect(hubSource).toContain("'@type': 'WebPage'")
     expect(hubSource).toContain("'@type': 'BreadcrumbList'")
-    expect(hubSource).toContain("'@type': 'Organization'")
+    expect(hubSource).toContain('buildRadarScoutOrganization()')
     expect(hubSource).toContain('dateModified: editorialUpdatedAt')
     expect(hubSource).toContain("author: { '@id': `${base}/#organization` }")
     expect(hubSource).toContain("publisher: { '@id': `${base}/#organization` }")
