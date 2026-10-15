@@ -9,7 +9,7 @@ describe('deterministic product recommendation signals', () => {
   it('creates complete safe signals for every reviewed Viator product', () => {
     const products = loadReviewedViatorProducts()
 
-    expect(products).toHaveLength(205)
+    expect(products).toHaveLength(253)
 
     for (const product of products) {
       const signals = buildProductRecommendationSignals(product, {

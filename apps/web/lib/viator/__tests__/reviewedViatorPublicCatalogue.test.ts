@@ -10,7 +10,7 @@ describe('reviewedViatorPublicCatalogue', () => {
   it('exposes all reviewed Viator products through one display-safe public shape', () => {
     const products = loadReviewedViatorPublicCatalogue()
 
-    expect(products).toHaveLength(205)
+    expect(products).toHaveLength(253)
 
     for (const product of products) {
       expect(product.id).toMatch(/^viator_/)
@@ -51,15 +51,15 @@ describe('reviewedViatorPublicCatalogue', () => {
 
   it('paginates the complete reviewed catalogue without duplicates or omissions', () => {
     const products = loadReviewedViatorPublicCatalogue()
-    const pages = Array.from({ length: 18 }, (_, index) => (
+    const pages = Array.from({ length: 22 }, (_, index) => (
       paginateReviewedViatorPublicCatalogue(products, index + 1, 12)
     ))
     const productIds = pages.flatMap((page) => page.items.map((product) => product.id))
 
-    expect(pages[0]).toMatchObject({ page: 1, pageSize: 12, totalItems: 205, totalPages: 18 })
-    expect(pages[17].items).toHaveLength(1)
-    expect(productIds).toHaveLength(205)
-    expect(new Set(productIds).size).toBe(205)
-    expect(paginateReviewedViatorPublicCatalogue(products, 99, 12).page).toBe(18)
+    expect(pages[0]).toMatchObject({ page: 1, pageSize: 12, totalItems: 253, totalPages: 22 })
+    expect(pages[21].items).toHaveLength(1)
+    expect(productIds).toHaveLength(253)
+    expect(new Set(productIds).size).toBe(253)
+    expect(paginateReviewedViatorPublicCatalogue(products, 99, 12).page).toBe(22)
   })
 })

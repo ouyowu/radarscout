@@ -31,10 +31,10 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
       availabilityEnabled: false,
       count: 12,
       resultCount: 12,
-      totalCount: 205,
+      totalCount: 253,
       page: 1,
       pageSize: 12,
-      totalPages: 18,
+      totalPages: 22,
     })
 
     for (const product of body.products) {
@@ -61,12 +61,12 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
     const response = await GET(makeRequest({ city: 'ko-pha-ngan', take: '50' }))
     const body = await response.json()
 
-    expect(body.products).toHaveLength(2)
+    expect(body.products).toHaveLength(6)
     expect(body.products.every((product: { destination: string }) => (
       product.destination === 'Ko Pha Ngan'
     ))).toBe(true)
     expect(body.meta.filters.city).toBe('ko-pha-ngan')
-    expect(body.meta.totalCount).toBe(2)
+    expect(body.meta.totalCount).toBe(6)
   })
 
   it('paginates the complete reviewed catalogue deterministically', async () => {
@@ -78,7 +78,7 @@ describe('GET /api/products — reviewed Viator public catalogue', () => {
     const secondIds = secondBody.products.map((product: { id: string }) => product.id)
 
     expect(secondBody.meta.page).toBe(2)
-    expect(secondBody.meta.totalCount).toBe(205)
+    expect(secondBody.meta.totalCount).toBe(253)
     expect(secondBody.products).toHaveLength(12)
     expect(firstIds.some((id: string) => secondIds.includes(id))).toBe(false)
   })
