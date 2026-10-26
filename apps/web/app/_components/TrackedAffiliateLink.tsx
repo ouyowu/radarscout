@@ -9,6 +9,7 @@ import {
   createPartnerHandoffRecord,
 } from '@/lib/affiliates/partnerHandoff'
 import { track } from '@/lib/analytics/track'
+import { writeTravelerMemory } from '@/lib/memory/travelerMemory'
 
 type TrackedAffiliateLinkProps = {
   href: string
@@ -42,10 +43,13 @@ export function TrackedAffiliateLink({
 
   if (!handoff) return null
 
+  const clickedCategory = provider === 'agoda' ? 'accommodation' : 'activities'
+
   const handleClick: MouseEventHandler<HTMLAnchorElement> = () => {
     track('affiliate_partner_handoff_clicked', {
       ...buildPartnerHandoffAnalyticsProps(handoff),
     })
+    writeTravelerMemory({ clickedCategories: [clickedCategory] })
   }
 
   return (

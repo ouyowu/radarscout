@@ -30,6 +30,7 @@ import {
   writeAnonymousTripMemory,
   type AnonymousTripMemory,
 } from './anonymousTripMemory'
+import { useTravelerMemory } from '@/lib/memory/travelerMemory'
 import { track } from '@/lib/analytics/track'
 
 type StudioMessage = {
@@ -143,6 +144,7 @@ export function PlannerStudio({
   const [travelerType, setTravelerType] = useState<TravelerType>('unspecified')
   const [rememberTripPreferences, setRememberTripPreferences] = useState(false)
   const [savedTripMemory, setSavedTripMemory] = useState<AnonymousTripMemory | null>(null)
+  const { recordDestination } = useTravelerMemory()
   const conversationEndRef = useRef<HTMLDivElement | null>(null)
   // Guards the one-time auto-run of a homepage-provided idea so it fires once.
   const autoRanInitialIdeaRef = useRef(false)
@@ -205,6 +207,8 @@ export function PlannerStudio({
     } catch {
       // Browser storage is optional; planning remains available when it is blocked.
     }
+
+    if (response.intent.destination) recordDestination(response.intent.destination)
   }
 
   async function runSearch(parts: string[]) {
