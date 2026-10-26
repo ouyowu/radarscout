@@ -27,6 +27,9 @@ export const publicFooterGroups = [
     links: [
       { href: '/privacy-policy', label: 'Privacy' },
       { href: '/terms-of-service', label: 'Terms' },
+      // Partner programmes require the legal notice to be reachable from any
+      // page, so it sits in the footer rather than only inside About.
+      { href: '/about-us#operator', label: 'Legal notice' },
     ],
   },
 ] as const
