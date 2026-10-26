@@ -19,7 +19,12 @@ import {
  * sends the reader to where the reasoning — and the booking handoff — lives.
  */
 export type ThailandAnswer = {
-  slug: string
+  /**
+   * The guide's href. A slug alone is not unique — several cities publish a
+   * `where-to-stay` guide — so identity comes from the path, which is unique
+   * by construction.
+   */
+  id: string
   question: string
   answer: string
   cityName: string
@@ -46,7 +51,7 @@ export function buildThailandAnswers(
   guides: readonly ThailandGuideArticle[] = thailandGuideArticles,
 ): ThailandAnswer[] {
   return guides.filter(isAnswerable).map(guide => ({
-    slug: guide.slug,
+    id: guide.href,
     question: guide.title,
     answer: guide.quickAnswer,
     cityName: guide.cityName,
