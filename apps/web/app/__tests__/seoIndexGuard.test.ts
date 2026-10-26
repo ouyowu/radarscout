@@ -46,6 +46,9 @@ const CURRENT_INDEXABLE_SITEMAP_URLS = [
   `${BASE}/thailand/bangkok`,
   `${BASE}/thailand/chiang-mai`,
   `${BASE}/thailand/phuket`,
+  // The answers hub republishes reviewed guide verdicts as a FAQPage; opened
+  // to indexing deliberately with the hub, not inherited from the guides.
+  `${BASE}/answers`,
   `${BASE}/guides`,
   `${BASE}/guides/bangkok`,
   `${BASE}/guides/chiang-mai`,

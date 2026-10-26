@@ -8,6 +8,7 @@ const routes = [
   ['/thailand/bangkok', 'weekly', 0.8],
   ['/thailand/chiang-mai', 'weekly', 0.8],
   ['/thailand/phuket', 'weekly', 0.8],
+  ['/answers', 'weekly', 0.8],
   ['/guides', 'weekly', 0.8],
   ['/guides/bangkok', 'weekly', 0.7],
   ['/guides/chiang-mai', 'weekly', 0.7],
