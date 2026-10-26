@@ -1,8 +1,18 @@
 import type { AgodaAreaCitySlug } from '../affiliates/agodaAreaRecommendations'
+import { buildStayAreaGuideDrafts } from './stayAreaGuides'
 
 const BASE = 'https://www.radarscout.io'
 
-export const guideCitySlugs = ['bangkok', 'chiang-mai', 'phuket'] as const
+// Pattaya, Krabi and Koh Samui carry stay-area guides composed from reviewed
+// neighbourhood records rather than hand-written articles; see stayAreaGuides.
+export const guideCitySlugs = [
+  'bangkok',
+  'chiang-mai',
+  'phuket',
+  'pattaya',
+  'krabi',
+  'koh-samui',
+] as const
 
 export type GuideCitySlug = (typeof guideCitySlugs)[number]
 
@@ -83,6 +93,36 @@ export const thailandGuideCities: Record<GuideCitySlug, ThailandGuideCity> = {
     intro:
       'In Phuket, the headline island is only part of the decision. These guides compare route character, boat time, transfer burden, and who will actually enjoy the day.',
     plannerHref: '/planner?idea=Phuket%203%20days%20islands%20snorkeling%20culture',
+  },
+  pattaya: {
+    slug: 'pattaya',
+    name: 'Pattaya',
+    title: 'Pattaya Travel Guides',
+    description:
+      'Pattaya planning guides for choosing a base, comparing beach districts, and judging how far you want to be from the centre.',
+    intro:
+      'Pattaya districts differ more than the single city name suggests. These guides compare the trade-offs that matter before you book a base.',
+    plannerHref: '/planner?idea=Pattaya%203%20days%20beaches%20and%20day%20trips',
+  },
+  krabi: {
+    slug: 'krabi',
+    name: 'Krabi',
+    title: 'Krabi Travel Guides',
+    description:
+      'Krabi planning guides for choosing between the mainland beach towns, the boat-access bays, and a town base.',
+    intro:
+      'Krabi bases trade access against quiet. These guides compare what each one gives you and what it asks in return.',
+    plannerHref: '/planner?idea=Krabi%203%20days%20islands%20and%20beaches',
+  },
+  'koh-samui': {
+    slug: 'koh-samui',
+    name: 'Koh Samui',
+    title: 'Koh Samui Travel Guides',
+    description:
+      'Koh Samui planning guides for choosing a beach base and understanding how busy or quiet each one runs.',
+    intro:
+      'Samui beaches differ in pace more than in scenery. These guides compare the trade-offs before you pick a side of the island.',
+    plannerHref: '/planner?idea=Koh%20Samui%204%20days%20beaches%20and%20island%20time',
   },
 }
 
@@ -887,7 +927,10 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
   },
 ]
 
-export const thailandGuideArticles: readonly ThailandGuideArticle[] = articleDrafts.map(article => {
+export const thailandGuideArticles: readonly ThailandGuideArticle[] = [
+  ...articleDrafts,
+  ...buildStayAreaGuideDrafts(),
+].map(article => {
   const href = `/guides/${article.citySlug}/${article.slug}`
   return { ...article, href, canonicalUrl: `${BASE}${href}` }
 })

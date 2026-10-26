@@ -32,8 +32,17 @@ const guideSources = [
 
 describe('Thailand travel guides editorial catalogue', () => {
   it('publishes the reviewed original guide catalogue for approved cities', () => {
-    expect(guideCitySlugs).toEqual(['bangkok', 'chiang-mai', 'phuket'])
-    expect(thailandGuideArticles).toHaveLength(10)
+    expect(guideCitySlugs).toEqual([
+      'bangkok',
+      'chiang-mai',
+      'phuket',
+      'pattaya',
+      'krabi',
+      'koh-samui',
+    ])
+    // Ten hand-written guides plus one composed stay-area guide for each of
+    // Pattaya, Krabi and Koh Samui.
+    expect(thailandGuideArticles).toHaveLength(13)
     expect(thailandGuideArticles.filter(article => article.citySlug === 'chiang-mai')).toHaveLength(4)
     expect(thailandGuideArticles.filter(article => article.citySlug === 'bangkok')).toHaveLength(3)
     expect(thailandGuideArticles.filter(article => article.citySlug === 'phuket')).toHaveLength(3)
@@ -109,11 +118,15 @@ describe('Thailand travel guides editorial catalogue', () => {
     const stayGuides = thailandGuideArticles.filter(article => article.stayAreaCitySlug)
     const otherGuides = thailandGuideArticles.filter(article => !article.stayAreaCitySlug)
 
-    // The two stay-area decision guides are the ones whose reader is choosing
-    // where to book, so they carry the accommodation handoff.
-    expect(stayGuides.map(article => article.slug).sort()).toEqual([
-      'best-areas-to-stay-first-time-visitors',
-      'old-city-vs-nimman-where-to-stay',
+    // Stay-area decision guides are the ones whose reader is choosing where to
+    // book, so they carry the accommodation handoff. Slugs repeat across
+    // cities, so these are pinned by path.
+    expect(stayGuides.map(article => article.href).sort()).toEqual([
+      '/guides/bangkok/best-areas-to-stay-first-time-visitors',
+      '/guides/chiang-mai/old-city-vs-nimman-where-to-stay',
+      '/guides/koh-samui/where-to-stay',
+      '/guides/krabi/where-to-stay',
+      '/guides/pattaya/where-to-stay',
     ])
 
     // Each flagged guide must point at a city that actually has reviewed areas,
