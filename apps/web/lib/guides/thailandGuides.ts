@@ -885,6 +885,85 @@ const articleDrafts: readonly Omit<ThailandGuideArticle, 'href' | 'canonicalUrl'
     publishedAt: '2026-08-11',
     updatedAt: '2026-08-11',
   },
+  {
+    citySlug: 'chiang-mai',
+    cityName: 'Chiang Mai',
+    slug: 'doi-inthanon-vs-elephant-sanctuary',
+    title: 'Doi Inthanon vs an Elephant Experience: Which Chiang Mai Day Fits You?',
+    seoTitle: 'Doi Inthanon vs Elephant Experience in Chiang Mai | RadarScout',
+    description:
+      'Choose between a Doi Inthanon mountain day and a Chiang Mai elephant experience by comparing transfer burden, physical pace, weather exposure, family fit, and the details to confirm before booking.',
+    eyebrow: 'Chiang Mai day-trip decision',
+    quickAnswer:
+      'Choose Doi Inthanon when waterfalls, mountain scenery, and a full outdoor day are the priority. Choose an elephant experience when your group wants a clearer care-focused visit with a pace and contact level that can be checked in advance. The better option is the one whose transfer, walking, weather exposure, and return time fit your group.',
+    bestFor: [
+      'First-time Chiang Mai visitors with one open full-day slot',
+      'Families deciding between a scenery-led day and an animal-care experience',
+      'Travelers who want to compare practical fit before browsing individual partner listings',
+    ],
+    notIdealFor: [
+      'Travelers who plan to fit both long rural days into an already packed short stay',
+      'Groups that have not checked heat, rain, walking, or road-time tolerance',
+      'Anyone expecting either category to guarantee the same pickup or activity format',
+    ],
+    sections: [
+      {
+        heading: 'These days solve different travel goals',
+        paragraphs: [
+          'Doi Inthanon is a mountain-day decision: the appeal is scenery, waterfalls, altitude, and time outdoors. The experience is shaped by the road journey, the weather, the walking conditions, and the sequence of stops as much as by any one viewpoint.',
+          'An elephant experience is a care-and-contact decision: the important questions are the stated interaction rules, guide support, pickup burden, physical setting, and whether the pace is right for the least mobile person in your group. The word sanctuary alone does not answer those questions.',
+        ],
+      },
+      {
+        heading: 'Compare the physical day, not only the headline',
+        paragraphs: [
+          'Both choices can be full rural days, but the effort is distributed differently. A mountain itinerary can involve road time, changes in temperature, uneven ground, rain, and multiple short stops. An elephant experience can involve heat, mud, slopes, standing, changing facilities, and a different kind of outdoor exposure.',
+          'For children, older travelers, or anyone who prefers a gentler day, use the least mobile person as the decision-maker. A program that sounds exciting may still be the wrong fit if the group cannot comfortably manage the transport or physical setting.',
+        ],
+        checklist: [
+          'How much shared pickup and road time is described for your hotel area?',
+          'What walking, weather, clothing, and changing conditions should the group expect?',
+          'Can your group keep the evening flexible after the expected return?',
+        ],
+      },
+      {
+        heading: 'Use the weather and trip rhythm as a tie-breaker',
+        paragraphs: [
+          'Choose a mountain day when the group wants scenery and can accept a longer outdoor route. Choose an elephant experience when the group wants to focus on one care-oriented visit and can first confirm the stated interaction boundaries and daily rhythm.',
+          'Do not try to make both choices fit into consecutive days simply because they are famous. A balanced Chiang Mai stay often keeps one substantial out-of-town day, one lighter old-city or food-focused day, and one flexible window for rest or weather changes.',
+        ],
+      },
+      {
+        heading: 'Make the final decision only after checking the live partner details',
+        paragraphs: [
+          'RadarScout compares reviewed public product fields and stable traveler trade-offs. It does not promise current price, availability, operator practices, or weather conditions. Those details belong on the partner page and should be checked immediately before you continue.',
+          'For Doi Inthanon, confirm pickup, itinerary stops, walking expectations, weather policy, and return time. For an elephant experience, confirm the current contact rules, child guidance, pickup coverage, physical conditions, and what is explicitly included. If the answer to a priority question is unclear, keep it unresolved rather than guessing.',
+        ],
+        checklist: [
+          'Doi Inthanon: route, road time, walking, weather, and return window.',
+          'Elephant experience: visitor rules, group rhythm, child fit, and transfer burden.',
+          'Partner handoff: current product details, terms, and final transaction information.',
+        ],
+      },
+    ],
+    takeaway:
+      'Choose the Chiang Mai day whose real-world rhythm suits your group. Mountain scenery and an elephant experience are both strong options, but they ask different things of the same limited day.',
+    plannerHref: '/planner?idea=Chiang%20Mai%203%20days%20nature%20family%20easy%20pace',
+    plannerLabel: 'Plan a realistic Chiang Mai day',
+    officialSources: [
+      {
+        label: 'Tourism Authority of Thailand: Doi Inthanon National Park',
+        href: 'https://www.tourismthailand.org/Attraction/doi-inthanon-national-park',
+      },
+      {
+        label: 'Tourism Authority of Thailand: Chiang Mai destination overview',
+        href: 'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Mai/101',
+      },
+    ],
+    ...sharedEditorial,
+    publishedAt: '2026-08-19',
+    updatedAt: '2026-08-19',
+  },
 ]
 
 export const thailandGuideArticles: readonly ThailandGuideArticle[] = articleDrafts.map(article => {
