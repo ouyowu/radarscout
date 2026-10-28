@@ -59,9 +59,11 @@ const APPROVED_PLACEMENTS = new Set([
   'multi_city_transport',
   'planner_day_workspace',
   'planner_filtered_matches',
+  'post_handoff_next_step',
   'pre_departure',
   'tour_detail_primary',
   'tour_detail_sticky',
+  'tour_detail_compare',
 ])
 
 const APPROVED_CITIES = new Set([
