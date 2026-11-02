@@ -12,6 +12,7 @@ import {
   isCityHubSlug,
   type CityHubSlug,
 } from '../cityHubContent'
+import { groupAnswersByCity } from '@/lib/qa/thailandAnswers'
 
 const base = 'https://www.radarscout.io'
 const editorialUpdatedAt = '2026-08-02'
@@ -102,6 +103,9 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
   if (!isCityHubSlug(params.city)) notFound()
 
   const city = cityHubContent[params.city]
+  const hasCityAnswers = groupAnswersByCity().some(
+    group => group.citySlug === params.city && group.answers.length > 0,
+  )
   const products = loadReviewedViatorPublicCatalogue({ city: city.catalogueCity }).slice(0, 6)
   const plannerHref = `/planner?idea=${encodeURIComponent(city.plannerIdea)}`
 
@@ -153,6 +157,12 @@ export default function ThailandCityHubPage({ params }: { params: { city: string
                     className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-white/40 px-7 text-sm font-bold uppercase tracking-[0.1em] text-white transition hover:bg-white/10"
                   >
                     Read {city.name} guides
+                  </Link>
+                  <Link
+                    href={hasCityAnswers ? `/answers#${params.city}` : '/answers'}
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-rs-pill border border-white/40 px-7 text-sm font-bold uppercase tracking-[0.1em] text-white transition hover:bg-white/10"
+                  >
+                    Quick answers for {city.name}
                   </Link>
                   {params.city === 'phuket' ? (
                     <Link

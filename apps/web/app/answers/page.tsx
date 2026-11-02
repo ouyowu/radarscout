@@ -59,6 +59,20 @@ export default function ThailandAnswersPage() {
                 {thailandAnswers.length} answers · reviewed through {reviewedThrough}
               </p>
             ) : null}
+
+            {grouped.length > 0 ? (
+              <nav aria-label="Jump to city" className="mt-8 flex flex-wrap gap-3">
+                {grouped.map(group => (
+                  <a
+                    key={group.citySlug}
+                    href={`#${group.citySlug}`}
+                    className="rounded-rs-pill border border-white/40 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                  >
+                    {group.cityName} ({group.answers.length})
+                  </a>
+                ))}
+              </nav>
+            ) : null}
           </div>
 
           <TornEdge tone="sand" className="absolute inset-x-0 bottom-0" />
@@ -72,8 +86,16 @@ export default function ThailandAnswersPage() {
           ) : (
             <div className="mx-auto max-w-[46rem] space-y-14">
               {grouped.map(group => (
-                <section key={group.cityName}>
-                  <h2 className="font-rs-display text-[clamp(1.9rem,3.6vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-rs-ink">
+                <section
+                  key={group.citySlug}
+                  id={group.citySlug}
+                  aria-labelledby={`${group.citySlug}-heading`}
+                  className="scroll-mt-24"
+                >
+                  <h2
+                    id={`${group.citySlug}-heading`}
+                    className="font-rs-display text-[clamp(1.9rem,3.6vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-rs-ink"
+                  >
                     {group.cityName}
                   </h2>
 

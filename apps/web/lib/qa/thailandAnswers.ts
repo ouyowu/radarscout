@@ -1,5 +1,6 @@
 import {
   thailandGuideArticles,
+  type GuideCitySlug,
   type ThailandGuideArticle,
 } from '../guides/thailandGuides'
 
@@ -23,6 +24,7 @@ export type ThailandAnswer = {
   question: string
   answer: string
   cityName: string
+  citySlug: GuideCitySlug
   /** The reviewed guide this answer was taken from. */
   sourceHref: string
   reviewedBy: string
@@ -50,6 +52,7 @@ export function buildThailandAnswers(
     question: guide.title,
     answer: guide.quickAnswer,
     cityName: guide.cityName,
+    citySlug: guide.citySlug,
     sourceHref: guide.href,
     reviewedBy: guide.reviewedBy,
     updatedAt: guide.updatedAt,
@@ -58,20 +61,21 @@ export function buildThailandAnswers(
 
 export const thailandAnswers: readonly ThailandAnswer[] = buildThailandAnswers()
 
-/** Answers grouped by city, cities in the order they first appear. */
+/** Answers grouped by city, cities in the order they first appear. Cities with no answers are omitted. */
 export function groupAnswersByCity(
   answers: readonly ThailandAnswer[] = thailandAnswers,
-): { cityName: string; answers: ThailandAnswer[] }[] {
-  const byCity = new Map<string, ThailandAnswer[]>()
+): { citySlug: GuideCitySlug; cityName: string; answers: ThailandAnswer[] }[] {
+  const byCity = new Map<GuideCitySlug, ThailandAnswer[]>()
 
   for (const answer of answers) {
-    const existing = byCity.get(answer.cityName)
+    const existing = byCity.get(answer.citySlug)
     if (existing) existing.push(answer)
-    else byCity.set(answer.cityName, [answer])
+    else byCity.set(answer.citySlug, [answer])
   }
 
-  return [...byCity.entries()].map(([cityName, cityAnswers]) => ({
-    cityName,
+  return [...byCity.values()].map(cityAnswers => ({
+    citySlug: cityAnswers[0].citySlug,
+    cityName: cityAnswers[0].cityName,
     answers: cityAnswers,
   }))
 }
