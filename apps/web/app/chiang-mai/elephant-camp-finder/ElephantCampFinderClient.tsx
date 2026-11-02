@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { track } from '@/lib/analytics/track'
 import {
   buildPartnerHandoffAnalyticsProps,
@@ -420,29 +421,32 @@ function RecommendationCard({ recommendation }: { recommendation: ElephantFinder
 
       <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
         {recommendation.externalHandoff ? (
-          <a
-            href={recommendation.ctaHref}
-            rel={recommendation.linkRel}
-            target="_blank"
-            onClick={() => {
-              const provider = resolveReviewedBookingHandoffProvider(recommendation.ctaHref)
-              if (!provider) return
-              const handoff = createPartnerHandoffRecord({
-                href: recommendation.ctaHref,
-                provider,
-                placement: 'planner_filtered_matches',
-                destination: 'Chiang Mai',
-                recommendationId: recommendation.recommendationId,
-                recommendationSource: 'planner',
-              })
-              if (handoff) {
-                track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
-              }
-            }}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
-          >
-            {recommendation.ctaLabel}
-          </a>
+          <div>
+            <a
+              href={recommendation.ctaHref}
+              rel={recommendation.linkRel}
+              target="_blank"
+              onClick={() => {
+                const provider = resolveReviewedBookingHandoffProvider(recommendation.ctaHref)
+                if (!provider) return
+                const handoff = createPartnerHandoffRecord({
+                  href: recommendation.ctaHref,
+                  provider,
+                  placement: 'planner_filtered_matches',
+                  destination: 'Chiang Mai',
+                  recommendationId: recommendation.recommendationId,
+                  recommendationSource: 'planner',
+                })
+                if (handoff) {
+                  track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                }
+              }}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59]"
+            >
+              {recommendation.ctaLabel}
+            </a>
+            <AffiliateNote />
+          </div>
         ) : (
           <Link
             href={recommendation.ctaHref}

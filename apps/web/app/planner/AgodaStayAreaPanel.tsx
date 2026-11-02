@@ -7,6 +7,7 @@ import type {
 } from '@/lib/affiliates/agodaStayAreaOffers'
 import { buildAgodaStayAreaDecisions } from '@/lib/affiliates/agodaStayAreaOffers'
 import { addAgodaTripContextToHref } from '@/lib/affiliates/agodaTripContext'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { TrackedAffiliateLink } from '../_components/TrackedAffiliateLink'
 import type { AffiliateTripContext } from '@/lib/affiliates/affiliateTripContext'
 
@@ -85,6 +86,7 @@ export function AgodaStayAreaPanel({ destination, offers, tripContext, decisionC
             >
               Search Agoda stays
             </TrackedAffiliateLink>
+            <AffiliateNote />
           </article>
         ))}
       </div>
