@@ -4,6 +4,7 @@ import { AdventureHero } from '@/app/_components/AdventureHero'
 import { DmcTrustBar } from '@/app/_components/DmcTrustBar'
 import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
+import { JsonLd } from '@/app/_components/JsonLd'
 import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
 import { Button, Card, DecisionGuide, Section } from '@/app/_components/design-system'
 import { AffiliateNote } from '@/components/AffiliateNote'
@@ -13,6 +14,7 @@ import {
   loadPublicThailandProductDetail,
 } from '@/lib/publicProducts/getPublicThailandProduct'
 import { getTourDetailRobots } from '@/lib/publicProducts/tourDetailSeoCandidates'
+import { buildTourDetailJsonLd } from '@/lib/publicProducts/tourDetailJsonLd'
 import { parseSafeAffiliateAnalyticsContext } from '@/lib/affiliates/affiliateTripContext'
 import { loadActivityFeedV1 } from '@/lib/activityFeed/activityFeedV1'
 import { selectDetailComparisonCandidates } from '@/lib/activityFeed/detailComparison'
@@ -300,6 +302,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
   }
 
   const { product } = result
+  const tourJsonLd = buildTourDetailJsonLd(product)
   const rows = factRows(product.facts)
   const location = productLocation(product)
   const activityFeed = loadActivityFeedV1()
@@ -310,6 +313,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
 
   return (
     <PublicSiteShell className={product.bookingPartnerHandoff ? 'pb-28 md:pb-0' : undefined}>
+      {tourJsonLd ? <JsonLd data={tourJsonLd} /> : null}
       <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
       <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
