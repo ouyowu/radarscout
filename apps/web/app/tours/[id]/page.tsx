@@ -309,8 +309,8 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
     : []
 
   return (
-    <PublicSiteShell>
-      <main className={`min-h-screen bg-rs-sand-50 text-rs-ink ${product.bookingPartnerHandoff ? 'pb-20 md:pb-0' : ''}`}>
+    <PublicSiteShell className={product.bookingPartnerHandoff ? 'pb-28 md:pb-0' : undefined}>
+      <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
       <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
@@ -458,7 +458,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                   >
                     {product.bookingPartnerHandoff.label}
                   </TrackedBookingPartnerHandoff>
-                  <AffiliateNote />
+                  <AffiliateNote className="text-white/70" />
                 </>
               ) : null}
               {product.bookingPartnerHandoff ? (
@@ -553,7 +553,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           >
             {product.bookingPartnerHandoff.label}
           </TrackedBookingPartnerHandoff>
-          <AffiliateNote />
+          <AffiliateNote compact />
         </div>
       ) : null}
     </PublicSiteShell>

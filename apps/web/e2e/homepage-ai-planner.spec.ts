@@ -24,6 +24,7 @@ function visibleCopyWithoutApprovedDisclosure(pageText: string) {
   return pageText
     .replace(/if you book through them, we may earn a commission at no extra cost to you\./gi, '')
     .replace(/we may earn a commission if you book through this link, at no extra cost to you\./gi, '')
+    .replace(/we may earn a commission\. how we make money/gi, '')
 }
 
 const homepagePromptSearchResponse = {

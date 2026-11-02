@@ -44,6 +44,7 @@ export const FORBIDDEN_INTERNAL_BOKUN_PUBLIC_PATTERNS = [
 const APPROVED_AFFILIATE_DISCLOSURE_COPY = [
   'If you book through them, we may earn a commission at no extra cost to you.',
   'We may earn a commission if you book through this link, at no extra cost to you.',
+  'We may earn a commission. How we make money',
   'If you book, the partner may pay us a commission. Your price is the same.',
 ]
 
