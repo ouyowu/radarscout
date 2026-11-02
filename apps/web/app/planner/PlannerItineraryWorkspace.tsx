@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { DayTripItinerary } from '@/lib/ai-trip/itinerary-contract'
 import type { AiProductContextItem } from '@/lib/aiProducts/buildAiProductContext'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { track } from '@/lib/analytics/track'
 import { buildGetYourGuideCityGuideOffer } from '@/lib/affiliates/affiliatePartners'
 import {
@@ -260,18 +261,21 @@ export function PlannerItineraryWorkspace({
                     Review product details
                   </Link>
                   {selectedHandoff ? (
-                    <a
-                      href={selectedHandoff.href}
-                      target="_blank"
-                      rel="nofollow sponsored noopener noreferrer"
-                      onClick={() => track(
-                        'booking_partner_handoff_clicked',
-                        buildPartnerHandoffAnalyticsProps(selectedHandoff),
-                      )}
-                      className="inline-flex min-h-[48px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-                    >
-                      Check availability
-                    </a>
+                    <div>
+                      <a
+                        href={selectedHandoff.href}
+                        target="_blank"
+                        rel="nofollow sponsored noopener noreferrer"
+                        onClick={() => track(
+                          'booking_partner_handoff_clicked',
+                          buildPartnerHandoffAnalyticsProps(selectedHandoff),
+                        )}
+                        className="inline-flex min-h-[48px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+                      >
+                        Check availability
+                      </a>
+                      <AffiliateNote />
+                    </div>
                   ) : null}
                 </div>
                 <p className="mt-3 text-xs font-semibold leading-5 text-rs-muted">
@@ -401,6 +405,7 @@ export function PlannerItineraryWorkspace({
                           Check availability
                         </a>
                       ) : null}
+                      {handoff ? <AffiliateNote /> : null}
                     </div>
                   </div>
                 </article>

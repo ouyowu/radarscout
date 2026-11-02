@@ -17,6 +17,7 @@ import { TripIntentSummary } from './TripIntentSummary'
 import { AiSearchProductCard, buildAiTripPlannerDetailHref } from './AiSearchProductCard'
 import type { AiTripSearchResponse } from '../api/ai-trip/search/route'
 import { buildProductFitReason, buildResultFitSummary, orderCityEntriesBySourceText } from './resultFitSummary'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { track } from '@/lib/analytics/track'
 import {
   buildPartnerHandoffAnalyticsProps,
@@ -589,35 +590,42 @@ export function IntentParserDemo() {
                         Start with <span className="font-black text-[#101820]">{searchState.products[0].title}</span>, then compare the remaining cards below.
                       </p>
                       {topProduct ? (
-                        <a
-                          href={topProductHasExternalHandoff && topProduct.ctaHref
-                            ? topProduct.ctaHref
-                            : buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id, searchSafeTripContext)}
-                          target={topProductHasExternalHandoff ? '_blank' : undefined}
-                          rel={topProductHasExternalHandoff ? topProduct.ctaRel ?? 'nofollow sponsored noopener noreferrer' : undefined}
-                          aria-label={topProductHasExternalHandoff
-                            ? `Check availability for top match ${topProduct.title} with the booking partner`
-                            : buildAiTripTopMatchDetailAriaLabel(topProduct.title)}
-                          onClick={topProductHasExternalHandoff
-                            ? () => {
-                              const handoff = createPartnerHandoffRecord({
-                                href: topProduct.ctaHref ?? '',
-                                provider: 'viator',
-                                placement: 'planner_filtered_matches',
-                                destination: topProduct.city ?? searchDestination,
-                                productId: topProduct.id,
-                                recommendationSource: 'ai-trip-planner',
-                                safeIntent: searchSafeTripContext,
-                              })
-                              if (handoff) {
-                                track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
-                              }
-                            }
-                            : undefined}
-                          className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
-                        >
-                          {topProductHasExternalHandoff ? 'Check availability' : 'Open top match details'}
-                        </a>
+                        topProductHasExternalHandoff ? (
+                          <div>
+                            <a
+                              href={topProduct.ctaHref ?? undefined}
+                              target="_blank"
+                              rel={topProduct.ctaRel ?? 'nofollow sponsored noopener noreferrer'}
+                              aria-label={`Check availability for top match ${topProduct.title} with the booking partner`}
+                              onClick={() => {
+                                const handoff = createPartnerHandoffRecord({
+                                  href: topProduct.ctaHref ?? '',
+                                  provider: 'viator',
+                                  placement: 'planner_filtered_matches',
+                                  destination: topProduct.city ?? searchDestination,
+                                  productId: topProduct.id,
+                                  recommendationSource: 'ai-trip-planner',
+                                  safeIntent: searchSafeTripContext,
+                                })
+                                if (handoff) {
+                                  track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                                }
+                              }}
+                              className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
+                            >
+                              Check availability
+                            </a>
+                            <AffiliateNote />
+                          </div>
+                        ) : (
+                          <a
+                            href={buildAiTripPlannerDetailHref(topProduct.detailHref, topProduct.id, searchSafeTripContext)}
+                            aria-label={buildAiTripTopMatchDetailAriaLabel(topProduct.title)}
+                            className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-full bg-[#101820] px-5 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:bg-[#1e2d59] sm:w-auto"
+                          >
+                            Open top match details
+                          </a>
+                        )
                       ) : null}
                       <a
                         href="#ai-trip-comparison-results"

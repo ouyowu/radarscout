@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { track } from '@/lib/analytics/track'
 import {
   buildPartnerHandoffAnalyticsProps,
@@ -230,33 +231,36 @@ export function PhuketIslandDaySelectorClient({ products }: PhuketIslandDaySelec
                       >
                         Review details
                       </Link>
-                      <a
-                        href={match.product.bookingPartnerHandoff.href}
-                        target="_blank"
-                        rel={match.product.bookingPartnerHandoff.rel}
-                        onClick={() => {
-                          const handoff = createPartnerHandoffRecord({
-                            href: match.product.bookingPartnerHandoff.href,
-                            provider: 'viator',
-                            placement: 'planner_filtered_matches',
-                            destination: 'Phuket',
-                            productId: match.product.id,
-                            recommendationSource: 'planner',
-                            safeIntent: {
-                              hasDates: false,
-                              hasGroupSize: false,
-                              hasOccupancy: false,
-                              travelerType: 'unspecified',
-                            },
-                          })
-                          if (handoff) {
-                            track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
-                          }
-                        }}
-                        className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-black text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-                      >
-                        Check availability
-                      </a>
+                      <div className="flex-1">
+                        <a
+                          href={match.product.bookingPartnerHandoff.href}
+                          target="_blank"
+                          rel={match.product.bookingPartnerHandoff.rel}
+                          onClick={() => {
+                            const handoff = createPartnerHandoffRecord({
+                              href: match.product.bookingPartnerHandoff.href,
+                              provider: 'viator',
+                              placement: 'planner_filtered_matches',
+                              destination: 'Phuket',
+                              productId: match.product.id,
+                              recommendationSource: 'planner',
+                              safeIntent: {
+                                hasDates: false,
+                                hasGroupSize: false,
+                                hasOccupancy: false,
+                                travelerType: 'unspecified',
+                              },
+                            })
+                            if (handoff) {
+                              track('booking_partner_handoff_clicked', buildPartnerHandoffAnalyticsProps(handoff))
+                            }
+                          }}
+                          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-black text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+                        >
+                          Check availability
+                        </a>
+                        <AffiliateNote />
+                      </div>
                     </div>
                   </div>
                 </div>

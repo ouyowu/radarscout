@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { track } from '@/lib/analytics/track'
 import {
   buildPartnerHandoffAnalyticsProps,
@@ -195,6 +196,7 @@ export function ItineraryWorkspace({ template, products, publicMapToken }: Itine
                   >
                     Check availability
                   </a>
+                  <AffiliateNote />
                   <p className="mt-2 text-center text-xs font-semibold text-rs-muted">Opens Viator for current product details.</p>
                 </div>
               </article>

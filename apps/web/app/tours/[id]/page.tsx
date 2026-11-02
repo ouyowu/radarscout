@@ -6,6 +6,7 @@ import { EditorialBanner } from '@/app/_components/EditorialBanner'
 import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
 import { Button, Card, DecisionGuide, Section } from '@/app/_components/design-system'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 import {
   getPublicThailandProduct,
@@ -444,18 +445,21 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                 Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
               {product.bookingPartnerHandoff ? (
-                <TrackedBookingPartnerHandoff
-                  href={product.bookingPartnerHandoff.href}
-                  rel={product.bookingPartnerHandoff.rel}
-                  productId={product.id}
-                  source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
-                  placement="tour_detail_primary"
-                  city={location}
-                  {...safeTripContext}
-                  className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
-                >
-                  {product.bookingPartnerHandoff.label}
-                </TrackedBookingPartnerHandoff>
+                <>
+                  <TrackedBookingPartnerHandoff
+                    href={product.bookingPartnerHandoff.href}
+                    rel={product.bookingPartnerHandoff.rel}
+                    productId={product.id}
+                    source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
+                    placement="tour_detail_primary"
+                    city={location}
+                    {...safeTripContext}
+                    className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
+                  >
+                    {product.bookingPartnerHandoff.label}
+                  </TrackedBookingPartnerHandoff>
+                  <AffiliateNote />
+                </>
               ) : null}
               {product.bookingPartnerHandoff ? (
                 <p className="mt-3 text-xs font-semibold leading-6 text-white/65">
@@ -549,6 +553,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           >
             {product.bookingPartnerHandoff.label}
           </TrackedBookingPartnerHandoff>
+          <AffiliateNote />
         </div>
       ) : null}
     </PublicSiteShell>

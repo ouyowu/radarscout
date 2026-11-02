@@ -39,6 +39,9 @@ export function SiteFooter() {
           © {new Date().getFullYear()} RadarScout
         </p>
       </div>
+      <p className="mx-auto mt-8 max-w-7xl text-sm leading-6 text-rs-muted">
+        Affiliate disclosure: Some links on RadarScout go to partners such as Viator and Agoda. If you book through them, we may earn a commission at no extra cost to you. It never changes which experiences we recommend or how we rank them.
+      </p>
     </footer>
   )
 }
