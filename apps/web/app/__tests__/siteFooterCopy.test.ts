@@ -26,6 +26,8 @@ describe('SiteFooter public copy safety', () => {
     expect(siteFooterSource).toContain(
       'Affiliate disclosure: Some links on RadarScout go to partners such as Viator and Agoda. If you book through them, we may earn a commission at no extra cost to you. It never changes which experiences we recommend or how we rank them.',
     )
+    expect(siteFooterSource).toContain('href="/affiliate-disclosure"')
+    expect(siteFooterSource).toContain('How we make money')
     expect(
       siteFooterSource.replace(
         'If you book through them, we may earn a commission at no extra cost to you.',

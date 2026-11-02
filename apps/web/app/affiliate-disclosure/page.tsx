@@ -24,7 +24,10 @@ export default function AffiliateDisclosurePage() {
             1. Affiliate links. Experience links go to Viator and stay links go to Agoda. If you book, the partner may pay us a commission. Your price is the same.
           </p>
           <p>
-            3. How we choose. Every experience we recommend has been reviewed by a named person on our team. The reviewer&apos;s name and review date are shown on the page.
+            2. How we choose. Every experience we recommend has been reviewed. The page shows the latest review date.
+          </p>
+          <p>
+            The partner website handles product details, availability, booking, purchase, confirmation, changes, and cancellations.
           </p>
         </div>
       </article>
