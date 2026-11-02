@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Affiliate Disclosure | RadarScout',
-  description: 'How RadarScout uses clearly marked affiliate links and evaluates travel partners.',
+  description: 'How RadarScout makes money from Viator and Agoda affiliate links, without selling tours or taking payment.',
   robots: { index: false, follow: true },
 }
 
@@ -14,17 +14,20 @@ export default function AffiliateDisclosurePage() {
           Transparency
         </p>
         <h1 className="mt-3 font-[var(--font-heading)] text-5xl font-black tracking-[-0.04em]">
-          Affiliate disclosure
+          How RadarScout makes money
         </h1>
         <div className="mt-7 space-y-5 text-base font-semibold leading-8 text-[var(--color-text-secondary)]">
           <p>
-            RadarScout may receive referral earnings when you follow a clearly marked affiliate link and complete an eligible purchase on the partner website. This does not add a fee to your booking.
+            RadarScout is free to use. We don&apos;t sell tours, hold inventory, take payment, or confirm bookings. When you choose an option, we send you to the partner to book.
           </p>
           <p>
-            RadarScout helps with trip fit and comparison. The partner website handles product details, availability, booking, purchase, confirmation, changes, and cancellations.
+            1. Affiliate links. Experience links go to Viator and stay links go to Agoda. If you book, the partner may pay us a commission. Your price is the same.
           </p>
           <p>
-            Partner placement is evaluated using traveler usefulness and measured performance, including revenue per 100 eligible page visits, earnings per click, conversion rate, and cancellation rate. A higher advertised referral percentage does not automatically win.
+            2. How we choose. Every experience we recommend has been reviewed. The page shows the latest review date.
+          </p>
+          <p>
+            The partner website handles product details, availability, booking, purchase, confirmation, changes, and cancellations.
           </p>
         </div>
       </article>

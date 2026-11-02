@@ -20,6 +20,13 @@ const forbiddenVisibleCopy = [
   'fake ratings',
 ]
 
+function visibleCopyWithoutApprovedDisclosure(pageText: string) {
+  return pageText
+    .replace(/if you book through them, we may earn a commission at no extra cost to you\./gi, '')
+    .replace(/we may earn a commission if you book through this link, at no extra cost to you\./gi, '')
+    .replace(/we may earn a commission\. how we make money/gi, '')
+}
+
 const homepagePromptSearchResponse = {
   status: 'ok',
   intent: { destination: 'Chiang Mai', days: null, interests: ['elephants'] },
@@ -94,7 +101,7 @@ test.describe('Homepage Trip Planner entry', () => {
       await expect(page.getByRole('button', { name: chip })).toBeVisible()
     }
 
-    const pageText = await page.locator('body').innerText()
+    const pageText = visibleCopyWithoutApprovedDisclosure(await page.locator('body').innerText())
     for (const term of forbiddenVisibleCopy) {
       expect(pageText.toLowerCase(), `Found forbidden homepage term: "${term}"`).not.toContain(term.toLowerCase())
     }
@@ -169,7 +176,7 @@ test.describe('Homepage Trip Planner entry', () => {
     await expect(page.getByText(/Found 3 reviewed Thailand experiences/)).toBeVisible()
     expect(searchRequestCount).toBe(1)
 
-    const pageText = await page.locator('body').innerText()
+    const pageText = visibleCopyWithoutApprovedDisclosure(await page.locator('body').innerText())
     for (const term of forbiddenVisibleCopy) {
       expect(pageText.toLowerCase(), `Found forbidden homepage results term: "${term}"`).not.toContain(term.toLowerCase())
     }
@@ -242,7 +249,7 @@ test.describe('Homepage Trip Planner entry', () => {
     })).toBeVisible()
     await expect(page.locator('#planner-studio-input')).toBeVisible()
 
-    const pageText = await page.locator('body').innerText()
+    const pageText = visibleCopyWithoutApprovedDisclosure(await page.locator('body').innerText())
     for (const term of forbiddenVisibleCopy) {
       expect(pageText.toLowerCase(), `Found forbidden Thailand planner CTA term: "${term}"`).not.toContain(term.toLowerCase())
     }

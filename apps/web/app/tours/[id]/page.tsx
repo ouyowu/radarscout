@@ -7,6 +7,7 @@ import { FAQAccordion } from '@/app/_components/FAQAccordion'
 import { JsonLd } from '@/app/_components/JsonLd'
 import { PublicSiteShell } from '@/app/_components/PublicSiteShell'
 import { Button, Card, DecisionGuide, Section } from '@/app/_components/design-system'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 import {
   getPublicThailandProduct,
@@ -311,9 +312,9 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
     : []
 
   return (
-    <PublicSiteShell>
+    <PublicSiteShell className={product.bookingPartnerHandoff ? 'pb-28 md:pb-0' : undefined}>
       {tourJsonLd ? <JsonLd data={tourJsonLd} /> : null}
-      <main className={`min-h-screen bg-rs-sand-50 text-rs-ink ${product.bookingPartnerHandoff ? 'pb-20 md:pb-0' : ''}`}>
+      <main className="min-h-screen bg-rs-sand-50 text-rs-ink">
       <section className="bg-rs-sand-50 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
@@ -448,18 +449,21 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
                 Use the booking partner page to review current details. This page does not create a traveler request or order.
               </p>
               {product.bookingPartnerHandoff ? (
-                <TrackedBookingPartnerHandoff
-                  href={product.bookingPartnerHandoff.href}
-                  rel={product.bookingPartnerHandoff.rel}
-                  productId={product.id}
-                  source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
-                  placement="tour_detail_primary"
-                  city={location}
-                  {...safeTripContext}
-                  className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
-                >
-                  {product.bookingPartnerHandoff.label}
-                </TrackedBookingPartnerHandoff>
+                <>
+                  <TrackedBookingPartnerHandoff
+                    href={product.bookingPartnerHandoff.href}
+                    rel={product.bookingPartnerHandoff.rel}
+                    productId={product.id}
+                    source={isFromAiTripPlanner ? 'ai-trip-planner' : 'tour-detail'}
+                    placement="tour_detail_primary"
+                    city={location}
+                    {...safeTripContext}
+                    className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-rs-pill bg-rs-terracotta px-6 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rs-terracotta"
+                  >
+                    {product.bookingPartnerHandoff.label}
+                  </TrackedBookingPartnerHandoff>
+                  <AffiliateNote className="text-white/70" />
+                </>
               ) : null}
               {product.bookingPartnerHandoff ? (
                 <p className="mt-3 text-xs font-semibold leading-6 text-white/65">
@@ -553,6 +557,7 @@ export default async function TourDetailPage({ params, searchParams }: TourDetai
           >
             {product.bookingPartnerHandoff.label}
           </TrackedBookingPartnerHandoff>
+          <AffiliateNote compact />
         </div>
       ) : null}
     </PublicSiteShell>

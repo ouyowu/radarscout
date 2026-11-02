@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { ActivityFeedV1Item } from '@/lib/activityFeed/activityFeedV1'
 import type { DetailComparisonCandidate } from '@/lib/activityFeed/detailComparison'
 import { Card } from '@/app/_components/design-system'
+import { AffiliateNote } from '@/components/AffiliateNote'
 import { TrackedBookingPartnerHandoff } from './TrackedBookingPartnerHandoff'
 
 type DetailComparisonBlockProps = {
@@ -101,22 +102,25 @@ export function DetailComparisonBlock({ primary, candidates }: DetailComparisonB
                 >
                   Compare details
                 </Link>
-                <TrackedBookingPartnerHandoff
-                  href={item.partnerHandoff.url}
-                  rel="nofollow sponsored noopener noreferrer"
-                  productId={item.id}
-                  source="tour-detail"
-                  placement="tour_detail_compare"
-                  reasonCode="theme_match"
-                  city={item.destination.city}
-                  hasDates={false}
-                  hasGroupSize={false}
-                  hasOccupancy={false}
-                  travelerType="unspecified"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
-                >
-                  {item.partnerHandoff.label}
-                </TrackedBookingPartnerHandoff>
+                <div>
+                  <TrackedBookingPartnerHandoff
+                    href={item.partnerHandoff.url}
+                    rel="nofollow sponsored noopener noreferrer"
+                    productId={item.id}
+                    source="tour-detail"
+                    placement="tour_detail_compare"
+                    reasonCode="theme_match"
+                    city={item.destination.city}
+                    hasDates={false}
+                    hasGroupSize={false}
+                    hasOccupancy={false}
+                    travelerType="unspecified"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-rs-pill bg-rs-terracotta px-5 text-sm font-bold text-rs-ink transition hover:bg-rs-terracotta-600 hover:text-white"
+                  >
+                    {item.partnerHandoff.label}
+                  </TrackedBookingPartnerHandoff>
+                  <AffiliateNote />
+                </div>
               </div>
             </Card>
           ))}

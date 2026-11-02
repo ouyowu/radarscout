@@ -217,7 +217,12 @@ describe('homepage public copy safety', () => {
     expect(homepageVisibleCopySources).not.toMatch(/Bókun-powered/i)
     expect(homepageVisibleCopySources).not.toMatch(/partner rate/i)
     expect(homepageVisibleCopySources).not.toMatch(/supplier net rate/i)
-    expect(homepageVisibleCopySources).not.toMatch(/\bcommission\b/i)
+    expect(
+      homepageVisibleCopySources.replace(
+        'If you book through them, we may earn a commission at no extra cost to you.',
+        '',
+      ),
+    ).not.toMatch(/\bcommission\b/i)
     expect(homepageVisibleCopySources).not.toMatch(/\bcheapest\b|lowest price|best[- ]selling|sales rank/i)
   })
 
