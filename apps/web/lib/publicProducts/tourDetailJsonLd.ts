@@ -37,9 +37,6 @@ export function buildTourDetailJsonLd(
 
   const base = siteBase.replace(/\/$/, '')
   const reviewerNote = reviewedText(product.reviewedEnrichment?.shortSummary) ?? reviewedText(product.summary)
-  const bestFor = (product.reviewedEnrichment?.suggestedTags ?? [])
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0)
   const supplierName = reviewedText(product.supplierName)
   const cityName = reviewedText(product.city)
   const cityPath = cityName ? cityPaths[cityName] : undefined
@@ -75,7 +72,6 @@ export function buildTourDetailJsonLd(
   }
 
   if (reviewerNote) touristTrip.description = reviewerNote
-  if (bestFor.length > 0) touristTrip.touristType = bestFor
   if (supplierName) {
     touristTrip.provider = {
       '@type': 'Organization',

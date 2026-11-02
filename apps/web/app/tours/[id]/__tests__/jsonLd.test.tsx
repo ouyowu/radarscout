@@ -66,6 +66,7 @@ describe('tour detail JSON-LD rendering', () => {
     expect(jsonLd).toContain('https://www.radarscout.io/thailand/bangkok')
     expect(jsonLd).not.toContain('aggregateRating')
     expect(jsonLd).not.toContain('"review"')
+    expect(jsonLd).not.toContain('touristType')
     expect(jsonLd).not.toContain('offers')
     expect(jsonLd).not.toContain('89.00')
     expect(jsonLd).not.toContain('price')

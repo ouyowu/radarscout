@@ -52,7 +52,6 @@ describe('tour detail JSON-LD', () => {
             '@type': 'TouristTrip',
             name: product.title,
             description: product.summary,
-            touristType: [...product.reviewedEnrichment.suggestedTags],
             url: `${SITE}/tours/${product.id}`,
           },
         ],
@@ -62,6 +61,7 @@ describe('tour detail JSON-LD', () => {
       expect(serialized).not.toContain('offers')
       expect(serialized).not.toContain('price')
       expect(serialized).not.toContain('provider')
+      expect(serialized).not.toContain('touristType')
     }
   })
 
@@ -115,5 +115,6 @@ describe('tour detail JSON-LD', () => {
       name: 'Reviewed Local Operator',
     })
     expect(JSON.stringify(jsonLd)).not.toContain('aggregateRating')
+    expect(JSON.stringify(jsonLd)).not.toContain('touristType')
   })
 })
