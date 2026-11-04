@@ -79,7 +79,7 @@ export default function ThailandAnswersPage() {
 
                   <dl className="mt-7 divide-y divide-rs-sage-200 border-y border-rs-sage-200">
                     {group.answers.map(answer => (
-                      <div key={answer.slug} className="py-7">
+                      <div key={answer.id} className="py-7">
                         <dt className="font-rs-display text-[1.28rem] font-semibold leading-[1.25] tracking-[-0.015em] text-rs-ink">
                           {answer.question}
                         </dt>

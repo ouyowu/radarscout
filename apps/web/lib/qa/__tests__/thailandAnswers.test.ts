@@ -19,13 +19,14 @@ describe('thailand answers', () => {
     expect(thailandAnswers.length).toBeGreaterThan(0)
 
     for (const answer of thailandAnswers) {
-      const guide = thailandGuideArticles.find(article => article.slug === answer.slug)
+      const guide = thailandGuideArticles.find(article => article.href === answer.id)
       expect(guide).toBeDefined()
       // The published text must be the guide's own, character for character.
       expect(answer.question).toBe(guide!.title)
       expect(answer.answer).toBe(guide!.quickAnswer)
       expect(answer.reviewedBy).toBe(guide!.reviewedBy)
       expect(answer.sourceHref).toBe(guide!.href)
+      expect(answer.id).toBe(guide!.href)
     }
   })
 
@@ -56,13 +57,20 @@ describe('thailand answers', () => {
     const grouped = groupAnswersByCity()
     const flattened = grouped.flatMap(group => group.answers)
     expect(flattened).toHaveLength(thailandAnswers.length)
-    expect(new Set(flattened.map(a => a.slug)).size).toBe(thailandAnswers.length)
+    expect(new Set(flattened.map(a => a.id)).size).toBe(thailandAnswers.length)
 
     for (const group of grouped) {
       for (const answer of group.answers) {
         expect(answer.cityName).toBe(group.cityName)
       }
     }
+  })
+
+  it('keeps answer ids unique even where guide slugs repeat across cities', () => {
+    const slugs = thailandGuideArticles.map(article => article.slug)
+    // Several cities publish a `where-to-stay` guide, so slug is not identity.
+    expect(new Set(slugs).size).toBeLessThan(slugs.length)
+    expect(new Set(thailandAnswers.map(a => a.id)).size).toBe(thailandAnswers.length)
   })
 
   it('reports the most recent review date', () => {
