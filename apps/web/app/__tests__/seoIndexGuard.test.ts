@@ -183,22 +183,29 @@ describe('controlled SEO opening guard', () => {
     }
   })
 
-  it('keeps reddit-tool marketing routes disallowed in robots.txt', () => {
+  // These routes return 410 Gone. A crawler blocked by robots.txt never
+  // fetches them, so it never sees the 410 and leaves them in the index.
+  // They must stay crawlable until Google has dropped them.
+  it('leaves the 410 marketing and comparison routes crawlable', () => {
     process.env.NEXT_PUBLIC_BASE_URL = BASE
 
     const rules = robots().rules
     const firstRule = Array.isArray(rules) ? rules[0] : rules
-    const disallow = firstRule?.disallow
+    const disallow = firstRule?.disallow ?? []
 
-    expect(disallow).toEqual(expect.arrayContaining([...REDDIT_TOOL_MARKETING_ROUTES]))
+    for (const route of [...REDDIT_TOOL_MARKETING_ROUTES, '/comparisons/']) {
+      expect(disallow).not.toContain(route)
+    }
   })
 
-  it('keeps legacy comparison routes disallowed in robots.txt', () => {
+  // The only surfaces that must never be crawled: the API, and anything
+  // behind the sign-in page, which still answers 200.
+  it('keeps the API and signed-in surfaces disallowed', () => {
     process.env.NEXT_PUBLIC_BASE_URL = BASE
 
     const rules = robots().rules
     const firstRule = Array.isArray(rules) ? rules[0] : rules
 
-    expect(firstRule?.disallow).toEqual(expect.arrayContaining(['/comparisons/']))
+    expect(firstRule?.disallow).toEqual(['/api/', '/dashboard', '/auth/'])
   })
 })
